@@ -1,0 +1,181 @@
+{
+  "fury_heartbeat": {
+    "subtitle" : "subtitles.fury_heartbeat",
+    "sounds": [
+      {
+        "name": "combatimprovement:fury_heartbeat",
+        "stream": false
+      }
+    ]
+  },
+  "dash.dash_default": {
+    "subtitle" : "subtitles.dash_default",
+    "sounds": [
+      {
+        "name": "combatimprovement:dash/dash_default",
+        "stream": false
+      }
+    ]
+  },
+  "dash.dash_second": {
+    "subtitle" : "subtitles.dash_second",
+    "sounds": [
+      {
+        "name": "combatimprovement:dash/dash_second",
+        "stream": false
+      }
+    ]
+  },
+  "dash.dash_final": {
+    "subtitle" : "subtitles.dash_second",
+    "sounds": [
+      {
+        "name": "combatimprovement:dash/dash_final",
+        "stream": false
+      }
+    ]
+  },
+  "dash.dash1_recharge": {
+    "subtitle" : "subtitles.dash_recharge",
+    "sounds": [
+      {
+        "name": "combatimprovement:dash/dash1_recharge",
+        "stream": false
+      }
+    ]
+  },
+  "dash.dash2_recharge": {
+    "subtitle" : "subtitles.dash_recharge",
+    "sounds": [
+      {
+        "name": "combatimprovement:dash/dash2_recharge",
+        "stream": false
+      }
+    ]
+  },
+  "dash.dash3_recharge": {
+    "subtitle" : "subtitles.dash_recharge",
+    "sounds": [
+      {
+        "name": "combatimprovement:dash/dash3_recharge",
+        "stream": false
+      }
+    ]
+  },
+  "fragile.sword.begin": {
+    "subtitle" : "subtitles.fragile_blade.begin",
+    "sounds": [
+      {
+        "name": "combatimprovement:fragile_sword/fragile_sword_begin",
+        "stream": false
+      }
+    ]
+  },
+  "fragile.sword.low": {
+    "subtitle" : "subtitles.fragile_blade.low",
+    "sounds": [
+      {
+        "name": "combatimprovement:fragile_sword/fragile_sword_low",
+        "stream": false
+      }
+    ]
+  },
+  "fragile.sword.medium": {
+    "subtitle" : "subtitles.fragile_blade.medium",
+    "sounds": [
+      {
+        "name": "combatimprovement:fragile_sword/fragile_sword_medium",
+        "stream": false
+      }
+    ]
+  },
+  "fragile.sword.high": {
+    "subtitle" : "subtitles.fragile_blade.high",
+    "sounds": [
+      {
+        "name": "combatimprovement:fragile_sword/fragile_sword_high",
+        "stream": false
+      }
+    ]
+  },
+  "fragile.sword.maximum": {
+    "subtitle" : "subtitles.fragile_blade.maximum",
+    "sounds": [
+      {
+        "name": "combatimprovement:fragile_sword/fragile_sword_maximum",
+        "stream": false
+      }
+    ]
+  },
+  "blocked" : {
+    "subtitle": "subtitles.attack_blocked",
+    "sounds": [
+      {
+        "name" : "combatimprovement:blocked",
+        "stream" : false
+      }
+    ]
+  },
+  "attack_stunned" : {
+    "subtitle": "subtitles.attack_stun",
+    "sounds": [
+      {
+        "name" : "combatimprovement:attack_stunned",
+        "stream" : false
+      }
+    ]
+  },
+  "barrier_hit" : {
+    "subtitle": "subtitles.barrier_hit",
+    "sounds": [
+      {
+        "name" : "combatimprovement:barrier_damaging/barrier_hit1",
+        "stream" : false
+      },
+      {
+        "name" : "combatimprovement:barrier_damaging/barrier_hit2",
+        "stream" : false
+      },
+      {
+        "name" : "combatimprovement:barrier_damaging/barrier_hit3",
+        "stream" : false
+      }
+    ]
+  },
+  "barrier_break" : {
+    "subtitle": "subtitles.barrier_break",
+    "sounds": [
+      {
+        "name" : "combatimprovement:barrier_damaging/barrier_break",
+        "stream" : false
+      }
+    ]
+  },
+  "ringing" : {
+    "subtitle": "subtitles.ringing",
+    "sounds": [
+      {
+        "name": "combatimprovement:ringing_long",
+        "stream": false
+      }
+    ]
+  },
+  "devour" : {
+    "subtitle": "subtitles.devouring",
+    "sounds": [
+      {
+        "name" : "combatimprovement:devour",
+        "stream" : false
+      }
+    ]
+  },
+  "entangle" : {
+    "subtitle": "subtitles.entangle",
+    "sounds": [
+      {
+        "name" : "combatimprovement:entangler",
+        "stream" : false
+      }
+    ]
+  }
+}

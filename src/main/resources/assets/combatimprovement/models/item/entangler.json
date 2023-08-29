@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "combatimprovement:item/spellcaster/death_life_entangler"
+    }
+}
