@@ -5,6 +5,7 @@
 	},
 	"overrides": [
 		{
+
 			"predicate": {
 				"combatimprovement:dmg": 0.0
 			},

@@ -41,12 +41,14 @@ import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameType;
@@ -323,7 +325,16 @@ public class EventHandler {
             AttachDataSync.get(player).ifPresent(DataSync::tick);
         }
     }
-
+    @SubscribeEvent
+    public static void tick(TickEvent.PlayerTickEvent event) {
+        if (event.player != null) {
+            AABB aabb = event.player.getBoundingBox().inflate(10f);
+            List<ThrownTrident> tridents = event.player.level.getEntitiesOfClass(ThrownTrident.class, aabb);
+            if (!tridents.isEmpty()) {
+                ThrownTrident trident = tridents.get(0);
+            }
+        }
+    }
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         // abilities
