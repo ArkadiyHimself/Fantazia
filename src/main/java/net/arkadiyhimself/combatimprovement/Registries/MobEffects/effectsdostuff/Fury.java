@@ -2,7 +2,7 @@ package net.arkadiyhimself.combatimprovement.Registries.MobEffects.effectsdostuf
 
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
 import net.arkadiyhimself.combatimprovement.Networking.packets.PlaySoundForUIS2C;
-import net.arkadiyhimself.combatimprovement.Registries.Sounds.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DataSincyng.AttachDataSync;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;

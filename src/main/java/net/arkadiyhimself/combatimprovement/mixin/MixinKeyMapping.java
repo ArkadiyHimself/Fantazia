@@ -1,6 +1,6 @@
 package net.arkadiyhimself.combatimprovement.mixin;
 
-import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.UsefulMethods;
+import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -16,7 +16,7 @@ public class MixinKeyMapping {
     private void cancelInput(CallbackInfoReturnable<Boolean> cir) {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
-            if (UsefulMethods.Abilities.canNotDoActions(player) && !(Minecraft.getInstance().screen instanceof PauseScreen)) {
+            if (WhereMagicHappens.Abilities.canNotDoActions(player) && !(Minecraft.getInstance().screen instanceof PauseScreen)) {
                 cir.setReturnValue(false);
             }
         }
@@ -25,7 +25,7 @@ public class MixinKeyMapping {
     private void cancelHold(CallbackInfoReturnable<Boolean> cir) {
         Player player = Minecraft.getInstance().player;
         if (player != null) {
-            if (UsefulMethods.Abilities.canNotDoActions(player) && !(Minecraft.getInstance().screen instanceof PauseScreen)) {
+            if (WhereMagicHappens.Abilities.canNotDoActions(player) && !(Minecraft.getInstance().screen instanceof PauseScreen)) {
                 cir.setReturnValue(false);
             }
         }

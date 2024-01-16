@@ -4,8 +4,9 @@ import dev._100media.capabilitysyncer.core.LivingEntityCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
+import net.arkadiyhimself.combatimprovement.Registries.AttributeRegistry;
 import net.arkadiyhimself.combatimprovement.Registries.MobEffects.MobEffectRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.Sounds.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -65,6 +66,12 @@ public class Stun extends LivingEntityCapability {
         changeColor();
         updateTracking();
     }
+    public void onRespawn() {
+        this.stunPoints = 0;
+        this.duration = 0;
+        this.decayDelay = 0;
+        updateTracking();
+    }
     public void changeColor() {
         if (colorUp) {
             redColor += 15;
@@ -73,7 +80,7 @@ public class Stun extends LivingEntityCapability {
         if (redColor >= 255) { colorUp = false; }
     }
     public int getMaxPoints() {
-        return MAX_STUN_POINTS;
+        return (int) this.livingEntity.getAttributeValue(AttributeRegistry.MAX_STUN_POINTS.get());
     }
     public void addStunPoints(int amount) {
         stunPoints = Math.min(getMaxPoints(), stunPoints + amount);

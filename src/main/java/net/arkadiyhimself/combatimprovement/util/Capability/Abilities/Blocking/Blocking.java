@@ -3,17 +3,12 @@ package net.arkadiyhimself.combatimprovement.util.Capability.Abilities.Blocking;
 import dev._100media.capabilitysyncer.core.PlayerCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
-import net.arkadiyhimself.combatimprovement.CombatImprovement;
 import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.NewEvents.BlockingEvent;
 import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.NewEvents.NewEvents;
-import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.UsefulMethods;
+import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
-import net.arkadiyhimself.combatimprovement.Networking.packets.CapabilityUpdate.StartedBlockingC2S;
 import net.arkadiyhimself.combatimprovement.Networking.packets.PlayAnimationS2C;
-import net.arkadiyhimself.combatimprovement.Registries.Items.Weapons.WeaponItem;
-import net.arkadiyhimself.combatimprovement.Registries.Sounds.SoundRegistry;
-import net.arkadiyhimself.combatimprovement.util.KeyBinding;
-import net.minecraft.client.Minecraft;
+import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -22,14 +17,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.SwordItem;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class Blocking extends PlayerCapability {
@@ -154,7 +143,7 @@ public class Blocking extends PlayerCapability {
     public void onHit(LivingAttackEvent event) {
         if (("mob".equals(event.getSource().getMsgId()) || "player".equals(event.getSource().getMsgId()))
                 && event.getEntity() instanceof ServerPlayer serverPlayer) {
-            boolean blocked = UsefulMethods.Abilities.blockedAttack(serverPlayer, event.getSource());
+            boolean blocked = WhereMagicHappens.Abilities.blockedAttack(serverPlayer, event.getSource());
             if (blocked && block > 0) {
                 dmgTaken = event.getAmount();
                 attacker = (LivingEntity) event.getSource().getEntity();

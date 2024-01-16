@@ -1,7 +1,7 @@
 package net.arkadiyhimself.combatimprovement.util.Capability.ItemStack.FragileSword;
 
 import dev._100media.capabilitysyncer.core.ItemStackCapability;
-import net.arkadiyhimself.combatimprovement.Registries.Sounds.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -13,23 +13,36 @@ public class FragileBladeCap extends ItemStackCapability {
     @Override
     public CompoundTag serializeNBT(boolean savingToDisk) {
         CompoundTag tag = new CompoundTag();
-        tag.putFloat("damage", this.damage);
-        if (this.delay == 0) {
-            tag.putInt("delay", this.delay);
+        tag.putFloat("damage", damage);
+        tag.putInt("level", level);
+        if (delay == 0) {
+            tag.putInt("delay", delay);
         }
+
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
-        this.damage = nbt.contains("damage") ? nbt.getFloat("damage") : MIN_DMG;
-        this.delay = nbt.contains("delay") ? nbt.getInt("delay") : DELAY_AFTER_HIT;
+        damage = nbt.contains("damage") ? nbt.getFloat("damage") : MIN_DMG;
+        delay = nbt.contains("delay") ? nbt.getInt("delay") : DELAY_AFTER_HIT;
+        level = nbt.contains("level") ? nbt.getInt("level") : 0;
     }
     public final float MIN_DMG = 0;
     public final float MAX_DMG = 16;
     public final int DELAY_AFTER_HIT = 300;
     public float damage = MIN_DMG;
     public int delay = 0;
+    public int level = 0;
+    public void setLevel() {
+        level = switch (getDamageLevel()) {
+            case STARTING -> 0;
+            case LOW -> 1;
+            case MEDIUM -> 2;
+            case HIGH -> 3;
+            case MAXIMUM -> 4;
+        };
+    }
     public void tick() {
         delay = Math.max(0, delay - 1);
         if (delay == 0) {
@@ -39,6 +52,8 @@ public class FragileBladeCap extends ItemStackCapability {
     public void onAttack() {
         delay = DELAY_AFTER_HIT;
         damage = Math.min(damage + 1, MAX_DMG);
+        setLevel();
+
     }
     public void reset() {
         damage = MIN_DMG;
@@ -67,7 +82,7 @@ public class FragileBladeCap extends ItemStackCapability {
         };
     }
     public SoundEvent getHitSound() {
-        return switch (this.getDamageLevel()) {
+        return switch (getDamageLevel()) {
             case STARTING -> SoundRegistry.FRAG_SWORD_BEGIN.get();
             case LOW -> SoundRegistry.FRAG_SWORD_LOW.get();
             case MEDIUM -> SoundRegistry.FRAG_SWORD_MEDIUM.get();

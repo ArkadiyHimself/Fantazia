@@ -1,9 +1,14 @@
 package net.arkadiyhimself.combatimprovement.HandlersAndHelpers.NewEvents;
 
 import net.minecraft.client.particle.Particle;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
+import org.checkerframework.checker.units.qual.C;
 
 public class VanillaEventsExtension {
     @Cancelable
@@ -28,6 +33,27 @@ public class VanillaEventsExtension {
             this.hasPhysics = hasPhysics;
             this.onGround = onGround;
         }
-
+    }
+    @Cancelable
+    public static class MobAttackEvent extends LivingEvent {
+        private final Entity target;
+        public MobAttackEvent(Mob entity, Entity target) {
+            super(entity);
+            this.target = target;
+        }
+        public Entity getTarget()
+        {
+            return target;
+        }
+    }
+    @Cancelable
+    public static class DeathPreventationEvent extends LivingEvent {
+        public DeathPreventationEvent(LivingEntity entity, Object cause) {
+            super(entity);
+            this.cause = cause;
+        }
+        // a mob effect or an item which causes the death preventation; just use «cause instance of MobEffect» or smth like that
+        private final Object cause;
+        public Object getCause() { return cause; }
     }
 }

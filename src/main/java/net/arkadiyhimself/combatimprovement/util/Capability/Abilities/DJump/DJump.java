@@ -3,22 +3,10 @@ package net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DJump;
 import dev._100media.capabilitysyncer.core.PlayerCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
-import net.arkadiyhimself.combatimprovement.CombatImprovement;
-import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.UsefulMethods;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
-import net.arkadiyhimself.combatimprovement.Networking.packets.CapabilityUpdate.DJumpStartTickC2S;
-import net.arkadiyhimself.combatimprovement.Networking.packets.CapabilityUpdate.JustDJumpedC2S;
-import net.arkadiyhimself.combatimprovement.Networking.packets.ResetFallDistanceC2S;
-import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class DJump extends PlayerCapability {
@@ -69,6 +57,7 @@ public class DJump extends PlayerCapability {
         updateTracking();
     }
     public boolean canDJump() {
-        return !justJumped && canDJump && !player.isOnGround();
+        return !justJumped && canDJump && !player.isOnGround() && !player.isFallFlying()
+                && !player.hasEffect(MobEffects.LEVITATION) && !player.hasEffect(MobEffects.SLOW_FALLING);
     }
 }

@@ -49,6 +49,7 @@ public class NetworkHandler {
                 // use new items
                 .add(WeaponAbilityC2S::register)
                 .add(CastSpellC2S::register)
+                .add(HatchetThrowC2S::register)
 
                 // play sound
                 .add(PlaySoundForUIS2C::register)
@@ -60,6 +61,7 @@ public class NetworkHandler {
                 .add(DJumpStartTickC2S::register)
                 .add(DeltaMovementC2S::register)
                 .add(DoubleJumpC2S::register)
+                .add(EntityMadeSoundS2C::register)
 
                 .add(ResetFallDistanceC2S::register)
                 .build();

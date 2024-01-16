@@ -19,7 +19,7 @@ public class MixinMouseHandler {
         if (player != null && AttachDash.getUnwrap(player) != null && AttachBlocking.getUnwrap(player) != null) {
             if (AttachDash.getUnwrap(player).isDashing() || AttachBlocking.getUnwrap(player).isInAnim()) {
                 ci.cancel();
-                player.setXRot(0);
+             //   player.setXRot(0);
             }
         }
         if (player != null && StunEffect.getUnwrap(player) != null) {

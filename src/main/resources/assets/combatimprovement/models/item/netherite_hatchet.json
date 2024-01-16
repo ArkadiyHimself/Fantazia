@@ -1,0 +1,18 @@
+{
+    "parent" : "minecraft:item/handheld",
+    "loader" : "forge:separate_transforms",
+    "base" : {
+        "parent" : "combatimprovement:item/hatchet/models/netherite_hatchet"
+    },
+    "perspectives" : {
+        "gui" : {
+            "parent" : "combatimprovement:item/hatchet/gui/netherite_hatchet"
+        },
+        "ground" : {
+            "parent" : "combatimprovement:item/hatchet/gui/netherite_hatchet"
+        },
+        "fixed" : {
+            "parent" : "combatimprovement:item/hatchet/gui/netherite_hatchet"
+        }
+    }
+}

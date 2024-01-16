@@ -22,7 +22,8 @@ public class AttachDataSync extends CapabilityAttacher {
     public static DataSync getUnwrap(LivingEntity entity) {
         return get(entity).orElse(null);
     }
-    public static LazyOptional<DataSync> get(LivingEntity entity) {
+    public static LazyOptional<DataSync> get(@Nullable LivingEntity entity) {
+        if (entity == null) { return null; }
         return entity.getCapability(DATA_SYNC);
     }
     private static void attacher(AttachCapabilitiesEvent<Entity> event, Player player) {

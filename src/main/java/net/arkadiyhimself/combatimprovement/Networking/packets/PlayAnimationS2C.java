@@ -1,7 +1,7 @@
 package net.arkadiyhimself.combatimprovement.Networking.packets;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.UsefulMethods;
+import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DataSincyng.AttachDataSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,7 +21,7 @@ public class PlayAnimationS2C implements IPacket {
                 if (animation.isEmpty()) {
                     animation = null;
                 }
-                UsefulMethods.Abilities.animatePlayer(Minecraft.getInstance().player, animation);
+                WhereMagicHappens.Abilities.animatePlayer(Minecraft.getInstance().player, animation);
             }
         });
         context.setPacketHandled(true);

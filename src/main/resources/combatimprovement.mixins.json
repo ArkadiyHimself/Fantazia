@@ -7,12 +7,15 @@
     "MixinKeyMapping",
     "MixinLivingEntity",
     "MixinMinecraft",
+    "MixinMob",
     "MixinMouseHandler",
+    "MixinPlayer",
     "MixinWarden"
   ],
   "client": [
     "LivingEntityRendererAccessor",
     "MixinLivingEntityRenderer",
+    "MixinLocalPlayer",
     "MixinParticle"
   ],
   "minVersion": "0.8"

@@ -1,0 +1,18 @@
+{
+    "parent" : "minecraft:item/handheld",
+    "loader" : "forge:separate_transforms",
+    "base" : {
+        "parent" : "combatimprovement:item/hatchet/models/diamond_hatchet"
+    },
+    "perspectives" : {
+        "gui" : {
+            "parent" : "combatimprovement:item/hatchet/gui/diamond_hatchet"
+        },
+        "ground" : {
+            "parent" : "combatimprovement:item/hatchet/gui/diamond_hatchet"
+        },
+        "fixed" : {
+            "parent" : "combatimprovement:item/hatchet/gui/diamond_hatchet"
+        }
+    }
+}

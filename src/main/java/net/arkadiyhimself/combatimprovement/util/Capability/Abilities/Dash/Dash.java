@@ -4,24 +4,22 @@ import dev._100media.capabilitysyncer.core.PlayerCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.NewEvents.NewEvents;
-import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.UsefulMethods;
+import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
 import net.arkadiyhimself.combatimprovement.Networking.packets.PlayAnimationS2C;
 import net.arkadiyhimself.combatimprovement.Networking.packets.PlaySoundForUIS2C;
 import net.arkadiyhimself.combatimprovement.Registries.MobEffects.effectsdostuff.Haemorrhage;
-import net.arkadiyhimself.combatimprovement.Registries.Sounds.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DataSincyng.AttachDataSync;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
 
@@ -76,6 +74,7 @@ public class Dash extends PlayerCapability {
         this.dashRecharged = nbt.contains("dashRecharged") && nbt.getBoolean("dashRecharged");
         this.initialDur = nbt.contains("initialDur") ? nbt.getInt("initialDur") : 0;
     }
+    private final float stCost = 1.5f;
     private int MAX_DASH_DUR = 8;
     private int dashDuration = 0;
     private int MAX_DASH_RECH = 100;
@@ -98,7 +97,11 @@ public class Dash extends PlayerCapability {
                 case ALL -> 3;
             };
             for (int i = 1; i <= num; i++) {
-                UsefulMethods.Abilities.createRandomParticleOnHumanoid(serverPlayer, getParticleType(), UsefulMethods.Abilities.ParticleMovement.CHASE_OPPOSITE);
+                WhereMagicHappens.Abilities.createRandomParticleOnHumanoid(serverPlayer, getParticleType(), WhereMagicHappens.Abilities.ParticleMovement.CHASE_OPPOSITE);
+            }
+            if (dashLevel == 1 && player.horizontalCollision) {
+                player.hurt(DamageSource.FLY_INTO_WALL, 3f);
+                NetworkHandler.sendToPlayer(new PlayAnimationS2C(""), serverPlayer);
             }
         }
         if (isDashing()) {
@@ -166,9 +169,14 @@ public class Dash extends PlayerCapability {
                 dashDuration = duration;
                 initialDur = duration;
             } else {
-                int trueDuration = UsefulMethods.Abilities.thirdLevelDashDurationHorizontal(serverPlayer, xVelocity, zVelocity, 8);
+                int trueDuration = WhereMagicHappens.Abilities.thirdLevelDashDurationHorizontal(serverPlayer, xVelocity, zVelocity, 8);
                 dashDuration = trueDuration;
                 initialDur = trueDuration;
+            }
+            if (!player.isCreative()) {
+                AttachDataSync.get(player).ifPresent(dataSync -> {
+                    dataSync.wasteStamina(stCost, true);
+                });
             }
         }
         updateTracking();
@@ -186,6 +194,7 @@ public class Dash extends PlayerCapability {
         return dashRecharge;
     }
     public int getMaxRecharge() {
+        if (player.isCreative()) return 0;
         return MAX_DASH_RECH;
     }
     public int getDur() {
@@ -195,7 +204,8 @@ public class Dash extends PlayerCapability {
         return MAX_DASH_DUR; }
     public boolean canDash() {
         return !isDashing() && dashRecharge == 0 && player.isEffectiveAi()
-                && dashLevel > 0 && (player.isOnGround() || canDashInAir);
+                && dashLevel > 0 && (player.isOnGround() || canDashInAir)
+                && !player.isSpectator() && AttachDataSync.getUnwrap(player).stamina >= stCost;
     }
     public void onHit(LivingAttackEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {

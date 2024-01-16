@@ -34,6 +34,6 @@ public class BlockRegistry {
     public static void register(IEventBus eventBus) { BLOCKS.register(eventBus); }
     public static final RegistryObject<Block> ANCIENT_FLAME;
     static {
-        ANCIENT_FLAME = registerBlock("ancient_flame", () -> new AncientFlame(getProperties(Blocks.FIRE)));
+        ANCIENT_FLAME = registerBlock("ancient_flame", AncientFlame::new);
     }
 }

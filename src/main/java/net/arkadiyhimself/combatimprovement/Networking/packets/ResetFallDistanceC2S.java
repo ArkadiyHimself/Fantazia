@@ -2,6 +2,7 @@ package net.arkadiyhimself.combatimprovement.Networking.packets;
 
 import dev._100media.capabilitysyncer.network.IPacket;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -10,7 +11,7 @@ public class ResetFallDistanceC2S implements IPacket {
     public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             if (context.getSender() != null) {
-                context.getSender().resetFallDistance();
+                context.getSender().fallDistance = -2f;
             }
         });
         context.setPacketHandled(true);
@@ -18,7 +19,6 @@ public class ResetFallDistanceC2S implements IPacket {
 
     @Override
     public void write(FriendlyByteBuf packetBuf) {
-
     }
     public static ResetFallDistanceC2S read(FriendlyByteBuf packetBuf) {
         return new ResetFallDistanceC2S();

@@ -1,6 +1,6 @@
 package net.arkadiyhimself.combatimprovement.Registries.MobEffects.effectsdostuff;
 
-import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.UsefulMethods;
+import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens;
 import net.arkadiyhimself.combatimprovement.Registries.Particless.ParticleRegistry;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.Dash.AttachDash;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.Dash.Dash;
@@ -12,7 +12,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,29 +63,29 @@ public class Haemorrhage extends MobEffect {
                 };
                 int amount = (int) Math.max(10, num * damage * 0.1);
                 for (int i = 1; i <= amount; i++) {
-                    Random random = new Random();
 
-                    UsefulMethods.Abilities.createRandomParticleOnHumanoid(pLivingEntity,
-                            ParticleRegistry.bloodParticles.get(random.nextInt(0, ParticleRegistry.bloodParticles.size())).get(),
-                            UsefulMethods.Abilities.ParticleMovement.FALL);
                 }
+                Random random = new Random();
+
+                WhereMagicHappens.Abilities.createRandomParticleOnHumanoid(pLivingEntity,
+                        ParticleRegistry.bloodParticles.get(random.nextInt(0, ParticleRegistry.bloodParticles.size())).get(),
+                        WhereMagicHappens.Abilities.ParticleMovement.FALL);
             }
-        }  else if (velocity > 0 && activeDMGdelay == 0) {
+        }  else if (velocity > 0) {
             damage = (float) ((pAmplifier * 0.25F + 1) * ((pLivingEntity.isSprinting() && pLivingEntity.isOnGround()) ? velocity * 12.5 : velocity * 5));
             pLivingEntity.hurt(BLEEDING, damage);
-            activeDMGdelay = 10;
             int num = switch (Minecraft.getInstance().options.particles().get()) {
-                case MINIMAL -> 2;
-                case DECREASED -> 3;
-                case ALL -> 4;
+                case MINIMAL -> 1;
+                case DECREASED -> 2;
+                case ALL -> 3;
             };
             int amount = (int) Math.max(15, num * damage * 0.25);
             for (int i = 1; i <= amount; i++) {
                 Random random = new Random();
 
-                UsefulMethods.Abilities.createRandomParticleOnHumanoid(pLivingEntity,
+                WhereMagicHappens.Abilities.createRandomParticleOnHumanoid(pLivingEntity,
                         ParticleRegistry.bloodParticles.get(random.nextInt(0, ParticleRegistry.bloodParticles.size())).get(),
-                        UsefulMethods.Abilities.ParticleMovement.FALL);
+                        WhereMagicHappens.Abilities.ParticleMovement.FALL);
             }
             passiveDMGdelay = Math.max(25, 50 - pAmplifier * 5);
         }

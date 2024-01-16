@@ -1,22 +1,27 @@
 package net.arkadiyhimself.combatimprovement.Registries.Blocks;
 
+import net.arkadiyhimself.combatimprovement.Registries.CombatSources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
-public class AncientFlame extends BaseFireBlock {
-    public AncientFlame(Properties pProperties) {
-        super(pProperties, 3);
-    }
-
-    @Override
-    protected boolean canBurn(BlockState pState) {
-        return true;
+public class AncientFlame extends Block {
+    private final float damage;
+    public AncientFlame() {
+        super(BlockBehaviour.Properties.of(Material.FIRE, MaterialColor.COLOR_BLACK).noCollission().instabreak().lightLevel((light) -> 10).sound(SoundType.WOOL));
+        damage = 3;
     }
 
     @Override
@@ -31,6 +36,6 @@ public class AncientFlame extends BaseFireBlock {
 
     @Override
     public void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
-        super.entityInside(pState, pLevel, pPos, pEntity);
+        pEntity.hurt(CombatSources.ANCIENT_FLAME, this.damage);
     }
 }

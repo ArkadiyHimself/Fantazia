@@ -1,9 +1,8 @@
 package net.arkadiyhimself.combatimprovement.Networking.packets.CapabilityUpdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.UsefulMethods;
+import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DJump.AttachDJump;
-import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.Dash.AttachDash;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -13,7 +12,7 @@ public class DoubleJumpC2S implements IPacket {
     public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
             if (context.getSender() == null) { return; }
-            UsefulMethods.Abilities.doubleJump(context.getSender());
+            WhereMagicHappens.Abilities.doubleJump(context.getSender());
             AttachDJump.get(context.getSender()).ifPresent(dJump -> {
                 dJump.canDJump = false;
                 dJump.updateTracking();

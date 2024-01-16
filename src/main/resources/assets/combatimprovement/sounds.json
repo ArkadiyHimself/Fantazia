@@ -164,7 +164,7 @@
     "subtitle": "subtitles.devouring",
     "sounds": [
       {
-        "name" : "combatimprovement:devour",
+        "name" : "combatimprovement:spells/devour",
         "stream" : false
       }
     ]
@@ -173,7 +173,93 @@
     "subtitle": "subtitles.entangle",
     "sounds": [
       {
-        "name" : "combatimprovement:entangler",
+        "name" : "combatimprovement:spells/entangler",
+        "stream" : false
+      }
+    ]
+  },
+  "doomed": {
+  "subtitle": "subtitles.doomed",
+  "sounds": [
+    {
+      "name": "combatimprovement:mobeffect/doomed/doomed",
+      "stream": false
+    }
+  ]
+  },
+  "undoomed": {
+    "sounds": [
+      {
+        "name": "combatimprovement:mobeffect/doomed/undoomed",
+        "stream": false
+      }
+    ]
+  },
+  "fallen_breath" : {
+    "subtitle" : "subtitles.fallen_breath",
+    "sounds": [
+      {
+        "name": "combatimprovement:mobeffect/doomed/fallen_breath",
+        "stream": false
+      }
+    ]
+  },
+  "denied" : {
+    "sounds": [
+      {
+        "name": "combatimprovement:denied",
+        "stream": false
+      }
+    ]
+  },
+  "whisper": {
+    "subtitle": "subtitles.whisper",
+    "sounds": [
+      {
+        "name": "combatimprovement:whispers/whisper1",
+        "stream": false
+      },
+      {
+        "name": "combatimprovement:whispers/whisper2",
+        "stream": false
+      },
+      {
+        "name": "combatimprovement:whispers/whisper3",
+        "stream": false
+      },
+      {
+        "name": "combatimprovement:whispers/whisper4",
+        "stream": false
+      },
+      {
+        "name": "combatimprovement:whispers/whisper5",
+        "stream": false
+      }
+    ]
+  },
+  "mystic_mirror" : {
+    "subtitle": "subtitles.mystic_mirror",
+    "sounds": [
+      {
+        "name" : "combatimprovement:spells/mystic_mirror",
+        "stream" : false
+      }
+    ]
+  },
+  "reflect" : {
+    "subtitle": "subtitles.reflect",
+    "sounds": [
+      {
+        "name" : "combatimprovement:mobeffect/reflect",
+        "stream" : false
+      }
+    ]
+  },
+  "deflect" : {
+    "subtitle": "subtitles.deflect",
+    "sounds": [
+      {
+        "name" : "combatimprovement:mobeffect/deflect",
         "stream" : false
       }
     ]

@@ -1,0 +1,38 @@
+{
+	"parent": "item/generated",
+	"textures": {
+		"layer0": "combatimprovement:item/weapons/fragile_blade0"
+	},
+	"overrides": [
+		{
+			"predicate": {
+				"combatimprovement:dmg": 0.0
+			},
+			"model": "combatimprovement:item/fragile_blade/fragile_blade0"
+		},
+		{
+			"predicate": {
+				"combatimprovement:dmg": 1.0
+			},
+			"model": "combatimprovement:item/fragile_blade/fragile_blade1"
+		},
+		{
+			"predicate": {
+				"combatimprovement:dmg": 2.0
+			},
+			"model": "combatimprovement:item/fragile_blade/fragile_blade2"
+		},
+		{
+			"predicate": {
+				"combatimprovement:dmg": 3.0
+			},
+			"model": "combatimprovement:item/fragile_blade/fragile_blade3"
+		},
+		{
+			"predicate": {
+				"combatimprovement:dmg": 4.0
+			},
+			"model": "combatimprovement:item/fragile_blade/fragile_blade4"
+		}
+	]
+}

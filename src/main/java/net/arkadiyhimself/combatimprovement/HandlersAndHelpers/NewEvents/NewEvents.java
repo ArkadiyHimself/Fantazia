@@ -2,7 +2,9 @@ package net.arkadiyhimself.combatimprovement.HandlersAndHelpers.NewEvents;
 
 import net.minecraft.client.particle.Particle;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
@@ -13,6 +15,14 @@ public class NewEvents {
             VanillaEventsExtension.ParticleTickEvent event = new VanillaEventsExtension.ParticleTickEvent(particle, positon, deltaMovement, red, green, blue, age, hasPhysics, onGround);
             MinecraftForge.EVENT_BUS.post(event);
             return event;
+        }
+        public static boolean onMobAttack(Mob mob, Entity target) {
+            VanillaEventsExtension.MobAttackEvent event = new VanillaEventsExtension.MobAttackEvent(mob, target);
+            return !MinecraftForge.EVENT_BUS.post(event);
+        }
+        public static boolean onDeathPreventation(LivingEntity entity, Object cause) {
+            VanillaEventsExtension.DeathPreventationEvent event = new VanillaEventsExtension.DeathPreventationEvent(entity, cause);
+            return !MinecraftForge.EVENT_BUS.post(event);
         }
     }
     public static boolean onBlockingStart(ServerPlayer player, ItemStack itemStack) {
