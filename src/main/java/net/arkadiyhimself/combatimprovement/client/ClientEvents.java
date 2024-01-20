@@ -9,11 +9,11 @@ import net.arkadiyhimself.combatimprovement.Networking.packets.CapabilityUpdate.
 import net.arkadiyhimself.combatimprovement.Networking.packets.KeyInputC2S.CastSpellC2S;
 import net.arkadiyhimself.combatimprovement.Networking.packets.KeyInputC2S.WeaponAbilityC2S;
 import net.arkadiyhimself.combatimprovement.Networking.packets.ResetFallDistanceC2S;
-import net.arkadiyhimself.combatimprovement.Registries.Items.Weapons.Melee.FragileBlade;
-import net.arkadiyhimself.combatimprovement.Registries.Items.Weapons.Melee.Murasama;
-import net.arkadiyhimself.combatimprovement.Registries.Items.Weapons.Melee.MeleeWeaponItem;
-import net.arkadiyhimself.combatimprovement.Registries.MobEffects.MobEffectRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.Items.Weapons.Melee.FragileBlade;
+import net.arkadiyhimself.combatimprovement.Items.Weapons.Melee.Murasama;
+import net.arkadiyhimself.combatimprovement.Items.Weapons.Melee.MeleeWeaponItem;
+import net.arkadiyhimself.combatimprovement.api.MobEffectRegistry;
+import net.arkadiyhimself.combatimprovement.api.SoundRegistry;
 import net.arkadiyhimself.combatimprovement.client.Render.Models.Entity.VanillaTweaks.RenderAboveTypes.StunBarType;
 import net.arkadiyhimself.combatimprovement.client.Render.Models.Entity.VanillaTweaks.RenderLayer.AbsoluteBarrier;
 import net.arkadiyhimself.combatimprovement.client.Render.Models.Entity.VanillaTweaks.RenderLayer.BarrierLayer;
@@ -32,7 +32,6 @@ import net.arkadiyhimself.combatimprovement.util.Capability.mobeffects.StunEffec
 import net.arkadiyhimself.combatimprovement.util.KeyBinding;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
@@ -51,7 +50,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
-import net.minecraftforge.client.model.SeparateTransformsModel;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -61,7 +59,6 @@ import org.joml.Quaternionf;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class ClientEvents {
     public static List<SoundEvent> nonMuted = new ArrayList<>(){{
         add(SoundEvents.GENERIC_EXPLODE);
@@ -94,7 +91,7 @@ public class ClientEvents {
             Minecraft mc = Minecraft.getInstance();
             LocalPlayer player = mc.player;
             assert player != null;
-            PoseStack poseStack = event.getPoseStack();
+            PoseStack poseStack = event.getGuiGraphics().pose();
             if (event.getOverlay() == VanillaGuiOverlay.EXPERIENCE_BAR.type()) {
                 RenderSystem.setShaderTexture(0, BARS);
                 int x = event.getWindow().getGuiScaledWidth() / 2 - 91;
@@ -102,12 +99,12 @@ public class ClientEvents {
                 if (StunEffect.getUnwrap(player).renderBar()) {
                     if (StunEffect.getUnwrap(player).isStunned()) {
                         int stunPercent = (int) ((float) StunEffect.getUnwrap(player).duration / (float) StunEffect.getUnwrap(player).maxDuration * 182);
-                        GuiComponent.blit(poseStack, x, y, 0, 10F, 182, 5, 182, 182);
-                        GuiComponent.blit(poseStack, x, y, 0, 0, 15F, stunPercent, 5, 182, 182);
+                        event.getGuiGraphics().blit(BARS, x, y, 0, 10f, 182, 5, 182, 182);
+                        event.getGuiGraphics().blit(BARS, x, y, 0, 0, 15F, stunPercent, 5, 182, 182);
                     } else if (StunEffect.getUnwrap(player).hasPoints()) {
                         int stunPercent = (int) ((float) StunEffect.getUnwrap(player).stunPoints / (float) StunEffect.getUnwrap(player).getMaxPoints() * 182);
-                        GuiComponent.blit(poseStack, x, y, 0, 0F, 182, 5, 182, 182);
-                        GuiComponent.blit(poseStack, x, y, 0, 0, 5F, stunPercent, 5, 182, 182);
+                        event.getGuiGraphics().blit(BARS, x, y, 0, 0F, 182, 5, 182, 182);
+                        event.getGuiGraphics().blit(BARS, x, y, 0, 0, 5F, stunPercent, 5, 182, 182);
                     }
                     event.setCanceled(true);
                     return;
@@ -115,8 +112,8 @@ public class ClientEvents {
                 if (BarrierEffect.getUnwrap(player).hasBarrier()) {
                     int percent = (int) (BarrierEffect.getUnwrap(player).barrierAmount / BarrierEffect.getUnwrap(player).barrierInitialAmount * 182);
                     event.setCanceled(true);
-                    GuiComponent.blit(poseStack, x, y, 0, 40F, 182, 5, 182, 182);
-                    GuiComponent.blit(poseStack, x, y, 0, 0, 45F, percent, 5, 182, 182);
+                    event.getGuiGraphics().blit(BARS, x, y, 0, 40F, 182, 5, 182, 182);
+                    event.getGuiGraphics().blit(BARS, x, y, 0, 0, 45F, percent, 5, 182, 182);
                 }
             }
             if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type()) { event.setCanceled(true); }
@@ -131,6 +128,7 @@ public class ClientEvents {
                 WhereMagicHappens.Gui.renderOnTheWholeScreen(EDGES, 1.0F, 0, 0, 0.925F * allTR);
             }
         }
+
         @SubscribeEvent
         public static void renderLiving(RenderLivingEvent.Pre<LivingEntity, EntityModel<LivingEntity>> event) {
             assert Minecraft.getInstance().player != null;

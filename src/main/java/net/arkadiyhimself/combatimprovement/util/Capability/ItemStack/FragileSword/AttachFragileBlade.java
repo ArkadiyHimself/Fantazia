@@ -2,7 +2,7 @@ package net.arkadiyhimself.combatimprovement.util.Capability.ItemStack.FragileSw
 
 import dev._100media.capabilitysyncer.core.CapabilityAttacher;
 import net.arkadiyhimself.combatimprovement.CombatImprovement;
-import net.arkadiyhimself.combatimprovement.Registries.Items.Weapons.Melee.FragileBlade;
+import net.arkadiyhimself.combatimprovement.Items.Weapons.Melee.FragileBlade;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;

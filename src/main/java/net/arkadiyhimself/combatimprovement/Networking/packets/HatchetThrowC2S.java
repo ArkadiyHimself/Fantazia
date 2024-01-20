@@ -1,8 +1,7 @@
 package net.arkadiyhimself.combatimprovement.Networking.packets;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.combatimprovement.Registries.Entities.EntityTypeRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.Entities.HatchetEntity;
+import net.arkadiyhimself.combatimprovement.Entities.HatchetEntity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,16 +25,17 @@ public class HatchetThrowC2S implements IPacket {
         context.enqueueWork(() -> {
             if (context.getSender() != null) {
                 ServerPlayer player = context.getSender();
-                ServerLevel pLevel = player.getLevel();
+                ServerLevel pLevel = (ServerLevel) player.level();
                 stack.hurtAndBreak(1, player, (p_43388_) -> p_43388_.broadcastBreakEvent(player.getUsedItemHand()));
 
-                HatchetEntity hatchetEntity = new HatchetEntity(pLevel, player, stack);
+                HatchetEntity hatchetEntity = new HatchetEntity(pLevel, player, stack.copy());
 
-                hatchetEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), -20f, 2.5F, 1.0F);
+                hatchetEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F, 1.0F);
                 if (player.getAbilities().instabuild) {
                     hatchetEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
+                } else {
+                    hatchetEntity.pickup = AbstractArrow.Pickup.ALLOWED;
                 }
-                hatchetEntity.teleportTo(player.getX(), player.getY(), player.getZ());
                 pLevel.addFreshEntity(hatchetEntity);
                 pLevel.playSound(null, hatchetEntity, SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
                 player.awardStat(Stats.ITEM_USED.get(stack.getItem()));

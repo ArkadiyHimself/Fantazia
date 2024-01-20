@@ -1,0 +1,9 @@
+{
+  "order": 20,
+  "size": 2,
+  "icon": "combatimprovement:textures/slots/spellcaster",
+  "add_cosmetic": true,
+  "values": [
+    "combatimprovement:entangler", "combatimprovement:soul_eater", "combatimprovement:heart_of_sculk"
+  ]
+}

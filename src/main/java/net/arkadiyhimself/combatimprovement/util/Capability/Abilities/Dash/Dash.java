@@ -8,23 +8,25 @@ import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
 import net.arkadiyhimself.combatimprovement.Networking.packets.PlayAnimationS2C;
 import net.arkadiyhimself.combatimprovement.Networking.packets.PlaySoundForUIS2C;
-import net.arkadiyhimself.combatimprovement.Registries.MobEffects.effectsdostuff.Haemorrhage;
-import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.api.SoundRegistry;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DataSincyng.AttachDataSync;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Dash extends PlayerCapability {
     public Dash(Player player) {
@@ -54,13 +56,12 @@ public class Dash extends PlayerCapability {
         return tag;
     }
 
-    public static List<DamageSource> notStopDashing = new ArrayList<>(){{
-        add(DamageSource.STARVE);
-        add(DamageSource.DROWN);
-        add(DamageSource.IN_FIRE);
-        add(DamageSource.ON_FIRE);
-        add(DamageSource.LAVA);
-        add(Haemorrhage.BLEEDING);
+    public static List<ResourceKey<DamageType>> notStopDashing = new ArrayList<>() {{
+        add(DamageTypes.CRAMMING);
+        add(DamageTypes.DROWN);
+        add(DamageTypes.STARVE);
+        add(DamageTypes.GENERIC_KILL);
+        add(DamageTypes.IN_WALL);
     }};
     @Override
     public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
@@ -100,7 +101,7 @@ public class Dash extends PlayerCapability {
                 WhereMagicHappens.Abilities.createRandomParticleOnHumanoid(serverPlayer, getParticleType(), WhereMagicHappens.Abilities.ParticleMovement.CHASE_OPPOSITE);
             }
             if (dashLevel == 1 && player.horizontalCollision) {
-                player.hurt(DamageSource.FLY_INTO_WALL, 3f);
+                player.hurt(player.level().damageSources().flyIntoWall(), 3f);
                 NetworkHandler.sendToPlayer(new PlayAnimationS2C(""), serverPlayer);
             }
         }
@@ -123,7 +124,9 @@ public class Dash extends PlayerCapability {
         }
         if (dashRecharged && dashRecharge == 0) {
             dashRecharged = false;
-            NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(getRechargeSound()), serverPlayer);
+            if (!player.isCreative() && !player.isSpectator()) {
+                NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(getRechargeSound()), serverPlayer);
+            }
         }
         updateTracking();
     }
@@ -162,7 +165,7 @@ public class Dash extends PlayerCapability {
             dashRecharge = getMaxRecharge();
             startedDash = true;
             dashRecharged = true;
-            serverPlayer.level.playSound(null, serverPlayer.blockPosition(), getDashSound(), SoundSource.PLAYERS);
+            serverPlayer.level().playSound(null, serverPlayer.blockPosition(), getDashSound(), SoundSource.PLAYERS);
             NetworkHandler.sendToPlayer(new PlayAnimationS2C("dash.start"), serverPlayer);
             serverPlayer.resetFallDistance();
             if (dashLevel != 3) {
@@ -182,7 +185,7 @@ public class Dash extends PlayerCapability {
         updateTracking();
     }
     public void stopDash(ServerPlayer serverPlayer) {
-        if (!player.level.isClientSide) {
+        if (!player.level().isClientSide) {
             boolean stop = NewEvents.onDashEnd(serverPlayer);
             if (stop) {
                 dashDuration = 0;
@@ -204,13 +207,17 @@ public class Dash extends PlayerCapability {
         return MAX_DASH_DUR; }
     public boolean canDash() {
         return !isDashing() && dashRecharge == 0 && player.isEffectiveAi()
-                && dashLevel > 0 && (player.isOnGround() || canDashInAir)
+                && dashLevel > 0 && (player.onGround() || canDashInAir)
                 && !player.isSpectator() && AttachDataSync.getUnwrap(player).stamina >= stCost;
     }
     public void onHit(LivingAttackEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            if (dashLevel <= 1 && isDashing() && !notStopDashing.contains(event.getSource())) {
-                stopDash(serverPlayer);
+            if (dashLevel <= 1 && isDashing()) {
+                AtomicBoolean ret = new AtomicBoolean(false);
+                Dash.notStopDashing.forEach(source -> {
+                    if (event.getSource().is(source)) ret.set(true);
+                });
+                if (ret.get()) stopDash(serverPlayer);
             } else if (isDashing()) {
                 event.setCanceled(true);
             }

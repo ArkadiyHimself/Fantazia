@@ -5,13 +5,15 @@ import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
-import net.arkadiyhimself.combatimprovement.Registries.MobEffects.MobEffectRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.Particless.ParticleRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.api.MobEffectRegistry;
+import net.arkadiyhimself.combatimprovement.api.ParticleRegistry;
+import net.arkadiyhimself.combatimprovement.api.SoundRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -19,6 +21,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Barrier extends LivingEntityCapability {
     public Barrier(LivingEntity entity) {
@@ -48,12 +51,12 @@ public class Barrier extends LivingEntityCapability {
         barrierInitialAmount = nbt.contains("barrierInitialAmount") ? nbt.getFloat("barrierInitialAmount") : 0;
         barrierColor = nbt.contains("barrierColor") ? nbt.getFloat("barrierColor") : 0;
     }
-    public static List<DamageSource> unBlockable = new ArrayList<>() {{
-        add(DamageSource.CRAMMING);
-        add(DamageSource.DROWN);
-        add(DamageSource.STARVE);
-        add(DamageSource.OUT_OF_WORLD);
-        add(DamageSource.IN_WALL);
+    public static List<ResourceKey<DamageType>> unBlockable = new ArrayList<>() {{
+        add(DamageTypes.CRAMMING);
+        add(DamageTypes.DROWN);
+        add(DamageTypes.STARVE);
+        add(DamageTypes.GENERIC_KILL);
+        add(DamageTypes.IN_WALL);
     }};
     private final Random random = new Random();
     public LivingEntity livingEntity;
@@ -82,19 +85,21 @@ public class Barrier extends LivingEntityCapability {
         if (hasBarrier()) {
             barrierColor = 1;
             float dmg = event.getAmount();
-            if (Barrier.unBlockable.contains(event.getSource())) {
-                return;
-            }
+            AtomicBoolean ret = new AtomicBoolean(false);
+            Barrier.unBlockable.forEach(source -> {
+                if (event.getSource().is(source)) ret.set(true);
+            });
+            if (ret.get()) return;
             float newDmg = dmg - barrierAmount;
             boolean keep = newDmg < 0;
             if (keep) {
                 event.setCanceled(true);
                 barrierAmount -= dmg;
-                entity.level.playSound(null, entity.blockPosition(), SoundRegistry.BARRIER_HIT.get(), SoundSource.AMBIENT);
+                entity.level().playSound(null, entity.blockPosition(), SoundRegistry.BARRIER_HIT.get(), SoundSource.AMBIENT);
             } else {
                 event.setAmount(newDmg);
                 removeBarrier();
-                entity.level.playSound(null, entity.blockPosition(), SoundRegistry.BARRIER_BREAK.get(), SoundSource.AMBIENT);
+                entity.level().playSound(null, entity.blockPosition(), SoundRegistry.BARRIER_BREAK.get(), SoundSource.AMBIENT);
                 if (event.getEntity().hasEffect(MobEffectRegistry.BARRIER.get())) {
                     event.getEntity().removeEffect(MobEffectRegistry.BARRIER.get());
                 }

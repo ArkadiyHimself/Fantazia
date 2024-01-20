@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "tag": "minecraft:gold_ingod"
+    }
+  },
+  "pattern": [
+    "X",
+    "X#",
+    " #"
+  ],
+  "result": {
+    "item": "minecraft:gold_hatchet"
+  },
+  "show_notification": true
+}

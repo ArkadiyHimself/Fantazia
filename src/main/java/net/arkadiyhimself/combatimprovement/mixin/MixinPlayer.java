@@ -1,9 +1,8 @@
 package net.arkadiyhimself.combatimprovement.mixin;
 
-import net.arkadiyhimself.combatimprovement.Registries.MobEffects.MobEffectRegistry;
+import net.arkadiyhimself.combatimprovement.api.MobEffectRegistry;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DataSincyng.AttachDataSync;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;

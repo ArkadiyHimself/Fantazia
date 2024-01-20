@@ -1,26 +1,18 @@
 package net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DataSincyng;
 
-import com.google.common.collect.ImmutableMultimap;
 import dev._100media.capabilitysyncer.core.PlayerCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
-import net.arkadiyhimself.combatimprovement.Networking.packets.CapabilityUpdate.EntityMadeSoundS2C;
-import net.arkadiyhimself.combatimprovement.Registries.AttributeRegistry;
+import net.arkadiyhimself.combatimprovement.api.AttributeRegistry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.antlr.v4.runtime.misc.MultiMap;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DataSync extends PlayerCapability {
     public DataSync(Player player) { super(player); }
@@ -85,7 +77,7 @@ public class DataSync extends PlayerCapability {
     public final HashMap<LivingEntity, Integer> madeSound = new HashMap<>() {
     };
     public void tick() {
-        if (player.level.isClientSide()) {
+        if (player.level().isClientSide()) {
             madeSound.forEach((livingEntity, integer) -> {
                 madeSound.replace(livingEntity, Math.max(0, integer - 1));
             });

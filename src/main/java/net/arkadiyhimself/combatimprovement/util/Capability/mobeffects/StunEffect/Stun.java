@@ -4,11 +4,12 @@ import dev._100media.capabilitysyncer.core.LivingEntityCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
-import net.arkadiyhimself.combatimprovement.Registries.AttributeRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.MobEffects.MobEffectRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.api.AttributeRegistry;
+import net.arkadiyhimself.combatimprovement.api.MobEffectRegistry;
+import net.arkadiyhimself.combatimprovement.api.SoundRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -89,7 +90,7 @@ public class Stun extends LivingEntityCapability {
     private void startStun() {
         decayDelay = 0;
         stunPoints = 0;
-        entity.level.playSound(null, entity.blockPosition(), SoundRegistry.ATTACK_STUNNED.get(), SoundSource.AMBIENT);
+        entity.level().playSound(null, entity.blockPosition(), SoundRegistry.ATTACK_STUNNED.get(), SoundSource.AMBIENT);
         addStun(STUN_DURATION_FROM_HITS);
     }
     private void addStun(int duration) {
@@ -137,11 +138,11 @@ public class Stun extends LivingEntityCapability {
                 }
             }
             int dur;
-            if (source.isExplosion()) {
+            if (source.is(DamageTypeTags.IS_EXPLOSION)) {
                 dur = (int) Math.max(premStun, amount * 5);
                 addStun(dur);
             }
-            if (source.isFall()) {
+            if (source.is(DamageTypeTags.IS_FALL)) {
                 dur = (int) Math.max(premStun, amount * 5 / Math.max(1, victim.getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(Enchantments.FALL_PROTECTION)));
                 addStun(dur);
             }

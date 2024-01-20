@@ -52,12 +52,12 @@ public class DJump extends PlayerCapability {
             justJumped = false;
         }
         if (!canDJump) {
-            canDJump = player.isOnGround();
+            canDJump = player.onGround();
         }
         updateTracking();
     }
     public boolean canDJump() {
-        return !justJumped && canDJump && !player.isOnGround() && !player.isFallFlying()
+        return !justJumped && canDJump && !player.onGround() && !player.isFallFlying()
                 && !player.hasEffect(MobEffects.LEVITATION) && !player.hasEffect(MobEffects.SLOW_FALLING);
     }
 }

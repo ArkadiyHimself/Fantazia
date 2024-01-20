@@ -1,7 +1,7 @@
 package net.arkadiyhimself.combatimprovement.Networking.packets.KeyInputC2S;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.combatimprovement.Registries.Items.Weapons.Melee.MeleeWeaponItem;
+import net.arkadiyhimself.combatimprovement.Items.Weapons.Melee.MeleeWeaponItem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;

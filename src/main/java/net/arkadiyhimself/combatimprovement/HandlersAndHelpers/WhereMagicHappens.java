@@ -13,11 +13,10 @@ import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.NewEvents.NewEven
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
 import net.arkadiyhimself.combatimprovement.Networking.packets.CapabilityUpdate.EntityMadeSoundS2C;
 import net.arkadiyhimself.combatimprovement.Networking.packets.PlaySoundForUIS2C;
-import net.arkadiyhimself.combatimprovement.Registries.Items.ItemRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.Items.MagicCasters.ActiveAndTargeted.SculkHeart;
-import net.arkadiyhimself.combatimprovement.Registries.Items.MagicCasters.Passive.PassiveCasters;
-import net.arkadiyhimself.combatimprovement.Registries.MobEffects.MobEffectRegistry;
-import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.api.ItemRegistry;
+import net.arkadiyhimself.combatimprovement.Items.MagicCasters.Passive.PassiveCasters;
+import net.arkadiyhimself.combatimprovement.api.MobEffectRegistry;
+import net.arkadiyhimself.combatimprovement.api.SoundRegistry;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.Blocking.AttachBlocking;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.Dash.AttachDash;
 import net.arkadiyhimself.combatimprovement.util.Capability.Abilities.DataSincyng.AttachDataSync;
@@ -31,7 +30,6 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -69,18 +67,14 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fml.InterModComms;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
-import top.theillusivec4.curios.api.SlotTypeMessage;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
-import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class WhereMagicHappens {
@@ -178,13 +172,14 @@ public class WhereMagicHappens {
         }
     }
     public static class Abilities {
+        public static HashMap<LivingEntity, ItemStack> hatchetStuck = new HashMap<>();
         public enum TargetedResult {
             DEFAULT, REFLECTED, BLOCKED;
         }
         public static void listenVibration(ServerLevel pLevel, GameEvent.Context pContext, Vec3 pPos, ServerPlayer player) {
             if (!hasCurio(player, ItemRegistry.SCULK_HEART.get()) || pContext.sourceEntity() == null || !(pContext.sourceEntity() instanceof LivingEntity livingEntity)) return;
             Vec3 vec3 = player.getPosition(1f);
-            if (shouldPlayerListen(pLevel, new BlockPos(pPos), pContext, player) && !isOccluded(pLevel, pPos, vec3)) {
+            if (shouldPlayerListen(pLevel, BlockPos.containing(pPos), pContext, player) && !isOccluded(pLevel, pPos, vec3)) {
                AttachDataSync.get(player).ifPresent(dataSync -> {
                     if (dataSync.vibrationCooldown == 0) {
                         dataSync.vibrationCooldown = 40;
@@ -215,7 +210,10 @@ public class WhereMagicHappens {
             }
             return true;
         }
-
+        private static void dropXPOrb(Level level, double x, double y, double z, int xp) {
+            ExperienceOrb orb = new ExperienceOrb(level, x, y, z, xp);
+            level.addFreshEntity(orb);
+        }
         public static TargetedResult checkForAbilityBlocking(LivingEntity target) {
             if (target instanceof ServerPlayer player) {
                 if (hasActiveCurio(player, ItemRegistry.MYSTIC_MIRROR.get())) {
@@ -234,7 +232,7 @@ public class WhereMagicHappens {
                     createRandomParticleOnHumanoid(target, ParticleTypes.ENCHANT, ParticleMovement.FROM_CENTER);
                 }
                 target.removeEffect(MobEffectRegistry.REFLECT.get());
-                target.level.playSound(null, target.blockPosition(), SoundRegistry.REFLECT.get(), SoundSource.PLAYERS);
+                target.level().playSound(null, target.blockPosition(), SoundRegistry.REFLECT.get(), SoundSource.PLAYERS);
                 Minecraft.getInstance().level.playSound(null, target.blockPosition(), SoundRegistry.REFLECT.get(), SoundSource.PLAYERS);
                 if (target instanceof ServerPlayer serverPlayer) {
                     NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(SoundRegistry.REFLECT.get()), serverPlayer);
@@ -246,7 +244,7 @@ public class WhereMagicHappens {
                     createRandomParticleOnHumanoid(target, ParticleTypes.ENCHANT, ParticleMovement.FROM_CENTER);
                 }
                 target.removeEffect(MobEffectRegistry.DEFLECT.get());
-                target.level.playSound(null, target.blockPosition(), SoundRegistry.DEFLECT.get(), SoundSource.PLAYERS);
+                target.level().playSound(null, target.blockPosition(), SoundRegistry.DEFLECT.get(), SoundSource.PLAYERS);
                 Minecraft.getInstance().level.playSound(null, target.blockPosition(), SoundRegistry.REFLECT.get(), SoundSource.PLAYERS);
                 if (target instanceof ServerPlayer serverPlayer) {
                     NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(SoundRegistry.DEFLECT.get()), serverPlayer);
@@ -262,15 +260,15 @@ public class WhereMagicHappens {
 
             for(int i = 1; i < Mth.floor(vec31.length()) + 7; ++i) {
                 Vec3 vec33 = vec3.add(vec32.scale(i));
-                if (caster.level instanceof ServerLevel serverLevel) {
+                if (caster.level() instanceof ServerLevel serverLevel) {
                     serverLevel.sendParticles(type, vec33.x, vec33.y, vec33.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
                 }
             }
         }
         public static void dropExperience(LivingEntity entity, float multiplier) {
-            if (entity.level instanceof ServerLevel) {
+            if (entity.level() instanceof ServerLevel) {
                 int reward = (int) (entity.getExperienceReward() * multiplier);
-                ExperienceOrb.award((ServerLevel)entity.level, entity.position(), reward);
+                ExperienceOrb.award((ServerLevel)entity.level(), entity.position(), reward);
             }
         }
         public static void addEffectWithoutParticles(LivingEntity entity, MobEffect effect, int duration, int level) {
@@ -297,31 +295,19 @@ public class WhereMagicHappens {
             return hasCurio(player, curio) && player.getCooldowns().isOnCooldown(curio);
         }
         public static boolean hasCurio(final LivingEntity entity, final Item curio) {
-            final Optional<ImmutableTriple<String, Integer, ItemStack>> data = CuriosApi.getCuriosHelper().findEquippedCurio(curio, entity);
-            return data.isPresent();
+            AtomicBoolean present = new AtomicBoolean(false);
+            CuriosApi.getCuriosInventory(entity).ifPresent(inventory -> {
+                List<SlotResult> slots = inventory.findCurios(curio);
+                if (!slots.isEmpty()) present.set(true);
+            });
+            return present.get();
         }
         public static List<SlotResult> findAllCurios(LivingEntity entity, String id) {
             List<SlotResult> result = new ArrayList<>();
-            Set<String> ids = new HashSet<>(List.of(id));
-            CuriosApi.getCuriosHelper().getCuriosHandler(entity).ifPresent(handler -> {
-                Map<String, ICurioStacksHandler> curios = handler.getCurios();
-
-                for (String ident : curios.keySet()) {
-
-                    if (ids.contains(ident)) {
-                        ICurioStacksHandler stacksHandler = curios.get(ident);
-                        IDynamicStackHandler stackHandler = stacksHandler.getStacks();
-
-                        for (int i = 0; i < stackHandler.getSlots(); i++) {
-                            ItemStack stack = stackHandler.getStackInSlot(i);
-
-                            NonNullList<Boolean> renderStates = stacksHandler.getRenders();
-                            result.add(new SlotResult(new SlotContext(ident, entity, i, false,
-                                    renderStates.size() > i && renderStates.get(i)), stack));
-                        }
-                    }
-                }
-            });
+            if (CuriosApi.getCuriosInventory(entity).isPresent()) {
+                ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
+                result = handler.findCurios(id);
+            }
             return result;
         }
         public static List<Double> calculateDashHorizontalVelocity(LivingEntity entity, double velocity) {
@@ -364,7 +350,7 @@ public class WhereMagicHappens {
             int m = 0;
             for (int i = initDuration; i > 0; i--) {
                 Vec3 finalPos = new Vec3(x0 + dx / multiplier * i, player.getY() + 1,z0 + dz / multiplier * i);
-                if (player.level.getBlockState(new BlockPos(finalPos)).getBlock() instanceof AirBlock) {
+                if (player.level().getBlockState(BlockPos.containing(finalPos)).getBlock() instanceof AirBlock) {
                     m = i;
                     break;
                 }
@@ -397,7 +383,7 @@ public class WhereMagicHappens {
             }
             boolean doJump = NewEvents.onDoubleJump(serverPlayer);
             if (doJump) {
-                serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS);
+                serverPlayer.level().playSound(null, serverPlayer.blockPosition(), SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS);
                 Vec3 vec3 = serverPlayer.getDeltaMovement();
                 serverPlayer.setDeltaMovement(vec3.x, 0.64 + serverPlayer.getJumpBoostPower(), vec3.z);
                 serverPlayer.fallDistance = -2f;
@@ -410,7 +396,7 @@ public class WhereMagicHappens {
 
             for (int distance = 1; distance < maxDist; ++distance) {
                 head = head.add(new Vector3(player.getLookAngle()).multiply(distance)).add(0.0, 0.5, 0.0);
-                List<LivingEntity> list = player.level.getEntitiesOfClass(LivingEntity.class, new AABB(head.x - range, head.y - range, head.z - range, head.x + range, head.y + range, head.z + range));
+                List<LivingEntity> list = player.level().getEntitiesOfClass(LivingEntity.class, new AABB(head.x - range, head.y - range, head.z - range, head.x + range, head.y + range, head.z + range));
                 list.removeIf(entity -> (entity == player || (!player.hasLineOfSight(entity) && !(seeThruWalls && Minecraft.getInstance().shouldEntityAppearGlowing(entity)))));
                 entities.addAll(list);
             }
@@ -549,6 +535,7 @@ public class WhereMagicHappens {
 
         }
         public static void registerCurio(final String identifier, final int slots, final boolean isHidden, @Nullable final ResourceLocation icon) {
+            /*
             final SlotTypeMessage.Builder message = new SlotTypeMessage.Builder(identifier);
 
             message.size(slots);
@@ -562,6 +549,7 @@ public class WhereMagicHappens {
             }
 
             InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> message.build());
+             */
         }
         public static void registerCurioItem() {
 

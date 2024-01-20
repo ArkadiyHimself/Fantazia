@@ -8,7 +8,9 @@ import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.NewEvents.NewEven
 import net.arkadiyhimself.combatimprovement.HandlersAndHelpers.WhereMagicHappens;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
 import net.arkadiyhimself.combatimprovement.Networking.packets.PlayAnimationS2C;
-import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.api.DamageTypeRegistry;
+import net.arkadiyhimself.combatimprovement.api.SoundRegistry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -22,6 +24,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class Blocking extends PlayerCapability {
+    public final DamageSource PARRY = new DamageSource(player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypeRegistry.PARRY), player);
     public Blocking(Player player) { super(player); }
 
     @Override
@@ -83,8 +86,8 @@ public class Blocking extends PlayerCapability {
         blockedTime = Math.max(0, blockedTime - 1);
         blockCooldown = Math.max(0, blockCooldown - 1);
         if (justParried && parryDMGdelay == 0) {
-            if (attacker != null && serverPlayer.position().distanceTo(attacker.position()) <= serverPlayer.getAttribute(ForgeMod.ATTACK_RANGE.get()).getValue()) {
-                attacker.hurt(DamageSource.playerAttack(serverPlayer), dmgParry);
+            if (attacker != null && serverPlayer.position().distanceTo(attacker.position()) <= serverPlayer.getAttribute(ForgeMod.ENTITY_REACH.get()).getValue()) {
+                attacker.hurt(PARRY, dmgParry);
             }
             justParried = false;
             blockCooldown = 0;
@@ -108,7 +111,7 @@ public class Blocking extends PlayerCapability {
             block = 0;
             blockAnim = 0;
             postEndEvent = false;
-            serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.BLOCKED.get(), SoundSource.PLAYERS);
+            serverPlayer.level().playSound(null, serverPlayer.blockPosition(), SoundRegistry.BLOCKED.get(), SoundSource.PLAYERS);
             NetworkHandler.sendToPlayer(new PlayAnimationS2C("parry"), serverPlayer);
         }
         return !parried.isCanceled();
@@ -122,7 +125,7 @@ public class Blocking extends PlayerCapability {
             block = 0;
             blockAnim = 0;
             postEndEvent = false;
-            serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.BLOCKED.get(), SoundSource.PLAYERS);
+            serverPlayer.level().playSound(null, serverPlayer.blockPosition(), SoundRegistry.BLOCKED.get(), SoundSource.PLAYERS);
         }
         return blocked;
     }

@@ -4,15 +4,20 @@ import dev._100media.capabilitysyncer.core.LivingEntityCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.arkadiyhimself.combatimprovement.Networking.NetworkHandler;
-import net.arkadiyhimself.combatimprovement.Registries.MobEffects.MobEffectRegistry;
+import net.arkadiyhimself.combatimprovement.api.MobEffectRegistry;
+import net.arkadiyhimself.combatimprovement.util.Capability.mobeffects.BarrierEffect.Barrier;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LayeredBarrier extends LivingEntityCapability {
     public LayeredBarrier(LivingEntity entity) {
@@ -39,12 +44,12 @@ public class LayeredBarrier extends LivingEntityCapability {
         this.layers = nbt.contains("layers") ? nbt.getInt("layers") : 0;
         this.color = nbt.contains("color") ? nbt.getFloat("color") : 0;
     }
-    public static List<DamageSource> unBlockable = new ArrayList<>() {{
-        add(DamageSource.CRAMMING);
-        add(DamageSource.DROWN);
-        add(DamageSource.STARVE);
-        add(DamageSource.OUT_OF_WORLD);
-        add(DamageSource.IN_WALL);
+    public static List<ResourceKey<DamageType>> unBlockable = new ArrayList<>() {{
+        add(DamageTypes.CRAMMING);
+        add(DamageTypes.DROWN);
+        add(DamageTypes.STARVE);
+        add(DamageTypes.GENERIC_KILL);
+        add(DamageTypes.IN_WALL);
     }};
     public int layers;
     public float color;
@@ -64,7 +69,11 @@ public class LayeredBarrier extends LivingEntityCapability {
         updateTracking();
     }
     public void onHit(LivingHurtEvent event) {
-        if (unBlockable.contains(event.getSource())) { return; }
+        AtomicBoolean ret = new AtomicBoolean(false);
+        LayeredBarrier.unBlockable.forEach(source -> {
+            if (event.getSource().is(source)) ret.set(true);
+        });
+        if (ret.get()) return;
         if (layers > 0) {
             color = 1f;
             event.setCanceled(true);

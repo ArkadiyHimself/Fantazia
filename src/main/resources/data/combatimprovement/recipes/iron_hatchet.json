@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "X": {
+      "tag": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "X",
+    "X#",
+    " #"
+  ],
+  "result": {
+    "item": "minecraft:iron_hatchet"
+  },
+  "show_notification": true
+}

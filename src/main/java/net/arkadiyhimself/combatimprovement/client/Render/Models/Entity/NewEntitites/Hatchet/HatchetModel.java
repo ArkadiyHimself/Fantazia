@@ -1,45 +1,51 @@
 package net.arkadiyhimself.combatimprovement.client.Render.Models.Entity.NewEntitites.Hatchet;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.arkadiyhimself.combatimprovement.CombatImprovement;
-import net.arkadiyhimself.combatimprovement.Registries.Entities.HatchetEntity;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Tiers;
-import software.bernie.geckolib.model.GeoModel;
+import net.minecraft.world.entity.Entity;
 
-public class HatchetModel extends GeoModel<HatchetEntity> {
-    public HatchetModel() {
-    }
+public class HatchetModel<T extends Entity> extends EntityModel<T> {
+	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(CombatImprovement.MODID, "hatchet"), "main");
+	private final ModelPart hatchet;
+	public HatchetModel(ModelPart root) {
+		this.hatchet = root.getChild("hatchet");
+	}
 
-    @Override
-    public ResourceLocation getModelResource(HatchetEntity animatable) {
-        return new ResourceLocation(CombatImprovement.MODID, "geo/hatchet.geo.json");
-    }
-    @Override
-    public ResourceLocation getTextureResource(HatchetEntity animatable) {
-        if (animatable.hatchetItem == null || !(animatable.hatchetItem.getItem() instanceof TieredItem item)) {
-            return HatchetRenderer.WOODEN;
-        }
-        Tier tier = item.getTier();
-        ResourceLocation res;
-        if (tier == Tiers.STONE) {
-            res = HatchetRenderer.STONE;
-        } else if (tier == Tiers.IRON) {
-            res = HatchetRenderer.IRON;
-        } else if (tier == Tiers.GOLD) {
-            res = HatchetRenderer.GOLD;
-        } else if (tier == Tiers.DIAMOND) {
-            res = HatchetRenderer.DIAMOND;
-        } else if (tier == Tiers.NETHERITE) {
-            res = HatchetRenderer.NETHERITE;
-        } else {
-            return HatchetRenderer.WOODEN;
-        }
-        return res;
-    }
-    @Override
-    public ResourceLocation getAnimationResource(HatchetEntity animatable) {
-        return new ResourceLocation(CombatImprovement.MODID, "animations/hatchet.json");
-    }
+	public static LayerDefinition createBodyLayer() {
+		MeshDefinition meshdefinition = new MeshDefinition();
+		PartDefinition partdefinition = meshdefinition.getRoot();
+
+		PartDefinition hatchet = partdefinition.addOrReplaceChild("hatchet", CubeListBuilder.create(), PartPose.offsetAndRotation(3.0F, 6.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
+
+		PartDefinition handle = hatchet.addOrReplaceChild("handle", CubeListBuilder.create().texOffs(6, 16).addBox(-6.0F, 0.0F, 6.0F, 1.0F, 9.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(19, 7).addBox(-6.0F, -5.0F, 8.0F, 1.0F, 8.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(20, 0).addBox(-6.0F, -5.0F, 7.0F, 1.0F, 5.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(20, 20).addBox(-6.0F, -10.0F, 7.0F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(6.0F, 1.0F, -10.0F));
+
+		PartDefinition blade = hatchet.addOrReplaceChild("blade", CubeListBuilder.create().texOffs(10, 0).addBox(2.0F, -1.0F, -2.0F, 1.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
+				.texOffs(12, 16).addBox(1.0F, -1.0F, -1.0F, 3.0F, 4.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(10, 0).addBox(2.0F, 0.0F, -3.0F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(8, 8).addBox(1.0F, -2.0F, 2.0F, 3.0F, 6.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(0, 0).addBox(1.0F, -2.0F, 4.0F, 3.0F, 8.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(0, 10).addBox(2.0F, -2.0F, 6.0F, 1.0F, 9.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(0, 21).addBox(2.0F, -2.0F, 8.0F, 1.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.0F, -7.0F, -2.0F));
+
+		return LayerDefinition.create(meshdefinition, 32, 32);
+	}
+
+	@Override
+	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {}
+
+	@Override
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		hatchet.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
 }

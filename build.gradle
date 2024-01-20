@@ -24,7 +24,7 @@ mixin {
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'parchment', version: '2023.06.25-1.19.3'
+    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
     runs {
         client {
             workingDirectory project.file('run')
@@ -132,7 +132,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     shade fg.deobf("dev._100media.capabilitysyncer:capabilitysyncer:${capabilitysyncer_version}")
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19.3:4.0.6')
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${gecko_lib_version}")
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_anim}")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")

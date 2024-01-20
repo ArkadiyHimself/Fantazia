@@ -13,25 +13,25 @@
 		},
 		{
 			"predicate": {
-				"combatimprovement:dmg": 1.0
+				"combatimprovement:dmg": 0.2
 			},
 			"model": "combatimprovement:item/fragile_blade/fragile_blade1"
 		},
 		{
 			"predicate": {
-				"combatimprovement:dmg": 2.0
+				"combatimprovement:dmg": 0.4
 			},
 			"model": "combatimprovement:item/fragile_blade/fragile_blade2"
 		},
 		{
 			"predicate": {
-				"combatimprovement:dmg": 3.0
+				"combatimprovement:dmg": 0.6
 			},
 			"model": "combatimprovement:item/fragile_blade/fragile_blade3"
 		},
 		{
 			"predicate": {
-				"combatimprovement:dmg": 4.0
+				"combatimprovement:dmg": 0.8
 			},
 			"model": "combatimprovement:item/fragile_blade/fragile_blade4"
 		}

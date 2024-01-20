@@ -1,7 +1,7 @@
 package net.arkadiyhimself.combatimprovement.util.Capability.ItemStack.FragileSword;
 
 import dev._100media.capabilitysyncer.core.ItemStackCapability;
-import net.arkadiyhimself.combatimprovement.Registries.SoundRegistry;
+import net.arkadiyhimself.combatimprovement.api.SoundRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
