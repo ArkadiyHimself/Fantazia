@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "base": {
+    "item": "fantazia:diamond_hatchet"
+  },
+  "result": {
+    "item": "fantazia:netherite_hatchet"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

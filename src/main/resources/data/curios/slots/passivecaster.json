@@ -1,9 +1,0 @@
-{
-  "order": 20,
-  "size": 2,
-  "icon": "combatimprovement:textures/slots/passivecaster",
-  "add_cosmetic": true,
-  "values": [
-    "combatimprovement:mystic_mirror"
-  ]
-}

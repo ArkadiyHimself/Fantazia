@@ -1,0 +1,6 @@
+{
+	"parent" : "minecraft:builtin/entity",
+	"textures": {
+		"layer0": "fantazia:item/weapons/fragile_blade0"
+	}
+}

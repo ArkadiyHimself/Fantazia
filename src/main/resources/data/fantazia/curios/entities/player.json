@@ -1,0 +1,4 @@
+{
+  "entities" : ["minecraft:player", "player", "minecraft:armor_stand"],
+  "slots" : ["spellcaster", "passivecaster", "dashstone"]
+}

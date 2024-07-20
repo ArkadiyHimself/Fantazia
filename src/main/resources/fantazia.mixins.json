@@ -1,0 +1,30 @@
+{
+  "required": true,
+  "package": "net.arkadiyhimself.fantazia.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "${mod_id}.refmap.json",
+  "mixins": [
+    "MixinEntity",
+    "MixinFoodData",
+    "MixinKeyMapping",
+    "MixinLivingEntity",
+    "MixinMagmaCube",
+    "MixinMinecraft",
+    "MixinMob",
+    "MixinMobEffect",
+    "MixinMouseHandler",
+    "MixinPlayer",
+    "MixinSlime",
+    "MixinVibrationUser"
+  ],
+  "client": [
+    "LivingEntityRendererAccessor",
+    "MixinEffectScreenRenderer",
+    "MixinGameRenderer",
+    "MixinLivingEntityRenderer",
+    "MixinLocalPlayer",
+    "MixinParticle",
+    "MixinWolfRenderer"
+  ],
+  "minVersion": "0.8"
+}

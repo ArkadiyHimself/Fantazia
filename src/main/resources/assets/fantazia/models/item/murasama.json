@@ -1,0 +1,18 @@
+{
+    "parent" : "minecraft:item/handheld",
+    "loader" : "forge:separate_transforms",
+    "base" : {
+        "parent" : "fantazia:item/murasama/murasama_model"
+    },
+    "perspectives" : {
+        "gui" : {
+            "parent" : "fantazia:item/murasama/murasama_gui"
+        },
+        "ground" : {
+            "parent" : "fantazia:item/murasama/murasama_gui"
+        },
+        "fixed" : {
+            "parent" : "fantazia:item/murasama/murasama_gui"
+        }
+    }
+}

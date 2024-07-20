@@ -17,9 +17,9 @@ archivesBaseName = mod_id
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 mixin {
-    add sourceSets.main, "combatimprovement.refmap.json"
+    add sourceSets.main, "fantazia.refmap.json"
 
-    config "combatimprovement.mixins.json"
+    config "fantazia.mixins.json"
 }
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
@@ -30,13 +30,13 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'combatimprovement'
+            property 'forge.enabledGameTestNamespaces', 'fantazia'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
-                combatimprovement {
+                fantazia {
                     source sourceSets.main
                 }
             }
@@ -49,11 +49,11 @@ minecraft {
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'combatimprovement'
+            property 'forge.enabledGameTestNamespaces', 'fantazia'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
-                combatimprovement {
+                fantazia {
                     source sourceSets.main
                 }
             }
@@ -65,10 +65,10 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', 'combatimprovement'
+            property 'forge.enabledGameTestNamespaces', 'fantazia'
 
             mods {
-                combatimprovement {
+                fantazia {
                     source sourceSets.main
                 }
             }
@@ -81,9 +81,9 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'combatimprovement', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'fantazia', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
             mods {
-                combatimprovement {
+                fantazia {
                     source sourceSets.main
                 }
             }
@@ -93,7 +93,7 @@ minecraft {
 
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
-def resourceTargets = ['META-INF/mods.toml', 'pack.mcmeta', "${mod_id}.mixins.json".toString()]
+
 def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
 def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version,
                          mod_authors: mod_authors, mod_description: mod_description,
