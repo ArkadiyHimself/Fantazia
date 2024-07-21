@@ -5,40 +5,38 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.HandlersAndHelpers.WhereMagicHappens;
-import net.arkadiyhimself.fantazia.Items.MagicCasters.SpellCaster;
-import net.arkadiyhimself.fantazia.Items.Weapons.Melee.FragileBlade;
-import net.arkadiyhimself.fantazia.Items.Weapons.Melee.MeleeWeaponItem;
-import net.arkadiyhimself.fantazia.Items.Weapons.Melee.Murasama;
-import net.arkadiyhimself.fantazia.MobEffects.SimpleMobEffect;
-import net.arkadiyhimself.fantazia.Networking.NetworkHandler;
-import net.arkadiyhimself.fantazia.Networking.packets.CapabilityUpdate.*;
-import net.arkadiyhimself.fantazia.Networking.packets.KeyInputC2S.CastSpellC2S;
-import net.arkadiyhimself.fantazia.api.MobEffectRegistry;
-import net.arkadiyhimself.fantazia.api.SoundRegistry;
-import net.arkadiyhimself.fantazia.client.Gui.FTZGui;
-import net.arkadiyhimself.fantazia.client.Models.Entity.VanillaTweaks.RenderAboveTypes.DeafeningType;
-import net.arkadiyhimself.fantazia.client.Models.Entity.VanillaTweaks.RenderAboveTypes.DisarmedSwordType;
-import net.arkadiyhimself.fantazia.client.Models.Entity.VanillaTweaks.RenderAboveTypes.SnowCrystalType;
-import net.arkadiyhimself.fantazia.client.Models.Entity.VanillaTweaks.RenderAboveTypes.StunBarType;
-import net.arkadiyhimself.fantazia.client.Models.Entity.VanillaTweaks.RenderLayer.AbsoluteBarrier;
-import net.arkadiyhimself.fantazia.client.Models.Entity.VanillaTweaks.RenderLayer.BarrierLayer;
-import net.arkadiyhimself.fantazia.client.Models.Entity.VanillaTweaks.RenderLayer.LayeredBarrierLayer;
-import net.arkadiyhimself.fantazia.client.Models.Entity.VanillaTweaks.RenderLayer.MysticMirror;
-import net.arkadiyhimself.fantazia.client.Screen.TalentsScreen;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.Effects.*;
+import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.Items.casters.SpellCaster;
+import net.arkadiyhimself.fantazia.Items.weapons.Melee.FragileBlade;
+import net.arkadiyhimself.fantazia.Items.weapons.Melee.MeleeWeaponItem;
+import net.arkadiyhimself.fantazia.Items.weapons.Melee.Murasama;
+import net.arkadiyhimself.fantazia.networking.NetworkHandler;
+import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.*;
+import net.arkadiyhimself.fantazia.networking.packets.keyinput.CastSpellC2S;
+import net.arkadiyhimself.fantazia.registry.MobEffectRegistry;
+import net.arkadiyhimself.fantazia.registry.SoundRegistry;
+import net.arkadiyhimself.fantazia.client.gui.FTZGui;
+import net.arkadiyhimself.fantazia.client.models.Entity.VanillaTweaks.RenderAboveTypes.DeafeningType;
+import net.arkadiyhimself.fantazia.client.models.Entity.VanillaTweaks.RenderAboveTypes.DisarmedSwordType;
+import net.arkadiyhimself.fantazia.client.models.Entity.VanillaTweaks.RenderAboveTypes.SnowCrystalType;
+import net.arkadiyhimself.fantazia.client.models.Entity.VanillaTweaks.RenderAboveTypes.StunBarType;
+import net.arkadiyhimself.fantazia.client.models.Entity.VanillaTweaks.RenderLayer.AbsoluteBarrier;
+import net.arkadiyhimself.fantazia.client.models.Entity.VanillaTweaks.RenderLayer.BarrierLayer;
+import net.arkadiyhimself.fantazia.client.models.Entity.VanillaTweaks.RenderLayer.LayeredBarrierLayer;
+import net.arkadiyhimself.fantazia.client.models.Entity.VanillaTweaks.RenderLayer.MysticMirror;
+import net.arkadiyhimself.fantazia.client.screen.TalentsScreen;
 import net.arkadiyhimself.fantazia.mixin.LivingEntityRendererAccessor;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.Abilities.Dash;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.Abilities.DoubleJump;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.AbilityManager;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.CommonData.AttachCommonData;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.CommonData.CommonData;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.EffectGetter;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.EffectManager;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.Effects.BarrierEffect;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.Effects.StunEffect;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.TalentData.TalentData;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.TalentData.TalentGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.Dash;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.DoubleJump;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.AttachCommonData;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.CommonData;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.TalentData.TalentData;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.TalentData.TalentGetter;
 import net.arkadiyhimself.fantazia.util.KeyBinding;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
@@ -78,7 +76,8 @@ public class ClientEvents {
         add(SoundEvents.UI_TOAST_CHALLENGE_COMPLETE);
     }};
     public static ArrayList<RegistryObject<SoundEvent>> nonMutedMod = new ArrayList<>(){{
-        add(SoundRegistry.HEART_BEAT);
+        add(SoundRegistry.HEART_BEAT1);
+        add(SoundRegistry.HEART_BEAT2);
         add(SoundRegistry.DASH1_RECH);
         add(SoundRegistry.DASH2_RECH);
         add(SoundRegistry.DASH3_RECH);
@@ -243,91 +242,62 @@ public class ClientEvents {
             poseStack.mulPose(cameraOrientation);
             final int light = 0xF000F0;
             poseStack.scale(-globalScale, -globalScale, -globalScale);
-            if (stunEffect != null && stunEffect.renderBar()) {
+            if (stunEffect != null) {
                 y0ffset = -8;
-                VertexConsumer stunBar = buffers.getBuffer(StunBarType.BAR_TEXTURE_TYPE);
-
-                float stunPercent;
-                if (stunEffect.stunned()) {
-                    stunPercent = (float) stunEffect.getDur() / (float) stunEffect.getInitDur();
-                    int changingRed = stunEffect.getColor();
-
-                    // empty bar
-                    stunBar.vertex(poseStack.last().pose(), -16, -4, 0.003F).color(changingRed, 255, 255, 255).uv(0.0F, 0.5F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), -16, 0, 0.003F).color(changingRed, 255, 255, 255).uv(0.0F, 0.75F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), 16, 0, 0.003F).color(changingRed, 255, 255, 255).uv(1.0F, 0.75F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), 16, -4, 0.003F).color(changingRed, 255, 255, 255).uv(1.0F, 0.5F).uv2(light).endVertex();
-
-                    // filling
-                    stunBar.vertex(poseStack.last().pose(), -14, -4, 0.004F).color(255, 255, 255, 255).uv(0.0F, 0.75F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), -14, 0, 0.004F).color(255, 255, 255, 255).uv(0.0F, 1.0F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), -14 + 28 * stunPercent, 0, 0.004F).color(255, 255, 255, 255).uv(stunPercent, 1.0F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), -14 + 28 * stunPercent, -4, 0.004F).color(255, 255, 255, 255).uv(stunPercent, 0.75F).uv2(light).endVertex();
-                } else if (stunEffect.hasPoints()) {
-                    stunPercent = (float) stunEffect.getPoints() / (float) stunEffect.getMaxPoints();
-
-                    // empty bar
-                    stunBar.vertex(poseStack.last().pose(), -16, 0, 0.003F).color(255, 255, 255, 255).uv(0.0F, 0.0F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), -16, 4, 0.003F).color(255, 255, 255, 255).uv(0.0F, 0.25F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), 16, 4, 0.003F).color(255, 255, 255, 255).uv(1.0F, 0.25F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), 16, 0, 0.003F).color(255, 255, 255, 255).uv(1.0F, 0.0F).uv2(light).endVertex();
-
-                    // filling
-                    stunBar.vertex(poseStack.last().pose(), -14, 0, 0.004F).color(255, 255, 255, 255).uv(0.0F, 0.25F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), -14, 4, 0.004F).color(255, 255, 255, 255).uv(0.0F, 0.5F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), -14 + 28 * stunPercent, 4, 0.004F).color(255, 255, 255, 255).uv(stunPercent, 0.5F).uv2(light).endVertex();
-                    stunBar.vertex(poseStack.last().pose(), -14 + 28 * stunPercent, 0, 0.004F).color(255, 255, 255, 255).uv(stunPercent, 0.25F).uv2(light).endVertex();
-                }
+                StunBarType.render(stunEffect, poseStack, buffers);
             }
-            if (commonData != null) {
-                int tick = commonData.tick;
-                if (commonData.renderDisarm()) {
-                    int iconHeight = -35 + y0ffset;
-                    VertexConsumer disarmType = buffers.getBuffer(DisarmedSwordType.BROKEN_SWORD_TYPE);
-                    disarmType.vertex(poseStack.last().pose(), -10.0F, (float) iconHeight, 0).color(255, 255, 255, 255).uv(0.0F, 0.0F).uv2(light).endVertex();
-                    disarmType.vertex(poseStack.last().pose(), -10.0F, 20 + (float) iconHeight, 0).color(255, 255, 255, 255).uv(0.0F, 1.0F).uv2(light).endVertex();
-                    disarmType.vertex(poseStack.last().pose(), 10.0F, 20 + (float) iconHeight, 0).color(255, 255, 255, 255).uv(1.0F, 1.0F).uv2(light).endVertex();
-                    disarmType.vertex(poseStack.last().pose(), 10.0F, (float) iconHeight, 0).color(255, 255, 255, 255).uv(1.0F, 0.0F).uv2(light).endVertex();
-                } else if (commonData.renderFreeze()) {
-                    VertexConsumer freezeType = buffers.getBuffer(SnowCrystalType.SNOW_CRYSTAL_TYPE);
-                    if (commonData.freezeEffectPercent() > 0) {
-                        int alpha = (int) Math.ceil(commonData.freezeEffectPercent() * 255);
-                        freezeType.vertex(poseStack.last().pose(), -8, y0ffset, 0).color(255, 255, 255, alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
-                        freezeType.vertex(poseStack.last().pose(), -8, 16 + y0ffset, 0).color(255, 255, 255, alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
-                        freezeType.vertex(poseStack.last().pose(), 8, 16 + y0ffset, 0).color(255, 255, 255, alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
-                        freezeType.vertex(poseStack.last().pose(), 8, y0ffset, 0).color(255, 255, 255, alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
-                    } else {
-                        int freezePercent = (int) (entity.getPercentFrozen() * 235);
-                        freezeType.vertex(poseStack.last().pose(), -8, y0ffset, 0).color(255, 255, 255, 20 + freezePercent).uv(0.0F, 0.0F).uv2(light).endVertex();
-                        freezeType.vertex(poseStack.last().pose(), -8, 16 + y0ffset, 0).color(255, 255, 255, 20 + freezePercent).uv(0.0F, 1.0F).uv2(light).endVertex();
-                        freezeType.vertex(poseStack.last().pose(), 8, 16 + y0ffset, 0).color(255, 255, 255, 20 + freezePercent).uv(1.0F, 1.0F).uv2(light).endVertex();
-                        freezeType.vertex(poseStack.last().pose(), 8, y0ffset, 0).color(255, 255, 255, 20 + freezePercent).uv(1.0F, 0.0F).uv2(light).endVertex();
 
-                    }
-                } else if (commonData.isDeaf() && SimpleMobEffect.affectedByDeafening.contains(entity.getType())) {
-                    float alpha = 155 + 100f / commonData.jumpingTick;
-                    int innerFrames = tick % 14 + 1;
+            FrozenEffect frozenEffect = effectManager.takeEffect(FrozenEffect.class);
+            DisarmEffect disarmEffect = effectManager.takeEffect(DisarmEffect.class);
+            DeafenedEffect deafenedEffect = effectManager.takeEffect(DeafenedEffect.class);
 
-                    VertexConsumer innerWave = buffers.getBuffer(DeafeningType.SOUND_WAVE_TYPE(innerFrames, "inner"));
-                    innerWave.vertex(poseStack.last().pose(), -4.0F, -4, 0).color(255, 255, 255, (int) alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
-                    innerWave.vertex(poseStack.last().pose(), -4.0F, 4, 0).color(255, 255, 255, (int) alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
-                    innerWave.vertex(poseStack.last().pose(), 4.0F, 4, 0).color(255, 255, 255, (int) alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
-                    innerWave.vertex(poseStack.last().pose(), 4.0F, -4, 0).color(255, 255, 255, (int) alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
-
-                    int middleFrames = tick % 21 + 1;
-                    VertexConsumer middleWave = buffers.getBuffer(DeafeningType.SOUND_WAVE_TYPE(middleFrames, "middle"));
-                    middleWave.vertex(poseStack.last().pose(), -8.0F, -8, 0).color(255, 255, 255, (int) alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
-                    middleWave.vertex(poseStack.last().pose(), -8.0F, 8, 0).color(255, 255, 255, (int) alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
-                    middleWave.vertex(poseStack.last().pose(), 8.0F, 8, 0).color(255, 255, 255, (int) alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
-                    middleWave.vertex(poseStack.last().pose(), 8.0F, -8, 0).color(255, 255, 255, (int) alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
-
-                    int outerFrames = tick % 28 + 1;
-                    VertexConsumer outerWave = buffers.getBuffer(DeafeningType.SOUND_WAVE_TYPE(outerFrames, "outer"));
-                    outerWave.vertex(poseStack.last().pose(), -12.0F, -12, 0).color(255, 255, 255, (int) alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
-                    outerWave.vertex(poseStack.last().pose(), -12.0F, 12, 0).color(255, 255, 255, (int) alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
-                    outerWave.vertex(poseStack.last().pose(), 12.0F, 12, 0).color(255, 255, 255, (int) alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
-                    outerWave.vertex(poseStack.last().pose(), 12.0F, -12, 0).color(255, 255, 255, (int) alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
+            if (disarmEffect != null && disarmEffect.renderDisarm()) {
+                int iconHeight = -35 + y0ffset;
+                VertexConsumer disarmType = buffers.getBuffer(DisarmedSwordType.BROKEN_SWORD_TYPE);
+                disarmType.vertex(poseStack.last().pose(), -10.0F, (float) iconHeight, 0).color(255, 255, 255, 255).uv(0.0F, 0.0F).uv2(light).endVertex();
+                disarmType.vertex(poseStack.last().pose(), -10.0F, 20 + (float) iconHeight, 0).color(255, 255, 255, 255).uv(0.0F, 1.0F).uv2(light).endVertex();
+                disarmType.vertex(poseStack.last().pose(), 10.0F, 20 + (float) iconHeight, 0).color(255, 255, 255, 255).uv(1.0F, 1.0F).uv2(light).endVertex();
+                disarmType.vertex(poseStack.last().pose(), 10.0F, (float) iconHeight, 0).color(255, 255, 255, 255).uv(1.0F, 0.0F).uv2(light).endVertex();
+            } else if (frozenEffect != null && frozenEffect.renderFreeze()) {
+                VertexConsumer freezeType = buffers.getBuffer(SnowCrystalType.SNOW_CRYSTAL_TYPE);
+                int iconHeight = -35 + y0ffset;
+                if (frozenEffect.effectPercent() > 0) {
+                    int effectPercent = (int) Math.ceil(frozenEffect.effectPercent() * 255);
+                    freezeType.vertex(poseStack.last().pose(), -8, iconHeight, 0).color(255, 255, 255, effectPercent).uv(0.0F, 0.0F).uv2(light).endVertex();
+                    freezeType.vertex(poseStack.last().pose(), -8, 16 + iconHeight, 0).color(255, 255, 255, effectPercent).uv(0.0F, 1.0F).uv2(light).endVertex();
+                    freezeType.vertex(poseStack.last().pose(), 8, 16 + iconHeight, 0).color(255, 255, 255, effectPercent).uv(1.0F, 1.0F).uv2(light).endVertex();
+                    freezeType.vertex(poseStack.last().pose(), 8, iconHeight, 0).color(255, 255, 255, effectPercent).uv(1.0F, 0.0F).uv2(light).endVertex();
+                } else {
+                    int freezePercent = (int) (frozenEffect.freezePercent() * 235);
+                    freezeType.vertex(poseStack.last().pose(), -8, iconHeight, 0).color(255, 255, 255, 20 + freezePercent).uv(0.0F, 0.0F).uv2(light).endVertex();
+                    freezeType.vertex(poseStack.last().pose(), -8, 16 + iconHeight, 0).color(255, 255, 255, 20 + freezePercent).uv(0.0F, 1.0F).uv2(light).endVertex();
+                    freezeType.vertex(poseStack.last().pose(), 8, 16 + iconHeight, 0).color(255, 255, 255, 20 + freezePercent).uv(1.0F, 1.0F).uv2(light).endVertex();
+                    freezeType.vertex(poseStack.last().pose(), 8, iconHeight, 0).color(255, 255, 255, 20 + freezePercent).uv(1.0F, 0.0F).uv2(light).endVertex();
                 }
+            } else if (deafenedEffect != null && deafenedEffect.renderDeaf()) {
+                int tick = deafenedEffect.getAnimTick();
+                int alpha = 55 + deafenedEffect.getAlphaTick();
+                int innerFrames = tick % 14 + 1;
+
+                VertexConsumer innerWave = buffers.getBuffer(DeafeningType.SOUND_WAVE_TYPE(innerFrames, "inner"));
+                innerWave.vertex(poseStack.last().pose(), -4.0F, -4, 0).color(255, 255, 255, alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
+                innerWave.vertex(poseStack.last().pose(), -4.0F, 4, 0).color(255, 255, 255, alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
+                innerWave.vertex(poseStack.last().pose(), 4.0F, 4, 0).color(255, 255, 255, alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
+                innerWave.vertex(poseStack.last().pose(), 4.0F, -4, 0).color(255, 255, 255, alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
+
+                int middleFrames = tick % 21 + 1;
+                VertexConsumer middleWave = buffers.getBuffer(DeafeningType.SOUND_WAVE_TYPE(middleFrames, "middle"));
+                middleWave.vertex(poseStack.last().pose(), -8.0F, -8, 0).color(255, 255, 255, alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
+                middleWave.vertex(poseStack.last().pose(), -8.0F, 8, 0).color(255, 255, 255, alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
+                middleWave.vertex(poseStack.last().pose(), 8.0F, 8, 0).color(255, 255, 255, alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
+                middleWave.vertex(poseStack.last().pose(), 8.0F, -8, 0).color(255, 255, 255, alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
+
+                int outerFrames = tick % 28 + 1;
+                VertexConsumer outerWave = buffers.getBuffer(DeafeningType.SOUND_WAVE_TYPE(outerFrames, "outer"));
+                outerWave.vertex(poseStack.last().pose(), -12.0F, -12, 0).color(255, 255, 255, alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
+                outerWave.vertex(poseStack.last().pose(), -12.0F, 12, 0).color(255, 255, 255, alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
+                outerWave.vertex(poseStack.last().pose(), 12.0F, 12, 0).color(255, 255, 255, alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
+                outerWave.vertex(poseStack.last().pose(), 12.0F, -12, 0).color(255, 255, 255, alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
             }
             poseStack.popPose();
         }
@@ -435,7 +405,7 @@ public class ClientEvents {
         }
         @SubscribeEvent
         public static void playSound(PlaySoundEvent event) {
-            if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.DEAFENING.get())) {
+            if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.DEAFENED.get())) {
                 boolean cancel = false;
                 for (SoundEvent soundEvent : nonMuted) {
                     if (event.getName().equals(soundEvent.getLocation().getPath())) {

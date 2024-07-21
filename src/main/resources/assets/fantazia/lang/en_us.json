@@ -55,11 +55,11 @@
   "effect.fantazia.absolute_barrier.tooltip.2" : "It protects you from any kind",
   "effect.fantazia.absolute_barrier.tooltip.3" : "of damage unconditionally",
 
-  "effect.fantazia.deafening" : "§3§lDeafening",
-  "effect.fantazia.deafening.lines" : "3",
-  "effect.fantazia.deafening.tooltip.1" : "You are deaf",
-  "effect.fantazia.deafening.tooltip.2" : "You are incapable of hearing",
-  "effect.fantazia.deafening.tooltip.3" : "or detecting any sounds",
+  "effect.fantazia.deafened" : "§3§lDeafened",
+  "effect.fantazia.deafened.lines" : "3",
+  "effect.fantazia.deafened.tooltip.1" : "You are deaf",
+  "effect.fantazia.deafened.tooltip.2" : "You are incapable of hearing",
+  "effect.fantazia.deafened.tooltip.3" : "or detecting any sounds",
 
   "effect.fantazia.frozen" : "§b§lFrozen",
   "effect.fantazia.frozen.lines" : "4",
@@ -186,6 +186,7 @@
   "tooltip.fantazia.common.recharge" : "Recharge (in seconds): %1$s",
   "tooltip.fantazia.common.manacost" : "Mana required: %1$s",
   "tooltip.fantazia.common.range" : "Range: %1$s",
+  "tooltip.fantazia.common.cleanse_strength" : "Cleanse strength: %1$s",
   "tooltip.fantazia.common.cleanse" : "Cleanse required: %1$s",
 
   "tooltip.fantazia.common.attack_damage" : "Attack damage: %1$s",
@@ -272,7 +273,7 @@
   "ability.fantazia.entangle.passive.lines" : "3",
   "ability.fantazia.entangle.passive.1" : "§c * The wearer can not be healed by any means",
   "ability.fantazia.entangle.passive.2" : "§9 * The wearer can not be killed when their",
-  "ability.fantazia.entangle.passive.3" : "§9health is above 1",
+  "ability.fantazia.entangle.passive.3" : "§9   health is above 10%",
 
   "item.fantazia.soul_eater" : "§5§lThe Soul Eater",
   "ability.fantazia.devour.desc.lines" : "1",

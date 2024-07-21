@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.logging.log4j.core.jmx.Server;
 
 public class FullHealCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {

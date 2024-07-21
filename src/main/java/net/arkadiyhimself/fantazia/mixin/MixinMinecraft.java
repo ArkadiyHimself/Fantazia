@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.Entities.HatchetEntity;
-import net.arkadiyhimself.fantazia.HandlersAndHelpers.WhereMagicHappens;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.Abilities.RenderingValues;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.AbilityManager;
+import net.arkadiyhimself.fantazia.entities.HatchetEntity;
+import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.RenderingValues;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;

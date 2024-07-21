@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.HandlersAndHelpers.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;

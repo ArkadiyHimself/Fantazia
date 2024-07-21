@@ -1,12 +1,12 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.HandlersAndHelpers.CustomEvents.NewEvents;
-import net.arkadiyhimself.fantazia.HandlersAndHelpers.WhereMagicHappens;
-import net.arkadiyhimself.fantazia.api.DamageTypeRegistry;
-import net.arkadiyhimself.fantazia.api.MobEffectRegistry;
-import net.arkadiyhimself.fantazia.api.ParticleRegistry;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.CommonData.AttachCommonData;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.CommonData.CommonData;
+import net.arkadiyhimself.fantazia.events.custom.NewEvents;
+import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.registry.DamageTypeRegistry;
+import net.arkadiyhimself.fantazia.registry.MobEffectRegistry;
+import net.arkadiyhimself.fantazia.registry.ParticleRegistry;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.AttachCommonData;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.CommonData;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -33,8 +33,8 @@ public class MixinEntity {
                 float dmg = WhereMagicHappens.Abilities.calculateBleedingDMG(livingEntity, pPos.subtract(livingEntity.getPosition(1f)));
                 boolean flag = livingEntity.hurt(new DamageSource(livingEntity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypeRegistry.BLEEDING)), dmg);
                 if (flag) {
-                    int num = new Random().nextInt(0, ParticleRegistry.bloodParticles.size());
-                    WhereMagicHappens.Abilities.randomParticleOnModel(livingEntity, ParticleRegistry.bloodParticles.get(num).get(), WhereMagicHappens.Abilities.ParticleMovement.FALL);
+                    int num = new Random().nextInt(0, ParticleRegistry.BLOOD.size());
+                    WhereMagicHappens.Abilities.randomParticleOnModel(livingEntity, ParticleRegistry.BLOOD.get(num).get(), WhereMagicHappens.Abilities.ParticleMovement.FALL);
                 }
             }
         }

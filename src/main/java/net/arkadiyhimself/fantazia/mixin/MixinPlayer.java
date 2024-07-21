@@ -1,11 +1,11 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.DamageTypeRegistry;
-import net.arkadiyhimself.fantazia.api.MobEffectRegistry;
-import net.arkadiyhimself.fantazia.api.SoundRegistry;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.Abilities.StaminaData;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.AbilityManager;
+import net.arkadiyhimself.fantazia.registry.DamageTypeRegistry;
+import net.arkadiyhimself.fantazia.registry.MobEffectRegistry;
+import net.arkadiyhimself.fantazia.registry.SoundRegistry;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.StaminaData;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;

@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.arkadiyhimself.fantazia.api.DamageTypeRegistry;
+import net.arkadiyhimself.fantazia.registry.DamageTypeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.Entity;

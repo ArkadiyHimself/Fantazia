@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.HandlersAndHelpers.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.player.LocalPlayer;

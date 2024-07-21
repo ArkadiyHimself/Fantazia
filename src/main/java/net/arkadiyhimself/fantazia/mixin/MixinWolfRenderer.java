@@ -1,7 +1,8 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.util.Capability.Entity.CommonData.AttachCommonData;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.CommonData.CommonData;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.Effects.FuryEffect;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.Wolf;
@@ -17,10 +18,11 @@ public class MixinWolfRenderer {
     @Shadow @Final private static ResourceLocation WOLF_ANGRY_LOCATION;
     @Inject(at = @At("HEAD"), method = "getTextureLocation(Lnet/minecraft/world/entity/animal/Wolf;)Lnet/minecraft/resources/ResourceLocation;", cancellable = true)
     private void angry(Wolf pEntity, CallbackInfoReturnable<ResourceLocation> cir) {
-        CommonData data = AttachCommonData.getUnwrap(pEntity);
-        if (data != null && data.isFurious()) {
-            cir.setReturnValue(WOLF_ANGRY_LOCATION);
-        }
+        EffectManager effectManager = EffectGetter.getUnwrap(pEntity);
+        if (effectManager == null) return;
+        effectManager.getEffect(FuryEffect.class).ifPresent(furyEffect -> {
+            if (furyEffect.hasFury()) cir.setReturnValue(WOLF_ANGRY_LOCATION);
+        });
     }
 
 }

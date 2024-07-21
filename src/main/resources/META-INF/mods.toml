@@ -4,8 +4,8 @@ license="All rights reserved"
 [[mods]]
 modId="fantazia"
 version="${file.jarVersion}"
-displayName="Combat Improvement"
-logoFile="fantazia.png"
+displayName="Fantazia"
+logoFile="FTZ_logo.png"
 credits=""
 authors="ArkadiyHimself"
 description='''

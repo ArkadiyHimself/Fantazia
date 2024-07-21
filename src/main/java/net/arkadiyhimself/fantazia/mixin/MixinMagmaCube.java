@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.MobEffectRegistry;
+import net.arkadiyhimself.fantazia.registry.MobEffectRegistry;
 import net.minecraft.world.entity.monster.MagmaCube;
 import net.minecraft.world.entity.monster.Slime;
 import org.spongepowered.asm.mixin.Mixin;

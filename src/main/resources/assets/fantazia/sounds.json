@@ -1,9 +1,18 @@
 {
-  "fury_heartbeat": {
+  "fury_heartbeat1": {
     "subtitle" : "subtitles.fury_heartbeat",
     "sounds": [
       {
-        "name": "fantazia:fury_heartbeat",
+        "name": "fantazia:fury_heartbeat1",
+        "stream": false
+      }
+    ]
+  },
+  "fury_heartbeat2": {
+    "subtitle" : "subtitles.fury_heartbeat",
+    "sounds": [
+      {
+        "name": "fantazia:fury_heartbeat2",
         "stream": false
       }
     ]

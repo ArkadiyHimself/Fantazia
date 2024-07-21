@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.AdvancedMechanics.AdvancedHealingManager.AdvancedHealing;
-import net.arkadiyhimself.fantazia.AdvancedMechanics.AdvancedHealingManager.HealingSource;
-import net.arkadiyhimself.fantazia.AdvancedMechanics.AdvancedHealingManager.HealingTypes;
+import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
+import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
+import net.arkadiyhimself.fantazia.advanced.healing.HealingTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import org.spongepowered.asm.mixin.Mixin;

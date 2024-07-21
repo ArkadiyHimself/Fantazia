@@ -4,24 +4,26 @@ import com.mojang.logging.LogUtils;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
-import net.arkadiyhimself.fantazia.AdvancedMechanics.CleanseManager.CleanseStrength;
-import net.arkadiyhimself.fantazia.Networking.NetworkHandler;
-import net.arkadiyhimself.fantazia.Particless.Types.BarrierPiece;
-import net.arkadiyhimself.fantazia.Particless.Types.Blood;
-import net.arkadiyhimself.fantazia.Particless.Types.DoomedSouls;
-import net.arkadiyhimself.fantazia.Particless.Types.FallenSoul;
-import net.arkadiyhimself.fantazia.api.*;
-import net.arkadiyhimself.fantazia.client.Gui.FTZGui;
-import net.arkadiyhimself.fantazia.client.Models.Entity.NewEntitites.Hatchet.HatchetModel;
-import net.arkadiyhimself.fantazia.client.Models.Entity.NewEntitites.Hatchet.HatchetRenderer;
-import net.arkadiyhimself.fantazia.client.Models.Item.CustomItemRenderer;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.EffectGetter;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.TalentData.TalentGetter;
-import net.arkadiyhimself.fantazia.util.Capability.ItemStack.Common.AttachCommonItem;
-import net.arkadiyhimself.fantazia.util.Capability.ItemStack.FragileSword.AttachFragileBlade;
-import net.arkadiyhimself.fantazia.util.Capability.Level.LevelCapGetter;
-import net.arkadiyhimself.fantazia.util.Interfaces.IChangingIcon;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.DataGetter;
+import net.arkadiyhimself.fantazia.advanced.cleansing.CleanseStrength;
+import net.arkadiyhimself.fantazia.networking.NetworkHandler;
+import net.arkadiyhimself.fantazia.particless.BarrierPiece;
+import net.arkadiyhimself.fantazia.particless.Blood;
+import net.arkadiyhimself.fantazia.particless.DoomedSouls;
+import net.arkadiyhimself.fantazia.particless.FallenSoul;
+import net.arkadiyhimself.fantazia.registry.*;
+import net.arkadiyhimself.fantazia.client.gui.FTZGui;
+import net.arkadiyhimself.fantazia.client.models.Entity.NewEntitites.Hatchet.HatchetModel;
+import net.arkadiyhimself.fantazia.client.models.Entity.NewEntitites.Hatchet.HatchetRenderer;
+import net.arkadiyhimself.fantazia.client.models.Item.CustomItemRenderer;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.AttachCommonData;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.TalentData.TalentGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.itemstack.Common.AttachCommonItem;
+import net.arkadiyhimself.fantazia.advanced.capability.itemstack.FragileSword.AttachFragileBlade;
+import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.util.interfaces.IChangingIcon;
 import net.arkadiyhimself.fantazia.util.KeyBinding;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -52,6 +54,7 @@ import software.bernie.geckolib.GeckoLib;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Fantazia.MODID)
@@ -59,20 +62,21 @@ public class Fantazia
 {
     public static final String MODID = "fantazia";
     private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Random RANDOM = new Random();
+    public static final boolean DEVELOPER_MODE = true;
     public Fantazia()
     {
         GeckoLib.initialize();
         NetworkHandler.register();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-
         MinecraftForge.EVENT_BUS.register(this);
-
 
         // capabilities
         AbilityGetter.register();
         TalentGetter.register();
         EffectGetter.register();
+        DataGetter.register();
+        AttachCommonData.register();
 
         // item stack caps
         AttachFragileBlade.register();
@@ -135,8 +139,7 @@ public class Fantazia
         return new ResourceLocation(MODID, id);
     }
     public static ModelResourceLocation itemModelRes(String id) {
-        ModelResourceLocation model = new ModelResourceLocation(res(id), "inventory");
-        return model;
+        return new ModelResourceLocation(res(id), "inventory");
     }
 
     public void modelRegistry(ModelEvent.RegisterAdditional event) {

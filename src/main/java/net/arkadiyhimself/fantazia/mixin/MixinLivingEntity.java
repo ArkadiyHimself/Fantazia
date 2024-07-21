@@ -1,14 +1,13 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.HandlersAndHelpers.CustomEvents.NewEvents;
-import net.arkadiyhimself.fantazia.api.DamageTypeRegistry;
-import net.arkadiyhimself.fantazia.api.SoundRegistry;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.CommonData.AttachCommonData;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.CommonData.CommonData;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.EffectGetter;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.EffectManager;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.Effects.BarrierEffect;
-import net.arkadiyhimself.fantazia.util.Capability.Entity.EffectManager.Effects.LayeredBarrierEffect;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.Effects.BarrierEffect;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.Effects.HaemorrhageEffect;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.Effects.LayeredBarrierEffect;
+import net.arkadiyhimself.fantazia.events.custom.NewEvents;
+import net.arkadiyhimself.fantazia.registry.DamageTypeRegistry;
+import net.arkadiyhimself.fantazia.registry.SoundRegistry;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -28,10 +27,13 @@ public abstract class MixinLivingEntity {
         if (pSource != null) {
             if (pSource.is(DamageTypeRegistry.BLEEDING)) {
                 ci.cancel();
-                CommonData data = AttachCommonData.getUnwrap(entity);
-                if (data != null && data.makeBleedSound()) {
+                EffectManager effectManager = EffectGetter.getUnwrap(entity);
+                if (effectManager == null) return;
+                HaemorrhageEffect haemorrhageEffect = effectManager.takeEffect(HaemorrhageEffect.class);
+
+                if (haemorrhageEffect != null && haemorrhageEffect.makeSound()) {
                     entity.playSound(SoundRegistry.BLOODLOSS.get());
-                    data.onBleedSound();
+                    haemorrhageEffect.madeSound();
                 }
             }
         }
