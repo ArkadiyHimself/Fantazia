@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.arkadiyhimself.fantazia.registry.DamageTypeRegistry;
+import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +17,7 @@ public class MixinGameRenderer {
     private void bobHurt(PoseStack pPoseStack, float pPartialTicks, CallbackInfo ci) {
         Entity entity = Minecraft.getInstance().getCameraEntity();
         if (entity instanceof LivingEntity livingEntity) {
-            if (livingEntity.getLastDamageSource() != null && livingEntity.getLastDamageSource().is(DamageTypeRegistry.BLEEDING)) ci.cancel();
+            if (livingEntity.getLastDamageSource() != null && livingEntity.getLastDamageSource().is(FTZDamageTypes.BLEEDING)) ci.cancel();
         }
     }
 }

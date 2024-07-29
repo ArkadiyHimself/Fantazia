@@ -30,6 +30,7 @@ public class LevelCap extends GlobalLevelCapability {
     @Override
     public CompoundTag serializeNBT(boolean savingToDisk) {
         CompoundTag tag = new CompoundTag();
+        if (auraInstances.isEmpty()) return tag;
         tag.putInt("aura_instances", auraInstances.size());
         for (int i = 0; i < auraInstances.size(); i++) {
             BasicAura<?,?> aura = auraInstances.get(i).getAura();
@@ -42,20 +43,17 @@ public class LevelCap extends GlobalLevelCapability {
     }
     @Override
     public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
-        if (nbt.contains("aura_instances")) {
-            auraInstances.clear();
-            int auras = nbt.getInt("aura_instances");
-            for (int i = 0; i < auras; i++) {
-                String aura = "aura" + i;
-                String owner = "owner" + i;
-                if (nbt.contains(aura) && nbt.contains(owner) && this.level.isClientSide()) {
-                    ResourceLocation aura_ = new ResourceLocation(nbt.getString(aura));
-                    int owner_ = nbt.getInt(owner);
-                    Entity entity = this.level.getEntity(owner_);
-                    if (BasicAura.AURAS.containsKey(aura_) && entity != null) {
-                        auraInstances.add(new AuraInstance<>(entity, (BasicAura<Entity, Entity>) BasicAura.AURAS.get(aura_), this.level));
-                    }
-                }
+        auraInstances.clear();
+        if (!nbt.contains("aura_instances") || !this.level.isClientSide) return;
+        int auras = nbt.getInt("aura_instances");
+        for (int i = 0; i < auras; i++) {
+            String aura = "aura" + i;
+            String owner = "owner" + i;
+            if (nbt.contains(aura) && nbt.contains(owner)) {
+                ResourceLocation aura_ = new ResourceLocation(nbt.getString(aura));
+                int owner_ = nbt.getInt(owner);
+                Entity entity = this.level.getEntity(owner_);
+                if (BasicAura.AURAS.containsKey(aura_) && entity != null) auraInstances.add(new AuraInstance<>(entity, (BasicAura<Entity, Entity>) BasicAura.AURAS.get(aura_), this.level));
             }
         }
     }

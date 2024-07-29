@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.advanced.cleansing;
 
-import net.arkadiyhimself.fantazia.events.custom.NewEvents;
+import net.arkadiyhimself.fantazia.events.FTZEvents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,7 +14,7 @@ public class EffectCleansing {
     }
     public static boolean tryCleanse(LivingEntity livingEntity, Cleanse cleanse, MobEffect effect) {
         if (!livingEntity.hasEffect(effect)) return false;
-        boolean flag = NewEvents.ForgeExtenstion.onEffectCleanse(livingEntity, livingEntity.getEffect(effect), cleanse);
+        boolean flag = FTZEvents.ForgeExtenstion.onEffectCleanse(livingEntity, livingEntity.getEffect(effect), cleanse);
         if (!flag) return false;
         if (cleanse.isStrongEnough(CleanseStrength.getRequiredStrength(effect))) {
             livingEntity.removeEffect(effect);

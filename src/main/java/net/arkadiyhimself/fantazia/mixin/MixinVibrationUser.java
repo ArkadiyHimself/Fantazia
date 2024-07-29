@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.registry.MobEffectRegistry;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -23,14 +23,12 @@ public abstract class MixinVibrationUser implements VibrationSystem.User {
     }
     @Override
     public boolean canReceiveVibration(ServerLevel pLevel, BlockPos pPos, GameEvent pGameEvent, GameEvent.Context pContext) {
-        if (this.this$0.hasEffect(MobEffectRegistry.DEAFENED.get())) return false;
+        if (this.this$0.hasEffect(FTZMobEffects.DEAFENED)) return false;
         if (!this.this$0.isNoAi() && !this.this$0.isDeadOrDying() && !this.this$0.getBrain().hasMemoryValue(MemoryModuleType.VIBRATION_COOLDOWN) && !isDiggingOrEmerging() && pLevel.getWorldBorder().isWithinBounds(pPos)) {
             Entity entity = pContext.sourceEntity();
             if (entity instanceof LivingEntity) {
                 LivingEntity livingentity = (LivingEntity)entity;
-                if (!this.this$0.canTargetEntity(livingentity)) {
-                    return false;
-                }
+                if (!this.this$0.canTargetEntity(livingentity)) return false;
             }
 
             return true;

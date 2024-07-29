@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.util.interfaces;
 
-import net.arkadiyhimself.fantazia.advanced.capacity.AbilityProviding.Talent;
+import net.arkadiyhimself.fantazia.advanced.capacity.abilityproviding.Talent;
 
 public interface ITalentRequire {
     Talent required();

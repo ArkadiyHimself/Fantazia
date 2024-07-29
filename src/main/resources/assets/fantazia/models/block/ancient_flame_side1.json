@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:block/template_fire_side",
+  "render_type": "minecraft:cutout",
   "textures": {
-    "fire": "combatimprovement:block/ancient_flame_1"
+    "fire": "fantazia:block/ancient_flame_1"
   }
 }

@@ -4,16 +4,16 @@ import com.google.common.collect.ImmutableList;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleLevelCapabilityStatusPacket;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.DataGetter;
-import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.*;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.talent.TalentGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCapGetter;
 import net.arkadiyhimself.fantazia.networking.packets.*;
+import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.*;
 import net.arkadiyhimself.fantazia.networking.packets.keyinput.CastSpellC2S;
 import net.arkadiyhimself.fantazia.networking.packets.keyinput.WeaponAbilityC2S;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.AttachCommonData;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.TalentData.TalentGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCapGetter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkRegistry;
@@ -49,7 +49,6 @@ public class NetworkHandler {
                 // use new items
                 .add(WeaponAbilityC2S::register)
                 .add(CastSpellC2S::register)
-                .add(HatchetThrowC2S::register)
 
                 // play sound
                 .add(PlaySoundForUIS2C::register)
@@ -72,8 +71,7 @@ public class NetworkHandler {
         SimpleEntityCapabilityStatusPacket.registerRetriever(TalentGetter.TALENT_DATA_RL, TalentGetter::getUnwrap);
         SimpleEntityCapabilityStatusPacket.registerRetriever(EffectGetter.EFFECT_RL, EffectGetter::getUnwrap);
         SimpleEntityCapabilityStatusPacket.registerRetriever(DataGetter.DATA_RL, DataGetter::getUnwrap);
-
-        SimpleEntityCapabilityStatusPacket.registerRetriever(AttachCommonData.COMMON_DATA_SYNC_RL, AttachCommonData::getUnwrap);
+        SimpleEntityCapabilityStatusPacket.registerRetriever(FeatureGetter.FEATURE_RL, FeatureGetter::getUnwrap);
 
         // level cap
         SimpleLevelCapabilityStatusPacket.registerRetriever(LevelCapGetter.LEVEL_CAP_RL, LevelCapGetter::getLevelCap);

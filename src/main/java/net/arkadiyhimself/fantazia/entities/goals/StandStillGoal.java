@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.entities.goals;
 
-import net.arkadiyhimself.fantazia.registry.MobEffectRegistry;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
@@ -17,7 +17,7 @@ public class StandStillGoal extends Goal {
         return this.isBleeding();
     }
     public boolean isBleeding() {
-        return mob.hasEffect(MobEffectRegistry.HAEMORRHAGE.get());
+        return mob.hasEffect(FTZMobEffects.HAEMORRHAGE);
     }
     @Override
     public void start() {

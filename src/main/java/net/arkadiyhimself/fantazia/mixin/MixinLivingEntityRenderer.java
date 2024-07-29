@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectHelper;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinLivingEntityRenderer {
     @Inject(at = @At("HEAD"), method = "getOverlayCoords", cancellable = true)
     private static void preventTurningRed(LivingEntity pLivingEntity, float pU, CallbackInfoReturnable<Integer> cir) {
-        if (!WhereMagicHappens.Abilities.hurtRedColor(pLivingEntity)) {
+        if (!EffectHelper.hurtRedColor(pLivingEntity)) {
             cir.setReturnValue(655360);
         }
     }

@@ -1,10 +1,9 @@
 package net.arkadiyhimself.fantazia.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.events.custom.NewEvents;
-import net.arkadiyhimself.fantazia.util.library.SPHEREBOX;
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
 import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.util.library.SPHEREBOX;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -22,9 +21,8 @@ public class AuraInstance<T extends Entity, M extends Entity> {
     private final Level level;
     private Vec3 center;
     private final BasicAura<T,M> aura;
-    public final List<T> supposedlyAffected = Lists.newArrayList();
+    private final List<T> SUPPOSEDLY_INSIDE = Lists.newArrayList();
     private boolean removed = false;
-    public int partialTick = 20;
     public AuraInstance(M owner, BasicAura<T,M> aura, Level level) {
         this.level = level;
         this.owner = owner;
@@ -40,31 +38,28 @@ public class AuraInstance<T extends Entity, M extends Entity> {
     }
     public void tick() {
         if (removed) return;
-        NewEvents.onAuraTick(this);
-        partialTick--;
-        if (partialTick <= 1) partialTick = 20;
+        FTZEvents.onAuraTick(this);
         this.center = owner.position();
-        entitiesInside().forEach(entity -> {
-            if (!supposedlyAffected.contains(entity)) enterAura(entity);
+
+        for (T entity : entitiesInside()) if (!SUPPOSEDLY_INSIDE.contains(entity)) enterAura(entity);
+        for (T entity : SUPPOSEDLY_INSIDE) if (!entitiesInside().contains(entity)) exitAura(entity);
+        SUPPOSEDLY_INSIDE.removeIf(entity -> !entitiesInside().contains(entity));
+
+        SUPPOSEDLY_INSIDE.forEach(entity -> {
+            if (aura.primary(entity, owner) && aura.secondary(entity, owner)) aura.entityTick(entity, owner);
         });
-        supposedlyAffected.forEach(entity -> {
-            if (!entitiesInside().contains(entity)) exitAura(entity);
-        });
-        supposedlyAffected.removeIf(entity -> !entitiesInside().contains(entity));
-        if (aura.ownerConditions.test(owner)) {
-            aura.onTickOwner.accept(owner);
-        }
-        if (!level.isClientSide()) {
-            blocksInside().forEach(blockPos -> aura.onTickBlock.accept(blockPos, this));
-        }
+        if (aura.ownerCond(owner)) aura.ownerTick(owner);
+        if (!level.isClientSide()) blocksInside().forEach(blockPos -> aura.blockTick(blockPos, this));
     }
     public SPHEREBOX getSphericalBox() {
         return new SPHEREBOX(aura.getRadius(), this.center);
     }
-    @SuppressWarnings("unchecked")
     public List<T> entitiesInside() {
         Class<T> type = aura.getAffectedType();
-        return (List<T>) getSphericalBox().entitiesInside(level).stream().filter(type::isInstance).filter(entity -> entity != owner).toList();
+        List<Entity> entities = getSphericalBox().entitiesInside(level);
+        List<T> inside = Lists.newArrayList();
+        for (Entity entity : entities) if (type.isInstance(entity)) inside.add(type.cast(entity));
+        return inside;
     }
     public List<BlockPos> blocksInside() {
         return getSphericalBox().blocksInside(level);
@@ -73,12 +68,12 @@ public class AuraInstance<T extends Entity, M extends Entity> {
         return owner;
     }
     public void enterAura(T entity) {
-        NewEvents.onAuraEnter(this, entity);
+        FTZEvents.onAuraEnter(this, entity);
         if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.translatable("entered"));
-        supposedlyAffected.add(entity);
+        SUPPOSEDLY_INSIDE.add(entity);
         if (entity instanceof LivingEntity livingEntity) {
             if (!aura.canAffect(entity, getOwner())) return;
-            aura.attributeModifiers.forEach((attribute, attributeModifier) -> {
+            aura.getAttributeModifiers().forEach((attribute, attributeModifier) -> {
                 AttributeInstance instance = livingEntity.getAttribute(attribute);
                 if (instance != null && !instance.hasModifier(attributeModifier)) {
                     instance.addTransientModifier(attributeModifier);
@@ -87,22 +82,22 @@ public class AuraInstance<T extends Entity, M extends Entity> {
         }
     }
     public void exitAura(T entity) {
-        NewEvents.onAuraExit(this, entity);
+        FTZEvents.onAuraExit(this, entity);
         if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.translatable("left"));
         if (entity instanceof LivingEntity livingEntity) {
-            aura.attributeModifiers.forEach((attribute, attributeModifier) -> {
+            aura.getAttributeModifiers().forEach((attribute, attributeModifier) -> {
                 AttributeInstance instance = livingEntity.getAttribute(attribute);
                 if (instance != null && instance.hasModifier(attributeModifier))
                     instance.removeModifier(attributeModifier);
             });
         }
     }
+    public boolean isInside(Entity entity) {
+        return SUPPOSEDLY_INSIDE.contains(entity);
+    }
     public void discard() {
         if (!level.isClientSide()) LevelCapGetter.get(level).ifPresent(levelCap -> levelCap.removeAuraInstance(this));
         this.removed = true;
         entitiesInside().forEach(this::exitAura);
-    }
-    public boolean isInside(Entity entity) {
-        return supposedlyAffected.contains(entity);
     }
 }

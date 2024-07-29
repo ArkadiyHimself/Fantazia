@@ -1,6 +1,6 @@
 {
-  "fantazia.creativetab.magic" : "CI Artifacts",
-  "fantazia.creativetab.weapon" : "CI Weapons",
+  "fantazia.creativetab.magic" : "FTZ Artifacts",
+  "fantazia.creativetab.weapon" : "FTZ Weapons",
 
   "fantazia.cleanse.basic" : "§b§lBasic",
   "fantazia.cleanse.medium" : "§3§lMedium",
@@ -14,12 +14,18 @@
   "commands.spellcast.targeted.success" : "Successfully casted %1$s on %2$s entities",
   "commands.spellcast.targeted.failure" : "Unable to find any targets",
 
+
+  "enchantment.fantazia.ice_aspect" : "Ice Aspect",
+  "enchantment.fantazia.freeze" : "Freeze",
+  "enchantment.fantazia.decisive_strike" : "Decisive Strike",
+  "enchantment.fantazia.disintegration" : "Disintegration",
+  "enchantment.fantazia.bully" : "Bully",
+  "enchantment.fantazia.duelist" : "Duelist",
+  "enchantment.fantazia.ballista" : "Ballista",
   "enchantment.fantazia.phasing" : "Phasing",
   "enchantment.fantazia.ricochet" : "Ricochet",
   "enchantment.fantazia.headshot" : "Headshot",
-  "enchantment.fantazia.ice_aspect" : "Ice Aspect",
-  "enchantment.fantazia.decisive_strike" : "Decisive Strike",
-  "enchantment.fantazia.disintegration" : "Disintegration",
+
 
   "effect.fantazia.fury": "§c§lFury",
   "effect.fantazia.fury.lines" : "3",

@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.networking.packets;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.client.models.PlayerAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -20,7 +20,7 @@ public class PlayAnimationS2C implements IPacket {
                 if (animation.isEmpty()) {
                     animation = null;
                 }
-                WhereMagicHappens.Abilities.animatePlayer(Minecraft.getInstance().player, animation);
+                PlayerAnimations.animatePlayer(Minecraft.getInstance().player, animation);
             }
         });
         context.setPacketHandled(true);

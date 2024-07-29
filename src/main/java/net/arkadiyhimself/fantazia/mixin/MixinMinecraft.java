@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.entities.HatchetEntity;
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.RenderingValues;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.VibrationListen;
+import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
@@ -24,41 +24,28 @@ public abstract class MixinMinecraft {
 
     @Inject(at = @At("HEAD"), method = "startAttack", cancellable = true)
     private void cancelAttack(CallbackInfoReturnable<Boolean> cir) {
-        if (WhereMagicHappens.Abilities.canNotDoActions(player)) {
-            cir.setReturnValue(false);
-            cir.cancel();
-        }
+        if (ActionsHelper.preventActions(player)) cir.setReturnValue(false);
     }
     @Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
     private void blockBreakCancel(boolean leftClick, CallbackInfo ci) {
-        if (WhereMagicHappens.Abilities.canNotDoActions(player)) {
-            ci.cancel();
-        }
+        if (ActionsHelper.preventActions(player)) ci.cancel();
     }
     @Inject(method = "startUseItem", at = @At("HEAD"), cancellable = true)
     private void itemUseCancel(CallbackInfo ci) {
-        if (WhereMagicHappens.Abilities.canNotDoActions(player)) {
-            ci.cancel();
-        }
+        if (ActionsHelper.preventActions(player)) ci.cancel();
     }
     @Inject(method = "handleKeybinds", at = @At("HEAD"), cancellable = true)
     private void keybindsCancel(CallbackInfo ci) {
-        if (WhereMagicHappens.Abilities.canNotDoActions(player)) {
-            ci.cancel();
-        }
+        if (ActionsHelper.preventActions(player)) ci.cancel();
     }
     @Inject(at = @At("HEAD"), method = "shouldEntityAppearGlowing", cancellable = true)
     private void glowing(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
         if (player == null) return;
-        if (pEntity instanceof HatchetEntity hatchet && hatchet.getOwner() == player) {
-            cir.setReturnValue(true);
-        }
+        if (pEntity instanceof ThrownHatchet hatchet && hatchet.getOwner() == player) cir.setReturnValue(true);
 
         AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
         if (abilityManager == null) return;
-        RenderingValues renderingValues = abilityManager.takeAbility(RenderingValues.class);
-        if (renderingValues != null && pEntity instanceof LivingEntity && renderingValues.emittedSound().contains(pEntity)) cir.setReturnValue(true);
-
-
+        VibrationListen vibrationListen = abilityManager.takeAbility(VibrationListen.class);
+        if (vibrationListen != null && pEntity instanceof LivingEntity && vibrationListen.revealed().contains(pEntity)) cir.setReturnValue(true);
     }
 }

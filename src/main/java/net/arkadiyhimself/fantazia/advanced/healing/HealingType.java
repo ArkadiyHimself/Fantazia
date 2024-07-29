@@ -34,13 +34,12 @@ public class HealingType {
     public List<RegistryObject<SimpleParticleType>> getRegParticleTypes() {
         return regParticleType;
     }
-
-    public HealingType setRegParticles(List<RegistryObject<SimpleParticleType>> particles) {
-        this.regParticleType.addAll(particles);
-        return this;
-    }
     public HealingType setParticles(List<SimpleParticleType> particles) {
         this.particleType.addAll(particles);
+        return this;
+    }
+    public HealingType setParticle(SimpleParticleType particle) {
+        this.particleType.add(particle);
         return this;
     }
 }

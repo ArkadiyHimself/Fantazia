@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.networking.packets.capabilityupdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.RenderingValues;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.RenderingValues;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;

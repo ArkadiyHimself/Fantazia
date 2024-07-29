@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.networking.packets.capabilityupdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.Dash;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityHelper;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.Dash;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -18,9 +18,9 @@ public class StartDashC2S implements IPacket{
             ServerPlayer player = context.getSender();
             if (player == null) return;
             AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
+            if (abilityManager == null) return;
 
-            Vec3 vec3 = WhereMagicHappens.Abilities.calculateDashHorizontalVelocity(player, 1.8f, true);
-
+            Vec3 vec3 = AbilityHelper.dashVelocity(player, 1.8f, true);
             abilityManager.getAbility(Dash.class).ifPresent(dash -> dash.beginDash(vec3));
         });
         context.setPacketHandled(true);

@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.events.custom;
 
-import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
+import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -53,12 +53,12 @@ public class VanillaEventsExtension {
     }
     @Cancelable
     public static class DeathPreventationEvent extends LivingEvent {
+        private final Object cause;
         public DeathPreventationEvent(LivingEntity entity, Object cause) {
             super(entity);
             this.cause = cause;
         }
         // a mob effect or an item which causes the death preventation; just use «getCause() instance of MobEffect» or smth like that
-        private final Object cause;
         public Object getCause() { return cause; }
     }
     @Cancelable

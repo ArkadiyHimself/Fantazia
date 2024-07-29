@@ -4,7 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AuraCarrier.GetAuraCarrier;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.features.AuraCarry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -21,7 +23,7 @@ import java.util.Collection;
 
 public class AuraCarrierCommand {
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_AURA = (context, builder) -> {
-        Collection<BasicAura<Entity, Entity>> auras = BasicAura.AURAS.values();
+        Collection<BasicAura<? extends Entity, ? extends Entity>> auras = BasicAura.AURAS.values();
         return SharedSuggestionProvider.suggestResource(auras.stream().map(BasicAura::getMapKey), builder);
     };
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -32,13 +34,15 @@ public class AuraCarrierCommand {
                     return 1;
                 }))));
     }
-    public static void createCarrier(CommandContext<CommandSourceStack> context, Vec3 pPos, BasicAura<Entity, Entity> aura) {
+    public static void createCarrier(CommandContext<CommandSourceStack> context, Vec3 pPos, BasicAura<? extends Entity, ? extends Entity> aura) {
         BlockPos blockpos = BlockPos.containing(pPos);
         ServerLevel serverlevel = context.getSource().getLevel();
         ArmorStand armorStand = new ArmorStand(serverlevel, blockpos.getX(), blockpos.getY(), blockpos.getZ());
         context.getSource().getLevel().addFreshEntity(armorStand);
         context.getSource().sendSuccess(() -> Component.translatable("commands.summon.success", armorStand.getDisplayName()), true);
 
-        GetAuraCarrier.get(armorStand).ifPresent(auraCarrier -> auraCarrier.setAuraInstance(aura));
+        FeatureManager featureManager = FeatureGetter.getUnwrap(armorStand);
+        if (featureManager == null) return;
+        featureManager.getFeature(AuraCarry.class).ifPresent(auraCarry -> auraCarry.setAura(aura));
     }
 }

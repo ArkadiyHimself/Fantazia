@@ -1,14 +1,14 @@
 package net.arkadiyhimself.fantazia.advanced.healing;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAuras;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.EffectManager.EffectManager;
-import net.arkadiyhimself.fantazia.events.custom.NewEvents;
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
-import net.arkadiyhimself.fantazia.registry.ItemRegistry;
-import net.arkadiyhimself.fantazia.registry.MobEffectRegistry;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.CommonData.AttachCommonData;
+import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.SpellHelper;
+import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.Spells;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.CombatHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,13 +19,13 @@ import java.util.List;
 
 public class AdvancedHealing {
     public static boolean heal(LivingEntity entity, HealingSource source, float amount) {
-        float j = NewEvents.ForgeExtenstion.onAdvancedHealing(entity, source, amount);
+        float j = FTZEvents.ForgeExtenstion.onAdvancedHealing(entity, source, amount);
         if (j <= 0) return false;
         if (entity.getHealth() == entity.getMaxHealth()) return false;
         List<HealingTag> tags = source.getType().getTags();
-        if (checkForHealCancellations(entity) && !tags.contains(HealingTag.CANNOT_BE_CANCELLED)) return false;
-        if (WhereMagicHappens.Abilities.isInvulnerable(entity) && !tags.contains(HealingTag.BYPASSES_INVULNERABILITY)) return false;
-        if (WhereMagicHappens.Abilities.isUnderAura(entity, BasicAuras.DESPAIR) && !tags.contains(HealingTag.UNHOLY)) j *= 0.5f;
+        if (cancelHeal(entity) && !tags.contains(HealingTag.CANNOT_BE_CANCELLED)) return false;
+        if (CombatHelper.isInvulnerable(entity) && !tags.contains(HealingTag.BYPASSES_INVULNERABILITY)) return false;
+        if (AuraHelper.affected(entity, BasicAuras.DESPAIR) && !tags.contains(HealingTag.UNHOLY)) j *= 0.5f;
         entity.setHealth(entity.getHealth() + j);
         if (entity instanceof Player player) {
             player.causeFoodExhaustion(source.getType().getExhaustion());
@@ -40,9 +40,7 @@ public class AdvancedHealing {
                 case DECREASED -> 4 * j;
                 case ALL -> 6 * j;
             };
-            for (int i = 0; i <= num; i++) {
-                WhereMagicHappens.Abilities.randomParticleOnModel(entity, custom, WhereMagicHappens.Abilities.ParticleMovement.ASCEND);
-            }
+            for (int i = 0; i <= num; i++) VisualHelper.randomParticleOnModel(entity, custom, VisualHelper.ParticleMovement.ASCEND);
         } else if (!regTypes.isEmpty()) {
               float num = switch (Minecraft.getInstance().options.particles().get()) {
                 case MINIMAL -> Math.min(4, j * 4);
@@ -51,7 +49,7 @@ public class AdvancedHealing {
             };
             for (int i = 0; i <= num; i++) {
                 int l = Fantazia.RANDOM.nextInt(0, regTypes.size());
-                WhereMagicHappens.Abilities.randomParticleOnModel(entity, regTypes.get(l).get(), WhereMagicHappens.Abilities.ParticleMovement.REGULAR);
+                VisualHelper.randomParticleOnModel(entity, regTypes.get(l).get(), VisualHelper.ParticleMovement.REGULAR);
             }
         } else if (!types.isEmpty()) {
             float num = switch (Minecraft.getInstance().options.particles().get()) {
@@ -61,15 +59,14 @@ public class AdvancedHealing {
             };
             for (int i = 0; i <= num; i++) {
                 int l = Fantazia.RANDOM.nextInt(0, types.size());
-                WhereMagicHappens.Abilities.randomParticleOnModel(entity, types.get(l), WhereMagicHappens.Abilities.ParticleMovement.REGULAR);
+                VisualHelper.randomParticleOnModel(entity, types.get(l), VisualHelper.ParticleMovement.REGULAR);
             }
         }
         return true;
     }
-    private static boolean checkForHealCancellations(LivingEntity entity) {
-        if (entity.hasEffect(MobEffectRegistry.FROZEN.get()) || entity.hasEffect(MobEffectRegistry.DOOMED.get())) return true;
-        if (WhereMagicHappens.Abilities.hasCurio(entity, ItemRegistry.ENTANGLER.get())) return true;
+    private static boolean cancelHeal(LivingEntity entity) {
+        if (entity.hasEffect(FTZMobEffects.FROZEN) || entity.hasEffect(FTZMobEffects.DOOMED)) return true;
+        if (SpellHelper.hasSpell(entity, Spells.ENTANGLE)) return true;
         return false;
     }
-
 }

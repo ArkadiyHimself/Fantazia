@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.advanced.cleansing;
 
 import com.google.common.collect.Maps;
-import net.arkadiyhimself.fantazia.registry.MobEffectRegistry;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 
@@ -27,16 +27,15 @@ public class CleanseStrength {
         EFFECTS.put(MobEffects.HERO_OF_THE_VILLAGE, Cleanse.ABSOLUTE);
 
         // my own effects
-        EFFECTS.put(MobEffectRegistry.FURY.get(), Cleanse.POWERFUL);
-        EFFECTS.put(MobEffectRegistry.STUN.get(), Cleanse.POWERFUL);
-        EFFECTS.put(MobEffectRegistry.BARRIER.get(), Cleanse.MEDIUM);
-        EFFECTS.put(MobEffectRegistry.LAYERED_BARRIER.get(), Cleanse.MEDIUM);
-        EFFECTS.put(MobEffectRegistry.ABSOLUTE_BARRIER.get(), Cleanse.ABSOLUTE);
-        EFFECTS.put(MobEffectRegistry.ABSOLUTE_BARRIER.get(), Cleanse.ABSOLUTE);
-        EFFECTS.put(MobEffectRegistry.DOOMED.get(), Cleanse.ABSOLUTE);
-        EFFECTS.put(MobEffectRegistry.DISARM.get(), Cleanse.POWERFUL);
-        EFFECTS.put(MobEffectRegistry.REFLECT.get(), Cleanse.MEDIUM);
-        EFFECTS.put(MobEffectRegistry.DEFLECT.get(), Cleanse.MEDIUM);
+        EFFECTS.put(FTZMobEffects.FURY, Cleanse.POWERFUL);
+        EFFECTS.put(FTZMobEffects.STUN, Cleanse.POWERFUL);
+        EFFECTS.put(FTZMobEffects.BARRIER, Cleanse.MEDIUM);
+        EFFECTS.put(FTZMobEffects.LAYERED_BARRIER, Cleanse.MEDIUM);
+        EFFECTS.put(FTZMobEffects.ABSOLUTE_BARRIER, Cleanse.ABSOLUTE);
+        EFFECTS.put(FTZMobEffects.DOOMED, Cleanse.ABSOLUTE);
+        EFFECTS.put(FTZMobEffects.DISARM, Cleanse.POWERFUL);
+        EFFECTS.put(FTZMobEffects.REFLECT, Cleanse.MEDIUM);
+        EFFECTS.put(FTZMobEffects.REFLECT, Cleanse.MEDIUM);
     }
     public static Cleanse getRequiredStrength(MobEffect effect) {
         return EFFECTS.getOrDefault(effect, Cleanse.BASIC);

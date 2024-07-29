@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.networking.packets.keyinput;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.fantazia.Items.weapons.Melee.MeleeWeaponItem;
+import net.arkadiyhimself.fantazia.items.weapons.Melee.MeleeWeaponItem;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;

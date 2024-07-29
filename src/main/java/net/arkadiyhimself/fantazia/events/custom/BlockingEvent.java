@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.events.custom;
 
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.AttackBlock;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.MeleeBlock;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.Cancelable;
 
 /**
  * Children of {@link BlockingEvent} are fired when an event involving blocking attacks occurs <br>
- * All the events here are fired in {@link AttackBlock.Blocking} <br>
+ * All the events here are fired in {@link MeleeBlock.Blocking} <br>
  * <br>
  * {@link  #itemStack} contains the ItemStack with the weapon the player uses for blocking <br>
  * <br>
@@ -47,7 +47,7 @@ public class BlockingEvent extends PlayerEvent {
     }
 
     /**
-     * {@link Expired} is fired when player's {@link AttackBlock.Blocking#block} gets to 0 after the player started blocking attacks.<br>
+     * {@link Expired} is fired when player's {@link MeleeBlock.Blocking#block} gets to 0 after the player started blocking attacks.<br>
      * <br>
      * This event is not {@link Cancelable}.<br>
      * <br>

@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.events.custom;
 
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.Dash;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.Dash;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;

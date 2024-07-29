@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.util.library;
 
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -98,8 +98,11 @@ public class SPHEREBOX {
     public List<Entity> entitiesInside(Level level, EntityType<? extends Entity> type) {
         return entitiesInside(level, entity -> entity.getType() == type);
     }
-    public List<Entity> entitiesInside(Level level, Class<? extends Entity> cls) {
-        return entitiesInside(level, entity -> entity.getClass() == cls);
+    public <T extends Entity> List<T> entitiesInside(Level level, Class<T> cls) {
+        List<Entity> entities = entitiesInside(level, cls::isInstance);
+        List<T> tList = Lists.newArrayList();
+        for (Entity entity : entities) tList.add(cls.cast(entity));
+        return tList;
     }
     public List<Entity> entitiesInside(Level level) {
         if (level == null) return new ArrayList<>();
@@ -162,7 +165,7 @@ public class SPHEREBOX {
     }
     public static SPHEREBOX fromOppositePoints(Vec3 point1, Vec3 point2) {
         double radius = point1.distanceTo(point2) / 2;
-        Vec3 center = WhereMagicHappens.Math.findCenter(point1, point2);
+        Vec3 center = FantazicMath.findCenter(point1, point2);
         return new SPHEREBOX(radius, center);
     }
     public static SPHEREBOX fromCenterAndPoint(Vec3 center, Vec3 vec3) {

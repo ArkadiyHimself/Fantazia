@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -15,19 +15,13 @@ public class MixinKeyMapping {
     @Inject(at = @At("HEAD"), method = "consumeClick", cancellable = true)
     private void cancelInput(CallbackInfoReturnable<Boolean> cir) {
         Player player = Minecraft.getInstance().player;
-        if (player != null) {
-            if (WhereMagicHappens.Abilities.canNotDoActions(player) && !(Minecraft.getInstance().screen instanceof PauseScreen)) {
-                cir.setReturnValue(false);
-            }
-        }
+        if (player == null) return;
+        if (ActionsHelper.preventActions(player) && !(Minecraft.getInstance().screen instanceof PauseScreen)) cir.setReturnValue(false);
     }
     @Inject(at = @At("HEAD"), method = "isDown", cancellable = true)
     private void cancelHold(CallbackInfoReturnable<Boolean> cir) {
         Player player = Minecraft.getInstance().player;
-        if (player != null) {
-            if (WhereMagicHappens.Abilities.canNotDoActions(player) && !(Minecraft.getInstance().screen instanceof PauseScreen)) {
-                cir.setReturnValue(false);
-            }
-        }
+        if (player == null) return;
+        if (ActionsHelper.preventActions(player) && !(Minecraft.getInstance().screen instanceof PauseScreen)) cir.setReturnValue(false);
     }
 }

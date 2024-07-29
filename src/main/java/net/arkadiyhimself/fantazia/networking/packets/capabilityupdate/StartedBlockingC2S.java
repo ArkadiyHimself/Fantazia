@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.networking.packets.capabilityupdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.AbilityManager.Abilities.AttackBlock;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.MeleeBlock;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -16,7 +16,7 @@ public class StartedBlockingC2S implements IPacket {
             ServerPlayer serverPlayer = context.getSender();
             if (serverPlayer == null) return;
             AbilityManager abilityManager = AbilityGetter.getUnwrap(serverPlayer);
-            abilityManager.getAbility(AttackBlock.class).ifPresent(AttackBlock::startBlocking);
+            abilityManager.getAbility(MeleeBlock.class).ifPresent(MeleeBlock::startBlocking);
         });
         context.setPacketHandled(true);
     }

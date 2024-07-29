@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.networking.packets.keyinput;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.fantazia.Items.casters.SpellCaster;
+import net.arkadiyhimself.fantazia.items.casters.SpellCaster;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.PlaySoundForUIS2C;
-import net.arkadiyhimself.fantazia.registry.SoundRegistry;
+import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -31,7 +31,7 @@ public class CastSpellC2S implements IPacket {
             if (result.isEmpty()) { return; }
             Item spellCaster = result.get().stack().getItem();
             if (spellCaster instanceof SpellCaster selfCaster) {
-                if (!selfCaster.tryCast(player)) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(SoundRegistry.DENIED.get()), context.getSender());
+                if (!selfCaster.tryCast(player)) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.DENIED), context.getSender());
             }
         });
         context.setPacketHandled(true);

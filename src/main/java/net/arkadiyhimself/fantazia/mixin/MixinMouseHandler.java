@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.events.WhereMagicHappens;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.player.LocalPlayer;
@@ -14,6 +14,6 @@ public class MixinMouseHandler {
     @Inject(at = @At("HEAD"), method = "turnPlayer", cancellable = true)
     private void cancelTurn(CallbackInfo ci) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (WhereMagicHappens.Abilities.cancelMouseMoving(player)) ci.cancel();
+        if (ActionsHelper.cancelMouseMoving(player)) ci.cancel();
     }
 }
