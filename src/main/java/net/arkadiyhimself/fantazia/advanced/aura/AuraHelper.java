@@ -2,9 +2,9 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCap;
-import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCap;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;

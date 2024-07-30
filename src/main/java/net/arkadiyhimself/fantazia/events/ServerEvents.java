@@ -3,32 +3,6 @@ package net.arkadiyhimself.fantazia.events;
 import dev._100media.capabilitysyncer.network.SimpleLevelCapabilityStatusPacket;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityHelper;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.Dash;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.DoubleJump;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.MeleeBlock;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.RenderingValues;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.newdata.AuraOwning;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.newdata.CommonData;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.newdata.HatchetStuck;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.effects.DeafenedEffect;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.effects.HaemorrhageEffect;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.effects.StunEffect;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureManager;
-import net.arkadiyhimself.fantazia.advanced.capability.itemstack.StackDataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.itemstack.StackDataManager;
-import net.arkadiyhimself.fantazia.advanced.capability.itemstack.stackdata.CommonStackData;
-import net.arkadiyhimself.fantazia.advanced.capability.itemstack.stackdata.HiddenPotential;
-import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCap;
-import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCapGetter;
 import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.SpellHelper;
 import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.Spells;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
@@ -36,11 +10,37 @@ import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingTypes;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHelper;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.DoubleJump;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.MeleeBlock;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.RenderingValues;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.AuraOwning;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.CommonData;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.HatchetStuck;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.DeafenedEffect;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.HaemorrhageEffect;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.StunEffect;
+import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureManager;
+import net.arkadiyhimself.fantazia.api.capability.itemstack.StackDataGetter;
+import net.arkadiyhimself.fantazia.api.capability.itemstack.StackDataManager;
+import net.arkadiyhimself.fantazia.api.capability.itemstack.stackdata.CommonStackData;
+import net.arkadiyhimself.fantazia.api.capability.itemstack.stackdata.HiddenPotential;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCap;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.api.fantazicevents.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.enchantments.DisintegrationEnchantment;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.entities.goals.StandStillGoal;
-import net.arkadiyhimself.fantazia.events.custom.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.items.casters.DashStone;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
@@ -51,7 +51,7 @@ import net.arkadiyhimself.fantazia.util.commands.CooldownCommand;
 import net.arkadiyhimself.fantazia.util.commands.FullHealCommand;
 import net.arkadiyhimself.fantazia.util.commands.SpellCastCommand;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.CombatHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.LootTablesHelper;
 import net.minecraft.client.Minecraft;
@@ -137,8 +137,6 @@ public class ServerEvents {
 
 
         if (source.getEntity() instanceof LivingEntity livingEntity) {
-
-
             MobEffectInstance instance;
             if ((instance = livingEntity.getEffect(FTZMobEffects.FURY)) != null) {
                 boolean amulet = SpellHelper.hasSpell(livingEntity, Spells.DAMNED_WRATH);
@@ -153,7 +151,7 @@ public class ServerEvents {
         }
     }
     @SubscribeEvent
-    public static void remove(EntityLeaveLevelEvent event) {
+    public static void entityLeaveLevel(EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof LivingEntity livingEntity) {
             DataManager dataManager = DataGetter.getUnwrap(livingEntity);
             if (dataManager != null) dataManager.getData(AuraOwning.class).ifPresent(AuraOwning::clearAll);
@@ -181,7 +179,7 @@ public class ServerEvents {
                     if (commonStackData != null && commonStackData.pickedUp()) flag2 = true;
                 }
                 if (!flag1 && !flag2) {
-                    CombatHelper.dropExperience(killed, level * 1.5f * multiplier);
+                    FantazicCombat.dropExperience(killed, level * 1.5f * multiplier);
                     event.getDrops().remove(entity);
                 }
             }
@@ -193,7 +191,7 @@ public class ServerEvents {
         if (hatchetStuck != null) hatchetStuck.dropHatchet();
     }
     @SubscribeEvent
-    public static void pickupItem(VanillaEventsExtension.LivingPickUpItemEvent event) {
+    public static void livingPickupItem(VanillaEventsExtension.LivingPickUpItemEvent event) {
         if (event.getEntity().hasEffect(FTZMobEffects.STUN)) event.setCanceled(true);
         if (!event.isCanceled()) {
             StackDataManager stackDataManager = StackDataGetter.getUnwrap(event.getItemEntity().getItem());
@@ -203,7 +201,7 @@ public class ServerEvents {
     }
 
     @SubscribeEvent
-    public static void onLootTableEvent(LootTableLoadEvent event) {
+    public static void lootTableLoad(LootTableLoadEvent event) {
         LootTable lootTable = event.getTable();
         if (LootTablesHelper.getAncientCityLootTable().contains(event.getName())) {
             LootPool ancientCity = LootTablesHelper.constructLootPool("ancient_city_plus", -10f, 2f, LootTablesHelper.createOptionalLoot(FTZItems.SCULK_HEART, 25));
@@ -223,9 +221,7 @@ public class ServerEvents {
     public static void livingHeal(LivingHealEvent event) {
         boolean flag = AdvancedHealing.heal(event.getEntity(), new HealingSource(HealingTypes.VANILLA), event.getAmount());
         if (flag) event.setCanceled(true);
-        if (SpellHelper.hasSpell(event.getEntity(), Spells.ENTANGLE) || event.getEntity().hasEffect(FTZMobEffects.FROZEN)) {
-            event.setCanceled(true);
-        }
+        if (SpellHelper.hasSpell(event.getEntity(), Spells.ENTANGLE) || event.getEntity().hasEffect(FTZMobEffects.FROZEN)) event.setCanceled(true);
     }
     @SubscribeEvent
     public static void livingDamage(LivingDamageEvent event) {
@@ -316,7 +312,7 @@ public class ServerEvents {
     @SubscribeEvent
     public static void livingHurt(LivingHurtEvent event) {
         if (event.getEntity().level().isClientSide()) return;
-        CombatHelper.meleeAttack(event);
+        FantazicCombat.meleeAttack(event);
         DamageSource source = event.getSource();
         float amount = event.getAmount();
         LivingEntity target = event.getEntity();
@@ -556,7 +552,7 @@ public class ServerEvents {
                 int i = entity.getTicksFrozen();
                 entity.setTicksFrozen(Math.min(entity.getTicksRequiredToFreeze(), i + 50));
             }
-            if (projectile instanceof AbstractArrow arrow && entity instanceof LivingEntity livingEntity) CombatHelper.arrowImpact(arrow, livingEntity);
+            if (projectile instanceof AbstractArrow arrow && entity instanceof LivingEntity livingEntity) FantazicCombat.arrowImpact(arrow, livingEntity);
         }
     }
     @SubscribeEvent

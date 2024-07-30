@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.registries;
 
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.blocks.AncientFlame;
 import net.arkadiyhimself.fantazia.blocks.AncientFlameBlock;
 import net.arkadiyhimself.fantazia.blocks.RegularBlockItem;
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +30,7 @@ public class FTZBlocks extends FTZRegistry<Block> {
     }
 
     @ObjectHolder(value = Fantazia.MODID + ":ancient_flame", registryName = "block")
-    public static final AncientFlame ANCIENT_FLAME = null;
+    public static final AncientFlameBlock ANCIENT_FLAME = null;
 
     public FTZBlocks() {
         super(ForgeRegistries.BLOCKS);

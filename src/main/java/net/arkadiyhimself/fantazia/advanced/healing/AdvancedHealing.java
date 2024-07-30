@@ -8,7 +8,7 @@ import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.Spells;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.CombatHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,7 +24,7 @@ public class AdvancedHealing {
         if (entity.getHealth() == entity.getMaxHealth()) return false;
         List<HealingTag> tags = source.getType().getTags();
         if (cancelHeal(entity) && !tags.contains(HealingTag.CANNOT_BE_CANCELLED)) return false;
-        if (CombatHelper.isInvulnerable(entity) && !tags.contains(HealingTag.BYPASSES_INVULNERABILITY)) return false;
+        if (FantazicCombat.isInvulnerable(entity) && !tags.contains(HealingTag.BYPASSES_INVULNERABILITY)) return false;
         if (AuraHelper.affected(entity, BasicAuras.DESPAIR) && !tags.contains(HealingTag.UNHOLY)) j *= 0.5f;
         entity.setHealth(entity.getHealth() + j);
         if (entity instanceof Player player) {

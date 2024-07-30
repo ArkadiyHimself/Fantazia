@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.features.ArrowEnchant;
+import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.feature.features.ArrowEnchant;
 import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.AbstractArrow;

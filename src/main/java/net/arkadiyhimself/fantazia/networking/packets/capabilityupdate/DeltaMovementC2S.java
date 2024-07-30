@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.networking.packets.capabilityupdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.RenderingValues;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.RenderingValues;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -23,6 +23,7 @@ public class DeltaMovementC2S implements IPacket {
             ServerPlayer serverPlayer = context.getSender();
             if (serverPlayer == null) return;
             AbilityManager abilityManager = AbilityGetter.getUnwrap(serverPlayer);
+            if (abilityManager == null) return;
             abilityManager.getAbility(RenderingValues.class).ifPresent(renderingValues -> renderingValues.deltaMovement = movement);
         });
         context.setPacketHandled(true);

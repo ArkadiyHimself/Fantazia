@@ -2,12 +2,12 @@ package net.arkadiyhimself.fantazia.items.weapons.Melee;
 
 import com.google.common.collect.Lists;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.itemstack.StackDataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.itemstack.StackDataManager;
-import net.arkadiyhimself.fantazia.advanced.capability.itemstack.stackdata.HiddenPotential;
+import net.arkadiyhimself.fantazia.api.capability.itemstack.StackDataGetter;
+import net.arkadiyhimself.fantazia.api.capability.itemstack.StackDataManager;
+import net.arkadiyhimself.fantazia.api.capability.itemstack.stackdata.HiddenPotential;
+import net.arkadiyhimself.fantazia.api.items.IChangingIcon;
+import net.arkadiyhimself.fantazia.api.items.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.util.interfaces.IChangingIcon;
-import net.arkadiyhimself.fantazia.util.interfaces.ITooltipBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;

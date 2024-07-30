@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
+import net.arkadiyhimself.fantazia.api.fantazicevents.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
-import net.arkadiyhimself.fantazia.events.custom.VanillaEventsExtension;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;

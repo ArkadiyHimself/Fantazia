@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.client.screen;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.talent.TalentData;
+import net.arkadiyhimself.fantazia.api.capability.entity.talent.TalentData;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;

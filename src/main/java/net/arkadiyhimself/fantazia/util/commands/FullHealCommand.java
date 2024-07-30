@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.util.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.ManaData;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.StaminaData;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ManaData;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.StaminaData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;

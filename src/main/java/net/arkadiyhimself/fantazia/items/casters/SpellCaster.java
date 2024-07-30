@@ -1,16 +1,16 @@
 package net.arkadiyhimself.fantazia.items.casters;
 
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.ManaData;
 import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.Spell;
 import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.SpellHelper;
 import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.TargetedSpell;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ManaData;
+import net.arkadiyhimself.fantazia.api.items.IChangingIcon;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.util.interfaces.IChangingIcon;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

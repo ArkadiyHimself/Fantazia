@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.advanced.capacity.spellhandler;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
-import net.arkadiyhimself.fantazia.util.interfaces.ITooltipBuilder;
+import net.arkadiyhimself.fantazia.api.items.ITooltipBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;

@@ -35,7 +35,6 @@ public class CleanseStrength {
         EFFECTS.put(FTZMobEffects.DOOMED, Cleanse.ABSOLUTE);
         EFFECTS.put(FTZMobEffects.DISARM, Cleanse.POWERFUL);
         EFFECTS.put(FTZMobEffects.REFLECT, Cleanse.MEDIUM);
-        EFFECTS.put(FTZMobEffects.REFLECT, Cleanse.MEDIUM);
     }
     public static Cleanse getRequiredStrength(MobEffect effect) {
         return EFFECTS.getOrDefault(effect, Cleanse.BASIC);

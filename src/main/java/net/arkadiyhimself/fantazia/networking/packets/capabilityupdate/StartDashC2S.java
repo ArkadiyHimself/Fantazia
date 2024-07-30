@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.networking.packets.capabilityupdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityHelper;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.Dash;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHelper;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;

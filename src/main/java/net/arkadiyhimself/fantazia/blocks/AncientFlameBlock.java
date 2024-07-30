@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.blocks;
 
 import com.google.common.collect.ImmutableMap;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.newdata.DarkFlameTicks;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;

@@ -1,12 +1,12 @@
 package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.Dash;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.MeleeBlock;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.effects.StunEffect;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.MeleeBlock;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.StunEffect;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.KickOutOfGuiS2CPacket;
 import net.minecraft.client.player.LocalPlayer;

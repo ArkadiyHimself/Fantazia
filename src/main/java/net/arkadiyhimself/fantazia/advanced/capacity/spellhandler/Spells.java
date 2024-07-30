@@ -1,15 +1,15 @@
 package net.arkadiyhimself.fantazia.advanced.capacity.spellhandler;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingTypes;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.CombatHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +56,7 @@ public class Spells {
                 }
                 EffectHelper.effectWithoutParticles(caster, FTZMobEffects.BARRIER,  500, (int) target.getHealth() / 4 - 1);
                 EffectHelper.effectWithoutParticles(caster, FTZMobEffects.MIGHT, 500, (int) target.getHealth() / 4 - 1);
-                CombatHelper.dropExperience(target, 5);
+                FantazicCombat.dropExperience(target, 5);
                 int particles = switch (Minecraft.getInstance().options.particles().get()) {
                     case MINIMAL -> 15;
                     case DECREASED -> 30;

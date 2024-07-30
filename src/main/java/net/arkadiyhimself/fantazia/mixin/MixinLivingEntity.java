@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.effects.BarrierEffect;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.effects.HaemorrhageEffect;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.effects.LayeredBarrierEffect;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.BarrierEffect;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.HaemorrhageEffect;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.LayeredBarrierEffect;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;

@@ -1,18 +1,16 @@
 package net.arkadiyhimself.fantazia.client.models.entity.ftzentities.hatchet;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.DragonFireballRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.ThrownTridentRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
@@ -20,10 +18,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
-import net.minecraftforge.client.RenderTypeHelper;
 import org.jetbrains.annotations.NotNull;
-
-import static net.minecraft.client.renderer.entity.ItemRenderer.getFoilBufferDirect;
 
 public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
     public static final ModelResourceLocation WOODEN = Fantazia.itemModelRes("wooden_hatchet");
@@ -42,7 +37,6 @@ public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
         poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.getEntityData().get(ThrownHatchet.VISUAL_ROT0), pEntity.getEntityData().get(ThrownHatchet.VISUAL_ROT1))));
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(hatchetModel(pEntity));
         Minecraft.getInstance().getItemRenderer().render(pEntity.getPickupItem(), ItemDisplayContext.GUI, false, poseStack, pBuffer, pPackedLight, pPackedLight, model);
-
         poseStack.popPose();
     }
 

@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
 import net.arkadiyhimself.fantazia.util.library.SPHEREBOX;
 import net.minecraft.core.BlockPos;

@@ -2,18 +2,18 @@ package net.arkadiyhimself.fantazia.events;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.Dash;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.DoubleJump;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.newdata.DarkFlameTicks;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.effects.*;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.talent.TalentData;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.talent.TalentGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.DoubleJump;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.*;
+import net.arkadiyhimself.fantazia.api.capability.entity.talent.TalentData;
+import net.arkadiyhimself.fantazia.api.capability.entity.talent.TalentGetter;
 import net.arkadiyhimself.fantazia.client.gui.FTZGui;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
@@ -36,6 +36,7 @@ import net.arkadiyhimself.fantazia.mixin.LivingEntityRendererAccessor;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.*;
 import net.arkadiyhimself.fantazia.networking.packets.keyinput.CastSpellC2S;
+import net.arkadiyhimself.fantazia.networking.packets.keyinput.WeaponAbilityC2S;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.util.KeyBinding;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
@@ -225,20 +226,16 @@ public class ClientEvents {
         if (event.getKey() == Minecraft.getInstance().options.keyJump.getKey().getValue()) {
             DoubleJump doubleJump = abilityManager.takeAbility(DoubleJump.class);
             if (doubleJump == null) return;
-            if (event.getAction() == 0) {
-                NetworkHandler.sendToServer(new DoubleJumpTickC2S());
-            } else if (event.getAction() == 1) {
-                NetworkHandler.sendToServer(new DoubleJumpC2S());
-            }
+            if (event.getAction() == 0) NetworkHandler.sendToServer(new JumpButtonReleasedC2S());
+            else if (event.getAction() == 1) NetworkHandler.sendToServer(new DoubleJumpC2S());
         }
-        if (KeyBinding.SWORD_ABILITY.consumeClick());
+        if (KeyBinding.SWORD_ABILITY.consumeClick()) NetworkHandler.sendToServer(new WeaponAbilityC2S());
 
         if (KeyBinding.SPELLCAST1.consumeClick()) NetworkHandler.sendToServer(new CastSpellC2S(0));
         if (KeyBinding.SPELLCAST2.consumeClick()) NetworkHandler.sendToServer(new CastSpellC2S(1));
 
         TalentData talentData = TalentGetter.getUnwrap(player);
         if (KeyBinding.TALENTS.consumeClick() && talentData != null) Minecraft.getInstance().setScreen(new TalentsScreen(talentData));
-
     }
 
     // the event is used to remove vanilla's "Attack damage: ..." and "Attack speed: ..." lines

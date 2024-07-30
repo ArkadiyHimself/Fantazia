@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.events;
 
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.Dash;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
-import net.arkadiyhimself.fantazia.events.custom.*;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
+import net.arkadiyhimself.fantazia.api.fantazicevents.*;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;

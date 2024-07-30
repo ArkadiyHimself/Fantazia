@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.advanced.capacity.spellhandler;
 
 import com.google.common.collect.Maps;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.abilities.RenderingValues;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.RenderingValues;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.items.casters.SpellCaster;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;

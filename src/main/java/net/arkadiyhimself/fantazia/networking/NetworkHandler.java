@@ -4,13 +4,16 @@ import com.google.common.collect.ImmutableList;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleLevelCapabilityStatusPacket;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.talent.TalentGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.level.LevelCapGetter;
-import net.arkadiyhimself.fantazia.networking.packets.*;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.talent.TalentGetter;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.networking.packets.KickOutOfGuiS2CPacket;
+import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
+import net.arkadiyhimself.fantazia.networking.packets.PlaySoundForUIS2C;
+import net.arkadiyhimself.fantazia.networking.packets.ResetFallDistanceC2S;
 import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.*;
 import net.arkadiyhimself.fantazia.networking.packets.keyinput.CastSpellC2S;
 import net.arkadiyhimself.fantazia.networking.packets.keyinput.WeaponAbilityC2S;
@@ -56,9 +59,8 @@ public class NetworkHandler {
                 // capability update
                 .add(DeltaMovementC2S::register)
                 .add(DoubleJumpC2S::register)
-                .add(DoubleJumpTickC2S::register)
+                .add(JumpButtonReleasedC2S::register)
                 .add(EntityMadeSoundS2C::register)
-                .add(JustDJumpedC2S::register)
                 .add(SoundExpiredS2C::register)
                 .add(StartDashC2S::register)
                 .add(StartedBlockingC2S::register)

@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.networking.packets.keyinput;
 import dev._100media.capabilitysyncer.network.IPacket;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.MeleeWeaponItem;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -10,17 +11,15 @@ import net.minecraftforge.network.simple.SimpleChannel;
 public class WeaponAbilityC2S implements IPacket {
     public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
-            if (context.getSender() == null) { return; }
-            if (context.getSender().getMainHandItem().getItem() instanceof MeleeWeaponItem weapon && weapon.hasActive()) {
-                weapon.activeAbility(context.getSender());
-            }
+            ServerPlayer serverPlayer = context.getSender();
+            if (serverPlayer == null) return;
+            if (serverPlayer.getMainHandItem().getItem() instanceof MeleeWeaponItem weapon && weapon.hasActive()) weapon.activeAbility(serverPlayer);
         });
         context.setPacketHandled(true);
     }
 
     @Override
     public void write(FriendlyByteBuf packetBuf) {
-
     }
     public static WeaponAbilityC2S read(FriendlyByteBuf packetBuf) {
         return new WeaponAbilityC2S();

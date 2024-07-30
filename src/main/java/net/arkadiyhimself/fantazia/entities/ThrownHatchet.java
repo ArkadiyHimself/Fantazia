@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.entities;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.newdata.HatchetStuck;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectHelper;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.HatchetStuck;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
@@ -20,6 +20,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +33,10 @@ import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,12 +94,13 @@ public class ThrownHatchet extends AbstractArrow {
             noPhysics = true;
             if (phasingTicks <= 0) retrieving = true;
             if (retrieving) {
-                setDeltaMovement(chasing(getOwner(), 0.2f));
+                Vec3 delta = getOwner() == null ? new Vec3(0,0,0) : chasing(getOwner(), 0.2f);
+                setDeltaMovement(delta);
                 setNoGravity(true);
-                pickup = Pickup.ALLOWED;
+                if (pickup != Pickup.CREATIVE_ONLY) pickup = Pickup.ALLOWED;
             }
             EntityHitResult entityHitResult = findEntity();
-            if (entityHitResult != null && entityHitResult.getEntity() instanceof LivingEntity livingEntity) hitEntity(livingEntity);
+            if (entityHitResult != null && entityHitResult.getEntity() instanceof LivingEntity livingEntity) attackEntity(livingEntity);
         }
         super.tick();
         if (noPhysics) this.setYRot((float)(Mth.atan2(d5, d1) * (double)(180F / (float)Math.PI)));
@@ -119,17 +124,15 @@ public class ThrownHatchet extends AbstractArrow {
     @Override
     protected void onHitEntity(@NotNull EntityHitResult pResult) {
         if (!(pResult.getEntity() instanceof LivingEntity livingEntity) || level().isClientSide()) return;
-        hitEntity(livingEntity);
+        attackEntity(livingEntity);
         if (!ricocheted) {
             ricocheted = true;
             if (ricochets > 0) {
                 ricochets--;
                 if (!ricochetTarget(entity -> entity != livingEntity)) ricochetIntoNowhere(0.1f);
-            } else {
-                if (pickup == Pickup.ALLOWED) {
-                    if (tryStuck(livingEntity)) discard();
-                    else ricochetIntoNowhere(0.1f);
-                }
+            } else if (pickup == Pickup.ALLOWED) {
+                if (tryStuck(livingEntity)) discard();
+                else ricochetIntoNowhere(0.1f);
             }
         }
     }
@@ -159,7 +162,7 @@ public class ThrownHatchet extends AbstractArrow {
     public DamageSource source() {
         return new DamageSource(this.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FTZDamageTypes.HATCHET), this, getOwner() == null ? this : getOwner());
     }
-    public void hitEntity(LivingEntity livingEntity) {
+    public void attackEntity(LivingEntity livingEntity) {
         float dmg = 1.5f;
         if (getPickupItem().getItem() instanceof HatchetItem hatchetItem) dmg += hatchetItem.getTier().getAttackDamageBonus();
         double headDist = Math.abs(this.getY() - livingEntity.getEyeY());
@@ -180,7 +183,7 @@ public class ThrownHatchet extends AbstractArrow {
         if (phasing > 0) {
             phasingTicks = phasing * 5 + 5;
             isPhasing = true;
-            pickup = Pickup.DISALLOWED;
+            if (pickup != Pickup.CREATIVE_ONLY) pickup = Pickup.DISALLOWED;
         }
 
 
@@ -213,14 +216,6 @@ public class ThrownHatchet extends AbstractArrow {
         float rot1 = this.entityData.get(VISUAL_ROT1);
         this.entityData.set(VISUAL_ROT0, rot1);
         this.entityData.set(VISUAL_ROT1, rot1 - rotSpeed);
-    }
-    private void startFalling() {
-        this.inGround = false;
-        Vec3 vec3 = this.getDeltaMovement();
-        this.setDeltaMovement(vec3.multiply(this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F));
-    }
-    public boolean isDestroyable(BlockState state) {
-        return phasingTicks <= 0 && (state.getBlock() instanceof GlassBlock || state.getBlock() instanceof StainedGlassPaneBlock || state.getBlock() == Blocks.GLASS_PANE || state.getBlock() instanceof LeavesBlock);
     }
     public boolean isFoil() {
         return entityData.get(ID_FOIL);
@@ -257,33 +252,12 @@ public class ThrownHatchet extends AbstractArrow {
         };
         this.setDeltaMovement(newV3);
     }
-    public boolean ricochetOffEntity(LivingEntity livingEntity) {
-        SPHEREBOX spherebox = new SPHEREBOX(8, this.position());
-        List<LivingEntity> entityList = spherebox.entitiesInside(level(), LivingEntity.class);
-        entityList.removeIf(entity1 -> entity1 == getOwner() || entity1 == livingEntity);
-        entityList.removeIf(this::noLOS);
-        if (entityList.isEmpty()) return false;
-        int i = Fantazia.RANDOM.nextInt(0, entityList.size());
-        LivingEntity target = entityList.get(i);
-        this.setDeltaMovement(chasing(target, 1f));
-        return true;
-    }
-    public boolean ricochetOffBlock() {
-        SPHEREBOX spherebox = new SPHEREBOX(8, this.position());
-        List<LivingEntity> entityList = spherebox.entitiesInside(level(), LivingEntity.class);
-        entityList.removeIf(this::noLOS);
-        entityList.removeIf(entity1 -> entity1 == getOwner());
-        if (entityList.isEmpty()) return false;
-        int i = Fantazia.RANDOM.nextInt(0, entityList.size());
-        LivingEntity target = entityList.get(i);
-        this.setDeltaMovement(chasing(target, 1f));
-        return true;
-    }
     public boolean ricochetTarget(Predicate<LivingEntity> livingEntityPredicate) {
         SPHEREBOX spherebox = new SPHEREBOX(8, this.position());
         List<LivingEntity> entityList = spherebox.entitiesInside(level(), LivingEntity.class);
         entityList.removeIf(this::noLOS);
         entityList.removeIf(Predicate.not(livingEntityPredicate));
+        entityList.removeIf(ArmorStand.class::isInstance);
         entityList.removeIf(entity1 -> entity1 == getOwner() || entity1.hurtTime > 0);
         if (entityList.isEmpty()) return false;
         int i = Fantazia.RANDOM.nextInt(0, entityList.size());
@@ -293,16 +267,12 @@ public class ThrownHatchet extends AbstractArrow {
         return true;
     }
     public boolean noLOS(Entity pEntity) {
-        if (pEntity.level() != this.level()) {
-            return true;
-        } else {
+        if (pEntity.level() != this.level()) return true;
+        else {
             Vec3 vec3 = new Vec3(this.getX(), this.getEyeY(), this.getZ());
             Vec3 vec31 = new Vec3(pEntity.getX(), pEntity.getEyeY(), pEntity.getZ());
-            if (vec31.distanceTo(vec3) > 128.0D) {
-                return true;
-            } else {
-                return this.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS;
-            }
+            if (vec31.distanceTo(vec3) > 128.0D) return true;
+            else return this.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS;
         }
     }
     public void ricochetIntoNowhere(float mult) {

@@ -1,11 +1,11 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.newdata.DarkFlameTicks;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.feature.FeatureManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
+import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureManager;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
 import net.arkadiyhimself.fantazia.particless.BloodParticle;

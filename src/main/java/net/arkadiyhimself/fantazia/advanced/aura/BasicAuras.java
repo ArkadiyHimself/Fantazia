@@ -1,22 +1,19 @@
 package net.arkadiyhimself.fantazia.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.DataManager;
-import net.arkadiyhimself.fantazia.advanced.capability.entity.data.newdata.CommonData;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingTypes;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.CommonData;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.AgeableMob;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -28,7 +25,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.HashMap;
 
 public class BasicAuras {
-    public static BasicAura<LivingEntity, LivingEntity> LEADERSHIP = new BasicAura<LivingEntity, LivingEntity>(12f, Fantazia.res("leadership"), BasicAura.TYPE.POSITIVE, LivingEntity.class)
+    public static final BasicAura<Entity, Entity> DEBUG = new BasicAura<>(10f, Fantazia.res("debug"), BasicAura.TYPE.MIXED, Entity.class);
+    public static final BasicAura<LivingEntity, LivingEntity> LEADERSHIP = new BasicAura<LivingEntity, LivingEntity>(12f, Fantazia.res("leadership"), BasicAura.TYPE.POSITIVE, LivingEntity.class)
             .addPrimaryFilter((entity, owner) -> {
                 boolean pet = entity instanceof TamableAnimal animal && animal.isOwnedBy(owner);
                 boolean ally = entity instanceof Player && owner instanceof Player;
@@ -41,7 +39,7 @@ public class BasicAuras {
             .tickingOnEntities((entity, owner) -> {
                 if (owner.hasEffect(FTZMobEffects.FURY)) entity.addEffect(new MobEffectInstance(FTZMobEffects.FURY, 2, 0));
             });
-    public static BasicAura<LivingEntity, LivingEntity> TRANQUIL = new BasicAura<LivingEntity, LivingEntity>(6f, Fantazia.res("tranquil"), BasicAura.TYPE.POSITIVE, LivingEntity.class)
+    public static final BasicAura<LivingEntity, LivingEntity> TRANQUIL = new BasicAura<LivingEntity, LivingEntity>(6f, Fantazia.res("tranquil"), BasicAura.TYPE.POSITIVE, LivingEntity.class)
             .addPrimaryFilter((entity, owner) -> {
                 boolean flag = entity instanceof AgeableMob || entity instanceof Player;
                 boolean flag1 = entity instanceof TamableAnimal tamableAnimal && tamableAnimal.getOwner() == owner;
@@ -92,7 +90,7 @@ public class BasicAuras {
                     }
                 }
             });
-    public static BasicAura<LivingEntity, LivingEntity> DESPAIR = new BasicAura<LivingEntity, LivingEntity>(8f, Fantazia.res("despair"), BasicAura.TYPE.NEGATIVE, LivingEntity.class)
+    public static final BasicAura<LivingEntity, LivingEntity> DESPAIR = new BasicAura<LivingEntity, LivingEntity>(8f, Fantazia.res("despair"), BasicAura.TYPE.NEGATIVE, LivingEntity.class)
             .addPrimaryFilter((entity, owner) ->!(entity instanceof Mob mob) || mob.getTarget() == owner)
             .addSecondaryFilter((entity, owner) -> (owner.getHealth() > entity.getHealth() || entity.hasEffect(FTZMobEffects.DOOMED)) && !entity.hasEffect(FTZMobEffects.FURY))
             .addModifiers(new HashMap<>(){{
