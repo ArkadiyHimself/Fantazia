@@ -6,38 +6,25 @@ import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.AbsoluteBarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.BarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.LayeredBarrierEffect;
-import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.damagesource.DamageType;
+import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class EffectHelper {
-    public static List<ResourceKey<DamageType>> NO_RED_GLOW = new ArrayList<>() {{
-        add(FTZDamageTypes.BLEEDING);
-    }};
     public static float bleedingDamage(LivingEntity entity, Vec3 vec3) {
-        float movement = (float) vec3.horizontalDistance() / 50f;
+        float movement = (float) vec3.horizontalDistance() / 250f;
         if (entity instanceof Player player) {
             AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
             if (abilityManager != null) {
                 Dash dash = abilityManager.takeAbility(Dash.class);
-                if (dash != null && dash.isDashing() && dash.getLevel() <= 1) {
-                    return 7.5f;
-                }
+                if (dash != null && dash.isDashing() && dash.getLevel() <= 1) return 7.5f;
             }
-            if (player.isSprinting()) {
-                return 1.5f * movement;
-            } else if (player.isCrouching()) {
-                return 0.0625f * movement;
-            }
+            if (player.isSprinting()) return 1.5f * movement;
+            else if (player.isCrouching()) return 0.0625f * movement;
         }
         return movement;
     }
@@ -58,7 +45,7 @@ public class EffectHelper {
     }
     public static boolean hurtRedColor(LivingEntity livingEntity) {
         if (hasBarrier(livingEntity)) return false;
-        if (livingEntity.getLastDamageSource() != null) for (ResourceKey<DamageType> resourceKey : NO_RED_GLOW) if (livingEntity.getLastDamageSource().is(resourceKey)) return false;
+        if (livingEntity.getLastDamageSource() != null && livingEntity.getLastDamageSource().is(FTZDamageTypeTags.NOT_TURNING_RED)) return false;
         return true;
     }
     public static void effectWithoutParticles(LivingEntity entity, MobEffect effect, int duration, int level) {
@@ -83,6 +70,9 @@ public class EffectHelper {
     public static void makeDisarmed(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.DISARM, duration);
     }
+    public static void makeFrozen(LivingEntity entity, int duration) {
+        effectWithoutParticles(entity, FTZMobEffects.FROZEN, duration);
+    }
     public static void giveBarrier(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.ABSOLUTE_BARRIER, duration);
     }
@@ -91,5 +81,8 @@ public class EffectHelper {
     }
     public static void giveDeflect(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.DEFLECT, duration);
+    }
+    public static void microStun(LivingEntity entity) {
+        effectWithoutParticles(entity, FTZMobEffects.MICROSTUN, 1);
     }
 }

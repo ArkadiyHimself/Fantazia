@@ -11,6 +11,11 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -38,29 +43,26 @@ public class GuiHelper {
         RenderSystem.enableDepthTest();
         RenderSystem.setShaderColor(previousSC[0], previousSC[1], previousSC[2], previousSC[3]);
     }
+    @SuppressWarnings("all")
     public static void addComponent(List<Component> list, String str, @Nullable ChatFormatting[] strFormat, @Nullable ChatFormatting[] varFormat, Object... objs) {
         Component[] stringValues = new Component[objs.length];
         int counter = 0;
         for (Object obj : objs) {
             MutableComponent comp;
 
-            if (obj instanceof MutableComponent mut) {
-                comp = mut;
-            } else {
-                comp = Component.literal(obj.toString());
-            }
+            if (obj instanceof MutableComponent mut) comp = mut;
+            else comp = Component.literal(obj.toString());
 
-            if (varFormat != null) {
-                comp = comp.withStyle(varFormat);
-            }
-
+            if (varFormat != null) comp = comp.withStyle(varFormat);
             stringValues[counter] = comp;
             counter++;
         }
-        if (strFormat == null) {
-            list.add(Component.translatable(str, stringValues));
-        } else {
-            list.add(Component.translatable(str, stringValues).withStyle(strFormat));
-        }
+        if (strFormat == null) list.add(Component.translatable(str, stringValues));
+        else list.add(Component.translatable(str, stringValues).withStyle(strFormat));
+    }
+    public static Component attributeModifierComponent(@NotNull Attribute attribute, @NotNull AttributeModifier modifier) {
+        double value = modifier.getAmount();
+        if (modifier.getOperation() == AttributeModifier.Operation.ADDITION) return Component.translatable("attribute.modifier.plus." + modifier.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(value), Component.translatable(attribute.getDescriptionId())).withStyle(ChatFormatting.BLUE);
+        else return Component.translatable("attribute.modifier.plus." + modifier.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(value), Component.translatable(attribute.getDescriptionId())).withStyle(ChatFormatting.RED);
     }
 }

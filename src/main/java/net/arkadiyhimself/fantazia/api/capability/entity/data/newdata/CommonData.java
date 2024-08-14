@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.api.capability.entity.data.newdata;
 import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataHolder;
+import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -21,8 +22,8 @@ public class CommonData extends DataHolder implements ITicking, IDamageReacting 
     }
     @Override
     public void onHit(LivingHurtEvent event) {
-        damageTicks = 100;
         prevHP = getEntity().getHealth();
+        if (!event.getSource().is(FTZDamageTypes.REMOVAL)) damageTicks = 100;
     }
 
     @Override

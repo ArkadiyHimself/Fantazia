@@ -5,19 +5,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.RenderingValues;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ClientValues;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.api.items.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -31,6 +30,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeMod;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,11 +41,10 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
         this.attackDamage = 10;
         this.attackSpeedModifier = -2.3f;
     }
-    public boolean mineBlock(ItemStack pStack, Level pLevel, BlockState pState, BlockPos pPos, LivingEntity pEntityLiving) {
+    @Override
+    public boolean mineBlock(@NotNull ItemStack pStack, @NotNull Level pLevel, BlockState pState, @NotNull BlockPos pPos, @NotNull LivingEntity pEntityLiving) {
         if (pState.getDestroySpeed(pLevel, pPos) != 0.0F) {
-            pStack.hurtAndBreak(2, pEntityLiving, (p_43276_) -> {
-                p_43276_.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-            });
+            pStack.hurtAndBreak(2, pEntityLiving, (p_43276_) -> p_43276_.broadcastBreakEvent(EquipmentSlot.MAINHAND));
         }
         return true;
     }
@@ -60,6 +59,7 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
     @Override
     public boolean hasActive() { return true; }
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void activeAbility(ServerPlayer player) {
         NetworkHandler.sendToPlayer(new PlayAnimationS2C("taunt"), player);
         ServerLevel level = (ServerLevel) player.level();
@@ -67,7 +67,7 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
         List<Mob> mobs = level.getEntitiesOfClass(Mob.class, aabb);
         mobs.removeIf(mob -> !mob.hasLineOfSight(player));
         for (Mob mob : mobs) {
-            mob.addEffect(new MobEffectInstance(FTZMobEffects.FURY,300, 0, false, false));
+            EffectHelper.makeFurious(mob, 300);
             mob.setTarget(player);
             if (player.isCreative() || player.isSpectator()) return;
             if (mob instanceof TamableAnimal animal && animal.getOwner() == player) continue;
@@ -80,10 +80,11 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
             }
         }
         AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-        abilityManager.getAbility(RenderingValues.class).ifPresent(RenderingValues::taunt);
+        if (abilityManager == null) return;
+        abilityManager.getAbility(ClientValues.class).ifPresent(ClientValues::taunt);
     }
 
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot pEquipmentSlot) {
+    public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot pEquipmentSlot) {
         ImmutableMultimap.Builder<Attribute, AttributeModifier> modifiers = ImmutableMultimap.builder();
         modifiers.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
         modifiers.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", this.attackSpeedModifier, AttributeModifier.Operation.ADDITION));
@@ -92,7 +93,7 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
     }
 
     @Override
-    public List<Component> buildTooltip(ItemStack stack) {
+    public List<Component> buildItemTooltip(ItemStack stack) {
         List<Component> components = Lists.newArrayList();
         String basicPath = "weapon.fantazia.taunt";
         int lines;
@@ -105,8 +106,8 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
                 return components;
             }
 
-            ChatFormatting[] noshift = new ChatFormatting[]{ChatFormatting.RED};
-            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + ".desc." + i, noshift, null);
+            ChatFormatting[] noShift = new ChatFormatting[]{ChatFormatting.RED};
+            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + ".desc." + i, noShift, null);
 
             return components;
         }

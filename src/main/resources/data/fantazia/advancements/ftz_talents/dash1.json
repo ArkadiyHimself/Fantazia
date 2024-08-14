@@ -1,0 +1,23 @@
+{
+  "criteria": {
+    "dashstone1": {
+      "conditions": {
+        "curios:slot": {
+          "index": {
+            "max": 10,
+            "min": 0
+          },
+          "slots": [
+            "dashstone"
+          ]
+        },
+        "item": {
+          "items": [
+            "fantazia:dashstone1"
+          ]
+        }
+      },
+      "trigger": "curios:equip_curio"
+    }
+  }
+}

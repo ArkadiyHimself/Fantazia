@@ -24,25 +24,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class HatchetItem extends TieredItem {
-    private final float attackDamage;
-    private final float attackSpeed;
-    private Multimap<Attribute, AttributeModifier> defaultModifiers;
+    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
     public HatchetItem(Tier pTier, float pAttackSpeedModifier, Item.Properties pProperties) {
         super(pTier, pProperties);
-        this.attackDamage = 2.5f + pTier.getAttackDamageBonus();
-        this.attackSpeed = pAttackSpeedModifier;
+        float attackDamage = 2.5f + pTier.getAttackDamageBonus();
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", this.attackDamage, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", this.attackSpeed, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", pAttackSpeedModifier, AttributeModifier.Operation.ADDITION));
         this.defaultModifiers = builder.build();
     }
     @Override
     public boolean hurtEnemy(ItemStack pStack, @NotNull LivingEntity pTarget, @NotNull LivingEntity pAttacker) {
         pStack.hurtAndBreak(2, pAttacker, (p_43296_) -> p_43296_.broadcastBreakEvent(EquipmentSlot.MAINHAND));
         return true;
-    }
-    public float getThrowDamage() {
-        return attackDamage + 1f;
     }
 
     @Override
@@ -56,7 +50,7 @@ public class HatchetItem extends TieredItem {
     }
 
     @Override
-    public int getUseDuration(ItemStack pStack) {
+    public int getUseDuration(@NotNull ItemStack pStack) {
         return 72000;
     }
 
@@ -98,7 +92,7 @@ public class HatchetItem extends TieredItem {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack pStack) {
             return UseAnim.CUSTOM;
     }
 

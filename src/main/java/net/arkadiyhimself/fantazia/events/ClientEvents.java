@@ -4,18 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.DoubleJump;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.EvasionData;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.*;
-import net.arkadiyhimself.fantazia.api.capability.entity.talent.TalentData;
-import net.arkadiyhimself.fantazia.api.capability.entity.talent.TalentGetter;
-import net.arkadiyhimself.fantazia.client.gui.FTZGui;
-import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
+import net.arkadiyhimself.fantazia.client.gui.FantazicGui;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.client.models.PlayerAnimations;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
@@ -28,9 +25,9 @@ import net.arkadiyhimself.fantazia.client.render.layers.BarrierLayer;
 import net.arkadiyhimself.fantazia.client.render.layers.LayeredBarrierLayer;
 import net.arkadiyhimself.fantazia.client.render.layers.MysticMirror;
 import net.arkadiyhimself.fantazia.client.screen.TalentsScreen;
+import net.arkadiyhimself.fantazia.items.casters.AuraCaster;
 import net.arkadiyhimself.fantazia.items.casters.SpellCaster;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.FragileBlade;
-import net.arkadiyhimself.fantazia.items.weapons.Melee.MeleeWeaponItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.Murasama;
 import net.arkadiyhimself.fantazia.mixin.LivingEntityRendererAccessor;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
@@ -38,95 +35,103 @@ import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.*;
 import net.arkadiyhimself.fantazia.networking.packets.keyinput.CastSpellC2S;
 import net.arkadiyhimself.fantazia.networking.packets.keyinput.WeaponAbilityC2S;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.tags.FTZItemTags;
+import net.arkadiyhimself.fantazia.tags.FTZSoundEventTags;
 import net.arkadiyhimself.fantazia.util.KeyBinding;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.gui.overlay.NamedGuiOverlay;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.tags.ITagManager;
 import org.joml.Quaternionf;
 
 import java.util.List;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Fantazia.MODID)
 public class ClientEvents {
     @SubscribeEvent
-    public static void furyFOV(ComputeFovModifierEvent event) {
+    public static void fovModifier(ComputeFovModifierEvent event) {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(FTZMobEffects.FURY)) event.setNewFovModifier(event.getNewFovModifier() * 1.1f);
     }
     @SubscribeEvent
-    public static void renderGui(RenderGuiOverlayEvent.Pre event) {
+    public static void renderGuiPre(RenderGuiOverlayEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
+        if (player == null) return;
         GuiGraphics guiGraphics = event.getGuiGraphics();
         PoseStack poseStack = event.getGuiGraphics().pose();
+        NamedGuiOverlay overlay = event.getOverlay();
 
-        if (player == null) return;
-        if (event.getOverlay() == VanillaGuiOverlay.PLAYER_HEALTH.type()) event.setCanceled(true);
-        if (event.getOverlay() == VanillaGuiOverlay.FOOD_LEVEL.type()) event.setCanceled(true);
-        if (player.hasEffect(FTZMobEffects.FURY) && event.getOverlay() == VanillaGuiOverlay.HOTBAR.type()) FTZGuis.furyVeins();
-
-        if (event.getOverlay() == VanillaGuiOverlay.EXPERIENCE_BAR.type()) {
+        EffectManager effectManager = EffectGetter.getUnwrap(player);
+        if (effectManager == null) return;
+        FrozenEffect frozenEffect = effectManager.takeEffect(FrozenEffect.class);
+        if (frozenEffect != null) {
+            float effPer = frozenEffect.effectPercent();
+            float frePer = player.getPercentFrozen();
+            if (effPer > frePer && overlay == VanillaGuiOverlay.FROSTBITE.type()) event.setCanceled(true);
+        }
+        if (overlay == VanillaGuiOverlay.SUBTITLES.type() && !player.shouldShowDeathScreen()) poseStack.translate(0,-16,0);
+        if (overlay == VanillaGuiOverlay.EXPERIENCE_BAR.type()) {
             int x = event.getWindow().getGuiScaledWidth() / 2 - 91;
             int y = event.getWindow().getGuiScaledHeight() - 29;
-            EffectManager effectManager = EffectGetter.getUnwrap(player);
-            if (effectManager == null) return;
 
             StunEffect stunEffect = effectManager.takeEffect(StunEffect.class);
             BarrierEffect barrierEffect = effectManager.takeEffect(BarrierEffect.class);
 
             poseStack.pushPose();
-            poseStack.translate(0, 0, 100);
-            if (stunEffect != null && stunEffect.renderBar()) {
-                FTZGui.renderStunBar(stunEffect, event.getGuiGraphics(), x, y);
-                event.setCanceled(true);
-            } else if (barrierEffect != null && barrierEffect.hasBarrier()) {
-                FTZGui.renderBarrierBar(barrierEffect, event.getGuiGraphics(), x, y);
-                event.setCanceled(true);
-            }
+            if (FantazicGui.renderStunBar(stunEffect, guiGraphics, x, y)) event.setCanceled(true);
+            else if (FantazicGui.renderBarrierBar(barrierEffect, guiGraphics, x, y)) event.setCanceled(true);
             poseStack.popPose();
         }
     }
     @SubscribeEvent
-    public static void renderBackground(ScreenEvent.Render.BackgroundRendered event) {
-        FTZGuis.renderAurasInventory(event.getGuiGraphics());
+    public static void renderGuiPost(RenderGuiOverlayEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return;
+        GuiGraphics guiGraphics = event.getGuiGraphics();
+        PoseStack poseStack = event.getGuiGraphics().pose();
+        NamedGuiOverlay overlay = event.getOverlay();
+        if (overlay == VanillaGuiOverlay.SUBTITLES.type() && !player.shouldShowDeathScreen()) poseStack.translate(0,16,0);
     }
     @SubscribeEvent
-    public static void renderLiving(RenderLivingEvent.Pre<LivingEntity, EntityModel<LivingEntity>> event) {
+    public static void renderBackground(ScreenEvent.Render.BackgroundRendered event) {
+        Screen screen = event.getScreen();
+        if (!(screen instanceof EffectRenderingInventoryScreen<?>)) return;
+        FantazicGui.renderAurasInventory(event.getGuiGraphics());
+    }
+    @SubscribeEvent
+    public static <T extends LivingEntity, M extends EntityModel<T>> void renderLivingPre(RenderLivingEvent.Pre<T, M> event) {
         assert Minecraft.getInstance().player != null;
         LivingEntity entity = event.getEntity();
         PoseStack poseStack = event.getPoseStack();
         Quaternionf cameraOrientation = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
         MultiBufferSource buffers = event.getMultiBufferSource();
-
-        if (entity instanceof Player player) {
-            AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-            if (abilityManager != null) {
-                Dash dash = abilityManager.takeAbility(Dash.class);
-                if (dash != null && dash.isDashing() && dash.getLevel() >= 3) {
-                    event.setCanceled(true);
-                }
-            }
-        }
+        LivingEntityRenderer<T, M> renderer = event.getRenderer();
+        M model = renderer.getModel();
 
         boolean addedLayer = false;
-        for (RenderLayer layer : ((LivingEntityRendererAccessor) event.getRenderer()).layers()) {
+        for (RenderLayer<T, M> layer : ((LivingEntityRendererAccessor<T, M>) event.getRenderer()).layers()) {
             if (layer instanceof BarrierLayer.LayerBarrier<?, ?>) {
                 addedLayer = true;
                 break;
@@ -139,6 +144,8 @@ public class ClientEvents {
             event.getRenderer().addLayer(new MysticMirror.LayerMirror<>(event.getRenderer()));
         }
 
+
+
         if (!event.getEntity().canChangeDimensions()) return;
         if (entity instanceof Player player && (player.isSpectator() || player.isCreative())) return;
         if (!entity.getPassengers().isEmpty()) return;
@@ -146,9 +153,10 @@ public class ClientEvents {
         DataManager dataManager = DataGetter.getUnwrap(entity);
         if (dataManager == null) return;
         DarkFlameTicks darkFlameTicks = dataManager.takeData(DarkFlameTicks.class);
-        int y0ffset = -10;
+        int yOffset = -10;
         if (darkFlameTicks != null && darkFlameTicks.isBurning()) VisualHelper.renderAncientFlame(poseStack, entity, buffers);
         if (entity == Minecraft.getInstance().player) return;
+
         poseStack.pushPose();
 
         poseStack.translate(0, entity.getBbHeight() + 0.75, 0);
@@ -162,7 +170,7 @@ public class ClientEvents {
 
         StunEffect stunEffect = effectManager.takeEffect(StunEffect.class);
         if (stunEffect != null && stunEffect.renderBar()) {
-            y0ffset = -18;
+            yOffset = -18;
             StunBarType.render(stunEffect, poseStack, buffers);
         }
 
@@ -170,18 +178,36 @@ public class ClientEvents {
         DisarmEffect disarmEffect = effectManager.takeEffect(DisarmEffect.class);
         DeafenedEffect deafenedEffect = effectManager.takeEffect(DeafenedEffect.class);
 
-        if (disarmEffect != null && disarmEffect.renderDisarm()) DisarmedSwordType.render(poseStack, buffers, y0ffset);
-        else if (frozenEffect != null && frozenEffect.renderFreeze()) SnowCrystalType.render(frozenEffect, poseStack, buffers, y0ffset);
-        else if (deafenedEffect != null && deafenedEffect.renderDeaf()) DeafeningType.render(deafenedEffect, poseStack, buffers, y0ffset);
+        if (disarmEffect != null && disarmEffect.renderDisarm()) DisarmedSwordType.render(poseStack, buffers, yOffset);
+        else if (frozenEffect != null && frozenEffect.renderFreeze()) SnowCrystalType.render(frozenEffect, poseStack, buffers, yOffset);
+        else if (deafenedEffect != null && deafenedEffect.renderDeaf()) DeafeningType.render(deafenedEffect, poseStack, buffers, yOffset);
 
         poseStack.popPose();
     }
+    @SubscribeEvent
+    @SuppressWarnings("unchecked")
+    public static <T extends LivingEntity, M extends EntityModel<T>> void renderLivingPost(RenderLivingEvent.Post<T,M> event) {
+        T entity = (T) event.getEntity();
+        PoseStack poseStack = event.getPoseStack();
+        MultiBufferSource buffers = event.getMultiBufferSource();
+        LivingEntityRenderer<T, M> renderer = event.getRenderer();
+        M model = renderer.getModel();
+        int packedLight = event.getPackedLight();
+        int packedOverlay = LivingEntityRenderer.getOverlayCoords(entity, 0);
+
+        DataManager dataManager = DataGetter.getUnwrap(event.getEntity());
+        if (dataManager == null) return;
+
+        EvasionData evasionData = dataManager.takeData(EvasionData.class);
+        if (evasionData != null && evasionData.getIFrames() > 0) VisualHelper.renderBlinkingEntity(entity, renderer, poseStack, buffers, packedLight, packedOverlay);
+    }
+
     @SubscribeEvent
     public static void input(InputEvent event) {
         Player player = Minecraft.getInstance().player;
         if (player == null || ActionsHelper.preventActions(player)) return;
 
-        if (KeyBinding.BLOCK.consumeClick() && (player.getMainHandItem().getItem() instanceof SwordItem || player.getMainHandItem().getItem() instanceof MeleeWeaponItem)) NetworkHandler.sendToServer(new StartedBlockingC2S());
+        if (KeyBinding.BLOCK.consumeClick() && player.getMainHandItem().is(FTZItemTags.MELEE_BLOCK)) NetworkHandler.sendToServer(new StartedBlockingC2S());
     }
     @SubscribeEvent
     public static void mouseScrolling(InputEvent.MouseScrollingEvent event) {
@@ -198,19 +224,15 @@ public class ClientEvents {
     @SubscribeEvent
     public static void clientTick(TickEvent.ClientTickEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player != null) {
-            Vec3 velocity = player.getDeltaMovement();
-            NetworkHandler.sendToServer(new DeltaMovementC2S(velocity));
-        }
+        if (player != null) NetworkHandler.sendToServer(new DeltaMovementC2S(player.getDeltaMovement()));
     }
     @SubscribeEvent
     public static void mouseInputs(InputEvent.InteractionKeyMappingTriggered event) {
         Player player = Minecraft.getInstance().player;
-        if (player != null) {
-            if (ActionsHelper.preventActions(player)) {
-                event.setCanceled(true);
-                event.setSwingHand(false);
-            }
+        if (player == null) return;
+        if (ActionsHelper.preventActions(player) || player.hasEffect(FTZMobEffects.DISARM)) {
+            event.setCanceled(true);
+            event.setSwingHand(false);
         }
     }
     @SubscribeEvent
@@ -224,8 +246,6 @@ public class ClientEvents {
         if (KeyBinding.DASH.consumeClick()) NetworkHandler.sendToServer(new StartDashC2S());
 
         if (event.getKey() == Minecraft.getInstance().options.keyJump.getKey().getValue()) {
-            DoubleJump doubleJump = abilityManager.takeAbility(DoubleJump.class);
-            if (doubleJump == null) return;
             if (event.getAction() == 0) NetworkHandler.sendToServer(new JumpButtonReleasedC2S());
             else if (event.getAction() == 1) NetworkHandler.sendToServer(new DoubleJumpC2S());
         }
@@ -234,8 +254,9 @@ public class ClientEvents {
         if (KeyBinding.SPELLCAST1.consumeClick()) NetworkHandler.sendToServer(new CastSpellC2S(0));
         if (KeyBinding.SPELLCAST2.consumeClick()) NetworkHandler.sendToServer(new CastSpellC2S(1));
 
-        TalentData talentData = TalentGetter.getUnwrap(player);
-        if (KeyBinding.TALENTS.consumeClick() && talentData != null) Minecraft.getInstance().setScreen(new TalentsScreen(talentData));
+
+        TalentsHolder talentsHolder = abilityManager.takeAbility(TalentsHolder.class);
+        if (KeyBinding.TALENTS.consumeClick() && talentsHolder != null && Fantazia.DEVELOPER_MODE) Minecraft.getInstance().setScreen(new TalentsScreen(talentsHolder));
     }
 
     // the event is used to remove vanilla's "Attack damage: ..." and "Attack speed: ..." lines
@@ -243,29 +264,31 @@ public class ClientEvents {
     public static void itemTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         List<Component> tooltip = event.getToolTip();
-        if (stack.getItem() instanceof SpellCaster spellCaster) {
-            tooltip.addAll(spellCaster.buildTooltip());
-        }
+        if (stack.getItem() instanceof SpellCaster spellCaster) tooltip.addAll(spellCaster.buildTooltip());
+        if (stack.getItem() instanceof AuraCaster auraCaster) tooltip.addAll(auraCaster.buildTooltip());
         if (stack.getItem() instanceof FragileBlade fragileBlade) {
-            Component name = event.getToolTip().get(0);
-            tooltip.removeAll(event.getToolTip());
+            Component name = event.getToolTip().get(0).copy();
+            tooltip.clear();
             GuiHelper.addComponent(tooltip, name.getString(), null, null);
             tooltip.add(Component.translatable(" "));
-            tooltip.addAll(fragileBlade.buildTooltip(stack));
+            tooltip.addAll(fragileBlade.buildItemTooltip(stack));
         }
         if (stack.getItem() instanceof Murasama murasama) {
-            Component name = event.getToolTip().get(0);
-            tooltip.removeAll(event.getToolTip());
+            Component name = event.getToolTip().get(0).copy();
+            tooltip.clear();
             GuiHelper.addComponent(tooltip, name.getString(), null, null);
             tooltip.add(Component.translatable(" "));
-            tooltip.addAll(murasama.buildTooltip(null));
+            tooltip.addAll(murasama.buildItemTooltip(stack));
         }
     }
     @SubscribeEvent
     public static void playSound(PlaySoundEvent event) {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(FTZMobEffects.DEAFENED)) {
             boolean cancel = true;
-            for (SoundEvent soundEvent : DeafenedEffect.IGNORED) if (event.getName().equals(soundEvent.getLocation().getPath())) cancel = false;
+            ITagManager<SoundEvent> tagManager = ForgeRegistries.SOUND_EVENTS.tags();
+            if (tagManager == null) return;
+            List<SoundEvent> soundEvents = tagManager.getTag(FTZSoundEventTags.NOT_MUTED).stream().toList();
+            for (SoundEvent soundEvent : soundEvents) if (event.getOriginalSound().getLocation().equals(soundEvent.getLocation())) cancel = false;
             if (cancel) event.setSound(null);
         }
     }
@@ -274,9 +297,7 @@ public class ClientEvents {
         DataManager dataManager = DataGetter.getUnwrap(Minecraft.getInstance().player);
         if (dataManager == null) return;
         DarkFlameTicks darkFlameTicks = dataManager.takeData(DarkFlameTicks.class);
-        if (event.getOverlayType() == RenderBlockScreenEffectEvent.OverlayType.FIRE && darkFlameTicks != null && darkFlameTicks.isBurning()) {
-            event.setCanceled(true);
-        }
+        if (event.getOverlayType() == RenderBlockScreenEffectEvent.OverlayType.FIRE && darkFlameTicks != null && darkFlameTicks.isBurning()) event.setCanceled(true);
     }
 
 }

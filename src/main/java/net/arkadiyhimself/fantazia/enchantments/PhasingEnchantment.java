@@ -1,15 +1,15 @@
 package net.arkadiyhimself.fantazia.enchantments;
 
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
+import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import org.jetbrains.annotations.NotNull;
 
 public class PhasingEnchantment extends Enchantment {
     public PhasingEnchantment() {
-        super(Rarity.COMMON, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
+        super(Rarity.COMMON, FTZEnchantments.Categories.HATCHET, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
@@ -35,9 +35,5 @@ public class PhasingEnchantment extends Enchantment {
     @Override
     protected boolean checkCompatibility(@NotNull Enchantment pOther) {
         return super.checkCompatibility(pOther) && !(pOther instanceof RicochetEnchantment);
-    }
-    @Override
-    public boolean canApplyAtEnchantingTable(@NotNull ItemStack stack) {
-        return stack.getItem() instanceof HatchetItem;
     }
 }

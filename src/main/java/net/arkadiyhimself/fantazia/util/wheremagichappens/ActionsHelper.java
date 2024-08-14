@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ClientValues;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.MeleeBlock;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
@@ -27,6 +28,8 @@ public class ActionsHelper {
             if (meleeBlock != null && meleeBlock.isInAnim()) return true;
             Dash dash = abilityManager.takeAbility(Dash.class);
             if (dash != null && dash.isDashing()) return true;
+            ClientValues clientValues = abilityManager.takeAbility(ClientValues.class);
+            if (clientValues != null && clientValues.isTaunting()) return true;
         }
 
         EffectManager effectManager = EffectGetter.getUnwrap(player);
@@ -44,6 +47,10 @@ public class ActionsHelper {
             player.stopUsingItem();
             player.stopSleeping();
             player.stopFallFlying();
+            AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
+            if (abilityManager == null) return;
+            abilityManager.getAbility(Dash.class).ifPresent(Dash::stopDash);
+            abilityManager.getAbility(MeleeBlock.class).ifPresent(MeleeBlock::interrupt);
         } else if (entity instanceof Mob mob) {
             mob.setTarget(null);
             if (mob instanceof Warden warden) {
@@ -61,9 +68,10 @@ public class ActionsHelper {
         if (abilityManager != null) {
             MeleeBlock blocking = abilityManager.takeAbility(MeleeBlock.class);
             Dash dash = abilityManager.takeAbility(Dash.class);
+            ClientValues clientValues = abilityManager.takeAbility(ClientValues.class);
             if (blocking != null && blocking.isInAnim()) return true;
             if (dash != null && dash.isDashing()) return true;
-
+            if (clientValues != null && clientValues.isTaunting()) return true;
         }
 
         EffectManager effectManager = EffectGetter.getUnwrap(player);

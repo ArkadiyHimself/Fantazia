@@ -39,7 +39,7 @@ public class MixinParticle {
     @Inject(at = @At("HEAD"), method = "tick", cancellable = true)
     private void tick(CallbackInfo ci) {
         Particle particle = (Particle) (Object) this;
-        VanillaEventsExtension.ParticleTickEvent event = FTZEvents.ForgeExtenstion.onParticleTick(particle, new Vec3(x, y, z), new Vec3(xd, yd, zd), rCol, gCol, bCol, age, hasPhysics, onGround);
+        VanillaEventsExtension.ParticleTickEvent event = FTZEvents.ForgeExtension.onParticleTick(particle, new Vec3(x, y, z), new Vec3(xd, yd, zd), rCol, gCol, bCol, age, hasPhysics, onGround);
         if (event.isCanceled()) {
             ci.cancel();
             return;

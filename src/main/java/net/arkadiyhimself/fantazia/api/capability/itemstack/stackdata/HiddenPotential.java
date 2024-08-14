@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.api.capability.itemstack.stackdata;
 import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.itemstack.StackDataHolder;
+import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +27,7 @@ public class HiddenPotential extends StackDataHolder implements ITicking, IDamag
     private static final float MIN = 0;
     private static final float MAX = 20;
     private static final int DELAY_REGULAR = 300;
-    private final int DELAY_UNLEASH = 1200;
+    private static final int DELAY_UNLEASH = 1200;
     private float damage = MIN;
     private int delay = 0;
     public HiddenPotential(ItemStack stack) {
@@ -55,14 +56,14 @@ public class HiddenPotential extends StackDataHolder implements ITicking, IDamag
 
     @Override
     public void onHit(LivingHurtEvent event) {
-        reset();
+        if (!event.getSource().is(FTZDamageTypes.REMOVAL)) reset();
     }
     public DAMAGE_LEVEL damageLevel() {
-        float perc = dmgPercent();
-        if (perc <= 0) return DAMAGE_LEVEL.STARTING;
-        else if (perc > 0 && perc < 0.34) return DAMAGE_LEVEL.LOW;
-        else if (perc >= 0.34 && perc < 0.67) return DAMAGE_LEVEL.MEDIUM;
-        else if (perc >= 0.67 && perc < 1) return DAMAGE_LEVEL.HIGH;
+        float percent = dmgPercent();
+        if (percent <= 0) return DAMAGE_LEVEL.STARTING;
+        else if (percent > 0 && percent < 0.34) return DAMAGE_LEVEL.LOW;
+        else if (percent >= 0.34 && percent < 0.67) return DAMAGE_LEVEL.MEDIUM;
+        else if (percent >= 0.67 && percent < 1) return DAMAGE_LEVEL.HIGH;
         else return DAMAGE_LEVEL.MAXIMUM;
     }
     private float dmgPercent() {

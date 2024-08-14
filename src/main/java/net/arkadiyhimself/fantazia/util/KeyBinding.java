@@ -13,7 +13,7 @@ public class KeyBinding {
     public static final String KEY_SWORD_ABILITY = "key.fantazia.sword_ability";
     public static final String KEY_SPELLCAST1 = "key.fantazia.spellcast1";
     public static final String KEY_SPELLCAST2 = "key.fantazia.spellcast2";
-    public static final String KEY_TALENTS = "key.fantzia.talents";
+    public static final String KEY_TALENTS = "key.fantazia.talents";
 
     public static final KeyMapping DASH;
     public static final KeyMapping BLOCK;

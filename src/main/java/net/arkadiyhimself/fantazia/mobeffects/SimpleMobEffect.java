@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.mobeffects;
 
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -28,18 +27,18 @@ public class SimpleMobEffect extends MobEffect {
         return !isTicking;
     }
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
         if (this == FTZMobEffects.FROZEN) freezeTick(pLivingEntity);
 
     }
     @Override
-    public void applyInstantenousEffect(@Nullable Entity pSource, @Nullable Entity pIndirectSource, LivingEntity pLivingEntity, int pAmplifier, double pHealth) {
-        if (this == FTZMobEffects.MICROSTUN) ActionsHelper.interrupt(pLivingEntity);
+    public void applyInstantenousEffect(@Nullable Entity pSource, @Nullable Entity pIndirectSource, @NotNull LivingEntity pLivingEntity, int pAmplifier, double pHealth) {
     }
 
     public void freezeTick(@NotNull LivingEntity pLivingEntity) {
         DamageSource FROZEN = new DamageSource(pLivingEntity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FTZDamageTypes.FROZEN));
-        if (pLivingEntity.hasEffect(MobEffects.FIRE_RESISTANCE)) { pLivingEntity.hurt(FROZEN, 1f); }
-        else if (pLivingEntity.fireImmune()) { pLivingEntity.hurt(FROZEN, 2.25f); }
+        if (pLivingEntity.fireImmune()) pLivingEntity.hurt(FROZEN, 2.25f);
+        else if (pLivingEntity.hasEffect(MobEffects.FIRE_RESISTANCE)) pLivingEntity.hurt(FROZEN, 1f);
     }
 }

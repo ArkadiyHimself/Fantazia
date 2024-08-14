@@ -1,7 +1,5 @@
 package net.arkadiyhimself.fantazia.particless;
 
-import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -9,29 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
 public class GenericParticle extends RisingParticle {
-    public static final ArrayList<SimpleParticleType> LIFESTEAL = new ArrayList<>(){{
-        add(FTZParticleTypes.LIFESTEAL1);
-        add(FTZParticleTypes.LIFESTEAL2);
-        add(FTZParticleTypes.LIFESTEAL3);
-        add(FTZParticleTypes.LIFESTEAL4);
-        add(FTZParticleTypes.LIFESTEAL5);
-    }};
-    public static final ArrayList<SimpleParticleType> REGENERATION = new ArrayList<>(){{
-        add(FTZParticleTypes.REGEN1);
-        add(FTZParticleTypes.REGEN2);
-        add(FTZParticleTypes.REGEN3);
-    }};
-    public static SimpleParticleType randomLifestealParticle() {
-        int i = Fantazia.RANDOM.nextInt(0, LIFESTEAL.size());
-        return LIFESTEAL.get(i);
-    }
-    public static SimpleParticleType randomRegenParticle() {
-        int i = Fantazia.RANDOM.nextInt(0, REGENERATION.size());
-        return REGENERATION.get(i);
-    }
     private final SpriteSet spriteSet;
     public GenericParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet spriteSet)  {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);

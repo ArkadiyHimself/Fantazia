@@ -1,0 +1,5 @@
+{
+  "iconTexture" : "fantazia:textures/gui/talents/melee_block.png",
+  "title" : "fantazia.talent.melee_block",
+  "wisdomCost": 0
+}

@@ -12,14 +12,11 @@ public class EffectCleansing {
     public static void forceCleanse(LivingEntity livingEntity, MobEffect effect) {
         tryCleanse(livingEntity, Cleanse.ABSOLUTE, effect);
     }
-    public static boolean tryCleanse(LivingEntity livingEntity, Cleanse cleanse, MobEffect effect) {
-        if (!livingEntity.hasEffect(effect)) return false;
-        boolean flag = FTZEvents.ForgeExtenstion.onEffectCleanse(livingEntity, livingEntity.getEffect(effect), cleanse);
-        if (!flag) return false;
-        if (cleanse.isStrongEnough(CleanseStrength.getRequiredStrength(effect))) {
-            livingEntity.removeEffect(effect);
-            return true;
-        } else return false;
+    public static void tryCleanse(LivingEntity livingEntity, Cleanse cleanse, MobEffect effect) {
+        if (!livingEntity.hasEffect(effect)) return;
+        boolean flag = FTZEvents.ForgeExtension.onEffectCleanse(livingEntity, livingEntity.getEffect(effect), cleanse);
+        if (!flag) return;
+        if (cleanse.strongEnough(effect)) livingEntity.removeEffect(effect);
     }
     public static void tryCleanseAll(LivingEntity livingEntity, Cleanse cleanse, MobEffectCategory category) {
         List<MobEffectInstance> effectInstances = livingEntity.getActiveEffects().stream().filter(effectInstance -> effectInstance.getEffect().getCategory() == category).toList();

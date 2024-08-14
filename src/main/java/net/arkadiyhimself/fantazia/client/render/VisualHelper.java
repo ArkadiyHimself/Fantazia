@@ -4,11 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.client.gui.FTZGui;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
+import net.arkadiyhimself.fantazia.client.gui.FantazicGui;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -19,12 +22,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+
 public class VisualHelper {
     public enum ParticleMovement {
         REGULAR, CHASE, FALL, ASCEND, CHASE_AND_FALL, CHASE_OPPOSITE, CHASE_AND_FALL_OPPOSITE, FROM_CENTER, TO_CENTER
     }
     public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type) {
-        if (particle == null) { return; }
+        if (particle == null) return;
         // getting entity's height and width
         float radius = entity.getBbWidth() * (float) 0.7;
         float height = entity.getBbHeight();
@@ -33,7 +38,7 @@ public class VisualHelper {
         double dy = entity.getDeltaMovement().y();
         double dz = entity.getDeltaMovement().z();
 
-        // here im using circular function for X and Z (X**2 + Z**2 = R**2) coordinates to make a horizontal circle
+        // here I am using a circular function for X and Z (X^2+Z^2=R^2) coordinates to make a horizontal circle
         // Y variants are just a vertical line
         double y = Fantazia.RANDOM.nextDouble(0, height * 0.8);
         double x = Fantazia.RANDOM.nextDouble(-radius, radius);
@@ -113,15 +118,53 @@ public class VisualHelper {
                 f6 = f10;
             }
 
-            FTZGui.fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 0.0F - f4, f5, f8, f9);
-            FTZGui.fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 0.0F - f4, f5, f6, f9);
-            FTZGui.fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 1.4F - f4, f5, f6, f7);
-            FTZGui.fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 1.4F - f4, f5, f8, f7);
+            FantazicGui.fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 0.0F - f4, f5, f8, f9);
+            FantazicGui.fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 0.0F - f4, f5, f6, f9);
+            FantazicGui.fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 1.4F - f4, f5, f6, f7);
+            FantazicGui.fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 1.4F - f4, f5, f8, f7);
             f3 -= 0.45F;
             f4 -= 0.45F;
             f1 *= 0.9F;
             f5 += 0.03F;
         }
         poseStack.popPose();
+    }
+    public static <T extends LivingEntity, M extends EntityModel<T>> void renderBlinkingEntity(T entity, LivingEntityRenderer<T,M> renderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
+        poseStack.pushPose();
+
+        float scale = Fantazia.RANDOM.nextFloat(-0.75F,0.75F);
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(), 0, Fantazia.RANDOM.nextDouble()).normalize().scale(scale);
+        poseStack.scale(-1,-1,1);
+        poseStack.translate(vec3.x(), vec3.y() - 1.501F, vec3.z());
+
+        RenderType renderType = renderer.getModel().renderType(renderer.getTextureLocation(entity));
+        VertexConsumer consumer = buffers.getBuffer(renderType);
+
+        float i1 = Fantazia.RANDOM.nextFloat(0.15f,0.45f);
+        float i2 = Fantazia.RANDOM.nextFloat(0.15f,0.45f);
+        float i3 = Fantazia.RANDOM.nextFloat(0.65f,0.95f);
+
+        float r;
+        float g;
+        float b;
+
+        int j = Fantazia.RANDOM.nextInt(1,4);
+        if (j == 1) {
+            r = i1;
+            g = i2;
+            b = i3;
+        } else if (j == 2) {
+            r = i3;
+            g = i1;
+            b = i2;
+        } else {
+            r = i2;
+            g = i3;
+            b = i1;
+        }
+        renderer.getModel().renderToBuffer(poseStack, consumer, packedLight, packedOverlay, r,g,b,0.65f);
+
+        poseStack.popPose();
+
     }
 }

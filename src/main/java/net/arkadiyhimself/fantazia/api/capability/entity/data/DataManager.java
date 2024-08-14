@@ -5,10 +5,7 @@ import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.AuraOwning;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.CommonData;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.HatchetStuck;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.*;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,9 +49,7 @@ public class DataManager extends LivingEntityCapability {
         DATA.forEach(dataHolder -> dataHolder.deserialize(nbt));
     }
     public void tick() {
-        DATA.forEach(dataHolder -> {
-            if (dataHolder instanceof ITicking iTicking) iTicking.tick();
-        });
+        DATA.stream().filter(ITicking.class::isInstance).forEach(dataHolder -> ((ITicking) dataHolder).tick());
         updateTracking();
     }
     public void respawn() {
@@ -99,6 +94,7 @@ public class DataManager extends LivingEntityCapability {
             dataManager.grantData(CommonData::new);
             dataManager.grantData(AuraOwning::new);
             dataManager.grantData(HatchetStuck::new);
+            dataManager.grantData(DAMData::new);
         }
     }
 }

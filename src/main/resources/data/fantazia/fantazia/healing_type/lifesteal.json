@@ -1,0 +1,11 @@
+{
+  "id": "lifesteal",
+  "exhaustion": 0,
+  "particles": [
+    "fantazia:lifesteal1",
+    "fantazia:lifesteal2",
+    "fantazia:lifesteal3",
+    "fantazia:lifesteal4",
+    "fantazia:lifesteal5"
+  ]
+}

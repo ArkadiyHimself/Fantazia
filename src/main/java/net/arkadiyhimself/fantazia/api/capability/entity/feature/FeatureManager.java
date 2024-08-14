@@ -67,10 +67,8 @@ public class FeatureManager extends EntityCapability {
     }
     @Nullable
     public <T extends FeatureHolder> T takeFeature(Class<T> tClass) {
-        T object = null;
         for (FeatureHolder featureHolder : FEATURES) if (tClass == featureHolder.getClass()) return tClass.cast(featureHolder);
-
-        return object;
+        return null;
     }
     public  <T extends FeatureHolder> boolean hasFeature(Class<T> tClass) {
         for (FeatureHolder featureHolder : FEATURES) if (tClass.isInstance(featureHolder)) return true;

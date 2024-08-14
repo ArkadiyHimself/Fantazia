@@ -1,7 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
-import net.arkadiyhimself.fantazia.advanced.cleansing.CleanseStrength;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -24,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 
 @Mixin(EffectRenderingInventoryScreen.class)
-public abstract class MixinEffectScreenRenderer extends AbstractContainerScreen {
+public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
     private static List<Component> buildTooltip(MobEffect effect) {
         List<Component> components = Lists.newArrayList();
         String lines = Component.translatable(effect.getDescriptionId() + ".lines").getString();
@@ -54,7 +53,7 @@ public abstract class MixinEffectScreenRenderer extends AbstractContainerScreen 
         return components;
     }
     private static void renderEffectTooltip(GuiGraphics guiGraphics, MobEffect effect, int mouseX, int mouseY) {
-        Cleanse cleanse = CleanseStrength.getRequiredStrength(effect);
+        Cleanse cleanse = Cleanse.requiredCleanse(effect);
         Component clns = cleanse.getName();
         List<Component> components = Lists.newArrayList();
         components.addAll(buildTooltip(effect));
@@ -62,7 +61,7 @@ public abstract class MixinEffectScreenRenderer extends AbstractContainerScreen 
         guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, components, mouseX, mouseY);
     }
 
-    public MixinEffectScreenRenderer(AbstractContainerMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
+    public MixinEffectScreenRenderer(T pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }
     @Unique

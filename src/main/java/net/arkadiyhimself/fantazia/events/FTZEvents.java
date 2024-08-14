@@ -17,9 +17,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
 public class FTZEvents {
-    public static class ForgeExtenstion {
-        public static VanillaEventsExtension.ParticleTickEvent onParticleTick(Particle particle, Vec3 positon, Vec3 deltaMovement, float red, float green, float blue, int age, boolean hasPhysics, boolean onGround) {
-            VanillaEventsExtension.ParticleTickEvent event = new VanillaEventsExtension.ParticleTickEvent(particle, positon, deltaMovement, red, green, blue, age, hasPhysics, onGround);
+    public static class ForgeExtension {
+        public static VanillaEventsExtension.ParticleTickEvent onParticleTick(Particle particle, Vec3 position, Vec3 deltaMovement, float red, float green, float blue, int age, boolean hasPhysics, boolean onGround) {
+            VanillaEventsExtension.ParticleTickEvent event = new VanillaEventsExtension.ParticleTickEvent(particle, position, deltaMovement, red, green, blue, age, hasPhysics, onGround);
             MinecraftForge.EVENT_BUS.post(event);
             return event;
         }
@@ -27,8 +27,8 @@ public class FTZEvents {
             VanillaEventsExtension.MobAttackEvent event = new VanillaEventsExtension.MobAttackEvent(mob, target);
             return !MinecraftForge.EVENT_BUS.post(event);
         }
-        public static boolean onDeathPreventation(LivingEntity entity, Object cause) {
-            VanillaEventsExtension.DeathPreventationEvent event = new VanillaEventsExtension.DeathPreventationEvent(entity, cause);
+        public static boolean onDeathPrevention(LivingEntity entity, Object cause) {
+            VanillaEventsExtension.DeathPreventionEvent event = new VanillaEventsExtension.DeathPreventionEvent(entity, cause);
             return !MinecraftForge.EVENT_BUS.post(event);
         }
         public static boolean onLivingPickUpItem(LivingEntity entity, ItemEntity item) {
@@ -85,14 +85,14 @@ public class FTZEvents {
         DoubleJumpEvent event = new DoubleJumpEvent(player);
         return !MinecraftForge.EVENT_BUS.post(event);
     }
-    public static boolean onAuraTick(AuraInstance aura) {
-        AuraEvent.Tick event = new AuraEvent.Tick(aura);
-        return !MinecraftForge.EVENT_BUS.post(event);
+    public static <T extends Entity, M extends Entity> void onAuraTick(AuraInstance<T,M> aura) {
+        AuraEvent.Tick<T,M> event = new AuraEvent.Tick<>(aura);
+        MinecraftForge.EVENT_BUS.post(event);
     }
-    public static void onAuraEnter(AuraInstance aura, Entity entity) {
-        MinecraftForge.EVENT_BUS.post(new AuraEvent.Enter(aura, entity));
+    public static <T extends Entity, M extends Entity> void onAuraEnter(AuraInstance<T,M> aura, T entity) {
+        MinecraftForge.EVENT_BUS.post(new AuraEvent.Enter<>(aura, entity));
     }
-    public static void onAuraExit(AuraInstance aura, Entity entity) {
-        MinecraftForge.EVENT_BUS.post(new AuraEvent.Exit(aura, entity));
+    public static <T extends Entity, M extends Entity> void onAuraExit(AuraInstance<T,M> aura, T entity) {
+        MinecraftForge.EVENT_BUS.post(new AuraEvent.Exit<>(aura, entity));
     }
 }

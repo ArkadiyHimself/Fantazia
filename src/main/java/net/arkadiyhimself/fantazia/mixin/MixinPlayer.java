@@ -34,6 +34,7 @@ public abstract class MixinPlayer extends LivingEntity {
         return 0.55f;
     }
     Player player;
+    @SuppressWarnings("ConstantConditions")
     @Inject(at = @At(value = "HEAD"), method = "getDigSpeed(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)F", cancellable = true, remap = false)
     protected void slowMiningFreeze(BlockState pState, BlockPos pos, CallbackInfoReturnable<Float> cir) {
         Player player = (Player) (Object) this;
@@ -44,10 +45,9 @@ public abstract class MixinPlayer extends LivingEntity {
     protected void jumpFromGround(CallbackInfo ci) {
         AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
         if (abilityManager == null || player.isCreative()) return;
-        abilityManager.getAbility(StaminaData.class).ifPresent(staminaData -> {
-            boolean enough = staminaData.wasteStamina(jumpSTcost(), true);
-            if (!enough) ci.cancel();
-        });
+
+        StaminaData staminaData = abilityManager.takeAbility(StaminaData.class);
+        if (staminaData != null && !staminaData.wasteStamina(jumpSTcost(), true)) ci.cancel();
     }
     @Inject(at = @At(value = "HEAD"), method = "getHurtSound", cancellable = true)
     private void hurtSound(DamageSource pDamageSource, CallbackInfoReturnable<SoundEvent> cir) {

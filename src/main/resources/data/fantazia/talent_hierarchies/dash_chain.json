@@ -1,0 +1,9 @@
+{
+  "hierarchy": "chain",
+  "tab": "abilities",
+  "values" : [
+    "fantazia:dash1",
+    "fantazia:dash2",
+    "fantazia:dash3"
+  ]
+}

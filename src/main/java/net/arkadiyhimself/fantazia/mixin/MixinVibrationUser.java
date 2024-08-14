@@ -10,6 +10,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gameevent.vibrations.VibrationSystem;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -22,12 +23,11 @@ public abstract class MixinVibrationUser implements VibrationSystem.User {
         return this.this$0.hasPose(Pose.DIGGING) || this.this$0.hasPose(Pose.EMERGING);
     }
     @Override
-    public boolean canReceiveVibration(ServerLevel pLevel, BlockPos pPos, GameEvent pGameEvent, GameEvent.Context pContext) {
+    public boolean canReceiveVibration(@NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull GameEvent pGameEvent, GameEvent.@NotNull Context pContext) {
         if (this.this$0.hasEffect(FTZMobEffects.DEAFENED)) return false;
         if (!this.this$0.isNoAi() && !this.this$0.isDeadOrDying() && !this.this$0.getBrain().hasMemoryValue(MemoryModuleType.VIBRATION_COOLDOWN) && !isDiggingOrEmerging() && pLevel.getWorldBorder().isWithinBounds(pPos)) {
             Entity entity = pContext.sourceEntity();
-            if (entity instanceof LivingEntity) {
-                LivingEntity livingentity = (LivingEntity)entity;
+            if (entity instanceof LivingEntity livingentity) {
                 if (!this.this$0.canTargetEntity(livingentity)) return false;
             }
 

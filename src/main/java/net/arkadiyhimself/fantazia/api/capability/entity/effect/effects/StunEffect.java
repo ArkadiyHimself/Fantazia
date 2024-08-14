@@ -1,13 +1,16 @@
 package net.arkadiyhimself.fantazia.api.capability.entity.effect.effects;
 
 import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHolder;
+import net.arkadiyhimself.fantazia.networking.NetworkHandler;
+import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -25,6 +28,7 @@ public class StunEffect extends EffectHolder implements IDamageReacting {
     private int delay = 0;
     private int color = 0;
     private boolean shift = false;
+    @SuppressWarnings("ConstantConditions")
     public StunEffect(LivingEntity owner) {
         super(owner, FTZMobEffects.STUN);
     }
@@ -40,13 +44,15 @@ public class StunEffect extends EffectHolder implements IDamageReacting {
     public boolean renderBar() {
         return stunned() || hasPoints();
     }
+    @SuppressWarnings("ConstantConditions")
     public int getMaxPoints() {
         return (int) this.getOwner().getAttributeValue(FTZAttributes.MAX_STUN_POINTS);
     }
+    @SuppressWarnings("ConstantConditions")
     private void attackStunned(int dur) {
         points = 0;
         delay = 0;
-        getOwner().addEffect(new MobEffectInstance(FTZMobEffects.STUN, dur, 0, false, false, true));
+        EffectHelper.makeStunned(getOwner(), dur);
     }
     public int getColor() {
         return color;
@@ -77,13 +83,13 @@ public class StunEffect extends EffectHolder implements IDamageReacting {
             }
         } else if (source.is(DamageTypeTags.IS_EXPLOSION)) {
             int dur = (int) Math.max(premature, amount * 5);
-            int blastProt = EnchantmentHelper.getEnchantmentLevel(Enchantments.BLAST_PROTECTION, getOwner());
-            if (blastProt > 0) dur /= blastProt;
+            int blastProtect = EnchantmentHelper.getEnchantmentLevel(Enchantments.BLAST_PROTECTION, getOwner());
+            if (blastProtect > 0) dur /= blastProtect;
             attackStunned(dur);
         } else if (source.is(DamageTypeTags.IS_FALL)) {
             int dur = (int) Math.max(premature, amount * 5);
-            int fallProt = getOwner().getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(Enchantments.FALL_PROTECTION);
-            if (fallProt > 0) dur /= fallProt;
+            int fallProtect = getOwner().getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(Enchantments.FALL_PROTECTION);
+            if (fallProtect > 0) dur /= fallProtect;
             attackStunned(dur);
         }
     }
@@ -93,11 +99,6 @@ public class StunEffect extends EffectHolder implements IDamageReacting {
         if (delay > 0) delay--;
         else if (points > 0) points--;
         colorTick();
-    }
-    @Override
-    public void added(MobEffectInstance instance) {
-        super.added(instance);
-        ActionsHelper.interrupt(getOwner());
     }
     @Override
     public CompoundTag serialize() {
@@ -117,5 +118,16 @@ public class StunEffect extends EffectHolder implements IDamageReacting {
         super.respawn();
         points = 0;
         delay = 0;
+    }
+
+    @Override
+    public void added(MobEffectInstance instance) {
+        super.added(instance);
+        if (getOwner() instanceof ServerPlayer serverPlayer) NetworkHandler.sendToPlayer(new PlayAnimationS2C("stunned"), serverPlayer);
+    }
+    @Override
+    public void ended() {
+        super.ended();
+        if (getOwner() instanceof ServerPlayer serverPlayer) NetworkHandler.sendToPlayer(new PlayAnimationS2C(""), serverPlayer);
     }
 }

@@ -3,7 +3,10 @@ package net.arkadiyhimself.fantazia.mixin;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FuryEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureManager;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
@@ -27,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinEntity {
     private final Entity entity = (Entity) (Object) this;
     @Inject(at = @At("HEAD"), method = "move")
+    @SuppressWarnings("ConstantConditions")
     private void onMove(MoverType pType, Vec3 pPos, CallbackInfo ci) {
         if (pPos.horizontalDistance() <= 0) return;
         Entity entity = (Entity) (Object) this;
@@ -34,7 +38,7 @@ public class MixinEntity {
             if (livingEntity.hasEffect(FTZMobEffects.HAEMORRHAGE) && (pType == MoverType.SELF || pType == MoverType.PLAYER)) {
                 float dmg = EffectHelper.bleedingDamage(livingEntity, pPos.subtract(livingEntity.getPosition(1f)));
                 boolean flag = livingEntity.hurt(new DamageSource(livingEntity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FTZDamageTypes.BLEEDING)), dmg);
-                if (flag) VisualHelper.randomParticleOnModel(livingEntity, BloodParticle.randomBloodParticle(), VisualHelper.ParticleMovement.FALL);
+                if (flag) VisualHelper.randomParticleOnModel(livingEntity, BloodParticle.BLOOD.random(), VisualHelper.ParticleMovement.FALL);
             }
         }
     }
@@ -50,8 +54,16 @@ public class MixinEntity {
     }
     @Inject(at = @At("HEAD"), method = "baseTick", cancellable = true)
     private void tick(CallbackInfo ci) {
-        boolean flag = FTZEvents.ForgeExtenstion.onEntityTick(entity);
+        boolean flag = FTZEvents.ForgeExtension.onEntityTick(entity);
         if (flag) ci.cancel();
         FeatureGetter.get(entity).ifPresent(FeatureManager::tick);
+    }
+    @Inject(at = @At("HEAD"), method = "getTeamColor", cancellable = true)
+    private void teamColor(CallbackInfoReturnable<Integer> cir) {
+        if (!(entity instanceof LivingEntity livingEntity)) return;
+        EffectManager effectManager = EffectGetter.getUnwrap(livingEntity);
+        if (effectManager == null) return;
+        FuryEffect furyEffect = effectManager.takeEffect(FuryEffect.class);
+        if (furyEffect != null && furyEffect.isFurious()) cir.setReturnValue(12586510);
     }
 }

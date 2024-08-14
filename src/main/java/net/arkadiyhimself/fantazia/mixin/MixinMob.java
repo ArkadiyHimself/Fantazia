@@ -15,12 +15,12 @@ public class MixinMob {
     Mob mob = (Mob) (Object) this;
     @Inject(at = @At(value = "HEAD"), method = "doHurtTarget", cancellable = true)
     protected void meleeAttack(Entity pTarget, CallbackInfoReturnable<Boolean> cir) {
-        boolean attack = FTZEvents.ForgeExtenstion.onMobAttack(mob, pTarget);
+        boolean attack = FTZEvents.ForgeExtension.onMobAttack(mob, pTarget);
         if (!attack) cir.setReturnValue(false);
     }
     @Inject(at = @At(value = "HEAD"), method = "pickUpItem", cancellable = true)
     protected void pickUp(ItemEntity pItemEntity, CallbackInfo ci) {
-        boolean pickup = FTZEvents.ForgeExtenstion.onLivingPickUpItem(mob, pItemEntity);
+        boolean pickup = FTZEvents.ForgeExtension.onLivingPickUpItem(mob, pItemEntity);
         if (!pickup) ci.cancel();
     }
 }

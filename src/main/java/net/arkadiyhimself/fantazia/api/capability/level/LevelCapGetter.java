@@ -15,8 +15,9 @@ public class LevelCapGetter extends CapabilityAttacher {
     private static final Class<LevelCap> LEVEL_CAP_CLASS = LevelCap.class;
     public static final Capability<LevelCap> LEVEL_CAP = getCapability(new CapabilityToken<>() {});
     public static final ResourceLocation LEVEL_CAP_RL = Fantazia.res("level_capability");
-    @SuppressWarnings("ConstantConditions")
+
     @Nullable
+    @SuppressWarnings("ConstantConditions")
     public static LevelCap getLevelCap(Level level) {
         return get(level).orElse(null);
     }

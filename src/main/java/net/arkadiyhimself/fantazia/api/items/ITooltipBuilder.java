@@ -2,10 +2,16 @@ package net.arkadiyhimself.fantazia.api.items;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public interface ITooltipBuilder {
-    List<Component> buildTooltip(@Nullable ItemStack stack);
+    default List<Component> buildItemTooltip(@Nullable ItemStack stack) {
+        return Lists.newArrayList();
+    }
+    default List<Component> buildIconTooltip() {
+        return Lists.newArrayList();
+    }
 }

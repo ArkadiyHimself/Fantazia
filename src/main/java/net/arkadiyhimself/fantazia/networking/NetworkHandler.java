@@ -8,7 +8,6 @@ import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.talent.TalentGetter;
 import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
 import net.arkadiyhimself.fantazia.networking.packets.KickOutOfGuiS2CPacket;
 import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
@@ -64,13 +63,13 @@ public class NetworkHandler {
                 .add(SoundExpiredS2C::register)
                 .add(StartDashC2S::register)
                 .add(StartedBlockingC2S::register)
+                .add(TalentBuyingC2S::register)
 
                 .add(ResetFallDistanceC2S::register)
                 .build();
 
         // abilities
         SimpleEntityCapabilityStatusPacket.registerRetriever(AbilityGetter.ABILITY_RL, AbilityGetter::getUnwrap);
-        SimpleEntityCapabilityStatusPacket.registerRetriever(TalentGetter.TALENT_DATA_RL, TalentGetter::getUnwrap);
         SimpleEntityCapabilityStatusPacket.registerRetriever(EffectGetter.EFFECT_RL, EffectGetter::getUnwrap);
         SimpleEntityCapabilityStatusPacket.registerRetriever(DataGetter.DATA_RL, DataGetter::getUnwrap);
         SimpleEntityCapabilityStatusPacket.registerRetriever(FeatureGetter.FEATURE_RL, FeatureGetter::getUnwrap);

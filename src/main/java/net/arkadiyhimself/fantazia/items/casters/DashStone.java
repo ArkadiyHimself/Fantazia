@@ -1,15 +1,14 @@
 package net.arkadiyhimself.fantazia.items.casters;
 
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.util.KeyBinding;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
@@ -17,7 +16,6 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 import java.util.List;
 
 public class DashStone extends Item implements ICurioItem, Vanishable {
-    private final KeyMapping keyBind = KeyBinding.DASH;
     public final int level;
     public DashStone(int level) {
         super(getDefaultProperties());
@@ -40,12 +38,11 @@ public class DashStone extends Item implements ICurioItem, Vanishable {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(@NotNull ItemStack pStack, @Nullable Level pLevel, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.translatable(" "));
 
         ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.GOLD};
-        ChatFormatting[] button = new ChatFormatting[]{ChatFormatting.BOLD, ChatFormatting.RED};
         ChatFormatting[] ability = new ChatFormatting[]{ChatFormatting.BOLD, ChatFormatting.DARK_RED};
         ChatFormatting[] list = new ChatFormatting[]{ChatFormatting.RED};
 

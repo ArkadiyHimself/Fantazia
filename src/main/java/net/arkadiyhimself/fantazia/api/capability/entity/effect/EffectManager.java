@@ -71,24 +71,16 @@ public class EffectManager extends LivingEntityCapability {
         });
     }
     public void onHit(LivingAttackEvent event) {
-        EFFECTS.values().forEach(effectHolder -> {
-            if (effectHolder instanceof IDamageReacting damageReacting) damageReacting.onHit(event);
-        });
+        EFFECTS.values().stream().filter(IDamageReacting.class::isInstance).forEach(effectHolder -> ((IDamageReacting) effectHolder).onHit(event));
     }
     public void onHit(LivingHurtEvent event) {
-        EFFECTS.values().forEach(effectHolder -> {
-            if (effectHolder instanceof IDamageReacting damageReacting) damageReacting.onHit(event);
-        });
+        EFFECTS.values().stream().filter(IDamageReacting.class::isInstance).forEach(effectHolder -> ((IDamageReacting) effectHolder).onHit(event));
     }
     public void onHit(LivingDamageEvent event) {
-        EFFECTS.values().forEach(effectHolder -> {
-            if (effectHolder instanceof IDamageReacting damageReacting) damageReacting.onHit(event);
-        });
+        EFFECTS.values().stream().filter(IDamageReacting.class::isInstance).forEach(effectHolder -> ((IDamageReacting) effectHolder).onHit(event));
     }
     public void onHeal(VanillaEventsExtension.AdvancedHealEvent event) {
-        EFFECTS.values().forEach(effectHolder -> {
-            if (effectHolder instanceof IHealReacting iHealReacting) iHealReacting.onHeal(event);
-        });
+        EFFECTS.values().stream().filter(IHealReacting.class::isInstance).forEach(effectHolder -> ((IHealReacting) effectHolder).onHeal(event));
     }
     public void respawm() {
         EFFECTS.values().forEach(EffectHolder::respawn);

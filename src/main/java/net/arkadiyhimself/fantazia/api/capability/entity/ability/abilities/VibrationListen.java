@@ -2,8 +2,8 @@ package net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.SpellHelper;
-import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.Spells;
+import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
+import net.arkadiyhimself.fantazia.advanced.spell.Spells;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class VibrationListen extends AbilityHolder implements ITicking {
-    private static final String ID = "vibration_listen:";
     private final HashMap<LivingEntity, Integer> REVEAL = Maps.newHashMap();
     private int delay = 0;
     public VibrationListen(Player player) {
@@ -72,7 +71,7 @@ public class VibrationListen extends AbilityHolder implements ITicking {
     }
     public boolean listen() {
         if (delay > 0) return false;
-        return SpellHelper.hasSpell(getPlayer(), Spells.SONIC_BOOM);
+        return SpellHelper.hasSpell(getPlayer(), Spells.Targeted.SONIC_BOOM);
     }
     public void soundExpired(LivingEntity entity) {
         REVEAL.remove(entity);

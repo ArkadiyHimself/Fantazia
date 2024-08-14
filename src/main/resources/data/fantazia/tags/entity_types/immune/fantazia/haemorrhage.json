@@ -1,0 +1,11 @@
+{
+  "values": [
+    "minecraft:skeleton",
+    "minecraft:skeleton_horse",
+    "minecraft:warden",
+    "minecraft:wither_skeleton",
+    "minecraft:slime",
+    "minecraft:magma_cube",
+    "minecraft:stray"
+  ]
+}

@@ -3,8 +3,6 @@ package net.arkadiyhimself.fantazia.entities.goals;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.monster.piglin.Piglin;
-import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
@@ -19,6 +17,7 @@ public class StandStillGoal extends Goal {
     public boolean canUse() {
         return this.isBleeding();
     }
+    @SuppressWarnings("ConstantConditions")
     public boolean isBleeding() {
         return mob.hasEffect(FTZMobEffects.HAEMORRHAGE);
     }

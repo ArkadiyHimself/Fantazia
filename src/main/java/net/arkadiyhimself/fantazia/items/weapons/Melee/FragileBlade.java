@@ -59,7 +59,7 @@ public class FragileBlade extends MeleeWeaponItem implements IChangingIcon, IToo
         });
     }
     @Override
-    public List<Component> buildTooltip(@Nullable ItemStack stack) {
+    public List<Component> buildItemTooltip(@Nullable ItemStack stack) {
         List<Component> components = Lists.newArrayList();
         StackDataManager stackDataManager = StackDataGetter.getUnwrap(stack);
         if (stackDataManager == null) return components;
@@ -76,11 +76,11 @@ public class FragileBlade extends MeleeWeaponItem implements IChangingIcon, IToo
                 return components;
             }
 
-            ChatFormatting[] noshift = new ChatFormatting[]{ChatFormatting.RED};
-            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + ".desc." + i, noshift, null);
+            ChatFormatting[] noShift = new ChatFormatting[]{ChatFormatting.RED};
+            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + ".desc." + i, noShift, null);
 
             components.add(Component.translatable(" "));
-            GuiHelper.addComponent(components, basicPath + ".current_damage", noshift, hiddenPotential.getFormatting(), hiddenPotential.getDamage() + this.getDamage() + 1);
+            GuiHelper.addComponent(components, basicPath + ".current_damage", noShift, hiddenPotential.getFormatting(), hiddenPotential.getDamage() + this.getDamage() + 1);
             return components;
         }
 

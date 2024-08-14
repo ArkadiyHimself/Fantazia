@@ -6,11 +6,9 @@ import net.minecraft.world.item.ItemStack;
 
 public class StackDataHolder implements INBTwrite {
     private final ItemStack stack;
-
     public StackDataHolder(ItemStack stack) {
         this.stack = stack;
     }
-
     @Override
     public CompoundTag serialize() {
         return new CompoundTag();
@@ -19,5 +17,8 @@ public class StackDataHolder implements INBTwrite {
     @Override
     public void deserialize(CompoundTag tag) {
 
+    }
+    public ItemStack getStack() {
+        return stack;
     }
 }

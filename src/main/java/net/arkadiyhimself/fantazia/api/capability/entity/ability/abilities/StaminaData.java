@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities;
 
-import net.arkadiyhimself.fantazia.advanced.capacity.abilityproviding.Talent;
 import net.arkadiyhimself.fantazia.api.capability.ITalentRequire;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
+import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.nbt.CompoundTag;
@@ -12,9 +12,9 @@ import net.minecraft.world.food.FoodData;
 
 public class StaminaData extends AbilityHolder implements ITalentRequire, ITicking {
     private static final String ID = "stamina:";
+    private static final float DEFAULT_DELAY = 40;
+    private static final float defaultRegen = 0.1125f;
     private float stamina = 20;
-    private final float DEFAULT_DELAY = 40;
-    private final float regen = 0.1125f;
     private float delay = 0;
 
     public StaminaData(Player player) {
@@ -36,13 +36,14 @@ public class StaminaData extends AbilityHolder implements ITalentRequire, ITicki
         if (tag.contains(ID + "stamina")) stamina = tag.getFloat(ID +"stamina");
     }
     @Override
-    public Talent required() {
-        return null;
-    }
-    @Override
-    public void onTalentUnlock(Talent talent) {
+    public void onTalentUnlock(BasicTalent talent) {
 
     }
+    @Override
+    public void onTalentRevoke(BasicTalent talent) {
+
+    }
+
     @Override
     public void tick() {
         if (!getPlayer().isSprinting())  {
@@ -54,7 +55,7 @@ public class StaminaData extends AbilityHolder implements ITalentRequire, ITicki
             stamina = Math.min(getMaxStamina(), stamina + getStaminaRegen());
         }
     }
-
+    @SuppressWarnings("ConstantConditions")
     public float getMaxStamina() {
         return (float) getPlayer().getAttributeValue(FTZAttributes.MAX_STAMINA);
     }
@@ -64,6 +65,7 @@ public class StaminaData extends AbilityHolder implements ITalentRequire, ITicki
     public boolean wasteStamina(float cost, boolean addDelay) {
         return wasteStamina(cost, addDelay, DEFAULT_DELAY);
     }
+    @SuppressWarnings("ConstantConditions")
     public boolean wasteStamina(float cost, boolean addDelay, float customDelay) {
         if (getPlayer().isCreative()) return true;
         if (getPlayer().hasEffect(FTZMobEffects.FURY)) cost *= 0.5f;
@@ -75,8 +77,9 @@ public class StaminaData extends AbilityHolder implements ITalentRequire, ITicki
         }
         return false;
     }
+    @SuppressWarnings("ConstantConditions")
     public float getStaminaRegen() {
-        float stRegen = regen;
+        float stRegen = defaultRegen;
         FoodData data = getPlayer().getFoodData();
         if (data.getFoodLevel() >= 17.5f) {
             if (data.getSaturationLevel() >= 10) {

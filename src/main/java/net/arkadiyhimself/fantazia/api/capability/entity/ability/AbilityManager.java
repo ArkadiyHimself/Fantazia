@@ -4,12 +4,18 @@ import com.google.common.collect.Lists;
 import dev._100media.capabilitysyncer.core.PlayerCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
+import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
+import net.arkadiyhimself.fantazia.api.capability.ITalentRequire;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.*;
+import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 import javax.annotation.Nullable;
@@ -46,8 +52,23 @@ public class AbilityManager extends PlayerCapability {
         });
         updateTracking();
     }
+    public void onHit(LivingAttackEvent event) {
+        ABILITIES.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
+    }
+    public void onHit(LivingHurtEvent event) {
+        ABILITIES.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
+    }
+    public void onHit(LivingDamageEvent event) {
+        ABILITIES.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
+    }
     public void respawn() {
         ABILITIES.forEach(AbilityHolder::respawn);
+    }
+    public void talentUnlocked(BasicTalent talent) {
+        ABILITIES.stream().filter(ITalentRequire.class::isInstance).forEach(abilityHolder -> ((ITalentRequire) abilityHolder).onTalentUnlock(talent));
+    }
+    public void talentRevoked(BasicTalent talent) {
+        ABILITIES.stream().filter(ITalentRequire.class::isInstance).forEach(abilityHolder -> ((ITalentRequire) abilityHolder).onTalentRevoke(talent));
     }
     public void grantAbility(Function<Player, AbilityHolder> ability) {
         AbilityHolder abilityHolder = ability.apply(player);
@@ -72,10 +93,12 @@ public class AbilityManager extends PlayerCapability {
             abilityManager.grantAbility(Dash::new);
             abilityManager.grantAbility(DoubleJump::new);
             abilityManager.grantAbility(MeleeBlock::new);
-            abilityManager.grantAbility(RenderingValues::new);
+            abilityManager.grantAbility(ClientValues::new);
             abilityManager.grantAbility(ManaData::new);
             abilityManager.grantAbility(StaminaData::new);
             abilityManager.grantAbility(VibrationListen::new);
+            abilityManager.grantAbility(LootTablePSERAN::new);
+            abilityManager.grantAbility(TalentsHolder::new);
         }
     }
 }

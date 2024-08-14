@@ -22,6 +22,7 @@
   "client": [
     "LivingEntityRendererAccessor",
     "MixinEffectScreenRenderer",
+    "MixinForgeGui",
     "MixinGameRenderer",
     "MixinLivingEntityRenderer",
     "MixinLocalPlayer",

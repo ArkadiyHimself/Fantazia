@@ -7,31 +7,20 @@ import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.particless.BarrierParticle;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BarrierEffect extends EffectHolder implements IDamageReacting {
-    public static List<ResourceKey<DamageType>> IGNORED = new ArrayList<>() {{
-        add(DamageTypes.CRAMMING);
-        add(DamageTypes.DROWN);
-        add(DamageTypes.STARVE);
-        add(DamageTypes.GENERIC_KILL);
-        add(DamageTypes.IN_WALL);
-    }};
     private float health = 0;
     private float INITIAL = 0;
     private float color = 0;
     private int hitCD = 0;
+    @SuppressWarnings("ConstantConditions")
     public BarrierEffect(LivingEntity owner) {
         super(owner, FTZMobEffects.BARRIER);
     }
@@ -52,14 +41,14 @@ public class BarrierEffect extends EffectHolder implements IDamageReacting {
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void onHit(LivingHurtEvent event) {
-        if (!hasBarrier()) return;
-        for (ResourceKey<DamageType> resourceKey : IGNORED) if (event.getSource().is(resourceKey)) return;
+        if (!hasBarrier() || event.getSource().is(FTZDamageTypeTags.PIERCES_BARRIER)) return;
 
-        color = 1;
+        color = 1f;
         float dmg = event.getAmount();
         float newHP = health - dmg;
-
+        boolean furious = getOwner().hasEffect(FTZMobEffects.FURY);
         if (newHP > 0) {
             event.setCanceled(true);
             health -= dmg;
@@ -72,7 +61,8 @@ public class BarrierEffect extends EffectHolder implements IDamageReacting {
                     case DECREASED -> 25;
                     case MINIMAL -> 20;
                 };
-                for (int i = 1; i <= num; i++) VisualHelper.randomParticleOnModel(getOwner(), BarrierParticle.randomBarrierParticle(), VisualHelper.ParticleMovement.FALL);
+
+                for (int i = 1; i <= num; i++) VisualHelper.randomParticleOnModel(getOwner(), furious ? BarrierParticle.PIECES_FURY.random() : BarrierParticle.PIECES.random(), VisualHelper.ParticleMovement.FALL);
             }
         } else {
             event.setAmount(-newHP);
@@ -85,7 +75,7 @@ public class BarrierEffect extends EffectHolder implements IDamageReacting {
                 case DECREASED -> 25;
                 case MINIMAL -> 20;
             };
-            for (int i = 1; i <= num; i++) VisualHelper.randomParticleOnModel(getOwner(), BarrierParticle.randomBarrierParticle(), VisualHelper.ParticleMovement.FALL);
+            for (int i = 1; i <= num; i++) VisualHelper.randomParticleOnModel(getOwner(), furious ? BarrierParticle.PIECES_FURY.random() : BarrierParticle.PIECES.random(), VisualHelper.ParticleMovement.FALL);
         }
     }
 

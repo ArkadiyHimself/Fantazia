@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category" : "equipment",
+  "pattern": [
+    " XX",
+    "H#X",
+    "YH "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:glass"
+    },
+    "H": {
+      "item": "fantazia:obscure_substance"
+    },
+    "X" : {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y" : {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "item": "fantazia:mystic_mirror"
+  },
+  "show_notification": true
+}

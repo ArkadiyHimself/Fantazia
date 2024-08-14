@@ -7,8 +7,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 
 public class ArrowEnchant extends FeatureHolder implements ITicking {
-    private static final String ID = "arrow_enchant:";
-    private AbstractArrow arrow;
+    private final AbstractArrow arrow;
     private boolean frozen = false;
     private int duelist = 0;
     private int ballista = 0;

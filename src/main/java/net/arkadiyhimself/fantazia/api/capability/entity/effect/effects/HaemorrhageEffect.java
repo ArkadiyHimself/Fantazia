@@ -13,32 +13,25 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class HaemorrhageEffect extends EffectHolder implements IDamageReacting, IHealReacting {
-    public static final List<EntityType<? extends LivingEntity>> IMMUNE = new ArrayList<>(){{
-        add(EntityType.SKELETON);
-        add(EntityType.SKELETON_HORSE);
-        add(EntityType.WARDEN);
-        add(EntityType.WITHER_SKELETON);
-        add(EntityType.SLIME);
-        add(EntityType.MAGMA_CUBE);
-    }};
     private float toHeal = 0;
     private int soundCD = 0;
+    @SuppressWarnings("ConstantConditions")
     public HaemorrhageEffect(LivingEntity owner) {
         super(owner, FTZMobEffects.HAEMORRHAGE);
     }
 
-    public boolean makeSound() {
+    private boolean shouldEmitSound() {
         return soundCD < 0;
     }
-    public void madeSound() {
+    private void emitSound() {
         soundCD = 10;
+        getOwner().playSound(FTZSoundEvents.BLOODLOSS);
+    }
+    public void tryMakeSound() {
+        if (shouldEmitSound()) emitSound();
     }
     @Override
     public void tick() {

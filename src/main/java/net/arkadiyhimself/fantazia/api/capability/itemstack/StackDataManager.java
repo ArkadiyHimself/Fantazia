@@ -67,6 +67,7 @@ public class StackDataManager extends ItemStackCapability {
         return false;
     }
     private static class StackDataProvider {
+        @SuppressWarnings("ConstantConditions")
         private static void provide(StackDataManager stackDataManager) {
             Item item = stackDataManager.itemStack.getItem();
             if (item == FTZItems.FRAGILE_BLADE) stackDataManager.grantData(HiddenPotential::new);

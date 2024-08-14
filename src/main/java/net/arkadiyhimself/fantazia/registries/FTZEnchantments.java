@@ -2,12 +2,15 @@ package net.arkadiyhimself.fantazia.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.enchantments.*;
+import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
 public class FTZEnchantments extends FTZRegistry<Enchantment> {
-    public static FTZEnchantments INSTANCE = new FTZEnchantments();
+    @SuppressWarnings("unused")
+    private static final FTZEnchantments INSTANCE = new FTZEnchantments();
     @ObjectHolder(value = Fantazia.MODID + ":disintegration", registryName = "enchantment")
     public static final DisintegrationEnchantment DISINTEGRATION = null;
 
@@ -53,5 +56,8 @@ public class FTZEnchantments extends FTZRegistry<Enchantment> {
         this.register("phasing", PhasingEnchantment::new);
         this.register("ricochet", RicochetEnchantment::new);
         this.register("headshot", HeadshotEnchantment::new);
+    }
+    public static class Categories {
+        public static final EnchantmentCategory HATCHET = EnchantmentCategory.create("hatchet", item -> item instanceof HatchetItem);
     }
 }

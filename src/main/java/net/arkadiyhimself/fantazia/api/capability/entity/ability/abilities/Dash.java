@@ -1,49 +1,40 @@
 package net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities;
 
-import net.arkadiyhimself.fantazia.advanced.capacity.abilityproviding.Talent;
+import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
 import net.arkadiyhimself.fantazia.api.capability.ITalentRequire;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHelper;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.networking.packets.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Dash extends AbilityHolder implements ITalentRequire, ITicking {
+public class Dash extends AbilityHolder implements ITalentRequire, ITicking, IDamageReacting {
     private static final String ID = "dash:";
-    public static List<ResourceKey<DamageType>> NOT_STOPPING = new ArrayList<>() {{
-        add(DamageTypes.CRAMMING);
-        add(DamageTypes.DROWN);
-        add(DamageTypes.STARVE);
-        add(DamageTypes.GENERIC_KILL);
-        add(DamageTypes.IN_WALL);
-    }};
-    private final float STAMINA = 1.5f;
-    private final int DEFAULT_DUR = 7;
-    private final int DEFAULT_RECH = 100;
+    private static final float STAMINA = 1.5f;
+    private static final int DEFAULT_DUR = 7;
+    private static final int DEFAULT_RECHARGE = 100;
     private int INITIAL_DUR = 1;
-    private int INITIAL_RECH = 1;
+    private int INITIAL_RECHARGE = 1;
     private int duration = 0;
     private int recharge = 0;
     private int level = 0;
@@ -105,7 +96,7 @@ public class Dash extends AbilityHolder implements ITalentRequire, ITicking {
         tag.putInt(ID + "level", this.level);
         tag.putInt(ID + "initial_dur", this.INITIAL_DUR);
         tag.putInt(ID + "duration", this.duration);
-        tag.putInt(ID + "initial_rech", this.INITIAL_RECH);
+        tag.putInt(ID + "initial_recharge", this.INITIAL_RECHARGE);
         tag.putInt(ID + "recharge", this.recharge);
         return tag;
     }
@@ -115,15 +106,31 @@ public class Dash extends AbilityHolder implements ITalentRequire, ITicking {
         this.level = tag.contains(ID + "level") ?  tag.getInt(ID + "level") : 0;
         this.INITIAL_DUR = tag.contains(ID + "initial_dur") ?  tag.getInt(ID + "initial_dur") : 1;
         this.duration = tag.contains(ID + "duration") ?  tag.getInt(ID + "duration") : 0;
-        this.INITIAL_RECH = tag.contains(ID + "initial_rech") ?  tag.getInt(ID + "initial_rech") : 1;
+        this.INITIAL_RECHARGE = tag.contains(ID + "initial_recharge") ?  tag.getInt(ID + "initial_recharge") : 1;
         this.recharge = tag.contains(ID + "recharge") ?  tag.getInt(ID + "recharge") : 0;
     }
     @Override
-    public Talent required() {
-        return null;
+    public void onTalentUnlock(BasicTalent talent) {
+        ResourceLocation resLoc = talent.getID();
+        if (Fantazia.res("dash1").equals(resLoc) && level < 1) level = 1;
+        else if (Fantazia.res("dash2").equals(resLoc) && level < 2) level = 2;
+        else if (Fantazia.res("dash3").equals(resLoc) && level < 3) level = 3;
     }
     @Override
-    public void onTalentUnlock(Talent talent) {
+    public void onTalentRevoke(BasicTalent talent) {
+        ResourceLocation resLoc = talent.getID();
+        if (Fantazia.res("dash3").equals(resLoc) && level > 2) level = 2;
+        else if (Fantazia.res("dash2").equals(resLoc) && level > 1) level = 1;
+        else if (Fantazia.res("dash1").equals(resLoc) && level > 0) level = 0;
+    }
+    @Override
+    public void onHit(LivingAttackEvent event) {
+        if (!isDashing()) return;
+        if (level <= 1 && !event.getSource().is(FTZDamageTypeTags.NOT_STOPPING_DASH)) stopDash();
+        else if (!event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) event.setCanceled(true);
+    }
+    public boolean isAvailable() {
+        return level > 0;
     }
     public int getLevel() {
         return level;
@@ -152,9 +159,9 @@ public class Dash extends AbilityHolder implements ITalentRequire, ITicking {
     public SoundEvent getRechargeSound() {
         return switch (level) {
             default -> null;
-            case 1 -> FTZSoundEvents.DASH1_RECH;
-            case 2 -> FTZSoundEvents.DASH2_RECH;
-            case 3 -> FTZSoundEvents.DASH3_RECH;
+            case 1 -> FTZSoundEvents.DASH1_RECHARGE;
+            case 2 -> FTZSoundEvents.DASH2_RECHARGE;
+            case 3 -> FTZSoundEvents.DASH3_RECHARGE;
         };
     }
     public boolean canDash() {
@@ -165,10 +172,10 @@ public class Dash extends AbilityHolder implements ITalentRequire, ITicking {
     public int getInitDur() {
         return level < 3 ? DEFAULT_DUR : DEFAULT_DUR + 2;
     }
-    public int getInitRech() {
-        return getPlayer().isCreative() ? 0 : DEFAULT_RECH;
+    public int getInitRecharge() {
+        return getPlayer().isCreative() ? 0 : DEFAULT_RECHARGE;
     }
-    public int getRech() {
+    public int getRecharge() {
         return recharge;
     }
     public int getDur() {
@@ -185,17 +192,14 @@ public class Dash extends AbilityHolder implements ITalentRequire, ITicking {
         int duration = FTZEvents.onDashStart(serverPlayer, this, getInitDur());
         if (duration > 0) {
             velocity = vec3;
-            recharge = getInitRech();
-            INITIAL_RECH = recharge;
+            recharge = getInitRecharge();
+            INITIAL_RECHARGE = recharge;
             wasDashing = true;
             recharged = true;
 
             getPlayer().level().playSound(null, getPlayer().blockPosition(), getDashSound(), SoundSource.PLAYERS);
-
             getPlayer().resetFallDistance();
-
-            if (level < 3) actuallyDash(duration);
-            else actuallyDash(AbilityHelper.leapDuration(serverPlayer, vec3, duration));
+            actuallyDash(duration);
         }
     }
     public void actuallyDash(int duration) {
@@ -204,25 +208,14 @@ public class Dash extends AbilityHolder implements ITalentRequire, ITicking {
         if (level < 3) NetworkHandler.sendToPlayer(new PlayAnimationS2C("dash.start"), getPlayer());
     }
     public void stopDash() {
-        if (!getPlayer().level().isClientSide && getPlayer() instanceof ServerPlayer serverPlayer) {
+        if (!getPlayer().level().isClientSide() && getPlayer() instanceof ServerPlayer serverPlayer) {
             boolean stop = FTZEvents.onDashEnd(serverPlayer, this);
             if (stop) {
                 this.duration = 0;
                 this.wasDashing = false;
+                serverPlayer.hurtMarked = true;
+                serverPlayer.setDeltaMovement(0,0,0);
             }
-        }
-    }
-    public void onHit(LivingAttackEvent event) {
-        if (event.getEntity() instanceof ServerPlayer && isDashing()) {
-            if (level <= 1) {
-                boolean reset = true;
-                for (ResourceKey<DamageType> resourceKey : NOT_STOPPING)
-                    if (event.getSource().is(resourceKey)) {
-                        reset = false;
-                        break;
-                    }
-                if (reset) stopDash();
-            } else event.setCanceled(true);
         }
     }
 }

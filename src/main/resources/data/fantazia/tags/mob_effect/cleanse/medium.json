@@ -1,0 +1,17 @@
+{
+  "values": [
+    "minecraft:haste",
+    "minecraft:mining_fatigue",
+    "minecraft:fire_resistance",
+    "minecraft:water_breathing",
+    "minecraft:invisibility",
+    "minecraft:wither",
+    "minecraft:absorption",
+    "minecraft:glowing",
+    "minecraft:luck",
+    "minecraft:unluck",
+    "fantazia:barrier",
+    "fantazia:layered_barrier",
+    "fantazia:reflect"
+  ]
+}

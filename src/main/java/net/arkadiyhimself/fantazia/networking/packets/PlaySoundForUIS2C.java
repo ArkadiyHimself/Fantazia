@@ -10,7 +10,7 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 public class PlaySoundForUIS2C implements IPacket {
-    private SoundEvent sound;
+    private final SoundEvent sound;
     public PlaySoundForUIS2C(SoundEvent event) {
         sound = event;
     }

@@ -10,7 +10,7 @@ import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.RenderingValues;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ClientValues;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
@@ -30,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.PlayerModelPart;
+import org.jetbrains.annotations.NotNull;
 
 public class MysticMirror {
     public static final ResourceLocation MIRROR_LAYER = Fantazia.res("textures/entity_layers/mystic_mirror/mystic_mirror.png");
@@ -52,19 +53,19 @@ public class MysticMirror {
             this.renderer = renderer;
         }
         @Override
-        public void render(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+        public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
             AbilityManager abilityManager = AbilityGetter.getUnwrap(pLivingEntity);
             if (abilityManager == null) return;
-            RenderingValues renderingValues = abilityManager.takeAbility(RenderingValues.class);
-            if (renderingValues == null || !renderingValues.showMirrorLayer) return;
+            ClientValues clientValues = abilityManager.takeAbility(ClientValues.class);
+            if (clientValues == null || !clientValues.showMirrorLayer) return;
 
             pPoseStack.pushPose();
-            float scale = renderingValues.mirrorLayerSize;
+            float scale = clientValues.mirrorLayerSize;
             pPoseStack.scale(scale, scale, scale);
             float f = (float)pLivingEntity.tickCount + pPartialTick;
-            EntityModel<LivingEntity> entityModel = (EntityModel<LivingEntity>) renderer.getModel();
+            M entityModel = renderer.getModel();
             entityModel.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
-            this.getParentModel().copyPropertiesTo((EntityModel<T>) entityModel);
+            this.getParentModel().copyPropertiesTo(entityModel);
             float pU = xOffset(f) % 1.0F;
             float pV = f * 0.01F % 1.0F;
             VertexConsumer pBufferBuffer = pBuffer.getBuffer(RenderType.create("mystic_mirror", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256,
@@ -74,7 +75,7 @@ public class MysticMirror {
             buffer.uv(0, 0);
             buffer.uv2(64, 64);
             entityModel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
-            entityModel.renderToBuffer(pPoseStack, pBufferBuffer, pPackedLight, OverlayTexture.NO_OVERLAY, renderingValues.mirrorLayerVis, renderingValues.mirrorLayerVis, renderingValues.mirrorLayerVis,0.175f * renderingValues.mirrorLayerVis);
+            entityModel.renderToBuffer(pPoseStack, pBufferBuffer, pPackedLight, OverlayTexture.NO_OVERLAY, clientValues.mirrorLayerVis, clientValues.mirrorLayerVis, clientValues.mirrorLayerVis,0.175f * clientValues.mirrorLayerVis);
 
             pPoseStack.popPose();
         }
@@ -91,13 +92,14 @@ public class MysticMirror {
         float f2 = (float) (-0.3F * Math.sin(f1 * (float)Math.PI));
         float f3 = (float) (0.4F * Math.sin(f1 * ((float)Math.PI * 2F)));
         float f4 = (float) (-0.4F * Math.sin(swingProgress * (float)Math.PI));
-        poseStack.translate(f * (f2 + 0.64000005F), f3 + -0.6F + equippedProgress * -0.6F, f4 + -0.71999997F);
+        poseStack.translate(f * (f2 + 0.64000005F), f3 - 0.6F + equippedProgress * -0.6F, f4 - 0.71999997F);
         poseStack.mulPose(Axis.YP.rotationDegrees(f * 45.0F));
         float f5 = (float) Math.sin(swingProgress * swingProgress * (float)Math.PI);
         float f6 = (float) Math.sin(f1 * (float)Math.PI);
         poseStack.mulPose(Axis.YP.rotationDegrees(f * f6 * 70.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(f * f5 * -20.0F));
         AbstractClientPlayer player = mc.player;
+        if (player == null) return;
         mc.getTextureManager().bindForSetup(player.getSkinTextureLocation());
         poseStack.translate(f * -1.0F, 3.6F, 3.5D);
         poseStack.mulPose(Axis.ZP.rotationDegrees(f * 120.0F));
@@ -123,13 +125,13 @@ public class MysticMirror {
         renderItem(poseStack, bufferIn, combinedLightIn, playerIn, (model).leftSleeve, model, pPartialTick);
     }
 
-    private static void renderItem(PoseStack poseStack, MultiBufferSource bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, ModelPart rendererArmwearIn, PlayerModel<AbstractClientPlayer> model, float pPartialTick) {
+    private static void renderItem(PoseStack poseStack, MultiBufferSource bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, ModelPart rendererArmWearIn, PlayerModel<AbstractClientPlayer> model, float pPartialTick) {
         setModelVisibilities(playerIn, model);
         model.attackTime = 0.0F;
         model.crouching = false;
         model.swimAmount = 0.0F;
         model.setupAnim(playerIn, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-        rendererArmwearIn.xRot = 0.0F;
+        rendererArmWearIn.xRot = 0.0F;
         float f = (float)playerIn.tickCount + pPartialTick;
         float pU = MysticMirror.LayerMirror.xOffset(f) % 1.0F;
         float pV = f * 0.01F % 1.0F;
@@ -137,9 +139,9 @@ public class MysticMirror {
                 false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(MIRROR_LAYER, false, false)).
                         setTexturingState(new RenderStateShard.OffsetTexturingStateShard(pU, pV)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false)));
         //
-        rendererArmwearIn.render(poseStack, pBufferBuffer, combinedLightIn, OverlayTexture.NO_OVERLAY,0, 0.6F, 0.6F,0.1019999F);
+        rendererArmWearIn.render(poseStack, pBufferBuffer, combinedLightIn, OverlayTexture.NO_OVERLAY,0, 0.6F, 0.6F,0.1019999F);
         VertexConsumer BGvertex = bufferIn.getBuffer(RenderType.entityTranslucent(MIRROR_BG));
-        rendererArmwearIn.render(poseStack, BGvertex, combinedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 0.05F);
+        rendererArmWearIn.render(poseStack, BGvertex, combinedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 0.05F);
     }
 
     private static void setModelVisibilities(AbstractClientPlayer clientPlayer, PlayerModel<AbstractClientPlayer> playermodel) {

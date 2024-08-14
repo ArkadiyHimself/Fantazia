@@ -4,12 +4,14 @@ import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHolder;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 public class AbsoluteBarrierEffect extends EffectHolder implements IDamageReacting {
     private boolean hasBarrier = false;
+    @SuppressWarnings("ConstantConditions")
     public AbsoluteBarrierEffect(LivingEntity owner) {
         super(owner, FTZMobEffects.ABSOLUTE_BARRIER);
     }
@@ -45,6 +47,6 @@ public class AbsoluteBarrierEffect extends EffectHolder implements IDamageReacti
     }
     @Override
     public void onHit(LivingAttackEvent event) {
-        if (getDur() > 0) event.setCanceled(true);
+        if (getDur() > 0 && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) event.setCanceled(true);
     }
 }

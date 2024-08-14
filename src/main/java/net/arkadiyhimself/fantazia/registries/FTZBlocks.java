@@ -6,9 +6,7 @@ import net.arkadiyhimself.fantazia.blocks.AncientFlameBlock;
 import net.arkadiyhimself.fantazia.blocks.RegularBlockItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -19,13 +17,13 @@ import java.util.function.Supplier;
 
 public class FTZBlocks extends FTZRegistry<Block> {
     private static final Map<ResourceLocation, BlockItemSupplier> BLOCK_ITEMS = Maps.newHashMap();
+    @SuppressWarnings("unused")
     private static final FTZBlocks INSTANCE = new FTZBlocks();
-    private final DeferredRegister<Item> BLOCK_ITEM = DeferredRegister.create(ForgeRegistries.ITEMS, Fantazia.MODID);
     private void registerBlock(final String name, final Supplier<Block> blockSupplier, final BlockItemSupplier sup) {
         this.register(name, blockSupplier);
         registerItemBlock(name, sup);
     }
-    private <T extends Block> void registerItemBlock(String name, BlockItemSupplier supplier) {
+    private void registerItemBlock(String name, BlockItemSupplier supplier) {
         BLOCK_ITEMS.put(Fantazia.res(name), supplier);
     }
 
@@ -45,5 +43,4 @@ public class FTZBlocks extends FTZRegistry<Block> {
         @Override
         BlockItem apply(Block block);
     }
-
 }

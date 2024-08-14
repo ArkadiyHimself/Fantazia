@@ -5,6 +5,7 @@ import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
 public class DisarmEffect extends EffectHolder {
+    @SuppressWarnings("ConstantConditions")
     public DisarmEffect(LivingEntity owner) {
         super(owner, FTZMobEffects.DISARM);
     }

@@ -18,12 +18,12 @@ import net.minecraftforge.eventbus.api.Event;
  * <br>
  * The events are fired on the {@link MinecraftForge#EVENT_BUS}.
  */
-public class AuraEvent extends Event {
-    private final AuraInstance aura;
-    public AuraEvent(AuraInstance aura) {
+public class AuraEvent<T extends Entity, M extends Entity> extends Event {
+    private final AuraInstance<T,M> aura;
+    public AuraEvent(AuraInstance<T,M> aura) {
         this.aura = aura;
     }
-    public AuraInstance getAura() {
+    public AuraInstance<T,M> getAura() {
         return aura;
     }
 
@@ -36,12 +36,11 @@ public class AuraEvent extends Event {
      * <br>
      * This event does not have a {@link HasResult result}
      */
-    public static class Tick extends AuraEvent {
-        public Tick(AuraInstance aura) {
+    public static class Tick<T extends Entity, M extends Entity> extends AuraEvent<T,M> {
+        public Tick(AuraInstance<T,M> aura) {
             super(aura);
         }
     }
-
     /**
      * {@link Enter} is fired anytime an entity enters the range of an aura
      * <br>
@@ -54,13 +53,13 @@ public class AuraEvent extends Event {
      * <br>
      * This event does not have a {@link HasResult result}
      */
-    public static class Enter extends AuraEvent {
-        private final Entity entity;
-        public Enter(AuraInstance aura, Entity entity) {
+    public static class Enter<T extends Entity, M extends Entity> extends AuraEvent<T,M> {
+        private final T entity;
+        public Enter(AuraInstance<T,M> aura, T entity) {
             super(aura);
             this.entity = entity;
         }
-        public Entity getEntity() {
+        public T getEntity() {
             return entity;
         }
     }
@@ -77,13 +76,13 @@ public class AuraEvent extends Event {
      * <br>
      * This event does not have a {@link HasResult result}
      */
-    public static class Exit extends AuraEvent {
-        private final Entity entity;
-        public Exit(AuraInstance aura, Entity entity) {
+    public static class Exit<T extends Entity, M extends Entity> extends AuraEvent<T,M> {
+        private final T entity;
+        public Exit(AuraInstance<T,M> aura, T entity) {
             super(aura);
             this.entity = entity;
         }
-        public Entity getEntity() {
+        public T getEntity() {
             return entity;
         }
     }

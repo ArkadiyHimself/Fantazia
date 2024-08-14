@@ -1,16 +1,16 @@
 package net.arkadiyhimself.fantazia.api.capability.entity.effect.effects;
 
-import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.SpellHelper;
-import net.arkadiyhimself.fantazia.advanced.capacity.spellhandler.Spells;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
-import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
-import net.arkadiyhimself.fantazia.advanced.healing.HealingTypes;
+import net.arkadiyhimself.fantazia.advanced.healing.HealingSources;
+import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHolder;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -26,7 +26,7 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
     private boolean secondBeat = false;
     private int beat1 = 0;
     private int beat2 = 9;
-
+    @SuppressWarnings("ConstantConditions")
     public FuryEffect(LivingEntity owner) {
         super(owner, FTZMobEffects.FURY);
     }
@@ -39,31 +39,30 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
         return backTR;
     }
 
-    public boolean hasFury() {
+    public boolean isFurious() {
         return duration > 0;
     }
     @Override
     public void tick() {
         super.tick();
-        if (!(getOwner() instanceof ServerPlayer serverPlayer) || !hasFury()) return;
+        if (!(getOwner() instanceof ServerPlayer serverPlayer) || !isFurious()) return;
         if (veinTR > 0) veinTR--;
         if (soundDelay > 0) soundDelay--;
-
+        backTR = Math.min(duration, 20);
         if (beat1 > 0 && firstBeat) beat1--;
         else if (beat1 <= 0) {
-            beat1 = 10;
+            beat1 = 8;
             firstBeat = false;
             secondBeat = true;
-            veinTR = 10;
+            veinTR = 8;
             NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.HEART_BEAT1), serverPlayer);
         }
-
         if (beat2 > 0 && secondBeat) beat2--;
         else if (beat2 <= 0) {
             beat2 = 9;
             firstBeat = true;
             secondBeat = false;
-            veinTR = 10;
+            veinTR = 9;
             NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.HEART_BEAT2), serverPlayer);
         }
 
@@ -88,7 +87,6 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
     public void added(MobEffectInstance instance) {
         super.added(instance);
         soundDelay = 20;
-        backTR = Math.min(instance.getDuration(), 20);
         veinTR = 0;
         firstBeat = false;
         secondBeat = false;
@@ -96,16 +94,18 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
         beat2 = 0;
     }
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void onHit(LivingDamageEvent event) {
-        if (getDur() <= 0) return;
-
-        float multiplier = SpellHelper.hasSpell(getOwner(), Spells.DAMNED_WRATH) ? 1.5f : 2f;
-        if (getOwner().hasEffect(FTZMobEffects.FURY)) event.setAmount(event.getAmount() * multiplier);
-
+        LivingEntity target = event.getEntity();
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livAtt && livAtt.hasEffect(FTZMobEffects.FURY)) {
             event.setAmount(event.getAmount() * 2);
-            if (SpellHelper.hasSpell(livAtt, Spells.DAMNED_WRATH)) AdvancedHealing.heal(livAtt, new HealingSource(HealingTypes.LIFESTEAL), 0.15f * event.getAmount());
+            HealingSources healingSources = LevelCapHelper.healingSources(attacker.level());
+            if (SpellHelper.hasSpell(livAtt, FTZSpells.DAMNED_WRATH) && healingSources != null) AdvancedHealing.heal(livAtt, healingSources.lifesteal(target), 0.15f * event.getAmount());
         }
+
+        if (getDur() <= 0) return;
+        float multiplier = SpellHelper.hasSpell(getOwner(), FTZSpells.DAMNED_WRATH) ? 1.5f : 2f;
+        if (getOwner().hasEffect(FTZMobEffects.FURY)) event.setAmount(event.getAmount() * multiplier);
     }
 }

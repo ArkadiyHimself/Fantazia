@@ -1,0 +1,184 @@
+package net.arkadiyhimself.fantazia.events;
+
+import dev.kosmx.playerAnim.api.layered.IAnimation;
+import dev.kosmx.playerAnim.api.layered.ModifierLayer;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
+import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
+import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.items.IChangingIcon;
+import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
+import net.arkadiyhimself.fantazia.client.models.entity.ftzentities.ThrownHatchetRenderer;
+import net.arkadiyhimself.fantazia.client.models.item.CustomItemRenderer;
+import net.arkadiyhimself.fantazia.data.tags.HealingTypeTagsProvider;
+import net.arkadiyhimself.fantazia.data.tags.MobEffectTagsProvider;
+import net.arkadiyhimself.fantazia.data.tags.SpellTagProvider;
+import net.arkadiyhimself.fantazia.particless.*;
+import net.arkadiyhimself.fantazia.registries.*;
+import net.arkadiyhimself.fantazia.util.KeyBinding;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.DataPackRegistryEvent;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+@Mod.EventBusSubscriber(modid = Fantazia.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public class RegistryEvents {
+    public static final ArrayList<RegistryObject<Item>> MAGIC_ITEM = new ArrayList<>();
+    public static final ArrayList<RegistryObject<Item>> WEAPON_ITEM = new ArrayList<>();
+    public static final ArrayList<RegistryObject<Item>> EXPENDABLE_ITEM = new ArrayList<>();
+    private static IAnimation registerPlayerAnimation(AbstractClientPlayer player) {
+        return new ModifierLayer<>();
+    }
+    @SubscribeEvent
+    public static void commonSetup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> Fantazia.load(FTZDamageTypes.class));
+        event.enqueueWork(() -> Fantazia.load(FTZItems.class));
+        event.enqueueWork(() -> Fantazia.load(FTZLootModifiers.class));
+    }
+    @SubscribeEvent
+    public static void attributeModification(final EntityAttributeModificationEvent event) {
+        event.add(EntityType.PLAYER, FTZAttributes.MANA_REGEN_MULTIPLIER);
+        event.add(EntityType.PLAYER, FTZAttributes.STAMINA_REGEN_MULTIPLIER);
+        event.add(EntityType.PLAYER, FTZAttributes.MAX_MANA);
+        event.add(EntityType.PLAYER, FTZAttributes.MAX_STAMINA);
+        event.add(EntityType.PLAYER, FTZAttributes.CAST_RANGE_ADDITION);
+        event.getTypes().forEach(entityType -> {
+            event.add(entityType, FTZAttributes.MAX_STUN_POINTS);
+            event.add(entityType, FTZAttributes.LIFESTEAL);
+            event.add(entityType, FTZAttributes.EVASION);
+        });
+    }
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void modelRegistry(ModelEvent.RegisterAdditional event) {
+        event.register(CustomItemRenderer.BLADE0);
+        event.register(CustomItemRenderer.BLADE1);
+        event.register(CustomItemRenderer.BLADE2);
+        event.register(CustomItemRenderer.BLADE3);
+        event.register(CustomItemRenderer.BLADE4);
+        event.register(CustomItemRenderer.BLADE_MODEL);
+        event.register(ThrownHatchetRenderer.WOODEN);
+        event.register(ThrownHatchetRenderer.STONE);
+        event.register(ThrownHatchetRenderer.GOLDEN);
+        event.register(ThrownHatchetRenderer.IRON);
+        event.register(ThrownHatchetRenderer.DIAMOND);
+        event.register(ThrownHatchetRenderer.NETHERITE);
+    }
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void registerGui(RegisterGuiOverlaysEvent event) {
+        event.registerAboveAll("ftz_gui", FTZGuis.FTZ_GUI);
+        event.registerAboveAll("curioslots", FTZGuis.CURIO_SLOTS);
+        event.registerBelowAll("ancient_burning", FTZGuis.ANCIENT_FLAME);
+        event.registerAboveAll("auras", FTZGuis.AURAS);
+        event.registerAboveAll("developer_mode", FTZGuis.DEVELOPER_MODE);
+        event.registerBelowAll("frozen_effect", FTZGuis.FROZEN_EFFECT);
+        event.registerBelowAll("fury_veins", FTZGuis.FURY_VEINS);
+    }
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    @SuppressWarnings("ConstantConditions")
+    public static void registerRenderer(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(FTZEntityTypes.HATCHET, ThrownHatchetRenderer::new);
+    }
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void keyBinding(RegisterKeyMappingsEvent event) {
+        event.register(KeyBinding.DASH);
+        event.register(KeyBinding.BLOCK);
+        event.register(KeyBinding.SWORD_ABILITY);
+        event.register(KeyBinding.SPELLCAST1);
+        event.register(KeyBinding.SPELLCAST2);
+        event.register(KeyBinding.TALENTS);
+    }
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    @SuppressWarnings("ConstantConditions")
+    public static void registerParticles(final RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(FTZParticleTypes.BLOOD1, BloodParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BLOOD2, BloodParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BLOOD3, BloodParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BLOOD4, BloodParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BLOOD5, BloodParticle.Provider::new);
+
+        event.registerSpriteSet(FTZParticleTypes.DOOMED_SOUL1, SoulParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.DOOMED_SOUL2, SoulParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.DOOMED_SOUL3, SoulParticle.Provider::new);
+
+        event.registerSpriteSet(FTZParticleTypes.FALLEN_SOUL, FallenSoulParticle.Provider::new);
+
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE1, BarrierParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE2, BarrierParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE3, BarrierParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE4, BarrierParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE5, BarrierParticle.Provider::new);
+
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE1_FURY, BarrierParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE2_FURY, BarrierParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE3_FURY, BarrierParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE4_FURY, BarrierParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.BARRIER_PIECE5_FURY, BarrierParticle.Provider::new);
+
+        event.registerSpriteSet(FTZParticleTypes.LIFESTEAL1, GenericParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.LIFESTEAL2, GenericParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.LIFESTEAL3, GenericParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.LIFESTEAL4, GenericParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.LIFESTEAL5, GenericParticle.Provider::new);
+
+        event.registerSpriteSet(FTZParticleTypes.REGEN1, GenericParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.REGEN2, GenericParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.REGEN3, GenericParticle.Provider::new);
+    }
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void clientSetup(FMLClientSetupEvent event) {
+        List<RegistryObject<Item>> items = new ArrayList<>();
+        items.addAll(MAGIC_ITEM);
+        items.addAll(WEAPON_ITEM);
+        items.addAll(EXPENDABLE_ITEM);
+        for (RegistryObject<Item> item : items) if (item.get() instanceof IChangingIcon icon) icon.registerVariants();
+        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(Fantazia.res("animation"), 42, RegistryEvents::registerPlayerAnimation);
+    }
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void creativeTabContents(BuildCreativeModeTabContentsEvent event) {
+        CreativeModeTab tab = event.getTab();
+        if (tab == FTZCreativeModeTabs.FTZ_MAGIC) for (RegistryObject<Item> item : MAGIC_ITEM) event.accept(item);
+        if (tab == FTZCreativeModeTabs.FTZ_WEAPONS) for (RegistryObject<Item> item : WEAPON_ITEM) event.accept(item);
+        if (tab == FTZCreativeModeTabs.FTZ_EXPENDABLE) for (RegistryObject<Item> item : EXPENDABLE_ITEM) event.accept(item);
+    }
+    @SubscribeEvent
+    public static void gatherData(GatherDataEvent event) {
+        DataGenerator gen = event.getGenerator();
+        PackOutput packOutput = gen.getPackOutput();
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        gen.addProvider(event.includeServer(), new MobEffectTagsProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new HealingTypeTagsProvider(packOutput, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new SpellTagProvider(packOutput, lookupProvider, existingFileHelper));
+    }
+    @SubscribeEvent
+    public static void network(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(FantazicRegistry.Keys.HEALING_TYPE, HealingType.CODEC, HealingType.CODEC);
+    }
+}

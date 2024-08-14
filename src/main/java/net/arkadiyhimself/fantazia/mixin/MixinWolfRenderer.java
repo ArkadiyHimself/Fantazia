@@ -21,7 +21,7 @@ public class MixinWolfRenderer {
         EffectManager effectManager = EffectGetter.getUnwrap(pEntity);
         if (effectManager == null) return;
         effectManager.getEffect(FuryEffect.class).ifPresent(furyEffect -> {
-            if (furyEffect.hasFury()) cir.setReturnValue(WOLF_ANGRY_LOCATION);
+            if (furyEffect.isFurious()) cir.setReturnValue(WOLF_ANGRY_LOCATION);
         });
     }
 

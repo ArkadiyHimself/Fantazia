@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.RenderTypeHelper;
+import org.jetbrains.annotations.NotNull;
 
 import static net.minecraft.client.renderer.entity.ItemRenderer.getFoilBufferDirect;
 
@@ -49,12 +50,12 @@ public class CustomItemRenderer extends BlockEntityWithoutLevelRenderer {
         };
     }
     @Override
-    public void onResourceManagerReload(ResourceManager pResourceManager) {
+    public void onResourceManagerReload(@NotNull ResourceManager pResourceManager) {
         super.onResourceManagerReload(pResourceManager);
     }
 
     @Override
-    public void renderByItem(ItemStack pStack, ItemDisplayContext pDisplayContext, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
+    public void renderByItem(ItemStack pStack, @NotNull ItemDisplayContext pDisplayContext, @NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
         boolean gui = pDisplayContext == ItemDisplayContext.GUI || pDisplayContext == ItemDisplayContext.FIXED || pDisplayContext == ItemDisplayContext.GROUND;
         boolean firstPerson = pDisplayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || pDisplayContext == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND;
         boolean leftHand = pDisplayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND || pDisplayContext == ItemDisplayContext.THIRD_PERSON_LEFT_HAND;

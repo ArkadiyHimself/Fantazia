@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.Cancelable;
 
 /**
  * Children of {@link BlockingEvent} are fired when an event involving blocking attacks occurs <br>
- * All the events here are fired in {@link MeleeBlock.Blocking} <br>
+ * All the events here are fired in {@link MeleeBlock} <br>
  * <br>
  * {@link  #itemStack} contains the ItemStack with the weapon the player uses for blocking <br>
  * <br>
@@ -47,7 +47,7 @@ public class BlockingEvent extends PlayerEvent {
     }
 
     /**
-     * {@link Expired} is fired when player's {@link MeleeBlock.Blocking#block} gets to 0 after the player started blocking attacks.<br>
+     * {@link Expired} is fired when player's {@link MeleeBlock#block_ticks} gets to 0 after the player started blocking attacks.<br>
      * <br>
      * This event is not {@link Cancelable}.<br>
      * <br>

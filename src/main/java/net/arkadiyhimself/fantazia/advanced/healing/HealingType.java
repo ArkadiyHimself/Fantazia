@@ -1,45 +1,20 @@
 package net.arkadiyhimself.fantazia.advanced.healing;
 
-import net.minecraft.core.particles.SimpleParticleType;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.RegistryObject;
-import org.apache.commons.compress.utils.Lists;
 
-import java.util.Arrays;
 import java.util.List;
 
-public class HealingType {
-    private final List<HealingTag> tags;
-    private final float exhaustion;
-    private final ResourceLocation id;
-    private final List<RegistryObject<SimpleParticleType>> regParticleType = Lists.newArrayList();
-    private final List<SimpleParticleType> particleType = Lists.newArrayList();
-    public HealingType(float exhaustion, ResourceLocation id, HealingTag... healingTags) {
-        this.exhaustion = exhaustion;
-        this.id = id;
-        this.tags = Arrays.stream(healingTags).toList();
-    }
-    public List<HealingTag> getTags() {
-        return tags;
-    }
-    public float getExhaustion() {
-        return exhaustion;
-    }
-    public ResourceLocation getId() {
-        return id;
-    }
-    public List<SimpleParticleType> getParticleTypes() {
-        return particleType;
-    }
-    public List<RegistryObject<SimpleParticleType>> getRegParticleTypes() {
-        return regParticleType;
-    }
-    public HealingType setParticles(List<SimpleParticleType> particles) {
-        this.particleType.addAll(particles);
-        return this;
-    }
-    public HealingType setParticle(SimpleParticleType particle) {
-        this.particleType.add(particle);
-        return this;
+public record HealingType(String id, float exhaustion, RandomList<ResourceLocation> particleTypes) {
+    public static final Codec<HealingType> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
+            Codec.STRING.fieldOf("id").forGetter(HealingType::id),
+            Codec.FLOAT.optionalFieldOf("exhaustion", 0f).forGetter(HealingType::exhaustion),
+            ResourceLocation.CODEC.listOf().optionalFieldOf("particles", RandomList.emptyRandomList()).forGetter(HealingType::particleTypes))
+            .apply(instance, HealingType::new));
+
+    public HealingType(String id, float exhaustion, List<ResourceLocation> particleTypes) {
+        this(id, exhaustion, new RandomList<>(particleTypes));
     }
 }

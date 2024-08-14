@@ -4,27 +4,16 @@ import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHolder;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class LayeredBarrierEffect extends EffectHolder implements IDamageReacting {
-    public static List<ResourceKey<DamageType>> IGNORED = new ArrayList<>() {{
-        add(DamageTypes.CRAMMING);
-        add(DamageTypes.DROWN);
-        add(DamageTypes.STARVE);
-        add(DamageTypes.GENERIC_KILL);
-        add(DamageTypes.IN_WALL);
-    }};
     private int layers;
     private float color;
+    @SuppressWarnings("ConstantConditions")
     public LayeredBarrierEffect(LivingEntity owner) {
         super(owner, FTZMobEffects.LAYERED_BARRIER);
     }
@@ -80,9 +69,9 @@ public class LayeredBarrierEffect extends EffectHolder implements IDamageReactin
     }
 
     @Override
+    @SuppressWarnings("ConstantConditions")
     public void onHit(LivingHurtEvent event) {
-        if (!hasBarrier()) return;
-        for (ResourceKey<DamageType> resourceKey : IGNORED) if (event.getSource().is(resourceKey)) return;
+        if (!hasBarrier() || event.getSource().is(FTZDamageTypeTags.PIERCES_BARRIER)) return;
 
         color = 1f;
         event.setCanceled(true);

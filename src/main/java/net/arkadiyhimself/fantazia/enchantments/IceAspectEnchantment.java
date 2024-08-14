@@ -4,6 +4,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.FireAspectEnchantment;
+import org.jetbrains.annotations.NotNull;
 
 public class IceAspectEnchantment extends Enchantment {
     public IceAspectEnchantment() {
@@ -25,7 +26,7 @@ public class IceAspectEnchantment extends Enchantment {
     }
 
     @Override
-    protected boolean checkCompatibility(Enchantment pOther) {
+    protected boolean checkCompatibility(@NotNull Enchantment pOther) {
         return !(pOther instanceof FireAspectEnchantment) && super.checkCompatibility(pOther);
     }
 }

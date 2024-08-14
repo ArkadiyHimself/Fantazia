@@ -10,12 +10,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Slime.class)
 public class MixinSlime {
+    @SuppressWarnings("ConstantConditions")
     @Inject(at = @At("HEAD"), method = "isDealsDamage",cancellable = true)
     private void dealDamage(CallbackInfoReturnable<Boolean> cir) {
         Slime slime = (Slime) (Object) this;
         if (slime.hasEffect(FTZMobEffects.STUN) || slime.hasEffect(FTZMobEffects.DISARM)) cir.setReturnValue(false);
     }
-
+    @SuppressWarnings("ConstantConditions")
     @Inject(at = @At("HEAD"), method = "jumpFromGround",cancellable = true)
     private void jumpCancel(CallbackInfo ci) {
         Slime slime = (Slime) (Object) this;

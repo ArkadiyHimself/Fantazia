@@ -45,7 +45,7 @@ import java.util.function.Predicate;
 
 public class ThrownHatchet extends AbstractArrow {
     private enum Direction {
-        ONLY$X, ONLY$Y, ONLY$Z, X$Y, X$Z, Y$Z, XYZ;
+        ONLY$X, ONLY$Y, ONLY$Z, X$Y, X$Z, Y$Z, XYZ
     }
     public static final EntityDataAccessor<Byte> ID_PHASING = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BYTE);
     public static final EntityDataAccessor<Byte> ID_RICOCHET = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BYTE);
@@ -63,6 +63,7 @@ public class ThrownHatchet extends AbstractArrow {
     public ThrownHatchet(EntityType<? extends AbstractArrow> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
+    @SuppressWarnings("ConstantConditions")
     public ThrownHatchet(Level pLevel, LivingEntity shooter, ItemStack hatchetItem, float charge) {
         super(FTZEntityTypes.HATCHET, shooter, pLevel);
         shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, charge * 2F, 1.0F);
@@ -73,6 +74,7 @@ public class ThrownHatchet extends AbstractArrow {
 
         throwingData(hatchetItem);
     }
+    @SuppressWarnings("ConstantConditions")
     public ThrownHatchet(Level level, Vec3 vec3, ItemStack stack) {
         super(FTZEntityTypes.HATCHET, level);
         setPos(vec3);
@@ -169,8 +171,8 @@ public class ThrownHatchet extends AbstractArrow {
         if (headDist <= 0.3) dmg += entityData.get(ID_HEADSHOT);
         livingEntity.hurt(source(), dmg);
 
-        int projProt = EnchantmentHelper.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, livingEntity);
-        if (projProt < 4) EffectHelper.makeStunned(livingEntity, 15 * (4 - projProt));
+        int projProtect = EnchantmentHelper.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, livingEntity);
+        if (projProtect < 4) EffectHelper.makeStunned(livingEntity, 15 * (4 - projProtect));
     }
     private void throwingData(ItemStack stack) {
         entityData.set(ID_PHASING, (byte) stack.getEnchantmentLevel(FTZEnchantments.PHASING));
@@ -217,11 +219,11 @@ public class ThrownHatchet extends AbstractArrow {
         this.entityData.set(VISUAL_ROT0, rot1);
         this.entityData.set(VISUAL_ROT1, rot1 - rotSpeed);
     }
-    public boolean isFoil() {
-        return entityData.get(ID_FOIL);
-    }
     public int phasingTicks() {
         return phasingTicks;
+    }
+    public boolean isPhasing() {
+        return isPhasing;
     }
     public Vec3 chasing(Entity target, float multiplier) {
         return chasing(target.position(), multiplier);
@@ -238,17 +240,17 @@ public class ThrownHatchet extends AbstractArrow {
         if (hatchetStuck == null) return false;
         return hatchetStuck.stuck(this);
     }
-    public void ricochetIntoNowhere(Direction direction, float mult) {
+    public void ricochetIntoNowhere(Direction direction, float multip) {
         ricocheted = true;
         Vec3 vec3 = this.getDeltaMovement();
         Vec3 newV3 = switch (direction) {
-            case ONLY$X -> vec3.subtract(vec3.x() * 2,0,0).scale(mult);
-            case ONLY$Y -> vec3.subtract(0,vec3.y() * 2,0).scale(mult);
-            case ONLY$Z -> vec3.subtract(0,0,vec3.z() * 2).scale(mult);
-            case X$Y -> vec3.subtract(vec3.x() * 2,vec3.y() * 2,0).scale(mult);
-            case X$Z -> vec3.subtract(vec3.x() * 2,0,vec3.z() * 2).scale(mult);
-            case Y$Z -> vec3.subtract(0,vec3.y() * 2,vec3.z() * 2).scale(mult);
-            case XYZ -> vec3.subtract(vec3.x() * 2, vec3.y() * 2, vec3.z() * 2).scale(mult);
+            case ONLY$X -> vec3.subtract(vec3.x() * 2,0,0).scale(multip);
+            case ONLY$Y -> vec3.subtract(0,vec3.y() * 2,0).scale(multip);
+            case ONLY$Z -> vec3.subtract(0,0,vec3.z() * 2).scale(multip);
+            case X$Y -> vec3.subtract(vec3.x() * 2,vec3.y() * 2,0).scale(multip);
+            case X$Z -> vec3.subtract(vec3.x() * 2,0,vec3.z() * 2).scale(multip);
+            case Y$Z -> vec3.subtract(0,vec3.y() * 2,vec3.z() * 2).scale(multip);
+            case XYZ -> vec3.subtract(vec3.x() * 2, vec3.y() * 2, vec3.z() * 2).scale(multip);
         };
         this.setDeltaMovement(newV3);
     }

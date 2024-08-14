@@ -16,6 +16,7 @@ public class StartedBlockingC2S implements IPacket {
             ServerPlayer serverPlayer = context.getSender();
             if (serverPlayer == null) return;
             AbilityManager abilityManager = AbilityGetter.getUnwrap(serverPlayer);
+            if (abilityManager == null) return;
             abilityManager.getAbility(MeleeBlock.class).ifPresent(MeleeBlock::startBlocking);
         });
         context.setPacketHandled(true);

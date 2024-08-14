@@ -16,30 +16,27 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipBlockStateContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class AbilityHelper {
+    public static Vec3 calculateViewVector(float pXRot, float pYRot) {
+        float f = pXRot * ((float)Math.PI / 180F);
+        float f1 = -pYRot * ((float)Math.PI / 180F);
+        float f2 = Mth.cos(f1);
+        float f3 = Mth.sin(f1);
+        float f4 = Mth.cos(f);
+        float f5 = Mth.sin(f);
+        return new Vec3(f3 * f4, -f5, f2 * f4);
+    }
     public static Vec3 dashVelocity(Vec3 lookAngle, double speed, boolean hor) {
-        if (hor) lookAngle = new Vec3(lookAngle.x(), 0.01, lookAngle.z());
-        return lookAngle.normalize().scale(speed);
+        Vec3 velocity = lookAngle.normalize().scale(speed);
+        if (velocity.y() == 0 && hor) velocity = velocity.add(0,0.01,0);
+        return velocity;
     }
     public static Vec3 dashVelocity(LivingEntity entity, double velocity, boolean horizontal) {
-        return dashVelocity(entity.getLookAngle(), velocity, horizontal);
-    }
-    public static int leapDuration(ServerPlayer player, Vec3 vec3, int initDuration) {
-        double x0 = player.getX();
-        double z0 = player.getZ();
-        float multiplier = 2.4f;
-
-        for (int i = initDuration; i > 0; i--) {
-           // Vec3 finalPos = new Vec3(x0 + vec3.x() / multiplier * i, player.getY() + 1 + vec3.y() / multiplier * i, z0 + vec3.z() / multiplier * i);
-            Vec3 finalPos = player.position().scale(i / multiplier).add(0,1,0);
-            if (player.level().getBlockState(BlockPos.containing(finalPos)).getBlock() instanceof AirBlock) return i;
-        }
-        return 0;
+        return dashVelocity(calculateViewVector(horizontal ? 0 : entity.getXRot(), entity.getYRot()), velocity, horizontal);
     }
     public static void doubleJump(ServerPlayer serverPlayer) {
         AbilityManager abilityManager = AbilityGetter.getUnwrap(serverPlayer);
@@ -67,6 +64,7 @@ public class AbilityHelper {
             return vec31.dot(vec3) < 0.0D;
         } else return false;
     }
+    @SuppressWarnings("ConstantConditions")
     public static boolean shouldListen(ServerLevel pLevel, BlockPos pPos, GameEvent.Context pContext, LivingEntity entity) {
         if (pContext.sourceEntity() != null && pContext.sourceEntity().isCrouching() || pContext.sourceEntity() == entity) return false;
         return !entity.isDeadOrDying() && pLevel.getWorldBorder().isWithinBounds(pPos) && !entity.hasEffect(FTZMobEffects.DEAFENED);
@@ -78,14 +76,11 @@ public class AbilityHelper {
 
         for (Direction direction : Direction.values()) {
             Vec3 vec32 = vec3.relative(direction, 1.0E-5F);
-            if (pLevel.isBlockInLine(new ClipBlockStateContext(vec32, vec31, (p_223780_) -> p_223780_
-                    .is(BlockTags.OCCLUDES_VIBRATION_SIGNALS))).getType() != HitResult.Type.BLOCK) {
-                return false;
-            }
+            if (pLevel.isBlockInLine(new ClipBlockStateContext(vec32, vec31, (p_223780_) -> p_223780_.is(BlockTags.OCCLUDES_VIBRATION_SIGNALS))).getType() != HitResult.Type.BLOCK) return false;
         }
         return true;
     }
-    public static void listenVibration(ServerLevel pLevel, GameEvent.Context pContext, Vec3 pPos, ServerPlayer player) {
+    public static void tryListen(ServerLevel pLevel, GameEvent.Context pContext, Vec3 pPos, ServerPlayer player) {
         if (pContext.sourceEntity() == null || !(pContext.sourceEntity() instanceof LivingEntity livingEntity)) return;
         Vec3 vec3 = player.getPosition(1f);
         if (AbilityHelper.shouldListen(pLevel, BlockPos.containing(pPos), pContext, player) && !AbilityHelper.isOccluded(pLevel, pPos, vec3)) {

@@ -61,7 +61,7 @@ public abstract class EffectHolder implements IEffect {
     }
     @Override
     public void tick() {
-        MobEffectInstance effectInstance = getOwner().getEffect(this.getEffect());
+        MobEffectInstance effectInstance = getOwner().getEffect(getEffect());
         if (effectInstance == null) duration = 0;
         else duration = effectInstance.getDuration();
     }

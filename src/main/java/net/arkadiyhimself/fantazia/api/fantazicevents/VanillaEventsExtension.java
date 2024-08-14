@@ -52,14 +52,16 @@ public class VanillaEventsExtension {
         }
     }
     @Cancelable
-    public static class DeathPreventationEvent extends LivingEvent {
+    public static class DeathPreventionEvent extends LivingEvent {
         private final Object cause;
-        public DeathPreventationEvent(LivingEntity entity, Object cause) {
+        public DeathPreventionEvent(LivingEntity entity, Object cause) {
             super(entity);
             this.cause = cause;
         }
-        // a mob effect or an item which causes the death preventation; just use «getCause() instance of MobEffect» or smth like that
-        public Object getCause() { return cause; }
+        // a mob effect or an item which causes the death presentation; just use «getCause() instance of MobEffect» or something like that
+        public Object getCause() {
+            return cause;
+        }
     }
     @Cancelable
     public static class LivingPickUpItemEvent extends LivingEvent {

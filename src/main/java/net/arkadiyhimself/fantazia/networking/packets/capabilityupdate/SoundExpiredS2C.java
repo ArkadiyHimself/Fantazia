@@ -24,6 +24,7 @@ public class SoundExpiredS2C implements IPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
+            if (entity == null) return;
             Player player = Minecraft.getInstance().player;
             if (player == null) return;
             AbilityManager abilityManager = AbilityGetter.getUnwrap(player);

@@ -12,10 +12,7 @@ import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
@@ -43,6 +40,7 @@ public class InventoryHelper {
         }
         return itemStacks;
     }
+    @SuppressWarnings("unchecked")
     public static List<ItemStack> searchForItems(Player player, Item... items) {
         List<ItemStack> itemStacks = new ArrayList<>();
 
@@ -78,36 +76,39 @@ public class InventoryHelper {
         });
         return present.get();
     }
-    public static List<SlotResult> findAllCurio(LivingEntity entity, String id) {
+    @SuppressWarnings("ConstantConditions")
+    public static List<SlotResult> findAllCurios(LivingEntity entity, String ident) {
         List<SlotResult> result = new ArrayList<>();
-        if (CuriosApi.getCuriosInventory(entity).isPresent()) {
-            ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
-            result = handler.findCurios(id);
-        }
-        return result;
-    }
+        ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
+        if (handler == null) return result;
+        Map<String, ICurioStacksHandler> curios = handler.getCurios();
+        for (String id : curios.keySet()) {
+            if (id.contains(ident)) {
+                ICurioStacksHandler stacksHandler = curios.get(id);
+                IDynamicStackHandler stackHandler = stacksHandler.getStacks();
 
-    public static List<SlotResult> findCurios(LivingEntity entity, String ident) {
-        List<SlotResult> result = new ArrayList<>();
-        if (CuriosApi.getCuriosInventory(entity).isPresent()) {
-            ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
-            Map<String, ICurioStacksHandler> curios = handler.getCurios();
-            for (String id : curios.keySet()) {
+                for (int i = 0; i < stackHandler.getSlots(); i++) {
+                    ItemStack stack = stackHandler.getStackInSlot(i);
 
-                if (id.contains(ident)) {
-                    ICurioStacksHandler stacksHandler = curios.get(id);
-                    IDynamicStackHandler stackHandler = stacksHandler.getStacks();
-
-                    for (int i = 0; i < stackHandler.getSlots(); i++) {
-                        ItemStack stack = stackHandler.getStackInSlot(i);
-
-                        NonNullList<Boolean> renderStates = stacksHandler.getRenders();
-                        result.add(new SlotResult(new SlotContext(id, handler.getWearer(), i, false,
-                                renderStates.size() > i && renderStates.get(i)), stack));
-                    }
+                    NonNullList<Boolean> renderStates = stacksHandler.getRenders();
+                    result.add(new SlotResult(new SlotContext(id, handler.getWearer(), i, false,
+                            renderStates.size() > i && renderStates.get(i)), stack));
                 }
             }
         }
         return result;
+    }
+    @SuppressWarnings("ConstantConditions")
+    public static List<SlotResult> findCurios(LivingEntity entity, String... ident) {
+        List<SlotResult> result = new ArrayList<>();
+        ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
+        if (handler == null) return result;
+        return handler.findCurios(ident);
+    }
+    @SuppressWarnings("ConstantConditions")
+    public static Optional<SlotResult> findCurio(LivingEntity entity, String ident, int id) {
+        ICuriosItemHandler curiosItemHandler = CuriosApi.getCuriosInventory(entity).orElse(null);
+        if (curiosItemHandler == null) return Optional.empty();
+        return curiosItemHandler.findCurio(ident, id);
     }
 }
