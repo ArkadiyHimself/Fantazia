@@ -2,18 +2,22 @@ package net.arkadiyhimself.fantazia.api.capability.entity.data.newdata;
 
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataHolder;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 
 public class DarkFlameTicks extends DataHolder implements ITicking {
-    private static final String ID = "dark_flame:";
     private int flameTicks = 0;
     public DarkFlameTicks(LivingEntity livingEntity) {
         super(livingEntity);
     }
+
+    @Override
+    public String ID() {
+        return "dark_flame";
+    }
+
     @Override
     public void respawn() {
         flameTicks = 0;
@@ -21,21 +25,21 @@ public class DarkFlameTicks extends DataHolder implements ITicking {
 
     @Override
     public void tick() {
-        flameTicks--;
-        if (isBurning()) getEntity().hurt(new DamageSource(getEntity().level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FTZDamageTypes.ANCIENT_BURNING)), 1.5f);
+        if (flameTicks > 0) flameTicks--;
+        FTZDamageTypes.DamageSources sources = LevelCapHelper.getDamageSources(getEntity().level());
+        if (sources != null && isBurning()) getEntity().hurt(sources.ancientBurning(), 1.5f);
     }
 
     @Override
-    public CompoundTag serialize() {
-        CompoundTag tag = super.serialize();
-        tag.putInt(ID + "flameTicks", flameTicks);
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("flameTicks", flameTicks);
         return tag;
     }
 
     @Override
-    public void deserialize(CompoundTag tag) {
-        super.deserialize(tag);
-        flameTicks = tag.contains(ID + "flameTicks") ? tag.getInt(ID + "flameTicks") : 0;
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        flameTicks = tag.getInt("flameTicks");
     }
     public void setFlameTicks(int value) {
         if (flameTicks < value) flameTicks = value;

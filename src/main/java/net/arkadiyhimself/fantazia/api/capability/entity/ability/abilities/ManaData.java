@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities;
 
-import net.arkadiyhimself.fantazia.api.capability.ITalentRequire;
+import net.arkadiyhimself.fantazia.api.capability.ITalentListener;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
@@ -9,33 +9,56 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 
-public class ManaData extends AbilityHolder implements ITalentRequire, ITicking {
-    private static final String ID = "mana:";
+public class ManaData extends AbilityHolder implements ITalentListener, ITicking {
     private static final float basicRegen = 0.00575f;
     private float mana = 20;
     private boolean philStone = false;
 
-
     public ManaData(Player player) {
         super(player);
+    }
+    @Override
+    public String ID() {
+        return "mana";
+    }
+    @Override
+    public void respawn() {
+        mana = getMaxMana();
+    }
+    @Override
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = new CompoundTag();
+        tag.putFloat("mana", mana);
+        return tag;
+    }
+    @Override
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        if (tag.contains("mana")) mana = tag.getFloat("mana");
+    }
+    @Override
+    public void onTalentUnlock(BasicTalent talent) {
+    }
+    @Override
+    public void onTalentRevoke(BasicTalent talent) {
+    }
+    @Override
+    public void tick() {
+        mana = Math.min(getMaxMana(), mana + getManaRegen());
     }
 
     public boolean wasteMana(float amount) {
         if (getPlayer().isCreative() || philStone) return true;
         float newAmount = mana - amount;
-        if (newAmount >= 0) {
-            mana = newAmount;
-        } else return false;
+        if (newAmount < 0) return false;
+        mana = newAmount;
         return true;
     }
     public float getMana() {
         return mana;
     }
-    @SuppressWarnings("ConstantConditions")
     public float getMaxMana() {
-        return (float) getPlayer().getAttributeValue(FTZAttributes.MAX_MANA);
+        return (float) getPlayer().getAttributeValue(FTZAttributes.MAX_MANA.get());
     }
-    @SuppressWarnings("ConstantConditions")
     public float getManaRegen() {
         float basicRegen = ManaData.basicRegen;
         FoodData data = getPlayer().getFoodData();
@@ -46,7 +69,7 @@ public class ManaData extends AbilityHolder implements ITalentRequire, ITicking 
             basicRegen *= 0.675f;
             if (data.getFoodLevel() <= 3f) basicRegen *= 0.5f;
         }
-        basicRegen *= getPlayer().getAttributeValue(FTZAttributes.MANA_REGEN_MULTIPLIER);
+        basicRegen *= getPlayer().getAttributeValue(FTZAttributes.MANA_REGEN_MULTIPLIER.get());
         return basicRegen;
     }
     public void restore() {
@@ -57,32 +80,5 @@ public class ManaData extends AbilityHolder implements ITalentRequire, ITicking 
     }
     public boolean hasStone() {
         return philStone;
-    }
-    @Override
-    public void respawn() {
-        mana = getMaxMana();
-    }
-    @Override
-    public CompoundTag serialize() {
-        CompoundTag tag = new CompoundTag();
-        tag.putFloat(ID + "mana", mana);
-        return tag;
-    }
-    @Override
-    public void deserialize(CompoundTag tag) {
-        if (tag.contains(ID + "mana")) mana = tag.getFloat(ID +"mana");
-    }
-    @Override
-    public void onTalentUnlock(BasicTalent talent) {
-
-    }
-    @Override
-    public void onTalentRevoke(BasicTalent talent) {
-
-    }
-
-    @Override
-    public void tick() {
-        mana = Math.min(getMaxMana(), mana + getManaRegen());
     }
 }

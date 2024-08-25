@@ -3,13 +3,14 @@ package net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
-import net.arkadiyhimself.fantazia.advanced.spell.Spells;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.EntityMadeSoundS2C;
 import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.SoundExpiredS2C;
+import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.core.particles.VibrationParticleOption;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -29,6 +30,20 @@ public class VibrationListen extends AbilityHolder implements ITicking {
     private int delay = 0;
     public VibrationListen(Player player) {
         super(player);
+    }
+    @Override
+    public String ID() {
+        return null;
+    }
+
+    @Override
+    public CompoundTag serialize(boolean toDisk) {
+        return new CompoundTag();
+    }
+
+    @Override
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+
     }
 
     @Override
@@ -64,14 +79,14 @@ public class VibrationListen extends AbilityHolder implements ITicking {
         pLevel.sendParticles(new VibrationParticleOption(listenerSource, travelTimeInTicks), pPos.x, pPos.y, pPos.z, 3, 0.0D, 0.0D, 0.0D, 0.0D);
         pLevel.playSound(null, pPos.x() + 0.5D, pPos.y() + 0.5D, pPos.z() + 0.5D, SoundEvents.SCULK_CLICKING, SoundSource.BLOCKS, 1.0F, pLevel.random.nextFloat() * 0.2F + 0.8F);
     }
-    public List<LivingEntity> revealed() {
+    public ImmutableList<LivingEntity> revealed() {
         List<LivingEntity> entities = Lists.newArrayList(REVEAL.keySet().iterator());
-        entities.removeIf(entity -> REVEAL.containsKey(entity) && REVEAL.get(entity) <= 0);
+        entities.removeIf(entity -> REVEAL.containsKey(entity) && REVEAL.get(entity) <= 0 && entity == null);
         return ImmutableList.copyOf(entities);
     }
     public boolean listen() {
         if (delay > 0) return false;
-        return SpellHelper.hasSpell(getPlayer(), Spells.Targeted.SONIC_BOOM);
+        return SpellHelper.hasSpell(getPlayer(), FTZSpells.SONIC_BOOM.get());
     }
     public void soundExpired(LivingEntity entity) {
         REVEAL.remove(entity);

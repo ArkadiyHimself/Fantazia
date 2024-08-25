@@ -18,12 +18,12 @@ import net.minecraftforge.eventbus.api.Event;
  * <br>
  * The events are fired on the {@link MinecraftForge#EVENT_BUS}.
  */
-public class AuraEvent<T extends Entity, M extends Entity> extends Event {
-    private final AuraInstance<T,M> aura;
-    public AuraEvent(AuraInstance<T,M> aura) {
+public class AuraEvent<T extends Entity> extends Event {
+    private final AuraInstance<T> aura;
+    public AuraEvent(AuraInstance<T> aura) {
         this.aura = aura;
     }
-    public AuraInstance<T,M> getAura() {
+    public AuraInstance<T> getAura() {
         return aura;
     }
 
@@ -36,8 +36,8 @@ public class AuraEvent<T extends Entity, M extends Entity> extends Event {
      * <br>
      * This event does not have a {@link HasResult result}
      */
-    public static class Tick<T extends Entity, M extends Entity> extends AuraEvent<T,M> {
-        public Tick(AuraInstance<T,M> aura) {
+    public static class Tick<T extends Entity> extends AuraEvent<T> {
+        public Tick(AuraInstance<T> aura) {
             super(aura);
         }
     }
@@ -53,9 +53,9 @@ public class AuraEvent<T extends Entity, M extends Entity> extends Event {
      * <br>
      * This event does not have a {@link HasResult result}
      */
-    public static class Enter<T extends Entity, M extends Entity> extends AuraEvent<T,M> {
+    public static class Enter<T extends Entity> extends AuraEvent<T> {
         private final T entity;
-        public Enter(AuraInstance<T,M> aura, T entity) {
+        public Enter(AuraInstance<T> aura, T entity) {
             super(aura);
             this.entity = entity;
         }
@@ -76,9 +76,9 @@ public class AuraEvent<T extends Entity, M extends Entity> extends Event {
      * <br>
      * This event does not have a {@link HasResult result}
      */
-    public static class Exit<T extends Entity, M extends Entity> extends AuraEvent<T,M> {
+    public static class Exit<T extends Entity> extends AuraEvent<T> {
         private final T entity;
-        public Exit(AuraInstance<T,M> aura, T entity) {
+        public Exit(AuraInstance<T> aura, T entity) {
             super(aura);
             this.entity = entity;
         }

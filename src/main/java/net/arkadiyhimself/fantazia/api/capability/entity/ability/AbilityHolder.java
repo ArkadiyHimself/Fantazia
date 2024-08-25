@@ -9,16 +9,12 @@ public abstract class AbilityHolder implements IPlayerAbility {
     public AbilityHolder(Player player) {
         this.player = player;
     }
+    public abstract String ID();
+    @Override
+    public abstract CompoundTag serialize(boolean toDisk);
 
     @Override
-    public CompoundTag serialize() {
-        return new CompoundTag();
-    }
-
-    @Override
-    public void deserialize(CompoundTag tag) {
-
-    }
+    public abstract void deserialize(CompoundTag tag, boolean fromDisk);
 
     @Override
     public final Player getPlayer() {

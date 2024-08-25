@@ -72,7 +72,7 @@ public class HatchetItem extends TieredItem {
                 ThrownHatchet hatchetEnt = new ThrownHatchet(pLevel, player, pStack.copy(), charge);
 
                 pLevel.addFreshEntity(hatchetEnt);
-                pLevel.playSound(null, hatchetEnt, FTZSoundEvents.HATCHET_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+                pLevel.playSound(null, hatchetEnt, FTZSoundEvents.HATCHET_THROW.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 player.awardStat(Stats.ITEM_USED.get(pStack.getItem()));
                 if (!player.getAbilities().instabuild) player.getInventory().removeItem(pStack);
             }

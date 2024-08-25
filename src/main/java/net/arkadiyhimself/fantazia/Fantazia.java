@@ -11,9 +11,6 @@ import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
 import net.arkadiyhimself.fantazia.client.models.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.registries.*;
-import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
-import net.arkadiyhimself.fantazia.registries.custom.FTZHealingTypes;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Registry;
@@ -50,36 +47,23 @@ public class Fantazia {
         StackDataGetter.register();
         LevelCapGetter.register();
 
-
         // custom registries
         FantazicRegistry.register(modEventBus);
 
-        // custom registry
-        load(FTZSpells.class);
-        load(FTZAuras.class);
-        load(FTZHealingTypes.class);
-
         // vanilla registry
-        load(FTZEnchantments.class);
-        load(FTZMobEffects.class);
-        load(FTZSoundEvents.class);
-        load(FTZAttributes.class);
-        load(FTZBlocks.class);
-        load(FTZEntityTypes.class);
-        load(FTZParticleTypes.class);
-        load(FTZItems.class);
-        load(FTZCreativeModeTabs.class);
-        load(FTZLootModifiers.class);
+        FTZEnchantments.register();
+        FTZMobEffects.register();
+        FTZSoundEvents.register();
+        FTZAttributes.register();
+        FTZBlocks.register();
+        FTZEntityTypes.register();
+        FTZParticleTypes.register();
+        FTZItems.register();
+        FTZCreativeModeTabs.register();
+        FTZLootModifiers.register();
     }
     public static BlockEntityWithoutLevelRenderer getItemsRenderer() {
         return CUSTOM_RENDERER;
-    }
-    public static void load(Class<?> tClass) {
-        try {
-            Class.forName(tClass.getName());
-        } catch (ClassNotFoundException ex) {
-            throw new IllegalStateException("Something's wrong I can feel it...");
-        }
     }
     public static ResourceLocation res(String id) {
         return new ResourceLocation(MODID, id);

@@ -21,9 +21,9 @@ public class MixinCrossbowItem {
         AbstractArrow arrow = cir.getReturnValue();
         FeatureManager featureManager = FeatureGetter.getUnwrap(arrow);
         if (featureManager == null) return;
-        int duel = pCrossbowStack.getEnchantmentLevel(FTZEnchantments.DUELIST);
+        int duel = pCrossbowStack.getEnchantmentLevel(FTZEnchantments.DUELIST.get());
         featureManager.getFeature(ArrowEnchant.class).ifPresent(arrowEnchant -> arrowEnchant.setDuelist(duel));
-        int ball = pCrossbowStack.getEnchantmentLevel(FTZEnchantments.BALLISTA);
+        int ball = pCrossbowStack.getEnchantmentLevel(FTZEnchantments.BALLISTA.get());
         featureManager.getFeature(ArrowEnchant.class).ifPresent(arrowEnchant -> arrowEnchant.setBallista(ball));
     }
 }

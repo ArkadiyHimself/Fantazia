@@ -5,7 +5,6 @@ import net.arkadiyhimself.fantazia.advanced.spell.Spell;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.advanced.spell.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ManaData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,12 +25,11 @@ public class SpellCaster extends Item {
     }
     public boolean tryCast(@NotNull ServerPlayer serverPlayer) {
         if (serverPlayer.getCooldowns().isOnCooldown(this) && !serverPlayer.getAbilities().instabuild || getSpell() == null) return false;
+
+        ManaData manaData = AbilityGetter.takeAbilityHolder(serverPlayer, ManaData.class);
+        if (manaData != null && !manaData.wasteMana(getSpell().getManacost())) return false;
+
         boolean flag = false;
-        AbilityManager abilityManager = AbilityGetter.getUnwrap(serverPlayer);
-        if (abilityManager != null) {
-            ManaData manaData = abilityManager.takeAbility(ManaData.class);
-            if (manaData != null && !manaData.wasteMana(getSpell().getManacost())) return false;
-        }
 
         if (this.getSpell() instanceof SelfSpell selfSpell) flag = SpellHelper.trySelfSpell(serverPlayer, selfSpell, false);
         if (this.getSpell() instanceof TargetedSpell<?> targetedSpell) flag = SpellHelper.tryTargetedSpell(serverPlayer, targetedSpell);

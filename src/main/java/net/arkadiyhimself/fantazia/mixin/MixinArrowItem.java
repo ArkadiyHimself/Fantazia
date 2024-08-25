@@ -19,7 +19,7 @@ public class MixinArrowItem {
     @Inject(at = @At("RETURN"), method = "createArrow")
     private void applyEnchantments(Level pLevel, ItemStack pStack, LivingEntity pShooter, CallbackInfoReturnable<AbstractArrow> cir) {
         AbstractArrow arrow = cir.getReturnValue();
-        boolean frozen = pShooter.getMainHandItem().getEnchantmentLevel(FTZEnchantments.FREEZE) > 0;
+        boolean frozen = pShooter.getMainHandItem().getEnchantmentLevel(FTZEnchantments.FREEZE.get()) > 0;
         FeatureManager featureManager = FeatureGetter.getUnwrap(arrow);
         if (featureManager == null || !frozen) return;
         featureManager.getFeature(ArrowEnchant.class).ifPresent(ArrowEnchant::freeze);

@@ -57,7 +57,7 @@ public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu>
         Component clns = cleanse.getName();
         List<Component> components = Lists.newArrayList();
         components.addAll(buildTooltip(effect));
-        GuiHelper.addComponent(components, "tooltip.fantazia.common.cleanse", new ChatFormatting[]{ChatFormatting.GOLD}, null, clns);
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse", new ChatFormatting[]{ChatFormatting.GOLD}, null, clns));
         guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, components, mouseX, mouseY);
     }
 

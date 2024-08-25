@@ -25,7 +25,7 @@ public class AdvancedHealing {
         if (entity.getHealth() == entity.getMaxHealth()) return false;
         if (cancelHeal(entity) && !source.is(FTZHealingTypeTags.NOT_CANCELLABLE)) return false;
         if (FantazicCombat.isInvulnerable(entity) && !source.is(FTZHealingTypeTags.BYPASSES_INVULNERABILITY)) return false;
-        if (AuraHelper.affected(entity, FTZAuras.DESPAIR) && !source.is(FTZHealingTypeTags.UNHOLY)) j *= 0.5f;
+        if (AuraHelper.affected(entity, FTZAuras.DESPAIR.get()) && !source.is(FTZHealingTypeTags.UNHOLY)) j *= 0.5f;
         entity.setHealth(entity.getHealth() + j);
         if (entity instanceof Player player) player.causeFoodExhaustion(source.type().exhaustion());
         if (source.noParticles()) return true;
@@ -46,8 +46,8 @@ public class AdvancedHealing {
         return true;
     }
     private static boolean cancelHeal(LivingEntity entity) {
-        if (entity.hasEffect(FTZMobEffects.FROZEN) || entity.hasEffect(FTZMobEffects.DOOMED)) return true;
-        if (SpellHelper.hasSpell(entity, FTZSpells.ENTANGLE)) return true;
+        if (entity.hasEffect(FTZMobEffects.FROZEN.get()) || entity.hasEffect(FTZMobEffects.DOOMED.get())) return true;
+        if (SpellHelper.hasSpell(entity, FTZSpells.ENTANGLE.get())) return true;
         return false;
     }
 }

@@ -4,8 +4,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSources;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.CommonData;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.LivingData;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
@@ -23,55 +22,50 @@ import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class Auras {
-    public static final BasicAura<Entity, Entity> DEBUG = new BasicAura<>(10f, BasicAura.TYPE.MIXED, Entity.class)
+    public static final BasicAura<Entity> DEBUG = new BasicAura<>(10f, BasicAura.TYPE.MIXED, Entity.class)
             .addDynamicAttributeModifier(Attributes.MAX_HEALTH, new AttributeModifier("debug_aura_health", -18, AttributeModifier.Operation.ADDITION));
-    public static final BasicAura<LivingEntity, LivingEntity> LEADERSHIP = new BasicAura<LivingEntity, LivingEntity>(12f, BasicAura.TYPE.POSITIVE, LivingEntity.class)
+    public static final BasicAura<LivingEntity> LEADERSHIP = new BasicAura<>(12f, BasicAura.TYPE.POSITIVE, LivingEntity.class)
             .addPrimaryFilter((entity, owner) -> {
-                boolean pet = entity instanceof TamableAnimal animal && animal.isOwnedBy(owner);
+                boolean pet = entity instanceof TamableAnimal animal && owner instanceof LivingEntity livingOwner && animal.isOwnedBy(livingOwner);
                 boolean ally = entity instanceof Player && owner instanceof Player;
                 return pet || ally;
             })
             .addAttributeModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier("leadership_damage", 0.5f, AttributeModifier.Operation.MULTIPLY_TOTAL))
-            .addAttributeModifier(FTZAttributes.LIFESTEAL, new AttributeModifier("leadership_lifesteal", 0.25f, AttributeModifier.Operation.ADDITION))
+            .addAttributeModifier(FTZAttributes.LIFESTEAL.get(), new AttributeModifier("leadership_lifesteal", 0.25f, AttributeModifier.Operation.ADDITION))
             .tickingOnEntities((entity, owner) -> {
-                if (owner.hasEffect(FTZMobEffects.FURY)) EffectHelper.makeFurious(entity,2);
+                if (owner instanceof LivingEntity livingOwner && livingOwner.hasEffect(FTZMobEffects.FURY.get())) EffectHelper.makeFurious(entity,2);
             });
-    public static final BasicAura<LivingEntity, LivingEntity> TRANQUIL = new BasicAura<LivingEntity, LivingEntity>(6f, BasicAura.TYPE.POSITIVE, LivingEntity.class)
+    public static final BasicAura<LivingEntity> TRANQUIL = new BasicAura<>(6f, BasicAura.TYPE.POSITIVE, LivingEntity.class)
             .addPrimaryFilter((entity, owner) -> {
                 boolean flag = entity instanceof AgeableMob || entity instanceof Player;
                 boolean flag1 = entity instanceof TamableAnimal tamableAnimal && tamableAnimal.getOwner() == owner;
                 return flag1 || flag;
             })
             .addSecondaryFilter((entity, owner) -> {
-                if (owner instanceof Player player && player.getCooldowns().isOnCooldown(FTZItems.TRANQUIL_HERB)) return false;
-                DataManager dataOwner = DataGetter.getUnwrap(owner);
-                if (dataOwner != null) {
-                    CommonData commonData = dataOwner.takeData(CommonData.class);
-                    if (commonData != null && commonData.getDamageTicks() > 0) return false;
+                if (owner instanceof Player player && player.getCooldowns().isOnCooldown(FTZItems.TRANQUIL_HERB.get())) return false;
+                if (owner instanceof LivingEntity livingOwner) {
+                    LivingData livingData = DataGetter.takeDataHolder(livingOwner, LivingData.class);
+                    if (livingData != null && livingData.getDamageTicks() > 0) return false;
                 }
-                DataManager dataEntity = DataGetter.getUnwrap(entity);
-                if (dataEntity != null) {
-                    CommonData commonData = dataEntity.takeData(CommonData.class);
-                    if (commonData != null && commonData.getDamageTicks() > 0) return false;
-                }
-                return !InventoryHelper.hasCurio(entity, FTZItems.TRANQUIL_HERB) && entity.getMaxHealth() > entity.getHealth();
+                LivingData livingData = DataGetter.takeDataHolder(entity, LivingData.class);
+                if (livingData != null && livingData.getDamageTicks() > 0) return false;
+
+                return !InventoryHelper.hasCurio(entity, FTZItems.TRANQUIL_HERB.get()) && entity.getMaxHealth() > entity.getHealth();
             })
             .addOwnerConditions((owner) -> {
-                if (owner instanceof Player player && player.getCooldowns().isOnCooldown(FTZItems.TRANQUIL_HERB)) return false;
-                DataManager dataManager = DataGetter.getUnwrap(owner);
-                if (dataManager != null) {
-                    CommonData commonData = dataManager.takeData(CommonData.class);
-                    return commonData == null || commonData.getDamageTicks() <= 0;
-                }
-                return true;
+                if (!(owner instanceof LivingEntity livingOwner)) return false;
+                if (owner instanceof Player player && player.getCooldowns().isOnCooldown(FTZItems.TRANQUIL_HERB.get())) return false;
+                LivingData livingData = DataGetter.takeDataHolder(livingOwner, LivingData.class);
+                return livingData == null || livingData.getDamageTicks() <= 0;
             })
             .tickingOnEntities((entity, owner) -> {
-                HealingSources healingSources = LevelCapHelper.healingSources(owner.level());
+                HealingSources healingSources = LevelCapHelper.getHealingSources(entity.level());
                 if (healingSources != null) AdvancedHealing.heal(entity, healingSources.regenAura(owner), 0.25f / 20);
             })
             .tickingOnOwner(owner -> {
-                HealingSources healingSources = LevelCapHelper.healingSources(owner.level());
-                if (healingSources != null) AdvancedHealing.heal(owner, healingSources.regenAura(owner), 0.3125f / 20);
+                if (!(owner instanceof LivingEntity livingOwner)) return;
+                HealingSources healingSources = LevelCapHelper.getHealingSources(livingOwner.level());
+                if (healingSources != null) AdvancedHealing.heal(livingOwner, healingSources.regenAura(owner), 0.3125f / 20);
             })
             .tickingOnBlocks((blockPos, auraInstance) -> {
                 if (Fantazia.RANDOM.nextFloat() >= 0.00085f) return;
@@ -87,9 +81,9 @@ public class Auras {
                     }
                 }
             });
-    public static final BasicAura<LivingEntity, LivingEntity> DESPAIR = new BasicAura<LivingEntity, LivingEntity>(8f, BasicAura.TYPE.NEGATIVE, LivingEntity.class)
+    public static final BasicAura<LivingEntity> DESPAIR = new BasicAura<>(8f, BasicAura.TYPE.NEGATIVE, LivingEntity.class)
             .addPrimaryFilter((entity, owner) ->!(entity instanceof Mob mob) || mob.getTarget() == owner)
-            .addSecondaryFilter((entity, owner) -> (owner.getHealth() > entity.getHealth() || entity.hasEffect(FTZMobEffects.DOOMED)) && !entity.hasEffect(FTZMobEffects.FURY))
+            .addSecondaryFilter((entity, owner) -> (owner instanceof LivingEntity livingOwner && livingOwner.getHealth() > entity.getHealth() || entity.hasEffect(FTZMobEffects.DOOMED.get())) && !entity.hasEffect(FTZMobEffects.FURY.get()))
             .addAttributeModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier("despair_damage", -0.35, AttributeModifier.Operation.MULTIPLY_TOTAL))
             .addAttributeModifier(Attributes.ARMOR, new AttributeModifier("despair_armor", -5, AttributeModifier.Operation.ADDITION))
             .addDynamicAttributeModifier(Attributes.MOVEMENT_SPEED, new AttributeModifier("despair_slow", -0.8, AttributeModifier.Operation.MULTIPLY_TOTAL));

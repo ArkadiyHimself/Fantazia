@@ -1,0 +1,14 @@
+{
+  "tab": "fantazia:stat_modifiers",
+  "attribute_chain": true,
+  "chains": 5,
+  "element": {
+    "iconTexture": "fantazia:textures/gui/talents/health_boost.png",
+    "title": "fantazia.talent.health_boost",
+    "wisdom": 0,
+    "attribute": "minecraft:generic.max_health",
+    "name": "health_talent",
+    "amount": 4,
+    "operation": "addition"
+  }
+}

@@ -4,6 +4,8 @@
     "minecraft:drown",
     "minecraft:starve",
     "minecraft:generic_kill",
-    "minecraft:in_wall"
+    "minecraft:in_wall",
+    "#fantazia:no_knockback",
+    "fantazia:removal"
   ]
 }

@@ -2,10 +2,9 @@ package net.arkadiyhimself.fantazia.networking.packets.capabilityupdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
-import net.arkadiyhimself.fantazia.data.talents.TalentLoad;
+import net.arkadiyhimself.fantazia.data.talents.reload.TalentManager;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -29,13 +28,14 @@ public class TalentBuyingC2S implements IPacket {
         context.enqueueWork(() -> {
             ServerPlayer serverPlayer = context.getSender();
             if (serverPlayer == null) return;
-            AbilityManager abilityManager = AbilityGetter.getUnwrap(serverPlayer);
-            if (abilityManager == null) return;
-            TalentsHolder talentsHolder = abilityManager.takeAbility(TalentsHolder.class);
+
+            TalentsHolder talentsHolder = AbilityGetter.takeAbilityHolder(serverPlayer, TalentsHolder.class);
             if (talentsHolder == null) return;
-            BasicTalent talent = TalentLoad.getTalents().get(location);
+
+            BasicTalent talent = TalentManager.getTalents().get(location);
             if (talent == null) return;
-            if (!talentsHolder.buyTalent(talent)) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.DENIED), serverPlayer);
+
+            if (!talentsHolder.buyTalent(talent)) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.DENIED.get()), serverPlayer);
         });
         context.setPacketHandled(true);
     }

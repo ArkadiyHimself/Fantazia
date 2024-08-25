@@ -40,7 +40,7 @@ public class PassiveSpell extends Spell {
             } catch (NumberFormatException ignored) {}
             if (lines > 0) {
                 components.add(Component.translatable(" "));
-                for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + ".desc." + i, null, null);
+                for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
             }
             return components;
         }
@@ -51,15 +51,15 @@ public class PassiveSpell extends Spell {
         ChatFormatting[] head = new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
         // spell name
         String namePath = basicPath + ".name";
-        GuiHelper.addComponent(components, "tooltip.fantazia.common.passive", head, ability, Component.translatable(namePath).getString());
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.passive", head, ability, Component.translatable(namePath).getString()));
         // spell recharge
         String recharge = String.format("%.1f", ((float) this.getRecharge()) / 20);
-        GuiHelper.addComponent(components, "tooltip.fantazia.common.recharge", head, ability, recharge);
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.recharge", head, ability, recharge));
         // spell manacost
         String manacost = String.format("%.1f", this.getManacost());
-        GuiHelper.addComponent(components, "tooltip.fantazia.common.manacost", head, ability, manacost);
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.manacost", head, ability, manacost));
         // spell cleanse
-        if (this.hasCleanse()) GuiHelper.addComponent(components, "tooltip.fantazia.common.cleanse_strength", head, ability, this.getStrength().getName());
+        if (this.hasCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", head, ability, this.getStrength().getName()));
 
         components.add(Component.translatable(" "));
 
@@ -69,7 +69,7 @@ public class PassiveSpell extends Spell {
             lines = Integer.parseInt(desc);
         } catch (NumberFormatException ignored) {}
 
-        if (lines > 0) for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + "." + i, text, null);
+        if (lines > 0) for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, text, null));
 
         String pass = Component.translatable(basicPath + ".tweaks.lines").getString();
         lines = 0;
@@ -79,8 +79,8 @@ public class PassiveSpell extends Spell {
 
         if (lines > 0) {
             components.add(Component.translatable(" "));
-            GuiHelper.addComponent(components, basicPath + ".tweaks", head, null);
-            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + ".tweaks." + i, null, null);
+            components.add(GuiHelper.bakeComponent(basicPath + ".tweaks", head, null));
+            for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".tweaks." + i, null, null));
         }
 
         return components;

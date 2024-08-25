@@ -5,7 +5,10 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import net.arkadiyhimself.fantazia.advanced.dynamicattributemodifying.DynamicAttributeModifier;
+import net.arkadiyhimself.fantazia.simpleobjects.PercentageAttribute;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -14,13 +17,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 public class GuiHelper {
+    public static final DecimalFormat PERCENTAGE_ATTRIBUTE_MODIFIER = Util.make(new DecimalFormat("#"), (p_41704_) -> {
+        p_41704_.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
+    });
     public static void wholeScreen(ResourceLocation resourceLocation, float red, float green, float blue, float alpha) {
         int width = Minecraft.getInstance().getWindow().getGuiScaledWidth();
         int height = Minecraft.getInstance().getWindow().getGuiScaledHeight();
@@ -44,7 +51,7 @@ public class GuiHelper {
         RenderSystem.setShaderColor(previousSC[0], previousSC[1], previousSC[2], previousSC[3]);
     }
     @SuppressWarnings("all")
-    public static void addComponent(List<Component> list, String str, @Nullable ChatFormatting[] strFormat, @Nullable ChatFormatting[] varFormat, Object... objs) {
+    public static Component bakeComponent(String str, @Nullable ChatFormatting[] strFormat, @Nullable ChatFormatting[] varFormat, Object... objs) {
         Component[] stringValues = new Component[objs.length];
         int counter = 0;
         for (Object obj : objs) {
@@ -57,12 +64,19 @@ public class GuiHelper {
             stringValues[counter] = comp;
             counter++;
         }
-        if (strFormat == null) list.add(Component.translatable(str, stringValues));
-        else list.add(Component.translatable(str, stringValues).withStyle(strFormat));
+        if (strFormat == null) return Component.translatable(str, stringValues);
+        else return Component.translatable(str, stringValues).withStyle(strFormat);
     }
     public static Component attributeModifierComponent(@NotNull Attribute attribute, @NotNull AttributeModifier modifier) {
         double value = modifier.getAmount();
-        if (modifier.getOperation() == AttributeModifier.Operation.ADDITION) return Component.translatable("attribute.modifier.plus." + modifier.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(value), Component.translatable(attribute.getDescriptionId())).withStyle(ChatFormatting.BLUE);
+        if (attribute instanceof PercentageAttribute percentageAttribute) {
+            if (value >= 0) return Component.translatable("fantazia.percentage_attribute." + modifier.getOperation().toValue(), PERCENTAGE_ATTRIBUTE_MODIFIER.format(value), Component.translatable(percentageAttribute.getDescriptionId())).withStyle(ChatFormatting.DARK_GREEN);
+            else return Component.translatable("fantazia.percentage_attribute." + modifier.getOperation().toValue(), PERCENTAGE_ATTRIBUTE_MODIFIER.format(value), Component.translatable(percentageAttribute.getDescriptionId())).withStyle(ChatFormatting.DARK_RED);
+        }
+        if (modifier.getOperation() == AttributeModifier.Operation.ADDITION) return Component.translatable("attribute.modifier.plus." + modifier.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(value), Component.translatable(attribute.getDescriptionId())).withStyle(ChatFormatting.DARK_PURPLE);
         else return Component.translatable("attribute.modifier.plus." + modifier.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(value), Component.translatable(attribute.getDescriptionId())).withStyle(ChatFormatting.RED);
+    }
+    public static Component attributeModifierComponent(@NotNull Attribute attribute, @NotNull DynamicAttributeModifier modifier) {
+        return attributeModifierComponent(attribute, modifier.maximumModifier());
     }
 }

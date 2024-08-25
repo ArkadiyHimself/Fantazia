@@ -5,7 +5,7 @@ import dev._100media.capabilitysyncer.core.PlayerCapability;
 import dev._100media.capabilitysyncer.network.EntityCapabilityStatusPacket;
 import dev._100media.capabilitysyncer.network.SimpleEntityCapabilityStatusPacket;
 import net.arkadiyhimself.fantazia.api.capability.IDamageReacting;
-import net.arkadiyhimself.fantazia.api.capability.ITalentRequire;
+import net.arkadiyhimself.fantazia.api.capability.ITalentListener;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.*;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
@@ -37,19 +37,19 @@ public class AbilityManager extends PlayerCapability {
         return NetworkHandler.INSTANCE;
     }
     @Override
-    public CompoundTag serializeNBT(boolean savingToDisk) {
+    public CompoundTag serializeNBT(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
-        ABILITIES.forEach(ability -> tag.merge(ability.serialize()));
+
+        for (AbilityHolder holder : ABILITIES) if (holder.ID() != null) tag.put(holder.ID(), holder.serialize(toDisk));
+
         return tag;
     }
     @Override
-    public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
-        ABILITIES.forEach(ability -> ability.deserialize(nbt));
+    public void deserializeNBT(CompoundTag tag, boolean fromDisk) {
+        for (AbilityHolder holder : ABILITIES) if (tag.contains(holder.ID())) holder.deserialize(tag.getCompound(holder.ID()), fromDisk);
     }
     public void tick() {
-        ABILITIES.forEach(abilityHolder -> {
-            if (abilityHolder instanceof ITicking ticking) ticking.tick();
-        });
+        ABILITIES.stream().filter(ITicking.class::isInstance).forEach(abilityHolder -> ((ITicking) abilityHolder).tick());
         updateTracking();
     }
     public void onHit(LivingAttackEvent event) {
@@ -65,10 +65,10 @@ public class AbilityManager extends PlayerCapability {
         ABILITIES.forEach(AbilityHolder::respawn);
     }
     public void talentUnlocked(BasicTalent talent) {
-        ABILITIES.stream().filter(ITalentRequire.class::isInstance).forEach(abilityHolder -> ((ITalentRequire) abilityHolder).onTalentUnlock(talent));
+        ABILITIES.stream().filter(ITalentListener.class::isInstance).forEach(abilityHolder -> ((ITalentListener) abilityHolder).onTalentUnlock(talent));
     }
     public void talentRevoked(BasicTalent talent) {
-        ABILITIES.stream().filter(ITalentRequire.class::isInstance).forEach(abilityHolder -> ((ITalentRequire) abilityHolder).onTalentRevoke(talent));
+        ABILITIES.stream().filter(ITalentListener.class::isInstance).forEach(abilityHolder -> ((ITalentListener) abilityHolder).onTalentRevoke(talent));
     }
     public void grantAbility(Function<Player, AbilityHolder> ability) {
         AbilityHolder abilityHolder = ability.apply(player);

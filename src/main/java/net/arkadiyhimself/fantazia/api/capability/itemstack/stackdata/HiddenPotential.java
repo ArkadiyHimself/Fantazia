@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 public class HiddenPotential extends StackDataHolder implements ITicking, IDamageReacting {
-    private static final String ID = "hidden_potential:";
     public enum DAMAGE_LEVEL {
         STARTING(0), LOW(1), MEDIUM(2), HIGH(3), MAXIMUM(4);
         final int level;
@@ -35,23 +34,27 @@ public class HiddenPotential extends StackDataHolder implements ITicking, IDamag
     }
 
     @Override
+    public String ID() {
+        return "hidden_potential";
+    }
+
+    @Override
     public void tick() {
         if (delay > 0) delay--;
         else reset();
     }
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
-        tag.putFloat(ID + "damage", damage);
-        if (delay == 0) tag.putInt(ID + "delay", delay);
+        tag.putFloat("damage", damage);
+        if (delay == 0) tag.putInt("delay", delay);
         return tag;
     }
 
     @Override
-    public void deserialize(CompoundTag tag) {
-        super.deserialize(tag);
-        damage = tag.contains(ID + "damage") ? tag.getFloat(ID + "damage") : MIN;
-        delay = tag.contains(ID + "delay") ? tag.getInt(ID + "delay") : DELAY_REGULAR;
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        damage = tag.contains("damage") ? tag.getFloat("damage") : MIN;
+        delay = tag.contains("delay") ? tag.getInt("delay") : DELAY_REGULAR;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class HiddenPotential extends StackDataHolder implements ITicking, IDamag
         damage = Math.min(damage + bonus, MAX);
         delay = damage >= MAX ? DELAY_UNLEASH : DELAY_REGULAR;
         DAMAGE_LEVEL cur = damageLevel();
-        if (old != HiddenPotential.DAMAGE_LEVEL.MAXIMUM && cur == HiddenPotential.DAMAGE_LEVEL.MAXIMUM) victim.playSound(FTZSoundEvents.FRAG_SWORD_UNLEASHED);
+        if (old != HiddenPotential.DAMAGE_LEVEL.MAXIMUM && cur == HiddenPotential.DAMAGE_LEVEL.MAXIMUM) victim.playSound(FTZSoundEvents.FRAG_SWORD_UNLEASHED.get());
         victim.playSound(getSound());
 
         return damage;
@@ -91,11 +94,11 @@ public class HiddenPotential extends StackDataHolder implements ITicking, IDamag
     }
     public SoundEvent getSound() {
         return switch (damageLevel()) {
-            case STARTING -> FTZSoundEvents.FRAG_SWORD_BEGIN;
-            case LOW -> FTZSoundEvents.FRAG_SWORD_LOW;
-            case MEDIUM -> FTZSoundEvents.FRAG_SWORD_MEDIUM;
-            case HIGH -> FTZSoundEvents.FRAG_SWORD_HIGH;
-            case MAXIMUM -> FTZSoundEvents.FRAG_SWORD_MAXIMUM;
+            case STARTING -> FTZSoundEvents.FRAG_SWORD_BEGIN.get();
+            case LOW -> FTZSoundEvents.FRAG_SWORD_LOW.get();
+            case MEDIUM -> FTZSoundEvents.FRAG_SWORD_MEDIUM.get();
+            case HIGH -> FTZSoundEvents.FRAG_SWORD_HIGH.get();
+            case MAXIMUM -> FTZSoundEvents.FRAG_SWORD_MAXIMUM.get();
         };
     }
     public void reset() {

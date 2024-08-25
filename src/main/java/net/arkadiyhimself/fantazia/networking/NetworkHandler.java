@@ -9,13 +9,10 @@ import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
 import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
-import net.arkadiyhimself.fantazia.networking.packets.KickOutOfGuiS2CPacket;
-import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
-import net.arkadiyhimself.fantazia.networking.packets.PlaySoundForUIS2C;
-import net.arkadiyhimself.fantazia.networking.packets.ResetFallDistanceC2S;
+import net.arkadiyhimself.fantazia.networking.packets.*;
 import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.*;
-import net.arkadiyhimself.fantazia.networking.packets.keyinput.CastSpellC2S;
-import net.arkadiyhimself.fantazia.networking.packets.keyinput.WeaponAbilityC2S;
+import net.arkadiyhimself.fantazia.networking.packets.KeyInputC2S;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkRegistry;
@@ -43,26 +40,19 @@ public class NetworkHandler {
                 .add(SimpleLevelCapabilityStatusPacket::register)
 
                 // stuff
-                .add(KickOutOfGuiS2CPacket::register
-                )
+                .add(KickOutOfGuiS2C::register)
+                .add(AddParticleS2C::register)
+                .add(KeyInputC2S::register)
                 // player's animation
                 .add(PlayAnimationS2C::register)
-
-                // use new items
-                .add(WeaponAbilityC2S::register)
-                .add(CastSpellC2S::register)
+                .add(SwingHandS2C::register)
 
                 // play sound
                 .add(PlaySoundForUIS2C::register)
 
                 // capability update
-                .add(DeltaMovementC2S::register)
-                .add(DoubleJumpC2S::register)
-                .add(JumpButtonReleasedC2S::register)
                 .add(EntityMadeSoundS2C::register)
                 .add(SoundExpiredS2C::register)
-                .add(StartDashC2S::register)
-                .add(StartedBlockingC2S::register)
                 .add(TalentBuyingC2S::register)
 
                 .add(ResetFallDistanceC2S::register)
@@ -79,12 +69,13 @@ public class NetworkHandler {
 
         packets.forEach(consumer -> consumer.accept(INSTANCE, getNextId()));
     }
-
     public static <MSG> void sendToServer(MSG msg) {
         INSTANCE.sendToServer(msg);
     }
-
     public static <MSG> void sendToPlayer(MSG msg, Player player) {
         if (player instanceof ServerPlayer serverPlayer) INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), msg);
+    }
+    public static <MSG> void sendToPlayers(MSG msg, ServerLevel level) {
+        for (ServerPlayer player : level.players()) INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
     }
 }

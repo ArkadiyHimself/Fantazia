@@ -1,21 +1,16 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FuryEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureManager;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
-import net.arkadiyhimself.fantazia.particless.BloodParticle;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -35,10 +30,10 @@ public class MixinEntity {
         if (pPos.horizontalDistance() <= 0) return;
         Entity entity = (Entity) (Object) this;
         if (entity instanceof LivingEntity livingEntity) {
-            if (livingEntity.hasEffect(FTZMobEffects.HAEMORRHAGE) && (pType == MoverType.SELF || pType == MoverType.PLAYER)) {
+            if (livingEntity.hasEffect(FTZMobEffects.HAEMORRHAGE.get()) && (pType == MoverType.SELF || pType == MoverType.PLAYER)) {
                 float dmg = EffectHelper.bleedingDamage(livingEntity, pPos.subtract(livingEntity.getPosition(1f)));
-                boolean flag = livingEntity.hurt(new DamageSource(livingEntity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FTZDamageTypes.BLEEDING)), dmg);
-                if (flag) VisualHelper.randomParticleOnModel(livingEntity, BloodParticle.BLOOD.random(), VisualHelper.ParticleMovement.FALL);
+                FTZDamageTypes.DamageSources sources = LevelCapHelper.getDamageSources(livingEntity.level());
+                if (sources != null) livingEntity.hurt(sources.bleeding(), dmg);
             }
         }
     }
@@ -46,9 +41,7 @@ public class MixinEntity {
     private void cancelRenderFire(CallbackInfoReturnable<Boolean> cir) {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof LivingEntity livingEntity) {
-            DataManager dataManager = DataGetter.getUnwrap(livingEntity);
-            if (dataManager == null) return;
-            DarkFlameTicks darkFlameTicks = dataManager.takeData(DarkFlameTicks.class);
+            DarkFlameTicks darkFlameTicks = DataGetter.takeDataHolder(livingEntity, DarkFlameTicks.class);
             if (darkFlameTicks != null && darkFlameTicks.isBurning()) cir.setReturnValue(false);
         }
     }
@@ -61,9 +54,7 @@ public class MixinEntity {
     @Inject(at = @At("HEAD"), method = "getTeamColor", cancellable = true)
     private void teamColor(CallbackInfoReturnable<Integer> cir) {
         if (!(entity instanceof LivingEntity livingEntity)) return;
-        EffectManager effectManager = EffectGetter.getUnwrap(livingEntity);
-        if (effectManager == null) return;
-        FuryEffect furyEffect = effectManager.takeEffect(FuryEffect.class);
+        FuryEffect furyEffect = EffectGetter.takeEffectHolder(livingEntity, FuryEffect.class);
         if (furyEffect != null && furyEffect.isFurious()) cir.setReturnValue(12586510);
     }
 }

@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.networking.packets.capabilityupdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.VibrationListen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,9 +26,7 @@ public class SoundExpiredS2C implements IPacket {
             if (entity == null) return;
             Player player = Minecraft.getInstance().player;
             if (player == null) return;
-            AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-            if (abilityManager == null) return;
-            abilityManager.getAbility(VibrationListen.class).ifPresent(vibrationListen -> vibrationListen.soundExpired(entity));
+            AbilityGetter.abilityConsumer(player, VibrationListen.class, vibrationListen -> vibrationListen.soundExpired(entity));
         });
         context.setPacketHandled(true);
     }

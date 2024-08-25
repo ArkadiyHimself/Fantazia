@@ -16,7 +16,7 @@ public class PlaySoundForUIS2C implements IPacket {
     }
     public void handle(NetworkEvent.Context context) {
         context.enqueueWork(() -> {
-            if (sound == null) { return; }
+            if (sound == null) return;
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, 1f, 1f));
         });
         context.setPacketHandled(true);

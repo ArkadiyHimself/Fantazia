@@ -26,9 +26,8 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
     private boolean secondBeat = false;
     private int beat1 = 0;
     private int beat2 = 9;
-    @SuppressWarnings("ConstantConditions")
     public FuryEffect(LivingEntity owner) {
-        super(owner, FTZMobEffects.FURY);
+        super(owner, FTZMobEffects.FURY.get());
     }
 
     public int getVeinTR() {
@@ -55,7 +54,7 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
             firstBeat = false;
             secondBeat = true;
             veinTR = 8;
-            NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.HEART_BEAT1), serverPlayer);
+            NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.HEART_BEAT1.get()), serverPlayer);
         }
         if (beat2 > 0 && secondBeat) beat2--;
         else if (beat2 <= 0) {
@@ -63,24 +62,24 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
             firstBeat = true;
             secondBeat = false;
             veinTR = 9;
-            NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.HEART_BEAT2), serverPlayer);
+            NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.HEART_BEAT2.get()), serverPlayer);
         }
 
     }
 
     @Override
-    public CompoundTag serialize() {
-        CompoundTag tag = super.serialize();
-        tag.putInt(ID + "veinTR", veinTR);
-        tag.putInt(ID + "backTR", backTR);
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = super.serialize(toDisk);
+        tag.putInt("veinTR", veinTR);
+        tag.putInt("backTR", backTR);
         return tag;
     }
 
     @Override
-    public void deserialize(CompoundTag tag) {
-        super.deserialize(tag);
-        veinTR = tag.contains(ID + "veinTR") ? tag.getInt(ID + "veinTR") : 0;
-        backTR = tag.contains(ID + "backTR") ? tag.getInt(ID + "backTR") : 0;
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        super.deserialize(tag, fromDisk);
+        veinTR = tag.contains("veinTR") ? tag.getInt("veinTR") : 0;
+        backTR = tag.contains("backTR") ? tag.getInt("backTR") : 0;
     }
 
     @Override
@@ -94,18 +93,17 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
         beat2 = 0;
     }
     @Override
-    @SuppressWarnings("ConstantConditions")
     public void onHit(LivingDamageEvent event) {
         LivingEntity target = event.getEntity();
         Entity attacker = event.getSource().getEntity();
-        if (attacker instanceof LivingEntity livAtt && livAtt.hasEffect(FTZMobEffects.FURY)) {
+        if (attacker instanceof LivingEntity livAtt && livAtt.hasEffect(FTZMobEffects.FURY.get())) {
             event.setAmount(event.getAmount() * 2);
-            HealingSources healingSources = LevelCapHelper.healingSources(attacker.level());
-            if (SpellHelper.hasSpell(livAtt, FTZSpells.DAMNED_WRATH) && healingSources != null) AdvancedHealing.heal(livAtt, healingSources.lifesteal(target), 0.15f * event.getAmount());
+            HealingSources healingSources = LevelCapHelper.getHealingSources(target.level());
+            if (SpellHelper.hasSpell(livAtt, FTZSpells.DAMNED_WRATH.get()) && healingSources != null) AdvancedHealing.heal(livAtt, healingSources.lifesteal(target), 0.15f * event.getAmount());
         }
 
         if (getDur() <= 0) return;
-        float multiplier = SpellHelper.hasSpell(getOwner(), FTZSpells.DAMNED_WRATH) ? 1.5f : 2f;
-        if (getOwner().hasEffect(FTZMobEffects.FURY)) event.setAmount(event.getAmount() * multiplier);
+        float multiplier = SpellHelper.hasSpell(getOwner(), FTZSpells.DAMNED_WRATH.get()) ? 1.5f : 2f;
+        if (getOwner().hasEffect(FTZMobEffects.FURY.get())) event.setAmount(event.getAmount() * multiplier);
     }
 }

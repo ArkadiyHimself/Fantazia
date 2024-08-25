@@ -5,26 +5,19 @@ import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
 import org.apache.commons.compress.utils.Lists;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class LootTablesHelper {
     public static boolean isVanillaChest(LootContext context) {
         return String.valueOf(context.getQueriedLootTableId()).startsWith("minecraft:chests/");
     }
-    public static boolean isTemple(ResourceLocation resLoc) {
-        List<ResourceLocation> lootChestList = new ArrayList<>();
-        lootChestList.add(BuiltInLootTables.DESERT_PYRAMID);
-        lootChestList.add(BuiltInLootTables.JUNGLE_TEMPLE);
-        return lootChestList.contains(resLoc);
-    }
     public static boolean isNether(ResourceLocation resLoc) {
         List<ResourceLocation> lootChestList = Lists.newArrayList();
         lootChestList.add(BuiltInLootTables.BASTION_BRIDGE);
         lootChestList.add(BuiltInLootTables.BASTION_TREASURE);
-        lootChestList.add(BuiltInLootTables.NETHER_BRIDGE);
         lootChestList.add(BuiltInLootTables.BASTION_HOGLIN_STABLE);
         lootChestList.add(BuiltInLootTables.BASTION_OTHER);
+        lootChestList.add(BuiltInLootTables.NETHER_BRIDGE);
         lootChestList.add(BuiltInLootTables.RUINED_PORTAL);
         return lootChestList.contains(resLoc);
     }

@@ -21,7 +21,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -32,7 +31,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBuilder {
+public class BasicAura<T extends Entity> implements ITooltipBuilder {
     public enum TYPE {
         POSITIVE, NEGATIVE, MIXED
     }
@@ -66,11 +65,11 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
     /**
      * Primary Filter is supposed to check entity's «permanent» fields which
      * <br>
-     * can not be changed or can only be changed once like its
+     * can not be changed or can only be changed once like entity's
      * <br>
      * {@linkplain Entity#getType() type}, {@link TamableAnimal#getOwner() owner}, {@link LivingEntity#fireImmune() built-in fire resistance}. etc.,
      */
-    private BiPredicate<T, M> primaryFilter = (entity, owner) -> true;
+    private BiPredicate<T, Entity> primaryFilter = (entity, owner) -> true;
     /**
      * Secondary Filter is supposed to check entity's «transient» fields which
      * <br>
@@ -78,13 +77,13 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
      * <br>
      * {@link LivingEntity#getHealth() health}, {@link LivingEntity#getAttributes() attributes}, {@link LivingEntity#getTicksFrozen() freezing ticks}, {@link Player#getFoodData() food data} for players, etc.,
      */
-    private BiPredicate<T, M> secondaryFilter = (entity, owner) -> true;
+    private BiPredicate<T, Entity> secondaryFilter = (entity, owner) -> true;
     /**
      * ownerConditions is supposed to check aura instance's owner's fields
      * <br>
      * to determine whether {@link BasicAura#onTickOwner} should be performed or not
      */
-    private Predicate<M> ownerConditions = (owner) -> true;
+    private Predicate<Entity> ownerConditions = (owner) -> true;
     /**
      * OnTick is performed every tick on every entity inside the aura.
      * <br>
@@ -100,15 +99,15 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
      * <br>
      * the effects on owner will also be multiplied by the amount of entities inside if there are more than one
      */
-    private BiConsumer<T, M> onTick = (entity, owner) -> {};
+    private BiConsumer<T, Entity> onTick = (entity, owner) -> {};
     /**
      * OnTickOwner is performed every tick on the owner of the aura
      */
-    private Consumer<M> onTickOwner = (owner) -> {};
+    private Consumer<Entity> onTickOwner = (owner) -> {};
     /**
      * OnTickBlock is performed every tick on all blocks within aura
      */
-    private BiConsumer<BlockPos, AuraInstance<T,M>> onTickBlock = ((blockPos, tmAuraInstance) -> {});
+    private BiConsumer<BlockPos, AuraInstance<T>> onTickBlock = ((blockPos, tmAuraInstance) -> {});
     /**
      * Contains all {@link DamageType types of damage} which suitable entities should
      * <br>
@@ -133,48 +132,48 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
         this.type = type;
         this.tClass = affectedType;
     }
-    public BasicAura<T,M> addAttributeModifier(Attribute attribute, AttributeModifier attributeModifier) {
+    public BasicAura<T> addAttributeModifier(Attribute attribute, AttributeModifier attributeModifier) {
         this.attributeModifiers.put(attribute, attributeModifier);
         return this;
     }
-    public BasicAura<T,M> addDynamicAttributeModifier(Attribute attribute, AttributeModifier modifier) {
+    public BasicAura<T> addDynamicAttributeModifier(Attribute attribute, AttributeModifier modifier) {
         this.dynamicAttributeModifiers.put(attribute, modifier);
         return this;
     }
-    public BasicAura<T,M> addMobEffect(MobEffect mobEffect, int level) {
+    public BasicAura<T> addMobEffect(MobEffect mobEffect, int level) {
         this.mobEffects.put(mobEffect, level);
         return this;
     }
-    public BasicAura<T,M> addPrimaryFilter(BiPredicate<T, M> filter) {
+    public BasicAura<T> addPrimaryFilter(BiPredicate<T, Entity> filter) {
         this.primaryFilter = filter;
         return this;
     }
-    public BasicAura<T,M> addSecondaryFilter(BiPredicate<T, M> filter) {
+    public BasicAura<T> addSecondaryFilter(BiPredicate<T, Entity> filter) {
         this.secondaryFilter = filter;
         return this;
     }
-    public BasicAura<T,M> addOwnerConditions(Predicate<M> filter) {
+    public BasicAura<T> addOwnerConditions(Predicate<Entity> filter) {
         this.ownerConditions = filter;
         return this;
     }
-    public BasicAura<T,M> tickingOnEntities(BiConsumer<T, M> onTick) {
+    public BasicAura<T> tickingOnEntities(BiConsumer<T, Entity> onTick) {
         this.onTick = onTick;
         return this;
     }
-    public BasicAura<T,M> tickingOnOwner(Consumer<M> onTick) {
+    public BasicAura<T> tickingOnOwner(Consumer<Entity> onTick) {
         this.onTickOwner = onTick;
         return this;
     }
-    public BasicAura<T,M> addDamageImmunities(ResourceKey<DamageType> immunity) {
+    public BasicAura<T> addDamageImmunities(ResourceKey<DamageType> immunity) {
         this.IMMUNITIES.add(immunity);
         return this;
     }
-    public BasicAura<T,M> addDamageMultipliers(Map.Entry<ResourceKey<DamageType>, Float> damageMultiplier) throws IllegalArgumentException {
+    public BasicAura<T> addDamageMultipliers(Map.Entry<ResourceKey<DamageType>, Float> damageMultiplier) throws IllegalArgumentException {
         if (damageMultiplier.getValue() <= 0) throw new IllegalArgumentException("Use damage immunities list instead");
         this.MULTIPLIERS.put(damageMultiplier.getKey(), damageMultiplier.getValue());
         return this;
     }
-    public BasicAura<T,M> tickingOnBlocks(BiConsumer<BlockPos, AuraInstance<T,M>> onTick) {
+    public BasicAura<T> tickingOnBlocks(BiConsumer<BlockPos, AuraInstance<T>> onTick) {
         this.onTickBlock = onTick;
         return this;
     }
@@ -212,7 +211,7 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
                 amo = Integer.parseInt(desc);
             } catch (NumberFormatException ignored) {}
 
-            if (amo > 0) for (int i = 1; i <= amo; i++) GuiHelper.addComponent(components, basicPath + ".desc." + i, null, null);
+            if (amo > 0) for (int i = 1; i <= amo; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
             return components;
         }
         components.add(Component.translatable(" "));
@@ -235,10 +234,12 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
         };
         // spell name
         String namePath = basicPath + ".name";
-        GuiHelper.addComponent(components, "tooltip.fantazia.common.aura", head, ability, Component.translatable(namePath).getString());
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.aura", head, ability, Component.translatable(namePath).getString()));
+
         // spell range
         String manacost = String.format("%.1f", this.getRadius());
-        GuiHelper.addComponent(components, "tooltip.fantazia.common.aura_range", head, ability, manacost);
+
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.aura_range", head, ability, manacost));
         components.add(Component.translatable(" "));
 
         String desc = Component.translatable(basicPath + ".lines").getString();
@@ -246,7 +247,7 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
             amo = Integer.parseInt(desc);
         } catch (NumberFormatException ignored) {}
 
-        if (amo > 0) for (int i = 1; i <= amo; i++) GuiHelper.addComponent(components, basicPath + "." + i, text, null);
+        if (amo > 0) for (int i = 1; i <= amo; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, text, null));
 
         amo = 0;
         String pass = Component.translatable(basicPath + ".stats.lines").getString();
@@ -256,7 +257,7 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
 
         if (amo > 0) {
             components.add(Component.translatable(" "));
-            for (int i = 1; i <= amo; i++) GuiHelper.addComponent(components, basicPath + ".stats." + i, null, null);
+            for (int i = 1; i <= amo; i++) components.add(GuiHelper.bakeComponent(basicPath + ".stats." + i, null, null));
         }
 
         return components;
@@ -264,11 +265,9 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
     public Class<T> affectedClass() {
         return tClass;
     }
-    @Nullable
     public ResourceLocation getID() {
-        List<RegistryObject<BasicAura<?,?>>> registryObjects = FantazicRegistry.AURAS.getEntries().stream().toList();
-        for (RegistryObject<BasicAura<?,?>> basicAuraRegistryObject : registryObjects) if (basicAuraRegistryObject.get() == this) return basicAuraRegistryObject.getId();
-        return null;
+        if (!FantazicRegistry.BakedRegistries.AURA.get().containsValue(this)) throw new IllegalStateException("Aura is not registered!");
+        return FantazicRegistry.BakedRegistries.AURA.get().getKey(this);
     }
     public Component getAuraComponent() {
         if (getID() == null) return null;
@@ -286,10 +285,10 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
     public float getRadius() {
         return RANGE;
     }
-    public boolean couldAffect(T entity, M owner) {
+    public boolean couldAffect(T entity, Entity owner) {
         return primaryFilter.test(entity, owner) && entity != owner;
     }
-    public boolean canAffect(T entity, M owner) {
+    public boolean canAffect(T entity, Entity owner) {
         return primaryFilter.test(entity, owner) && secondaryFilter.test(entity, owner) && entity != owner;
     }
     public Map<MobEffect, Integer> getMobEffects() {
@@ -301,22 +300,22 @@ public class BasicAura<T extends Entity, M extends Entity> implements ITooltipBu
     public Map<Attribute, AttributeModifier> getDynamicAttributeModifiers() {
         return dynamicAttributeModifiers;
     }
-    public boolean primary(T entity, M owner) {
+    public boolean primary(T entity, Entity owner) {
         return primaryFilter.test(entity, owner);
     }
-    public boolean secondary(T entity, M owner) {
+    public boolean secondary(T entity, Entity owner) {
         return secondaryFilter.test(entity, owner);
     }
-    public boolean ownerCond(M owner) {
+    public boolean ownerCond(Entity owner) {
         return ownerConditions.test(owner);
     }
-    public void entityTick(T entity, M owner) {
+    public void entityTick(T entity, Entity owner) {
         onTick.accept(entity, owner);
     }
-    public void ownerTick(M owner) {
+    public void ownerTick(Entity owner) {
         onTickOwner.accept(owner);
     }
-    public void blockTick(BlockPos blockPos, AuraInstance<T, M> auraInstance) {
+    public void blockTick(BlockPos blockPos, AuraInstance<T> auraInstance) {
         onTickBlock.accept(blockPos, auraInstance);
     }
     public ImmutableList<ResourceKey<DamageType>> immunities() {

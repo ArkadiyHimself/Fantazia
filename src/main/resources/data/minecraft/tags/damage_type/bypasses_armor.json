@@ -1,7 +1,9 @@
 {
   "values": [
+    "fantazia:removal",
     "fantazia:ancient_flame",
     "fantazia:bleeding",
-    "fantazia:frozen"
+    "fantazia:frozen",
+    "fantazia:parry"
   ]
 }

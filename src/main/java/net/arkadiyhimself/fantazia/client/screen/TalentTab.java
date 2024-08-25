@@ -13,7 +13,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.compress.utils.Lists;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -25,41 +24,38 @@ public class TalentTab {
     private static final ResourceLocation ICON_UNLOCKED = Fantazia.res("textures/gui/talent/talent_icon_unlocked.png");
     private static final ResourceLocation ICON_LOCKED = Fantazia.res("textures/gui/talent/talent_icon_locked.png");
     private final List<IHierarchy<BasicTalent>> HIERARCHIES = Lists.newArrayList();
-    @NotNull
-    private final TalentsHolder talentsHolder;
-    private final TalentsScreen screen;
-    private final int index;
     private final ResourceLocation icon;
     private final Component title;
     private boolean up = true;
     private float alpha = 0.5f;
     @Nullable
     private BasicTalent selectedTalent = null;
-    public TalentTab(TalentsScreen screen, int index, ResourceLocation icon, Component title, String name, List<IHierarchy<BasicTalent>> hierarchies, @NotNull TalentsHolder talentsHolder) {
-        this.screen = screen;
-        this.index = index;
+    public TalentTab(ResourceLocation icon, Component title) {
         this.icon = icon;
         this.title = title;
-        this.talentsHolder = talentsHolder;
-        this.HIERARCHIES.addAll(hierarchies);
     }
-    public int cornerOffsetX() {
-        return 4 + (width + 2) * this.index;
+    public TalentTab hierarchies(List<IHierarchy<BasicTalent>> hierarchies) {
+        this.HIERARCHIES.clear();
+        this.HIERARCHIES.addAll(hierarchies);
+        return this;
+    }
+    public int cornerOffsetX(int index) {
+        return 4 + (width + 2) * index;
     }
     public int cornerOffsetY(boolean selected) {
         return selected ? -40 : -24;
     }
-    public boolean isMouseOver(int cornerX, int cornerY, double pMouseX, double pMouseY, boolean selected) {
-        int i = cornerX + cornerOffsetX();
-        return FantazicMath.withinClamp(i, i + width, pMouseX) && FantazicMath.withinClamp(cornerY + cornerOffsetY(selected), cornerY, pMouseY);
+    public boolean isMouseOver(int cornerX, int cornerY, double pMouseX, double pMouseY, boolean selected, int index) {
+        int i = cornerX + cornerOffsetX(index);
+        return FantazicMath.within(i, i + width, pMouseX) && FantazicMath.within(cornerY + cornerOffsetY(selected), cornerY, pMouseY);
     }
-    public void drawTab(int cornerX, int cornerY, GuiGraphics guiGraphics, boolean selected) {
-        int x0 = cornerX + cornerOffsetX();
+    public void drawTab(int cornerX, int cornerY, GuiGraphics guiGraphics, boolean selected, int index) {
+        int x0 = cornerX + cornerOffsetX(index);
         int y0 = cornerY + cornerOffsetY(selected);
         guiGraphics.blit(EMPTY_TAB, x0, y0, 0,0,32,48,32,48);
         guiGraphics.blit(icon, x0 + 6, y0 + 6, 0,0,20,20,20,20);
     }
-    public void drawInsides(GuiGraphics guiGraphics, Font font, int scrollX, int scrollY, double mouseX, double mouseY, int bgX, int bgY) {
+    public void drawInsides(GuiGraphics guiGraphics, TalentsHolder talentsHolder, Font font, int scrollX, int scrollY, double mouseX, double mouseY, int bgX, int bgY) {
         if (up) alpha += 0.01f;
         else alpha -= 0.01f;
         if (alpha > 1f) up = false;
@@ -67,9 +63,10 @@ public class TalentTab {
 
         int x0 = bgX + scrollX + 12;
         int y0 = bgY + scrollY + 12;
-        guiGraphics.enableScissor(bgX, bgY, bgX + TalentsScreen.background, bgY + TalentsScreen.background);
+
         int X = x0;
         this.selectedTalent = null;
+        guiGraphics.enableScissor(bgX, bgY, bgX + TalentsScreen.background, bgY + TalentsScreen.background);
         for (IHierarchy<BasicTalent> hierarchy : HIERARCHIES) {
             if (hierarchy instanceof ChainHierarchy<BasicTalent> chainHierarchy) {
                 int Y = y0;
@@ -92,15 +89,12 @@ public class TalentTab {
                     ResourceLocation talentIcon = talent.getIconTexture();
                     if (!unlocked) guiGraphics.setColor(color, color, color,0.5f);
                     RenderSystem.enableBlend();
+                    RenderSystem.defaultBlendFunc();
                     guiGraphics.blit(talentIcon, X + 2, Y + 2, 0, 0, 20, 20, 20, 20);
                     RenderSystem.disableBlend();
                     guiGraphics.setColor(1f, 1f, 1f, 1f);
-                    if (mouseHoversTalent(X, Y, mouseX, mouseY) && mouseInsideBG(bgX, bgY, mouseX, mouseY)) {
-                        guiGraphics.disableScissor();
-                        guiGraphics.renderComponentTooltip(font, talent.buildIconTooltip(), (int) mouseX, (int) mouseY);
-                        guiGraphics.enableScissor(bgX, bgY, bgX + TalentsScreen.background, bgY + TalentsScreen.background);
-                        selectedTalent = talent;
-                    }
+                    if (mouseHoversTalent(X, Y, mouseX, mouseY) && mouseInsideBG(bgX, bgY, mouseX, mouseY)) selectedTalent = talent;
+
                     Y += 32;
                 }
             } else {
@@ -113,33 +107,42 @@ public class TalentTab {
                 ResourceLocation talentIcon = talent.getIconTexture();
                 if (!unlocked) guiGraphics.setColor(color, color, color, 0.5f);
                 RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
                 guiGraphics.blit(talentIcon, X + 2, y0 + 2,0,0,20,20,20,20);
                 RenderSystem.disableBlend();
                 guiGraphics.setColor(1f,1f,1f,1f);
-                if (mouseHoversTalent(X, y0, mouseX, mouseY) && mouseInsideBG(bgX, bgY, mouseX, mouseY)) {
-                    guiGraphics.disableScissor();
-                    guiGraphics.renderComponentTooltip(font, talent.buildIconTooltip(), (int) mouseX, (int) mouseY);
-                    guiGraphics.enableScissor(bgX, bgY, bgX + TalentsScreen.background, bgY + TalentsScreen.background);
-                    selectedTalent = talent;
-                }
+                if (mouseHoversTalent(X, y0, mouseX, mouseY) && mouseInsideBG(bgX, bgY, mouseX, mouseY)) selectedTalent = talent;
             }
             X += 48;
         }
         guiGraphics.disableScissor();
+        if (selectedTalent != null) guiGraphics.renderComponentTooltip(font, selectedTalent.buildIconTooltip(), (int) mouseX, (int) mouseY);
+
     }
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, Font font) {
         guiGraphics.renderTooltip(font, title, mouseX, mouseY);
         guiGraphics.flush();
     }
     private boolean mouseHoversTalent(int x0, int y0, double mouseX, double mouseY) {
-        return FantazicMath.withinClamp(x0, x0 + 24, mouseX) && FantazicMath.withinClamp(y0, y0 + 24, mouseY);
+        return FantazicMath.within(x0, x0 + 24, mouseX) && FantazicMath.within(y0, y0 + 24, mouseY);
     }
     private boolean mouseInsideBG(int x0, int y0, double mouseX, double mouseY) {
-        return FantazicMath.withinClamp(x0, x0 + TalentsScreen.background, mouseX) && FantazicMath.withinClamp(y0, y0 + TalentsScreen.background, mouseY);
+        return FantazicMath.within(x0, x0 + TalentsScreen.background, mouseX) && FantazicMath.within(y0, y0 + TalentsScreen.background, mouseY);
     }
     @Nullable
     public BasicTalent selectedTalent() {
         return selectedTalent;
     }
+    public static class Builder {
+        private final ResourceLocation icon;
+        private final String title;
 
+        public Builder(ResourceLocation icon, String title) {
+            this.icon = icon;
+            this.title = title;
+        }
+        public TalentTab build() {
+            return new TalentTab(icon, Component.translatable(title));
+        }
+    }
 }

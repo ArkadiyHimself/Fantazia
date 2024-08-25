@@ -24,7 +24,7 @@ public abstract class MixinVibrationUser implements VibrationSystem.User {
     }
     @Override
     public boolean canReceiveVibration(@NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull GameEvent pGameEvent, GameEvent.@NotNull Context pContext) {
-        if (this.this$0.hasEffect(FTZMobEffects.DEAFENED)) return false;
+        if (this.this$0.hasEffect(FTZMobEffects.DEAFENED.get())) return false;
         if (!this.this$0.isNoAi() && !this.this$0.isDeadOrDying() && !this.this$0.getBrain().hasMemoryValue(MemoryModuleType.VIBRATION_COOLDOWN) && !isDiggingOrEmerging() && pLevel.getWorldBorder().isWithinBounds(pPos)) {
             Entity entity = pContext.sourceEntity();
             if (entity instanceof LivingEntity livingentity) {

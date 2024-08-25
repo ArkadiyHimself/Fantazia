@@ -29,22 +29,23 @@ public class FeatureManager extends EntityCapability {
     public EntityCapabilityStatusPacket createUpdatePacket() {
         return new SimpleEntityCapabilityStatusPacket(this.entity.getId(), FeatureGetter.FEATURE_RL, this);
     }
-
     @Override
     public SimpleChannel getNetworkChannel() {
         return NetworkHandler.INSTANCE;
     }
 
     @Override
-    public CompoundTag serializeNBT(boolean savingToDisk) {
+    public CompoundTag serializeNBT(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
-        FEATURES.forEach(featureHolder -> tag.merge(featureHolder.serialize()));
+
+        for (FeatureHolder holder : FEATURES) if (holder.ID() != null) tag.put(holder.ID(), holder.serialize(toDisk));
+
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
-        FEATURES.forEach(featureHolder -> featureHolder.deserialize(nbt));
+    public void deserializeNBT(CompoundTag nbt, boolean fromDisk) {
+        for (FeatureHolder holder : FEATURES) if (nbt.contains(holder.ID())) holder.deserialize(nbt.getCompound(holder.ID()), fromDisk);
     }
 
     public void tick() {

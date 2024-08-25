@@ -1,0 +1,10 @@
+{
+  "loot_tables": [
+    "minecraft:chests/abandoned_mineshaft"
+  ],
+  "loot_instances" : {
+    "fantazia:tranquil_herb" : {
+      "chance" : 0.2
+    }
+  }
+}

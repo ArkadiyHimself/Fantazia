@@ -8,6 +8,11 @@ public class CommonStackData extends StackDataHolder {
     public CommonStackData(ItemStack stack) {
         super(stack);
     }
+    @Override
+    public String ID() {
+        return null;
+    }
+
     public void picked() {
         pickedUp = true;
     }

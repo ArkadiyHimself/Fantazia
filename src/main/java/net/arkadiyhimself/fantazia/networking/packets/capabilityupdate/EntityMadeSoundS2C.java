@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.networking.packets.capabilityupdate;
 
 import dev._100media.capabilitysyncer.network.IPacket;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.VibrationListen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,10 +21,7 @@ public class EntityMadeSoundS2C implements IPacket {
         context.enqueueWork(() -> {
             Player player = Minecraft.getInstance().player;
             if (player == null) return;
-            AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-            if (abilityManager == null) return;
-            abilityManager.getAbility(VibrationListen.class).ifPresent(vibrationListen -> vibrationListen.madeSound(entity));
-
+            AbilityGetter.abilityConsumer(player, VibrationListen.class, vibrationListen -> vibrationListen.madeSound(entity));
         });
         context.setPacketHandled(true);
     }

@@ -20,16 +20,16 @@ import java.util.Map;
 public class AuraHelper {
 
     // sorts a list of aura instances with a complicated algorithm, removing an aura instance if entity doesn't Primary Conditions and then prioritising instances where entity matches Secondary Conditions
-    public static <T extends Entity, M extends Entity> List<AuraInstance<T, M>> sortUniqueAura(List<AuraInstance<T, M>> instances, @NotNull T entity) {
+    public static <T extends Entity> List<AuraInstance<T>> sortUniqueAura(List<AuraInstance<T>> instances, @NotNull T entity) {
         instances.removeIf(auraInstance -> auraInstance.notInside(entity));
         instances.removeIf(auraInstance -> !auraInstance.getAura().affectedClass().isInstance(entity) && !Fantazia.DEVELOPER_MODE);
         instances.removeIf(auraInstance -> !auraInstance.getAura().couldAffect(entity, auraInstance.getOwner()) && !Fantazia.DEVELOPER_MODE);
-        List<AuraInstance<T, M>> unique = Lists.newArrayList();
+        List<AuraInstance<T>> unique = Lists.newArrayList();
         while (!instances.isEmpty()) {
-            AuraInstance<T, M> instance = instances.get(0);
-            AuraInstance<T, M> busyInstance = null;
+            AuraInstance<T> instance = instances.get(0);
+            AuraInstance<T> busyInstance = null;
             boolean sameAura = false;
-            for (AuraInstance<T, M> tmAuraInstance : unique) {
+            for (AuraInstance<T> tmAuraInstance : unique) {
                 if (tmAuraInstance.getAura() == instance.getAura()) {
                     sameAura = true;
                     busyInstance = tmAuraInstance;
@@ -43,46 +43,40 @@ public class AuraHelper {
                     unique.remove(busyInstance);
                     unique.add(instance);
                 }
-            } else {
-                unique.add(instance);
-            }
+            } else unique.add(instance);
+
             instances.remove(instance);
         }
         return unique;
     }
-
     @SuppressWarnings("unchecked")
-    public static <T extends Entity, M extends Entity> List<AuraInstance<T, M>> getAffectingAuras(@NotNull T entity) {
+    public static <T extends Entity> List<AuraInstance<T>> getAffectingAuras(@NotNull T entity) {
         LevelCap levelCap = LevelCapGetter.getLevelCap(entity.level());
-        List<AuraInstance<T, M>> auras = Lists.newArrayList();
+        List<AuraInstance<T>> auras = Lists.newArrayList();
         if (levelCap == null) return auras;
-        levelCap.getAuraInstances().forEach(auraInstance -> {
-            if (auraInstance.getAura().affectedClass().isInstance(entity)) {
-                auras.add((AuraInstance<T, M>) auraInstance);
-            }
-        });
+        for (AuraInstance<? extends Entity> auraInstance : levelCap.getAuraInstances()) if (auraInstance.getAura().affectedClass().isInstance(entity)) auras.add((AuraInstance<T>) auraInstance);
         return sortUniqueAura(auras, entity);
     }
 
-    public static boolean affected(Entity entity, BasicAura<?,?> aura) {
-        for (AuraInstance<?,?> instance : getAffectingAuras(entity)) if (instance.getAura() == aura) return true;
+    public static boolean affected(Entity entity, BasicAura<?> aura) {
+        for (AuraInstance<?> instance : getAffectingAuras(entity)) if (instance.getAura() == aura) return true;
         return false;
     }
 
-    public static <T extends Entity, M extends Entity> List<ResourceKey<DamageType>> damageImmunities(@NotNull T entity) {
+    public static <T extends Entity> List<ResourceKey<DamageType>> damageImmunities(@NotNull T entity) {
         List<ResourceKey<DamageType>> damageImmune = Lists.newArrayList();
-        List<AuraInstance<T, M>> auraInstances = getAffectingAuras(entity);
+        List<AuraInstance<T>> auraInstances = getAffectingAuras(entity);
 
-        for (AuraInstance<T, M> auraInstance : auraInstances) for (ResourceKey<DamageType> resourceKey : auraInstance.getAura().immunities()) if (!damageImmune.contains(resourceKey)) damageImmune.add(resourceKey);
+        for (AuraInstance<T> auraInstance : auraInstances) for (ResourceKey<DamageType> resourceKey : auraInstance.getAura().immunities()) if (!damageImmune.contains(resourceKey)) damageImmune.add(resourceKey);
 
         return damageImmune;
     }
 
-    public static <T extends Entity, M extends Entity> HashMap<ResourceKey<DamageType>, Float> damageMultipliers(@NotNull T entity) {
+    public static <T extends Entity> HashMap<ResourceKey<DamageType>, Float> damageMultipliers(@NotNull T entity) {
         HashMap<ResourceKey<DamageType>, Float> damageMultiply = Maps.newHashMap();
-        List<AuraInstance<T, M>> auraInstances = getAffectingAuras(entity);
+        List<AuraInstance<T>> auraInstances = getAffectingAuras(entity);
 
-        for (AuraInstance<T, M> auraInstance : auraInstances)
+        for (AuraInstance<T> auraInstance : auraInstances)
             for (Map.Entry<ResourceKey<DamageType>, Float> entry : auraInstance.getAura().multipliers().entrySet())
                 if (damageMultiply.containsKey(entry.getKey())) {
                     float multi1 = entry.getValue();
@@ -92,13 +86,13 @@ public class AuraHelper {
 
         return damageMultiply;
     }
-    public static <T extends Entity, M extends Entity> void auraTick(T entity, AuraInstance<T, M> auraInstance) {
-        BasicAura<T, M> basicAura = auraInstance.getAura();
+    public static <T extends Entity> void auraTick(T entity, AuraInstance<T> auraInstance) {
+        BasicAura<T> basicAura = auraInstance.getAura();
         if (!basicAura.canAffect(entity, auraInstance.getOwner())) return;
         if (entity instanceof LivingEntity livingEntity) for (Map.Entry<MobEffect, Integer> entry : basicAura.getMobEffects().entrySet()) EffectHelper.effectWithoutParticles(livingEntity, entry.getKey(), 2, entry.getValue());
     }
     public static <T extends Entity> void aurasTick(T entity) {
-        List<AuraInstance<Entity, Entity>> affectingAuras = AuraHelper.getAffectingAuras(entity);
-        for (AuraInstance<Entity, Entity> auraInstance : affectingAuras) auraTick(entity, auraInstance);
+        List<AuraInstance<Entity>> affectingAuras = AuraHelper.getAffectingAuras(entity);
+        for (AuraInstance<Entity> auraInstance : affectingAuras) auraTick(entity, auraInstance);
     }
 }

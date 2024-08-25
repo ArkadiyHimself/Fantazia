@@ -25,21 +25,21 @@ public class StackDataManager extends ItemStackCapability {
     }
 
     @Override
-    public CompoundTag serializeNBT(boolean savingToDisk) {
+    public CompoundTag serializeNBT(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
-        STACK_DATA.forEach(stackDataHolder -> tag.merge(stackDataHolder.serialize()));
+
+        for (StackDataHolder holder : STACK_DATA) if (holder.ID() != null) tag.put(holder.ID(), holder.serialize(toDisk));
+
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
-        STACK_DATA.forEach(stackDataHolder -> stackDataHolder.deserialize(nbt));
+    public void deserializeNBT(CompoundTag nbt, boolean fromDisk) {
+        for (StackDataHolder holder : STACK_DATA) if (nbt.contains(holder.ID())) holder.deserialize(nbt.getCompound(holder.ID()), fromDisk);
     }
 
     public void tick() {
-        STACK_DATA.forEach(stackDataHolder -> {
-            if (stackDataHolder instanceof ITicking iTicking) iTicking.tick();
-        });
+        STACK_DATA.stream().filter(ITicking.class::isInstance).forEach(stackDataHolder -> ((ITicking)stackDataHolder).tick());
     }
     public void onHit(LivingHurtEvent event) {
         STACK_DATA.forEach(stackDataHolder -> {
@@ -57,9 +57,7 @@ public class StackDataManager extends ItemStackCapability {
     }
     @Nullable
     public <T extends StackDataHolder> T takeData(Class<T> tClass) {
-        for (StackDataHolder dataHolder : STACK_DATA) {
-            if (tClass == dataHolder.getClass()) return tClass.cast(dataHolder);
-        }
+        for (StackDataHolder dataHolder : STACK_DATA) if (tClass == dataHolder.getClass()) return tClass.cast(dataHolder);
         return null;
     }
     public <T extends StackDataHolder> boolean hasData(Class<T> tClass) {
@@ -67,10 +65,9 @@ public class StackDataManager extends ItemStackCapability {
         return false;
     }
     private static class StackDataProvider {
-        @SuppressWarnings("ConstantConditions")
         private static void provide(StackDataManager stackDataManager) {
             Item item = stackDataManager.itemStack.getItem();
-            if (item == FTZItems.FRAGILE_BLADE) stackDataManager.grantData(HiddenPotential::new);
+            if (item == FTZItems.FRAGILE_BLADE.get()) stackDataManager.grantData(HiddenPotential::new);
             stackDataManager.grantData(CommonStackData::new);
         }
     }

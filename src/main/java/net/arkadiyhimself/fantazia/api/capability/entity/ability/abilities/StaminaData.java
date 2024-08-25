@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities;
 
-import net.arkadiyhimself.fantazia.api.capability.ITalentRequire;
+import net.arkadiyhimself.fantazia.api.capability.ITalentListener;
 import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
@@ -10,8 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 
-public class StaminaData extends AbilityHolder implements ITalentRequire, ITicking {
-    private static final String ID = "stamina:";
+public class StaminaData extends AbilityHolder implements ITalentListener, ITicking {
     private static final float DEFAULT_DELAY = 40;
     private static final float defaultRegen = 0.1125f;
     private float stamina = 20;
@@ -20,20 +19,26 @@ public class StaminaData extends AbilityHolder implements ITalentRequire, ITicki
     public StaminaData(Player player) {
         super(player);
     }
+
+    @Override
+    public String ID() {
+        return "stamina";
+    }
+
     @Override
     public void respawn() {
         stamina = getMaxStamina();
         delay = 0;
     }
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
-        tag.putFloat(ID + "stamina", stamina);
+        tag.putFloat("stamina", stamina);
         return tag;
     }
     @Override
-    public void deserialize(CompoundTag tag) {
-        if (tag.contains(ID + "stamina")) stamina = tag.getFloat(ID +"stamina");
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        if (tag.contains("stamina")) stamina = tag.getFloat("stamina");
     }
     @Override
     public void onTalentUnlock(BasicTalent talent) {
@@ -46,29 +51,24 @@ public class StaminaData extends AbilityHolder implements ITalentRequire, ITicki
 
     @Override
     public void tick() {
-        if (!getPlayer().isSprinting())  {
-            delay = Math.max(0, delay - 1);
-        } else {
-            wasteStamina(0.025f, true, 10);
-        }
-        if (delay <= 0) {
-            stamina = Math.min(getMaxStamina(), stamina + getStaminaRegen());
-        }
+        if (!getPlayer().isSprinting()) delay = Math.max(0, delay - 1);
+        else wasteStamina(0.025f, true, 10);
+        if (delay <= 0) stamina = Math.min(getMaxStamina(), stamina + getStaminaRegen());
+
     }
-    @SuppressWarnings("ConstantConditions")
     public float getMaxStamina() {
-        return (float) getPlayer().getAttributeValue(FTZAttributes.MAX_STAMINA);
+        return (float) getPlayer().getAttributeValue(FTZAttributes.MAX_STAMINA.get());
     }
     public float getStamina() {
         return stamina;
     }
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean wasteStamina(float cost, boolean addDelay) {
         return wasteStamina(cost, addDelay, DEFAULT_DELAY);
     }
-    @SuppressWarnings("ConstantConditions")
     public boolean wasteStamina(float cost, boolean addDelay, float customDelay) {
         if (getPlayer().isCreative()) return true;
-        if (getPlayer().hasEffect(FTZMobEffects.FURY)) cost *= 0.5f;
+        if (getPlayer().hasEffect(FTZMobEffects.FURY.get())) cost *= 0.5f;
         float newST = stamina - cost;
         if (newST > 0) {
             stamina = newST;
@@ -77,23 +77,17 @@ public class StaminaData extends AbilityHolder implements ITalentRequire, ITicki
         }
         return false;
     }
-    @SuppressWarnings("ConstantConditions")
     public float getStaminaRegen() {
         float stRegen = defaultRegen;
         FoodData data = getPlayer().getFoodData();
         if (data.getFoodLevel() >= 17.5f) {
-            if (data.getSaturationLevel() >= 10) {
-                stRegen *= 1.45f;
-            } else {
-                stRegen *= 1.25f;
-            }
+            if (data.getSaturationLevel() >= 10) stRegen *= 1.45f;
+            else stRegen *= 1.25f;
         } else if (data.getFoodLevel() <= 7.5f) {
             stRegen *= 0.675f;
-            if (data.getFoodLevel() <= 3f) {
-                stRegen *= 0.5f;
-            }
+            if (data.getFoodLevel() <= 3f) stRegen *= 0.5f;
         }
-        stRegen *= getPlayer().getAttributeValue(FTZAttributes.STAMINA_REGEN_MULTIPLIER);
+        stRegen *= getPlayer().getAttributeValue(FTZAttributes.STAMINA_REGEN_MULTIPLIER.get());
         return stRegen;
     }
     public void restore() {

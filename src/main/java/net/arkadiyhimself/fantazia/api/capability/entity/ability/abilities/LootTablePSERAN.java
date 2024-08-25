@@ -1,51 +1,55 @@
 package net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities;
 
-import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
-import net.arkadiyhimself.fantazia.registries.FTZItems;
-import net.arkadiyhimself.fantazia.util.library.pseudorandom.PSERANInstance;
-import net.minecraft.network.chat.Component;
+import net.arkadiyhimself.fantazia.data.loot.LootInstanceManager;
+import net.arkadiyhimself.fantazia.data.loot.LootModifierHolder;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
+import java.util.List;
 
 public class LootTablePSERAN extends AbilityHolder {
-    private final HashMap<Item, PSERANInstance> LOOT_TABLES = Maps.newHashMap();
+    private final List<LootModifierHolder> LOOT_MODIFIERS = LootInstanceManager.createModifiers();
     public LootTablePSERAN(Player player) {
         super(player);
-        LootProvider.provide(this);
     }
+    @Override
+    public String ID() {
+        return "loot_table";
+    }
+    @Override
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = new CompoundTag();
+        if (!toDisk) return tag;
+        ListTag lootModifiers = new ListTag();
+        for (LootModifierHolder holder : LOOT_MODIFIERS) lootModifiers.add(holder.serialize());
+        tag.put("lootModifiers", lootModifiers);
+        return tag;
+    }
+    @Override
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        if (!fromDisk) return;
+        ListTag lootModifiers = tag.getList("lootModifiers", Tag.TAG_COMPOUND);
+        List<LootModifierHolder> modifierHolders = Lists.newArrayList();
+        for (int i = 0; i < lootModifiers.size(); i++) modifierHolders.add(LootModifierHolder.deserialize(lootModifiers.getCompound(i)));
+        if (lootModifiers.isEmpty()) return;
 
-    public void attemptLoot(Item item, @NotNull ObjectArrayList<ItemStack> generatedLoot) {
-        if (!LOOT_TABLES.containsKey(item)) return;
-        if (Fantazia.DEVELOPER_MODE) getPlayer().sendSystemMessage(Component.translatable(LOOT_TABLES.get(item).getSupposedChance() + " " + LOOT_TABLES.get(item).getActualChance()));
-        if (LOOT_TABLES.get(item).performAttempt()) generatedLoot.add(new ItemStack(item));
+        LOOT_MODIFIERS.clear();
+        LOOT_MODIFIERS.addAll(modifierHolders);
+        int i = 0;
     }
-    public void attemptLoot(Item item, @NotNull ObjectArrayList<ItemStack> generatedLoot, Item replaced) {
-        if (!LOOT_TABLES.containsKey(item)) return;
-        if (Fantazia.DEVELOPER_MODE) getPlayer().sendSystemMessage(Component.translatable(LOOT_TABLES.get(item).getSupposedChance() + " " + LOOT_TABLES.get(item).getActualChance()));
-        if (!LOOT_TABLES.get(item).performAttempt()) return;
-        generatedLoot.removeIf(stack -> stack.is(replaced));
-        generatedLoot.add(new ItemStack(item));
+    public void attemptLoot(@NotNull ObjectArrayList<ItemStack> generatedLoot, ResourceLocation location) {
+        for (LootModifierHolder holder : LOOT_MODIFIERS) if (holder.isModified(location)) holder.tryModify(generatedLoot);
     }
-    public void addLootInstance(Item item, float chance) {
-        if (LOOT_TABLES.containsKey(item)) return;
-        LOOT_TABLES.put(item, new PSERANInstance(chance));
-    }
-    private static class LootProvider {
-        private static void provide(LootTablePSERAN capability) {
-            capability.addLootInstance(FTZItems.SCULK_HEART, 0.15f);
-            capability.addLootInstance(FTZItems.MYSTIC_MIRROR, 0.08f);
-            capability.addLootInstance(FTZItems.GOLDEN_HATCHET, 0.35f);
-            capability.addLootInstance(FTZItems.LEADERS_HORN, 0.15f);
-            capability.addLootInstance(FTZItems.TRANQUIL_HERB, 0.2f);
-            capability.addLootInstance(FTZItems.BLOODLUST_AMULET, 0.085f);
-            capability.addLootInstance(FTZItems.SOUL_EATER, 0.06f);
-        }
+    public void reset() {
+        LOOT_MODIFIERS.clear();
+        LOOT_MODIFIERS.addAll(LootInstanceManager.createModifiers());
     }
 }

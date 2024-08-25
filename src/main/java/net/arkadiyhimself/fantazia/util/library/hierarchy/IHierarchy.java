@@ -50,12 +50,11 @@ public interface IHierarchy<T> {
     /**
      * «Transforms» the hierarchy to a new one, replacing its own elements with elements of new type with respect to transformer
      * <br>
-     * In most subclasses the returned hierarchy will have the same amount of elements as original, as well as the same structure
-     * @param transformer the function which defies correspondence between elements of hierarchy and new hierarchy.
+     * In most subclasses the returned hierarchy will have the same amount of elements as original, as well as having the same structure
+     * @param transformer the function which defies correspondence between elements of this hierarchy and the new one
      * @return the new Hierarchy with elements of other type
      * @param <M> the type of elements of the new hierarchy
-     * @throws HierarchyException in most subclasses if transformer provides duplicating values or a null value at some point
+     * @throws HierarchyException in most subclasses if transformer provides duplicating values or a null value at any point
      */
     <M> IHierarchy<M> transform(@NotNull Function<T, M> transformer) throws HierarchyException;
-
 }

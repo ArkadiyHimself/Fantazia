@@ -1,0 +1,14 @@
+{
+  "criteria": {
+    "arachnid_eye": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "item": {
+          "items": [
+            "fantazia:vitality_fruit"
+          ]
+        }
+      }
+    }
+  }
+}

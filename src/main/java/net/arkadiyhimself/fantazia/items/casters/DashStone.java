@@ -54,11 +54,11 @@ public class DashStone extends Item implements ICurioItem, Vanishable {
             try {
                 lines = Integer.parseInt(desc);
             } catch (NumberFormatException ignored) {}
-            if (lines > 0) for (int i = 1; i <= lines; i++) GuiHelper.addComponent(pTooltipComponents, basicPath + ".desc." + i, null, null);
+            if (lines > 0) for (int i = 1; i <= lines; i++) pTooltipComponents.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
             return;
         }
         // dash name
-        GuiHelper.addComponent(pTooltipComponents, "tooltip.fantazia.common.active", list, ability, Component.translatable(basicPath + ".name").getString());
+        pTooltipComponents.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active", list, ability, Component.translatable(basicPath + ".name").getString()));
 
         String desc = Component.translatable(basicPath + ".lines").getString();
         try {
@@ -66,7 +66,7 @@ public class DashStone extends Item implements ICurioItem, Vanishable {
         } catch (NumberFormatException ignored) {}
         if (lines > 0) {
             pTooltipComponents.add(Component.translatable(" "));
-            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(pTooltipComponents, basicPath + "." + i, text, null);
+            for (int i = 1; i <= lines; i++) pTooltipComponents.add(GuiHelper.bakeComponent(basicPath + "." + i, text, null));
         }
 
         String stats = Component.translatable(basicPath + ".stats.lines").getString();
@@ -76,7 +76,7 @@ public class DashStone extends Item implements ICurioItem, Vanishable {
         } catch (NumberFormatException ignored) {}
         if (lines > 0) {
             pTooltipComponents.add(Component.translatable(" "));
-            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(pTooltipComponents, basicPath + ".stats." + i, null, null);
+            for (int i = 1; i <= lines; i++) pTooltipComponents.add(GuiHelper.bakeComponent(basicPath + ".stats." + i, null, null));
         }
     }
 }

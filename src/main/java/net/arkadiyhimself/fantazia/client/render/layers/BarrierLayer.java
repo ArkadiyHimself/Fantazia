@@ -8,8 +8,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.EvasionData;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.BarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FuryEffect;
 import net.minecraft.client.Minecraft;
@@ -30,6 +33,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,19 +61,26 @@ public class BarrierLayer {
         }
         @Override
         public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-            EffectManager effectManager = EffectGetter.getUnwrap(pLivingEntity);
-            if (effectManager == null) return;
-            BarrierEffect barrierEffect = effectManager.takeEffect(BarrierEffect.class);
+            EvasionData evasionData = DataGetter.takeDataHolder(pLivingEntity, EvasionData.class);
+            if (evasionData != null && evasionData.getIFrames() > 0) return;
+
+            BarrierEffect barrierEffect = EffectGetter.takeEffectHolder(pLivingEntity, BarrierEffect.class);
             if (barrierEffect == null || !barrierEffect.hasBarrier()) return;
+
+            if (pLivingEntity instanceof Player player) {
+                Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
+                if (dash != null && dash.isDashing() && dash.getLevel() > 2) return;
+            }
+
+            FuryEffect furyEffect = EffectGetter.takeEffectHolder(pLivingEntity, FuryEffect.class);
+            boolean furious = furyEffect != null && furyEffect.isFurious();
+
             float f = (float)pLivingEntity.tickCount + pPartialTick;
             M entityModel = this.renderer.getModel();
             entityModel.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
             this.getParentModel().copyPropertiesTo(entityModel);
             float pU = xOffset(f) % 1.0F;
             float pV = f * 0.01F % 1.0F;
-
-            FuryEffect furyEffect = effectManager.takeEffect(FuryEffect.class);
-            boolean furious = furyEffect != null && furyEffect.isFurious();
 
             VertexConsumer pBufferBuffer = pBuffer.getBuffer(RenderType.create("barrier", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(furious ? BARRIER_LAYER_FURY : BARRIER_LAYER, false, false)).setTexturingState(new RenderStateShard.OffsetTexturingStateShard(pU, pV)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false)));
             entityModel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
@@ -134,9 +145,7 @@ public class BarrierLayer {
         float pU = LayerBarrier.xOffset(f) % 1.0F;
         float pV = f * 0.01F % 1.0F;
 
-        EffectManager effectManager = EffectGetter.getUnwrap(playerIn);
-        if (effectManager == null) return;
-        BarrierEffect barrierEffect = effectManager.takeEffect(BarrierEffect.class);
+        BarrierEffect barrierEffect = EffectGetter.takeEffectHolder(playerIn, BarrierEffect.class);
         if (barrierEffect == null) return;
 
         float color = barrierEffect.getColor();

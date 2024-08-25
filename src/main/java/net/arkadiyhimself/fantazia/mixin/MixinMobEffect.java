@@ -13,12 +13,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class MixinMobEffect {
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;heal(F)V"), method = "applyEffectTick")
     private void advancedHeal(LivingEntity entity, float pHealAmount) {
-        HealingSources healingSources = LevelCapHelper.healingSources(entity.level());
+        HealingSources healingSources = LevelCapHelper.getHealingSources(entity.level());
         if (healingSources != null) AdvancedHealing.heal(entity, healingSources.mobEffectRegen(), pHealAmount);
     }
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;heal(F)V"), method = "applyInstantenousEffect")
     private void advancedInstantHeal(LivingEntity entity, float pHealAmount) {
-        HealingSources healingSources = LevelCapHelper.healingSources(entity.level());
+        HealingSources healingSources = LevelCapHelper.getHealingSources(entity.level());
         if (healingSources != null) AdvancedHealing.heal(entity, healingSources.mobEffect(), pHealAmount);
     }
 }

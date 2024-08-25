@@ -16,6 +16,11 @@ public class ArrowEnchant extends FeatureHolder implements ITicking {
         this.arrow = entity;
     }
     @Override
+    public String ID() {
+        return null;
+    }
+
+    @Override
     public AbstractArrow getEntity() {
         return arrow;
     }

@@ -2,21 +2,19 @@ package net.arkadiyhimself.fantazia.entities;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.HatchetStuck;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.registries.FTZEntityTypes;
 import net.arkadiyhimself.fantazia.util.library.SPHEREBOX;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -65,7 +63,7 @@ public class ThrownHatchet extends AbstractArrow {
     }
     @SuppressWarnings("ConstantConditions")
     public ThrownHatchet(Level pLevel, LivingEntity shooter, ItemStack hatchetItem, float charge) {
-        super(FTZEntityTypes.HATCHET, shooter, pLevel);
+        super(FTZEntityTypes.HATCHET.get(), shooter, pLevel);
         shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, charge * 2F, 1.0F);
         rotSpeed();
 
@@ -76,7 +74,7 @@ public class ThrownHatchet extends AbstractArrow {
     }
     @SuppressWarnings("ConstantConditions")
     public ThrownHatchet(Level level, Vec3 vec3, ItemStack stack) {
-        super(FTZEntityTypes.HATCHET, level);
+        super(FTZEntityTypes.HATCHET.get(), level);
         setPos(vec3);
         droppingData(stack);
         entityData.set(STACK, stack);
@@ -161,27 +159,33 @@ public class ThrownHatchet extends AbstractArrow {
 
         return this.findHitEntity(pos, nextPos);
     }
-    public DamageSource source() {
-        return new DamageSource(this.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FTZDamageTypes.HATCHET), this, getOwner() == null ? this : getOwner());
+
+    @Override
+    protected boolean tryPickup(@NotNull Player pPlayer) {
+        if (this.phasingTicks > 0) return false;
+        return super.tryPickup(pPlayer);
     }
+
     public void attackEntity(LivingEntity livingEntity) {
         float dmg = 1.5f;
         if (getPickupItem().getItem() instanceof HatchetItem hatchetItem) dmg += hatchetItem.getTier().getAttackDamageBonus();
         double headDist = Math.abs(this.getY() - livingEntity.getEyeY());
         if (headDist <= 0.3) dmg += entityData.get(ID_HEADSHOT);
-        livingEntity.hurt(source(), dmg);
+
+        FTZDamageTypes.DamageSources sources = LevelCapHelper.getDamageSources(level());
+        if (sources != null) livingEntity.hurt(sources.hatchet(this, getOwner() == null ? null : getOwner()), dmg);
 
         int projProtect = EnchantmentHelper.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, livingEntity);
         if (projProtect < 4) EffectHelper.makeStunned(livingEntity, 15 * (4 - projProtect));
     }
     private void throwingData(ItemStack stack) {
-        entityData.set(ID_PHASING, (byte) stack.getEnchantmentLevel(FTZEnchantments.PHASING));
-        entityData.set(ID_RICOCHET, (byte) stack.getEnchantmentLevel(FTZEnchantments.RICOCHET));
-        entityData.set(ID_HEADSHOT, (byte) stack.getEnchantmentLevel(FTZEnchantments.HEADSHOT));
+        entityData.set(ID_PHASING, (byte) stack.getEnchantmentLevel(FTZEnchantments.PHASING.get()));
+        entityData.set(ID_RICOCHET, (byte) stack.getEnchantmentLevel(FTZEnchantments.RICOCHET.get()));
+        entityData.set(ID_HEADSHOT, (byte) stack.getEnchantmentLevel(FTZEnchantments.HEADSHOT.get()));
         entityData.set(ID_FOIL, stack.hasFoil());
         entityData.set(STACK, stack);
-        ricochets = stack.getEnchantmentLevel(FTZEnchantments.RICOCHET);
-        int phasing = stack.getEnchantmentLevel(FTZEnchantments.PHASING);
+        ricochets = stack.getEnchantmentLevel(FTZEnchantments.RICOCHET.get());
+        int phasing = stack.getEnchantmentLevel(FTZEnchantments.PHASING.get());
         if (phasing > 0) {
             phasingTicks = phasing * 5 + 5;
             isPhasing = true;
@@ -234,9 +238,7 @@ public class ThrownHatchet extends AbstractArrow {
         return delta.normalize().scale(multiplier);
     }
     public boolean tryStuck(LivingEntity entity) {
-        DataManager dataManager = DataGetter.getUnwrap(entity);
-        if (dataManager == null) return false;
-        HatchetStuck hatchetStuck = dataManager.takeData(HatchetStuck.class);
+        HatchetStuck hatchetStuck = DataGetter.takeDataHolder(entity, HatchetStuck.class);
         if (hatchetStuck == null) return false;
         return hatchetStuck.stuck(this);
     }

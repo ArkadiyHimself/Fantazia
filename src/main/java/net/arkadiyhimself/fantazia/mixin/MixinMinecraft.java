@@ -1,10 +1,8 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.VibrationListen;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FuryEffect;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
@@ -47,16 +45,10 @@ public abstract class MixinMinecraft {
         if (pEntity instanceof ThrownHatchet hatchet && hatchet.getOwner() == player) cir.setReturnValue(true);
 
         if (pEntity instanceof LivingEntity livingEntity) {
-            EffectManager effectManager = EffectGetter.getUnwrap(livingEntity);
-            if (effectManager != null) {
-                FuryEffect furyEffect = effectManager.takeEffect(FuryEffect.class);
-                if (furyEffect != null && furyEffect.isFurious() && player.hasLineOfSight(pEntity)) cir.setReturnValue(true);
-            }
+            FuryEffect furyEffect = EffectGetter.takeEffectHolder(livingEntity, FuryEffect.class);
+            if (furyEffect != null && furyEffect.isFurious() && player.hasLineOfSight(pEntity)) cir.setReturnValue(true);
         }
-
-        AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-        if (abilityManager == null) return;
-        VibrationListen vibrationListen = abilityManager.takeAbility(VibrationListen.class);
+        VibrationListen vibrationListen = AbilityGetter.takeAbilityHolder(player, VibrationListen.class);
         if (vibrationListen != null && pEntity instanceof LivingEntity && vibrationListen.revealed().contains(pEntity)) cir.setReturnValue(true);
     }
 }

@@ -9,17 +9,13 @@ public abstract class DataHolder implements INBTwrite {
     public DataHolder(LivingEntity livingEntity) {
         this.livingEntity = livingEntity;
     }
+    public abstract String ID();
+    @Override
+    public abstract CompoundTag serialize(boolean toDisk);
+    @Override
+    public abstract void deserialize(CompoundTag tag, boolean fromDisk);
     public LivingEntity getEntity() {
         return livingEntity;
     }
-    @Override
-    public CompoundTag serialize() {
-        return new CompoundTag();
-    }
-    @Override
-    public void deserialize(CompoundTag tag) {
-    }
-    public void respawn() {
-    }
-
+    public void respawn() {}
 }

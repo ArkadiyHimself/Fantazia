@@ -8,17 +8,15 @@ import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.*;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FrozenEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FuryEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.LayeredBarrierEffect;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -28,9 +26,9 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -53,39 +51,52 @@ public class FTZGuis {
     public static final Material ANCIENT_FLAME_0 = new Material(TextureAtlas.LOCATION_BLOCKS, Fantazia.res("block/ancient_flame_0"));
     public static final Material ANCIENT_FLAME_1 = new Material(TextureAtlas.LOCATION_BLOCKS, Fantazia.res("block/ancient_flame_1"));
     protected static final ResourceLocation POWDER_SNOW_OUTLINE_LOCATION = new ResourceLocation("textures/misc/powder_snow_outline.png");
-    public static final IGuiOverlay FTZ_GUI = (((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+    public static final IGuiOverlay FTZ_GUI = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         Player player = Minecraft.getInstance().player;
         if (player == null || player.isSpectator() || player.isCreative()) return;
-        AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-        if (abilityManager == null) return;
 
         // draw mana bar
         int x0mn = 0;
         int y0mn = screenHeight;
-        ManaData manaData = abilityManager.takeAbility(ManaData.class);
+        ManaData manaData = AbilityGetter.takeAbilityHolder(player, ManaData.class);
         if (manaData != null) y0mn = FantazicGui.renderMana(manaData, guiGraphics, x0mn, y0mn);
 
         // draw stamina bar
         int x0st = screenWidth - 91;
         int y0st = screenHeight;
-        StaminaData staminaData = abilityManager.takeAbility(StaminaData.class);
+        StaminaData staminaData = AbilityGetter.takeAbilityHolder(player, StaminaData.class);
         if (staminaData != null) y0st = FantazicGui.renderStamina(staminaData, guiGraphics, x0st, y0st);
 
         x0st += 3;
-        Dash dash = abilityManager.takeAbility(Dash.class);
+        Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
         if (dash != null && dash.isAvailable()) x0st = FantazicGui.renderDashIcon(dash, guiGraphics, x0st, y0st);
-        DoubleJump doubleJump = abilityManager.takeAbility(DoubleJump.class);
+        DoubleJump doubleJump = AbilityGetter.takeAbilityHolder(player, DoubleJump.class);
         if (doubleJump != null && doubleJump.isUnlocked()) FantazicGui.renderDoubleJumpIcon(doubleJump, guiGraphics, x0st, y0st);
-
-        EffectManager effectManager = EffectGetter.getUnwrap(player);
-        if (effectManager == null) return;
 
         int x0 = screenWidth / 2;
         int y0 = screenHeight - 14;
-        LayeredBarrierEffect layeredBarrierEffect = effectManager.takeEffect(LayeredBarrierEffect.class);
+        LayeredBarrierEffect layeredBarrierEffect = EffectGetter.takeEffectHolder(player, LayeredBarrierEffect.class);
         if (layeredBarrierEffect != null && layeredBarrierEffect.hasBarrier()) FantazicGui.renderBarrierLayers(layeredBarrierEffect, guiGraphics, x0, y0);
+    });
+    public static final IGuiOverlay OBTAINED_WISDOM = (((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+        ClientValues clientValues = AbilityGetter.takeAbilityHolder(player, ClientValues.class);
+        if (clientValues == null) return;
+        int wisdom = clientValues.getLastWisdom();
+        int ticks = clientValues.getWisdomTick();
+        if (ticks <= 0 || wisdom <= 0) return;
+        Component component = GuiHelper.bakeComponent("fantazia.gui.talent.wisdom_granted", new ChatFormatting[]{ChatFormatting.BLUE}, new ChatFormatting[]{ChatFormatting.DARK_BLUE}, wisdom);
+        int x0 = (screenWidth) / 2;
+        int y0 = screenHeight - 48;
+        RenderSystem.enableBlend();
+        float alpha = Math.min(1f, (float) ticks / 20);
+        guiGraphics.setColor(1f,1f,1f,alpha);
+        guiGraphics.drawCenteredString(gui.getFont(), component, x0, y0, 0);
+        guiGraphics.setColor(1f,1f,1f,1f);
+        RenderSystem.disableBlend();
     }));
-    public static final IGuiOverlay CURIO_SLOTS = (((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+    public static final IGuiOverlay CURIO_SLOTS = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         Font font = gui.getFont();
         Screen screen = Minecraft.getInstance().screen;
@@ -118,14 +129,13 @@ public class FTZGuis {
                 guiGraphics.renderItemDecorations(font, item,x + 2,y + 2 + 20 * (num1 + k));
             }
         }
-    }));
-    public static final IGuiOverlay ANCIENT_FLAME = (((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+    });
+    public static final IGuiOverlay ANCIENT_FLAME = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
         LocalPlayer player = Minecraft.getInstance().player;
-        DataManager dataManager = DataGetter.getUnwrap(player);
-        if (dataManager == null) return;
-        DarkFlameTicks darkFlameTicks = dataManager.takeData(DarkFlameTicks.class);
-        if (player == null || darkFlameTicks == null || !darkFlameTicks.isBurning()) return;
+        if (player == null) return;
+        DarkFlameTicks darkFlameTicks = DataGetter.takeDataHolder(player, DarkFlameTicks.class);;
+        if (darkFlameTicks == null || !darkFlameTicks.isBurning()) return;
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.depthFunc(519);
@@ -153,7 +163,7 @@ public class FTZGuis {
         float y1 = Mth.lerp(ratio, v0, v01);
         float y2 = Mth.lerp(ratio, v1, v01);
         poseStack.pushPose();
-        poseStack.translate((float) screenWidth / 2, (float) screenHeight * 1, 0);
+        poseStack.translate((float) screenWidth / 2, (float) screenHeight, 0);
         for (int i = 0; i < 2; i++) {
             poseStack.pushPose();
             poseStack.translate((float)(-(i * 2 - 1)) * screenWidth * 0.25f, 0, 0.0F);
@@ -171,15 +181,15 @@ public class FTZGuis {
         RenderSystem.disableBlend();
         RenderSystem.depthMask(true);
         RenderSystem.depthFunc(515);
-    }));
+    });
     public static final IGuiOverlay AURAS = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         if (Minecraft.getInstance().screen != null && !(Minecraft.getInstance().screen instanceof ChatScreen)) return;
-        List<AuraInstance<Entity, Entity>> auras = AuraHelper.getAffectingAuras(player);
+        List<AuraInstance<Player>> auras = AuraHelper.getAffectingAuras(player);
         for (int i = 0; i < Math.min(auras.size(), 6); i++) {
-            AuraInstance<Entity, Entity> auraInstance = auras.get(i);
-            BasicAura<Entity, Entity> aura = auraInstance.getAura();
+            AuraInstance<Player> auraInstance = auras.get(i);
+            BasicAura<Player> aura = auraInstance.getAura();
             int x = 2 + i * 22;
             int y = 2;
             ResourceLocation location = switch (aura.getType()) {
@@ -194,29 +204,20 @@ public class FTZGuis {
             RenderSystem.setShaderColor(1f,1f,1f,1f);
         }
     });
-    public static IGuiOverlay DEVELOPER_MODE = (((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
-        Font font = Minecraft.getInstance().font;
+    public static IGuiOverlay DEVELOPER_MODE = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null || !Fantazia.DEVELOPER_MODE) return;
-        int widthText = font.width("DEVELOPER MODE");
-        guiGraphics.drawString(font, "DEVELOPER MODE", screenWidth - widthText,0,16755200);
+        if (!Fantazia.DEVELOPER_MODE || player == null) return;
 
-        AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-        if (abilityManager == null) return;
-        ClientValues clientValues = abilityManager.takeAbility(ClientValues.class);
-        if (clientValues != null) {
-            double dX = clientValues.deltaMovement.x();
-            double dY = clientValues.deltaMovement.y();
-            double dZ = clientValues.deltaMovement.z();
-            guiGraphics.drawString(font, dX + " " + dY + " " + dZ, 0, 28,0);
-        }
-    }));
-    public static IGuiOverlay FURY_VEINS = (((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+        Font font = Minecraft.getInstance().font;
+
+        String string1 = "DEVELOPER MODE";
+        int width1 = font.width(string1);
+        guiGraphics.drawString(font, string1, screenWidth - width1,0,16755200);
+    });
+    public static IGuiOverlay FURY_VEINS = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
-        EffectManager effectManager = EffectGetter.getUnwrap(player);
-        if (effectManager == null) return;
-        FuryEffect furyEffect = effectManager.takeEffect(FuryEffect.class);
+        FuryEffect furyEffect = EffectGetter.takeEffectHolder(player, FuryEffect.class);
         if (furyEffect == null || !furyEffect.isFurious()) return;
         gui.setupOverlayRenderState(true, true);
         float veinTR = (float) furyEffect.getVeinTR() / 15;
@@ -225,15 +226,14 @@ public class FTZGuis {
         GuiHelper.wholeScreen(VEINS_BRIGHT, 1.0F, 0, 0, veinTR * allTR);
         GuiHelper.wholeScreen(FILLING, 1.0F, 0, 0, 0.45F * allTR);
         GuiHelper.wholeScreen(EDGES, 1.0F, 0, 0, 0.925F * allTR);
-    }));
-    public static IGuiOverlay FROZEN_EFFECT = (((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
+    });
+    public static IGuiOverlay FROZEN_EFFECT = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
-        EffectManager effectManager = EffectGetter.getUnwrap(player);
-        if (effectManager == null) return;
-        FrozenEffect frozenEffect = effectManager.takeEffect(FrozenEffect.class);
+        FrozenEffect frozenEffect = EffectGetter.takeEffectHolder(player, FrozenEffect.class);
         if (frozenEffect == null || frozenEffect.effectPercent() <= 0 || frozenEffect.effectPercent() < player.getPercentFrozen()) return;
-        gui.setupOverlayRenderState(true, true);
+        gui.setupOverlayRenderState(true, false);
         GuiHelper.wholeScreen(POWDER_SNOW_OUTLINE_LOCATION, 1f,1f,1f, frozenEffect.effectPercent());
-    }));
+        gui.setupOverlayRenderState(false,false);
+    });
 }

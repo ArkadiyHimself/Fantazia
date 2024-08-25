@@ -1,5 +1,5 @@
 {
   "iconTexture" : "fantazia:textures/gui/talents/dash/dash3.png",
   "title" : "fantazia.talent.dash3",
-  "wisdomCost": 0
+  "wisdom": 0
 }

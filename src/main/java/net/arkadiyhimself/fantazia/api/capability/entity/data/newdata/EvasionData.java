@@ -11,18 +11,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 
 public class EvasionData extends DataHolder implements ITicking {
-    private static final String ID = "evasion:";
     private static final int COOLDOWN = 20;
     private final AttributeInstance evasion;
     private PSERANInstance instance;
     private int iFrames = 0;
     private int cooldown = 0;
-    @SuppressWarnings("ConstantConditions")
     public EvasionData(LivingEntity livingEntity) {
         super(livingEntity);
-        evasion = livingEntity.getAttribute(FTZAttributes.EVASION);
+        evasion = livingEntity.getAttribute(FTZAttributes.EVASION.get());
         assert evasion != null;
-        instance = new PSERANInstance(evasion.getValue());
+        instance = new PSERANInstance(evasion.getValue() / 100);
+    }
+    @Override
+    public String ID() {
+        return "evasion_data";
     }
     @Override
     public void tick() {
@@ -31,29 +33,32 @@ public class EvasionData extends DataHolder implements ITicking {
         if (iFrames > 0) iFrames--;
     }
     @Override
-    public CompoundTag serialize() {
-        CompoundTag tag = super.serialize();
-        if (iFrames != 0) tag.putInt(ID + "evasionTicks", iFrames);
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = new CompoundTag();
+        if (iFrames > 0) tag.putInt("evasionTicks", iFrames);
+        if (cooldown > 0) tag.putInt("cooldown", cooldown);
+        tag.put("random", instance.serialize());
         return tag;
     }
     @Override
-    public void deserialize(CompoundTag tag) {
-        super.deserialize(tag);
-        this.iFrames = tag.contains(ID + "evasionTicks") ? tag.getInt(ID + "evasionTicks") : 0;
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        this.iFrames = tag.getInt("evasionTicks");
+        this.cooldown = tag.getInt("cooldown");
+        this.instance = PSERANInstance.deserialize(tag.getCompound("random"));
     }
 
     public boolean tryEvade() {
-        if (cooldown > 0) return false;
-        boolean flag = instance.performAttempt();
-        if (flag) {
-            iFrames = 5;
-            cooldown = COOLDOWN;
-            getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.EVASION, SoundSource.NEUTRAL);
-        }
-        return flag;
+        if (cooldown > 0 || !instance.performAttempt()) return false;
+
+        iFrames = 5;
+        cooldown = COOLDOWN;
+        getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.EVASION.get(), SoundSource.NEUTRAL);
+
+        return true;
     }
     public void updateEvasion() {
-        instance = instance.transform(evasion.getValue());
+        if (Double.compare(evasion.getValue() / 100, instance.getSupposedChance()) == 0) return;
+        instance = instance.transform(evasion.getValue() / 100);
     }
     public int getIFrames() {
         return iFrames;

@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.util.library;
 
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
@@ -12,11 +13,9 @@ import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Predicate;
 
 public class SPHEREBOX {
-    private final Random random = new Random();
     private final double RADIUS;
     private final double centerX;
     private final double centerY;
@@ -66,17 +65,9 @@ public class SPHEREBOX {
     public boolean contains(Entity entity) {
         return contains(entity.position());
     }
-    public Vec3 getRandomPlace(boolean onSurface) {
-        double x = random.nextDouble();
-        double y = random.nextDouble();
-        double z = random.nextDouble();
-        if (x == 0 && y == 0 && z == 0) return getCenter();
-        double length = new Vec3(x, y, z).length();
-        x /= length;
-        y /= length;
-        z /= length;
-        Vec3 place = new Vec3(x, y, z);
-        double range = onSurface ? RADIUS : random.nextDouble(RADIUS);
+    public Vec3 getRandomPlace(boolean surface) {
+        Vec3 place = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), Fantazia.RANDOM.nextDouble(-1,1), Fantazia.RANDOM.nextDouble(-1,1)).normalize();
+        double range = surface ? RADIUS : Fantazia.RANDOM.nextDouble(RADIUS);
         return place.scale(range).add(getCenter());
     }
     public double area() {

@@ -1,8 +1,6 @@
 package net.arkadiyhimself.fantazia.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
@@ -28,12 +26,11 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FantazicGui {
@@ -69,19 +66,16 @@ public class FantazicGui {
     private static final ResourceLocation DOUBLE_JUMP_EMPTY = Fantazia.res("textures/gui/talents/double_jump/double_jump_empty.png");
     // layered barrier stuff
     private static final ResourceLocation LAYERS = Fantazia.res("textures/gui/ftz_gui/layers.png");
-    public static void fireVertex(PoseStack.Pose pMatrixEntry, VertexConsumer pBuffer, float pX, float pY, float pZ, float pTexU, float pTexV) {
-        pBuffer.vertex(pMatrixEntry.pose(), pX, pY, pZ).color(255, 255, 255, 255).uv(pTexU, pTexV).overlayCoords(0, 10).uv2(240).normal(pMatrixEntry.normal(), 0.0F, 1.0F, 0.0F).endVertex();
-    }
     public static boolean renderStunBar(@Nullable StunEffect stunEffect, GuiGraphics guiGraphics, int x, int y) {
-        if (stunEffect == null) return false;
+        if (stunEffect == null || !stunEffect.renderBar()) return false;
         if (stunEffect.stunned()) {
-            int stunPercent = (int) ((float) stunEffect.getDur() / (float) stunEffect.getInitDur() * 182);
+            int filling = (int) ((float) stunEffect.getDur() / (float) stunEffect.getInitDur() * 182);
             guiGraphics.blit(FantazicGui.BARS, x, y, 0, 10f, 182, 5, 182, 182);
-            guiGraphics.blit(FantazicGui.BARS, x, y, 0, 0, 15F, stunPercent, 5, 182, 182);
+            guiGraphics.blit(FantazicGui.BARS, x, y, 0, 0, 15F, filling, 5, 182, 182);
         } else if (stunEffect.hasPoints()) {
-            int stunPercent = (int) ((float) stunEffect.getPoints() / (float) stunEffect.getMaxPoints() * 182);
+            int filling = (int) ((float) stunEffect.getPoints() / (float) stunEffect.getMaxPoints() * 182);
             guiGraphics.blit(FantazicGui.BARS, x, y, 0, 0F, 182, 5, 182, 182);
-            guiGraphics.blit(FantazicGui.BARS, x, y, 0, 0, 5F, stunPercent, 5, 182, 182);
+            guiGraphics.blit(FantazicGui.BARS, x, y, 0, 0, 5F, filling, 5, 182, 182);
         }
         return true;
     }
@@ -99,31 +93,29 @@ public class FantazicGui {
         LevelCap levelCap = LevelCapGetter.getLevelCap(level);
         if (player == null || levelCap == null) return;
         Screen screen = Minecraft.getInstance().screen;
+
         int imgWDT;
         int imgHGT;
         if (screen instanceof InventoryScreen) {
             imgWDT = 176;
             imgHGT = 166;
-        }
-        else if (screen instanceof CreativeModeInventoryScreen) {
+        } else if (screen instanceof CreativeModeInventoryScreen) {
             imgWDT = 195;
             imgHGT = 136;
-        }
-        else return;
+        } else return;
+
         int leftPos = (screen.width - imgWDT) / 2;
         int x = leftPos - 82;
         int topPos = (screen.height - imgHGT) / 2;
 
-        List<AuraInstance<Entity, Entity>> auraInstances = new ArrayList<>(levelCap.getAuraInstances().stream().toList());
-        if (Fantazia.DEVELOPER_MODE) guiGraphics.drawString(font, "All level auras: " + auraInstances.size(), 0,160,16777215);
-        auraInstances.removeIf(auraInstance -> auraInstance.notInside(player));
-        if (Fantazia.DEVELOPER_MODE) guiGraphics.drawString(font, "Auras with player: " + auraInstances.size(), 0,170,16777215);
-        if (auraInstances.isEmpty()) return;
-        List<AuraInstance<Entity, Entity>> uniqueAuras = AuraHelper.sortUniqueAura(auraInstances, player);
+        List<AuraInstance<Player>> playerAuras = AuraHelper.getAffectingAuras(player);
+        if (playerAuras.isEmpty()) return;
+
+        List<AuraInstance<Player>> uniqueAuras = AuraHelper.sortUniqueAura(playerAuras, player);
         if (Fantazia.DEVELOPER_MODE) guiGraphics.drawString(font, "Affecting auras: " + uniqueAuras.size(), 0, 180, 16777215);
         for (int i = 0; i < Math.min(uniqueAuras.size(), 9); i++) {
-            AuraInstance<Entity, Entity> instance = uniqueAuras.get(i);
-            BasicAura<Entity,Entity> aura = instance.getAura();
+            AuraInstance< Player> instance = uniqueAuras.get(i);
+            BasicAura<Player> aura = instance.getAura();
 
             int y = topPos + i * 22;
             ResourceLocation location = switch (aura.getType()) {
@@ -144,7 +136,7 @@ public class FantazicGui {
             if (!aura.buildIconTooltip().isEmpty()) {
                 int mouseX = (int)(Minecraft.getInstance().mouseHandler.xpos() * (double)guiGraphics.guiWidth() / (double)Minecraft.getInstance().getWindow().getScreenWidth());
                 int mouseY = (int)(Minecraft.getInstance().mouseHandler.ypos() * (double)guiGraphics.guiHeight() / (double)Minecraft.getInstance().getWindow().getScreenHeight());
-                if (FantazicMath.withinClamp(x,x + 80, mouseX) && FantazicMath.withinClamp(y,y + 20, mouseY)) guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, aura.buildIconTooltip(), mouseX, mouseY);
+                if (FantazicMath.within(x,x + 80, mouseX) && FantazicMath.within(y,y + 20, mouseY)) guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, aura.buildIconTooltip(), mouseX, mouseY);
             }
         }
     }
@@ -245,6 +237,13 @@ public class FantazicGui {
         return x0 + 23;
     }
     public static void renderDoubleJumpIcon(@NotNull DoubleJump doubleJump, GuiGraphics guiGraphics, int x0, int y0) {
+        int recharge = doubleJump.getRecharge();
+        if (recharge > 0) {
+            int filling = (int) ((float) recharge / (float) DoubleJump.ELYTRA_RECHARGE * 20);
+            guiGraphics.blit(DOUBLE_JUMP_EMPTY, x0, y0, 0,0,20,20,20,20);
+            guiGraphics.blit(DOUBLE_JUMP, x0, y0, 0,0,20 - filling, 20,20,20);
+            return;
+        }
         ResourceLocation icon = doubleJump.canJump() ? DOUBLE_JUMP : DOUBLE_JUMP_EMPTY;
         guiGraphics.blit(icon, x0, y0, 0,0,20,20,20,20);
     }

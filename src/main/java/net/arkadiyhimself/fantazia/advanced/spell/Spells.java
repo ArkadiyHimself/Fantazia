@@ -22,7 +22,7 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class Spells {
     public static final class Self {
-        public final static SelfSpell ENTANGLE = new SelfSpell(0, 50, () -> FTZSoundEvents.ENTANGLE)
+        public final static SelfSpell ENTANGLE = new SelfSpell(0, 50, FTZSoundEvents.ENTANGLE)
                 .setConditions(entity -> entity.getHealth() <= entity.getMaxHealth() * 0.2f)
                 .setOnCast(entity -> EffectHelper.giveBarrier(entity, 10))
                 .cleanse(Cleanse.POWERFUL);
@@ -39,7 +39,7 @@ public class Spells {
                 .setConditions((caster, entity) -> entity.getMaxHealth() <= 100)
                 .setAfter((caster, target) -> {
                     float healing = target.getMobType() == MobType.UNDEAD ? target.getHealth() / 8 : target.getHealth() / 4;
-                    HealingSources healingSources = LevelCapHelper.healingSources(target.level());
+                    HealingSources healingSources = LevelCapHelper.getHealingSources(target.level());
                     if (healingSources != null) AdvancedHealing.heal(caster, healingSources.devour(target), healing);
                     if (caster instanceof ServerPlayer player) {
                         int devour = (int) (target.getHealth() / 4);
@@ -55,8 +55,8 @@ public class Spells {
                         }
                         player.getFoodData().eat(food, saturation);
                     }
-                    EffectHelper.effectWithoutParticles(caster, FTZMobEffects.BARRIER,  500, (int) target.getHealth() / 4 - 1);
-                    EffectHelper.effectWithoutParticles(caster, FTZMobEffects.MIGHT, 500, (int) target.getHealth() / 4 - 1);
+                    EffectHelper.effectWithoutParticles(caster, FTZMobEffects.BARRIER.get(),  500, (int) target.getHealth() / 4 - 1);
+                    EffectHelper.effectWithoutParticles(caster, FTZMobEffects.MIGHT.get(), 500, (int) target.getHealth() / 4 - 1);
                     FantazicCombat.dropExperience(target, 5);
                     int particles = switch (Minecraft.getInstance().options.particles().get()) {
                         case MINIMAL -> 15;
@@ -68,12 +68,12 @@ public class Spells {
                     int flameParts = particles / 2;
                     for (int i = 0; i < flameParts; ++i) VisualHelper.randomParticleOnModel(target, ParticleTypes.FLAME, VisualHelper.ParticleMovement.REGULAR);
 
-                    target.playSound(FTZSoundEvents.DEVOUR);
+                    target.playSound(FTZSoundEvents.DEVOUR.get());
                     target.remove(Entity.RemovalReason.KILLED);
                 });
     }
     public static final class Passive {
-        public final static PassiveSpell REFLECT = new PassiveSpell(1.5f, 200, () -> FTZSoundEvents.REFLECT);
-        public final static PassiveSpell DAMNED_WRATH = new PassiveSpell(0f, 600).cleanse(Cleanse.MEDIUM);
+        public final static PassiveSpell REFLECT = new PassiveSpell(1.5f, 200, FTZSoundEvents.REFLECT);
+        public final static PassiveSpell DAMNED_WRATH = new PassiveSpell(0f, 600, FTZSoundEvents.BLOODLUST_AMULET).cleanse(Cleanse.MEDIUM);
     }
 }

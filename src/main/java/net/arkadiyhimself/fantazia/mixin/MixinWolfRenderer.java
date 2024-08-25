@@ -1,7 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FuryEffect;
 import net.minecraft.client.renderer.entity.WolfRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -18,11 +17,8 @@ public class MixinWolfRenderer {
     @Shadow @Final private static ResourceLocation WOLF_ANGRY_LOCATION;
     @Inject(at = @At("HEAD"), method = "getTextureLocation(Lnet/minecraft/world/entity/animal/Wolf;)Lnet/minecraft/resources/ResourceLocation;", cancellable = true)
     private void angry(Wolf pEntity, CallbackInfoReturnable<ResourceLocation> cir) {
-        EffectManager effectManager = EffectGetter.getUnwrap(pEntity);
-        if (effectManager == null) return;
-        effectManager.getEffect(FuryEffect.class).ifPresent(furyEffect -> {
-            if (furyEffect.isFurious()) cir.setReturnValue(WOLF_ANGRY_LOCATION);
-        });
+        FuryEffect furyEffect = EffectGetter.takeEffectHolder(pEntity, FuryEffect.class);
+        if (furyEffect != null && furyEffect.isFurious()) cir.setReturnValue(WOLF_ANGRY_LOCATION);
     }
 
 }

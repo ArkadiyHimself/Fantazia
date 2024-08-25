@@ -1,11 +1,11 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.StaminaData;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -24,34 +24,31 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Player.class)
 public abstract class MixinPlayer extends LivingEntity {
+    public float jumpStamina() {
+        return 0.35f;
+    }
+    Player player = (Player) (Object) this;
     @Shadow public abstract void tick();
-    public MixinPlayer(EntityType<? extends LivingEntity> pEntityType, Level pLevel, Player player) {
+    public MixinPlayer(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.player = player;
     }
 
-    public float jumpSTcost() {
-        return 0.55f;
-    }
-    Player player;
     @SuppressWarnings("ConstantConditions")
     @Inject(at = @At(value = "HEAD"), method = "getDigSpeed(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)F", cancellable = true, remap = false)
     protected void slowMiningFreeze(BlockState pState, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-        Player player = (Player) (Object) this;
-        if (player.hasEffect(FTZMobEffects.FROZEN)) cir.setReturnValue(cir.getReturnValueF() * 0.65F);
-
+        if (player.hasEffect(FTZMobEffects.FROZEN.get())) cir.setReturnValue(cir.getReturnValueF() * 0.65F);
     }
     @Inject(at = @At(value = "HEAD"), method = "jumpFromGround", cancellable = true)
     protected void jumpFromGround(CallbackInfo ci) {
-        AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-        if (abilityManager == null || player.isCreative()) return;
+        if (player.getAbilities().instabuild) return;
 
-        StaminaData staminaData = abilityManager.takeAbility(StaminaData.class);
-        if (staminaData != null && !staminaData.wasteStamina(jumpSTcost(), true)) ci.cancel();
+        StaminaData staminaData = AbilityGetter.takeAbilityHolder(player, StaminaData.class);
+        if (staminaData != null && !staminaData.wasteStamina(jumpStamina(), true)) ci.cancel();
     }
     @Inject(at = @At(value = "HEAD"), method = "getHurtSound", cancellable = true)
     private void hurtSound(DamageSource pDamageSource, CallbackInfoReturnable<SoundEvent> cir) {
-        if (pDamageSource.is(FTZDamageTypes.BLEEDING)) cir.setReturnValue(FTZSoundEvents.BLOODLOSS);
+        if (pDamageSource.is(FTZDamageTypes.BLEEDING)) cir.setReturnValue(FTZSoundEvents.BLOODLOSS.get());
+        if (pDamageSource.is(FTZDamageTypeTags.NO_HURT_SOUND)) cir.setReturnValue(null);
     }
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSpectator()Z", shift = At.Shift.AFTER), method = "tick")
     private void phasing(CallbackInfo ci) {

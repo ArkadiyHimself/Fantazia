@@ -40,13 +40,15 @@ public class DataManager extends LivingEntityCapability {
     @Override
     public CompoundTag serializeNBT(boolean savingToDisk) {
         CompoundTag tag = new CompoundTag();
-        DATA.forEach(dataHolder -> tag.merge(dataHolder.serialize()));
+
+        for (DataHolder dataHolder : DATA) if (dataHolder.ID() != null) tag.put(dataHolder.ID(), dataHolder.serialize(savingToDisk));
+
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
-        DATA.forEach(dataHolder -> dataHolder.deserialize(nbt));
+    public void deserializeNBT(CompoundTag nbt, boolean fromDisk) {
+        for (DataHolder dataHolder : DATA) if (nbt.contains(dataHolder.ID())) dataHolder.deserialize(nbt.getCompound(dataHolder.ID()), fromDisk);
     }
     public void tick() {
         DATA.stream().filter(ITicking.class::isInstance).forEach(dataHolder -> ((ITicking) dataHolder).tick());
@@ -91,10 +93,10 @@ public class DataManager extends LivingEntityCapability {
     private static class DataProvider {
         private static void provide(DataManager dataManager) {
             dataManager.grantData(DarkFlameTicks::new);
-            dataManager.grantData(CommonData::new);
+            dataManager.grantData(LivingData::new);
             dataManager.grantData(AuraOwning::new);
             dataManager.grantData(HatchetStuck::new);
-            dataManager.grantData(DAMData::new);
+            dataManager.grantData(DAMHolder::new);
         }
     }
 }

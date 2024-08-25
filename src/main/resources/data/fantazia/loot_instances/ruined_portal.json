@@ -1,0 +1,11 @@
+{
+  "loot_tables": [
+    "minecraft:chests/ruined_portal"
+  ],
+  "loot_instances": {
+    "fantazia:golden_hatchet" : {
+      "chance" : 0.35
+    }
+  }
+
+}

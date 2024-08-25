@@ -23,9 +23,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 public class DoomedEffect extends EffectHolder implements IDamageReacting {
     private int soulCD = 0;
     private int whisperCD = 0;
-    @SuppressWarnings("ConstantConditions")
     public DoomedEffect(LivingEntity owner) {
-        super(owner, FTZMobEffects.DOOMED);
+        super(owner, FTZMobEffects.DOOMED.get());
     }
     @Override
     public void tick() {
@@ -41,23 +40,20 @@ public class DoomedEffect extends EffectHolder implements IDamageReacting {
 
         if (whisperCD <= 0) {
             whisperCD = Fantazia.RANDOM.nextInt(85,125);
-            if (getOwner() instanceof ServerPlayer serverPlayer) {
-                NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.WHISPER), serverPlayer);
-            }
+            if (getOwner() instanceof ServerPlayer serverPlayer) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.WHISPER.get()), serverPlayer);
         }
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     public void onHit(LivingHurtEvent event) {
         if (getDur() > 0 && event.getAmount() > 0 && !event.isCanceled() && !event.getSource().is(FTZDamageTypeTags.NON_LETHAL)) {
             event.setAmount(Float.MAX_VALUE);
-            getOwner().playSound(FTZSoundEvents.FALLEN_BREATH);
+            getOwner().playSound(FTZSoundEvents.FALLEN_BREATH.get());
             double x = getOwner().getX();
             double y = getOwner().getY();
             double z = getOwner().getZ();
             double height = getOwner().getBbHeight();
-            if (Minecraft.getInstance().level != null) Minecraft.getInstance().level.addParticle(FTZParticleTypes.FALLEN_SOUL, x, y + height * 2 / 3, z, 0.0D, -0.135D, 0.0D);
+            if (Minecraft.getInstance().level != null) Minecraft.getInstance().level.addParticle(FTZParticleTypes.FALLEN_SOUL.get(), x, y + height * 2 / 3, z, 0.0D, -0.135D, 0.0D);
 
             BlockPos blockPos = getOwner().getOnPos();
             Block block = getOwner().level().getBlockState(blockPos).getBlock();
@@ -68,12 +64,17 @@ public class DoomedEffect extends EffectHolder implements IDamageReacting {
     @Override
     public void added(MobEffectInstance instance) {
         super.added(instance);
-        if (getOwner() instanceof ServerPlayer serverPlayer) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.DOOMED), serverPlayer);
+        if (getOwner() instanceof ServerPlayer serverPlayer) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.DOOMED.get()), serverPlayer);
     }
 
     @Override
     public void ended() {
         super.ended();
-        if (getOwner() instanceof ServerPlayer serverPlayer) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.UNDOOMED), serverPlayer);
+        if (getOwner() instanceof ServerPlayer serverPlayer) NetworkHandler.sendToPlayer(new PlaySoundForUIS2C(FTZSoundEvents.UNDOOMED.get()), serverPlayer);
+    }
+
+    @Override
+    public boolean syncedDuration() {
+        return false;
     }
 }

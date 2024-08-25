@@ -1,0 +1,13 @@
+{
+  "loot_tables": [
+    "minecraft:chests/pillager_outpost"
+  ],
+  "loot_instances": {
+
+    "fantazia:leaders_horn" : {
+      "chance" : 0.15,
+      "replaced" : "minecraft:goat_horn"
+    }
+
+  }
+}

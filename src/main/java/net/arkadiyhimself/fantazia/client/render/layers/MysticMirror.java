@@ -9,8 +9,10 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ClientValues;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
+import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.EvasionData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
@@ -29,6 +31,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,9 +57,15 @@ public class MysticMirror {
         }
         @Override
         public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-            AbilityManager abilityManager = AbilityGetter.getUnwrap(pLivingEntity);
-            if (abilityManager == null) return;
-            ClientValues clientValues = abilityManager.takeAbility(ClientValues.class);
+            if (!(pLivingEntity instanceof Player player)) return;
+
+            Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
+            if (dash != null && dash.isDashing() && dash.getLevel() > 2) return;
+
+            EvasionData evasionData = DataGetter.takeDataHolder(pLivingEntity, EvasionData.class);
+            if (evasionData != null && evasionData.getIFrames() > 0) return;
+
+            ClientValues clientValues = AbilityGetter.takeAbilityHolder(player, ClientValues.class);
             if (clientValues == null || !clientValues.showMirrorLayer) return;
 
             pPoseStack.pushPose();
@@ -68,9 +77,7 @@ public class MysticMirror {
             this.getParentModel().copyPropertiesTo(entityModel);
             float pU = xOffset(f) % 1.0F;
             float pV = f * 0.01F % 1.0F;
-            VertexConsumer pBufferBuffer = pBuffer.getBuffer(RenderType.create("mystic_mirror", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256,
-                    false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(MIRROR_LAYER, false, false)).
-                            setTexturingState(new RenderStateShard.OffsetTexturingStateShard(pU, pV)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false)));
+            VertexConsumer pBufferBuffer = pBuffer.getBuffer(RenderType.create("mystic_mirror", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(MIRROR_LAYER, false, false)).setTexturingState(new RenderStateShard.OffsetTexturingStateShard(pU, pV)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false)));
             VertexConsumer buffer = pBuffer.getBuffer(RenderType.entityTranslucent(MIRROR_LAYER));
             buffer.uv(0, 0);
             buffer.uv2(64, 64);

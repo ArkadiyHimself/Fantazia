@@ -1,5 +1,5 @@
 {
   "iconTexture" : "fantazia:textures/gui/talents/double_jump/double_jump.png",
   "title" : "fantazia.talent.double_jump",
-  "wisdomCost": 0
+  "wisdom": 0
 }

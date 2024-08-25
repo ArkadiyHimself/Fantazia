@@ -11,9 +11,8 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 public class AbsoluteBarrierEffect extends EffectHolder implements IDamageReacting {
     private boolean hasBarrier = false;
-    @SuppressWarnings("ConstantConditions")
     public AbsoluteBarrierEffect(LivingEntity owner) {
-        super(owner, FTZMobEffects.ABSOLUTE_BARRIER);
+        super(owner, FTZMobEffects.ABSOLUTE_BARRIER.get());
     }
     public boolean hasBarrier() {
         return hasBarrier;
@@ -29,16 +28,16 @@ public class AbsoluteBarrierEffect extends EffectHolder implements IDamageReacti
         hasBarrier = false;
     }
     @Override
-    public CompoundTag serialize() {
-        CompoundTag tag = super.serialize();
-        tag.putBoolean(ID + "hasBarrier", hasBarrier);
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = super.serialize(toDisk);
+        tag.putBoolean("hasBarrier", hasBarrier);
         return tag;
     }
 
     @Override
-    public void deserialize(CompoundTag tag) {
-        super.deserialize(tag);
-        hasBarrier = tag.contains(ID + "hasBarrier") && tag.getBoolean(ID +"hasBarrier");
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        super.deserialize(tag, fromDisk);
+        hasBarrier = tag.contains("hasBarrier") && tag.getBoolean("hasBarrier");
     }
     @Override
     public void respawn() {
@@ -48,5 +47,9 @@ public class AbsoluteBarrierEffect extends EffectHolder implements IDamageReacti
     @Override
     public void onHit(LivingAttackEvent event) {
         if (getDur() > 0 && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) event.setCanceled(true);
+    }
+    @Override
+    public boolean syncedDuration() {
+        return false;
     }
 }

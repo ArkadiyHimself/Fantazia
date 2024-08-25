@@ -5,7 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.client.gui.FantazicGui;
+import net.arkadiyhimself.fantazia.networking.NetworkHandler;
+import net.arkadiyhimself.fantazia.networking.packets.AddParticleS2C;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -22,14 +23,50 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+import java.util.function.Function;
 
 public class VisualHelper {
     public enum ParticleMovement {
-        REGULAR, CHASE, FALL, ASCEND, CHASE_AND_FALL, CHASE_OPPOSITE, CHASE_AND_FALL_OPPOSITE, FROM_CENTER, TO_CENTER
+        REGULAR(0,0,0),
+        CHASE(dx -> dx * 1.5, dy -> dy * 0.2 + 0.1, dz -> dz * 1.5),
+        FALL(0,-0.15,0),
+        ASCEND(0,-0.15,0),
+        CHASE_AND_FALL(dx -> dx * 1.5, dy -> 0.15, dz -> dz * 1.5),
+        CHASE_OPPOSITE(dx -> dx * -1.5, dy -> dy * -0.2 - 0.1, dz -> dz * -1.5),
+        CHASE_AND_FALL_OPPOSITE(dx -> dx * -1.5, dy -> 0.15, dz -> dz * -1.5),
+        FROM_CENTER(dx -> dx * 1.5, dy -> dy * 1.5, dz -> dz * 1.5),
+        TO_CENTER(dx -> dx * -1.5, dy -> dy * -1.5, dz -> dz * -1.5);
+        private final Function<Double, Double> xSpeed;
+        private final Function<Double, Double> ySpeed;
+        private final Function<Double, Double> zSpeed;
+        ParticleMovement(Function<Double, Double> xSpeed, Function<Double, Double> ySpeed, Function<Double, Double> zSpeed) {
+            this.xSpeed = xSpeed;
+            this.ySpeed = ySpeed;
+            this.zSpeed = zSpeed;
+        }
+        ParticleMovement(double dx, double dy, double dz) {
+            this.xSpeed = x -> dx;
+            this.ySpeed = y -> dy;
+            this.zSpeed = z -> dz;
+        }
+        public Vec3 modify(Vec3 vec3) {
+            double dx = vec3.x();
+            double dy = vec3.y();
+            double dz = vec3.z();
+            return new Vec3(xSpeed(dx), ySpeed(dy), zSpeed(dz));
+        }
+        public double xSpeed(double playerX) {
+            return xSpeed.apply(playerX);
+        }
+        public double ySpeed(double playerX) {
+            return ySpeed.apply(playerX);
+        }
+        public double zSpeed(double playerX) {
+            return zSpeed.apply(playerX);
+        }
     }
     public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type) {
-        if (particle == null) return;
+        if (particle == null || !(entity.level() instanceof ServerLevel serverLevel)) return;
         // getting entity's height and width
         float radius = entity.getBbWidth() * (float) 0.7;
         float height = entity.getBbHeight();
@@ -38,46 +75,21 @@ public class VisualHelper {
         double dy = entity.getDeltaMovement().y();
         double dz = entity.getDeltaMovement().z();
 
-        // here I am using a circular function for X and Z (X^2+Z^2=R^2) coordinates to make a horizontal circle
-        // Y variants are just a vertical line
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius);
+        double x = vec3.x();
+        double z = vec3.z();
         double y = Fantazia.RANDOM.nextDouble(0, height * 0.8);
-        double x = Fantazia.RANDOM.nextDouble(-radius, radius);
-        double z = java.lang.Math.sqrt(radius * radius - x * x);
 
-        // here game randomly decides to make Z coordinate negative
-        boolean negativeZ = Fantazia.RANDOM.nextBoolean();
-        z = negativeZ ? z * (-1) : z;
-        if (Minecraft.getInstance().level != null) {
-            switch (type) {
-                case REGULAR -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        0, 0, 0);
-                case CHASE -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        dx * 1.5, dy * 0.2 + 0.1, dz * 1.5);
-                case FALL -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        0, -0.15, 0);
-                case ASCEND -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        0,0.15,0);
-                case CHASE_AND_FALL -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        dx * 1.5, 00.15, dz * 1.5);
-                case CHASE_OPPOSITE -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        -dx * 1.5, -(dy * 0.2 + 0.1), -dz * 1.5);
-                case CHASE_AND_FALL_OPPOSITE -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        -dx * 1.5, -0.15, -dz * 1.5);
-                case FROM_CENTER -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        x * 1.5, y * 1.5, z * 1.5);
-                case TO_CENTER -> Minecraft.getInstance().level.addParticle(particle, true,
-                        entity.getX() + x, entity.getY() + y, entity.getZ() + z,
-                        -x * 1.5, -y * 1.5, -z * 1.5);
-            }
-        }
+        double x0 = entity.getX() + x;
+        double y0 = entity.getY() + y;
+        double z0 = entity.getZ() + z;
+
+
+        double DX = type.xSpeed(dx);
+        double DY = type.xSpeed(dy);
+        double DZ = type.xSpeed(dz);
+
+        NetworkHandler.sendToPlayers(new AddParticleS2C(new Vec3(x0, y0, z0), new Vec3(DX, DY, DZ), particle), serverLevel);
     }
     public static <T extends ParticleOptions> void rayOfParticles(LivingEntity caster, LivingEntity target, T type) {
         Vec3 vec3 = caster.position().add(0.0D, 1.2F, 0.0D);
@@ -90,6 +102,9 @@ public class VisualHelper {
                 serverLevel.sendParticles(type, vec33.x, vec33.y, vec33.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
             }
         }
+    }
+    public static void fireVertex(PoseStack.Pose pMatrixEntry, VertexConsumer pBuffer, float pX, float pY, float pZ, float pTexU, float pTexV) {
+        pBuffer.vertex(pMatrixEntry.pose(), pX, pY, pZ).color(255, 255, 255, 255).uv(pTexU, pTexV).overlayCoords(0, 10).uv2(240).normal(pMatrixEntry.normal(), 0.0F, 1.0F, 0.0F).endVertex();
     }
     public static void renderAncientFlame(PoseStack poseStack, LivingEntity entity, MultiBufferSource buffers) {
         poseStack.pushPose();
@@ -118,10 +133,10 @@ public class VisualHelper {
                 f6 = f10;
             }
 
-            FantazicGui.fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 0.0F - f4, f5, f8, f9);
-            FantazicGui.fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 0.0F - f4, f5, f6, f9);
-            FantazicGui.fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 1.4F - f4, f5, f6, f7);
-            FantazicGui.fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 1.4F - f4, f5, f8, f7);
+            fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 0.0F - f4, f5, f8, f9);
+            fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 0.0F - f4, f5, f6, f9);
+            fireVertex(posestack$pose, vertexconsumer, -f1 - 0.0F, 1.4F - f4, f5, f6, f7);
+            fireVertex(posestack$pose, vertexconsumer, f1 - 0.0F, 1.4F - f4, f5, f8, f7);
             f3 -= 0.45F;
             f4 -= 0.45F;
             f1 *= 0.9F;
@@ -133,9 +148,9 @@ public class VisualHelper {
         poseStack.pushPose();
 
         float scale = Fantazia.RANDOM.nextFloat(-0.75F,0.75F);
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(), 0, Fantazia.RANDOM.nextDouble()).normalize().scale(scale);
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(scale);
         poseStack.scale(-1,-1,1);
-        poseStack.translate(vec3.x(), vec3.y() - 1.501F, vec3.z());
+        poseStack.translate(vec3.x(), -1.501F, vec3.z());
 
         RenderType renderType = renderer.getModel().renderType(renderer.getTextureLocation(entity));
         VertexConsumer consumer = buffers.getBuffer(renderType);
@@ -162,7 +177,7 @@ public class VisualHelper {
             g = i3;
             b = i1;
         }
-        renderer.getModel().renderToBuffer(poseStack, consumer, packedLight, packedOverlay, r,g,b,0.65f);
+        renderer.getModel().renderToBuffer(poseStack, consumer, packedLight, packedOverlay, r, g, b,0.65f);
 
         poseStack.popPose();
 

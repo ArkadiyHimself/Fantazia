@@ -4,17 +4,16 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.RegistryObject;
 
-public class FTZEntityTypes extends FTZRegistry<EntityType<?>> {
-    @SuppressWarnings("unused")
-    private static final FTZEntityTypes INSTANCE = new FTZEntityTypes();
-    @ObjectHolder(value = Fantazia.MODID + ":hatchet", registryName = "entity_type")
-    public static final EntityType<ThrownHatchet> HATCHET = null; // finished and implemented
-    public FTZEntityTypes() {
-        super(ForgeRegistries.ENTITY_TYPES);
-
-        this.register("hatchet", () -> EntityType.Builder.<ThrownHatchet>of(ThrownHatchet::new, MobCategory.AMBIENT).sized(0.5f,0.5f).build(Fantazia.res("hatchet").toString()));
+public class FTZEntityTypes {
+    private static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Fantazia.MODID);
+    public static final RegistryObject<EntityType<? extends ThrownHatchet>> HATCHET = REGISTER.register("hatchet", () -> EntityType.Builder.<ThrownHatchet>of(ThrownHatchet::new, MobCategory.AMBIENT).sized(0.5f,0.5f).build(Fantazia.res("hatchet").toString())); // finished and implemented
+    public static void register() {
+        REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
+
 }

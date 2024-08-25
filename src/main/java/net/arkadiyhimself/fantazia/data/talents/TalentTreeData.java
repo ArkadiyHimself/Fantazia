@@ -2,36 +2,46 @@ package net.arkadiyhimself.fantazia.data.talents;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import net.arkadiyhimself.fantazia.data.talents.reload.TalentHierarchyManager;
+import net.arkadiyhimself.fantazia.data.talents.reload.TalentManager;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.compress.utils.Lists;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public class TalentTreeData {
-    private static final Map<ResourceLocation, IHierarchy<BasicTalent>> ABILITIES = Maps.newHashMap();
-    private static final Map<ResourceLocation, IHierarchy<BasicTalent>> STATS_WISDOM = Maps.newHashMap();
-    public static ImmutableMap<ResourceLocation, IHierarchy<BasicTalent>> abilities() {
-        return ImmutableMap.copyOf(ABILITIES);
+    // hierarchy's id || hierarchy itself
+    private static final Map<ResourceLocation, IHierarchy<BasicTalent>> ALL_HIERARCHIES = Maps.newHashMap();
+    // tab's id || list of talent hierarchies within the tab
+    private static final Map<ResourceLocation, List<IHierarchy<BasicTalent>>> TAB_HIERARCHIES = Maps.newHashMap();
+
+    public static ImmutableMap<ResourceLocation, IHierarchy<BasicTalent>> getAllHierarchies() {
+        return ImmutableMap.copyOf(ALL_HIERARCHIES);
     }
-    public static ImmutableMap<ResourceLocation, IHierarchy<BasicTalent>> statsWisdom() {
-        return ImmutableMap.copyOf(STATS_WISDOM);
+    public static ImmutableMap<ResourceLocation, List<IHierarchy<BasicTalent>>> getTabHierarchies() {
+        return ImmutableMap.copyOf(TAB_HIERARCHIES);
     }
     public static void reload() throws TalentDataException {
-        Map<ResourceLocation, IHierarchy<ResourceLocation>> abilities = TalentHierarchiesLoad.abilities();
-        for (Map.Entry<ResourceLocation, IHierarchy<ResourceLocation>> hierarchyEntry : abilities.entrySet()) {
-            IHierarchy<BasicTalent> talentIHierarchy = transform(hierarchyEntry.getValue());
-            ABILITIES.put(hierarchyEntry.getKey(), talentIHierarchy);
-        }
-        Map<ResourceLocation, IHierarchy<ResourceLocation>> statsWisdom = TalentHierarchiesLoad.statsWisdom();
-        for (Map.Entry<ResourceLocation, IHierarchy<ResourceLocation>> hierarchyEntry : statsWisdom.entrySet()) {
-            IHierarchy<BasicTalent> talentIHierarchy = transform(hierarchyEntry.getValue());
-            STATS_WISDOM.put(hierarchyEntry.getKey(), talentIHierarchy);
+        ALL_HIERARCHIES.clear();
+        TAB_HIERARCHIES.clear();
+
+        for (Map.Entry<ResourceLocation, IHierarchy<ResourceLocation>> hierarchyEntry : TalentHierarchyManager.getAllHierarchies().entrySet())
+            ALL_HIERARCHIES.put(hierarchyEntry.getKey(), transform(hierarchyEntry.getValue()));
+
+
+        // id of tab || list of hierarchies in the tab
+        for (Map.Entry<ResourceLocation, List<ResourceLocation>> entry : TalentHierarchyManager.getTabs().entrySet()) {
+            List<IHierarchy<BasicTalent>> iHierarchyList = Lists.newArrayList();
+            for (ResourceLocation location : entry.getValue()) iHierarchyList.add(ALL_HIERARCHIES.get(location));
+            TAB_HIERARCHIES.put(entry.getKey(), iHierarchyList);
         }
     }
-    public static IHierarchy<BasicTalent> transform(IHierarchy<ResourceLocation> hierarchy) {
+    private static IHierarchy<BasicTalent> transform(IHierarchy<ResourceLocation> hierarchy) {
         Function<ResourceLocation, BasicTalent> function = (resourceLocation -> {
-            BasicTalent talent = TalentLoad.getTalents().get(resourceLocation);
+            BasicTalent talent = TalentManager.getTalents().get(resourceLocation);
             if (talent == null) throw new TalentDataException("A talent is missing: " + resourceLocation);
             return talent;
         });
@@ -39,4 +49,5 @@ public class TalentTreeData {
         talentIHierarchy.getElements().forEach(talent -> talent.setHierarchy(talentIHierarchy));
         return talentIHierarchy;
     }
+
 }

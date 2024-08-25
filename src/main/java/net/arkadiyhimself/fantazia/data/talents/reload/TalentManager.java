@@ -1,0 +1,49 @@
+package net.arkadiyhimself.fantazia.data.talents.reload;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+
+public class TalentManager extends SimpleJsonResourceReloadListener {
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
+            .create();
+
+    // talent's id || talent itself
+    private static final Map<ResourceLocation, BasicTalent> TALENTS = Maps.newHashMap();
+
+    public TalentManager() {
+        super(GSON, "talents");
+    }
+    @Override
+    protected void apply(@NotNull Map<ResourceLocation, JsonElement> jsonElementMap, @NotNull ResourceManager pResourceManager, @NotNull ProfilerFiller pProfiler) {
+        TALENTS.clear();
+        jsonElementMap.forEach(TalentManager::readTalent);
+    }
+    private static void readTalent(ResourceLocation id, JsonElement jsonElement) {
+        BasicTalent talent = GSON.fromJson(jsonElement, BasicTalent.Builder.class).build();
+        TALENTS.put(id, talent);
+    }
+    public static ImmutableMap<ResourceLocation, BasicTalent> getTalents() {
+        return ImmutableMap.copyOf(TALENTS);
+    }
+    public static void addAttributeTalent(ResourceLocation id, BasicTalent talent) {
+        TALENTS.put(id, talent);
+    }
+    public static Advancement getAdvancement(BasicTalent talent, MinecraftServer server) {
+        ResourceLocation advID = talent.getID().withPrefix("ftz_talents/");
+        return server.getAdvancements().getAdvancement(advID);
+    }
+}

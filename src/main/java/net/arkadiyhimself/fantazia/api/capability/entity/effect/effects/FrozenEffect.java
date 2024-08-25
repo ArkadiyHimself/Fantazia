@@ -5,9 +5,8 @@ import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.world.entity.LivingEntity;
 
 public class FrozenEffect extends EffectHolder {
-    @SuppressWarnings("ConstantConditions")
     public FrozenEffect(LivingEntity owner) {
-        super(owner, FTZMobEffects.FROZEN);
+        super(owner, FTZMobEffects.FROZEN.get());
     }
     public float freezePercent() {
         return getOwner().getPercentFrozen();

@@ -77,14 +77,15 @@ public class FragileBlade extends MeleeWeaponItem implements IChangingIcon, IToo
             }
 
             ChatFormatting[] noShift = new ChatFormatting[]{ChatFormatting.RED};
-            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + ".desc." + i, noShift, null);
+            for (int i = 1; i <= lines; i++)
+                components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, noShift, null));
 
             components.add(Component.translatable(" "));
-            GuiHelper.addComponent(components, basicPath + ".current_damage", noShift, hiddenPotential.getFormatting(), hiddenPotential.getDamage() + this.getDamage() + 1);
+            components.add(GuiHelper.bakeComponent(basicPath + ".current_damage", noShift, hiddenPotential.getFormatting(), hiddenPotential.getDamage() + this.getDamage() + 1));
             return components;
         }
 
-        GuiHelper.addComponent(components, "tooltip.fantazia.common.weapon", new ChatFormatting[]{ChatFormatting.DARK_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.hidden_potential.name").getString());
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.weapon", new ChatFormatting[]{ChatFormatting.DARK_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.hidden_potential.name").getString()));
         components.add(Component.translatable(" "));
         String text = Component.translatable(basicPath + ".lines").getString();
 
@@ -95,13 +96,11 @@ public class FragileBlade extends MeleeWeaponItem implements IChangingIcon, IToo
         }
 
         ChatFormatting[] main = new ChatFormatting[]{ChatFormatting.GOLD};
-        for (int i = 1; i <= lines; i++) {
-            GuiHelper.addComponent(components, basicPath + "." + i, main, null);
-        }
+        for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, main, null));
 
         components.add(Component.translatable(" "));
-        GuiHelper.addComponent(components, basicPath + ".minimal_damage", new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD}, hiddenPotential.minDMG() + this.getDamage());
-        GuiHelper.addComponent(components, basicPath + ".maximum_damage", new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD}, hiddenPotential.maxDMG() + this.getDamage());
+        components.add(GuiHelper.bakeComponent(basicPath + ".minimal_damage", new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD}, hiddenPotential.minDMG() + this.getDamage() + 1));
+        components.add(GuiHelper.bakeComponent(basicPath + ".maximum_damage", new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD}, hiddenPotential.maxDMG() + this.getDamage() + 1));
 
         return components;
     }

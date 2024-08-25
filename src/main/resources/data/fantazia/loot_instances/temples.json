@@ -1,0 +1,12 @@
+{
+  "loot_tables": [
+    "minecraft:chests/jungle_temple",
+    "minecraft:chests/desert_pyramid"
+  ],
+  "loot_instances": {
+    "fantazia:vitality_fruit": {
+      "chance": 1,
+      "first_time": true
+    }
+  }
+}

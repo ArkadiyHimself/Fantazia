@@ -5,57 +5,27 @@ import net.arkadiyhimself.fantazia.enchantments.*;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.registries.RegistryObject;
 
-public class FTZEnchantments extends FTZRegistry<Enchantment> {
-    @SuppressWarnings("unused")
-    private static final FTZEnchantments INSTANCE = new FTZEnchantments();
-    @ObjectHolder(value = Fantazia.MODID + ":disintegration", registryName = "enchantment")
-    public static final DisintegrationEnchantment DISINTEGRATION = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":ice_aspect", registryName = "enchantment")
-    public static final IceAspectEnchantment ICE_ASPECT = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":freeze", registryName = "enchantment")
-    public static final FreezeEnchantment FREEZE = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":decisive_strike", registryName = "enchantment")
-    public static final DecisiveStrikeEnchantment DECISIVE_STRIKE = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":bully", registryName = "enchantment")
-    public static final BullyEnchantment BULLY = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":duelist", registryName = "enchantment")
-    public static final CrossbowDamageEnchantment DUELIST = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":ballista", registryName = "enchantment")
-    public static final CrossbowDamageEnchantment BALLISTA = null;
+public class FTZEnchantments {
+    private static final DeferredRegister<Enchantment> REGISTER = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, Fantazia.MODID);
+    public static final RegistryObject<Enchantment> DISINTEGRATION = REGISTER.register("disintegration", DisintegrationEnchantment::new);
+    public static final RegistryObject<Enchantment> ICE_ASPECT = REGISTER.register("ice_aspect", IceAspectEnchantment::new);
+    public static final RegistryObject<Enchantment> FREEZE = REGISTER.register("freeze", FreezeEnchantment::new);
+    public static final RegistryObject<Enchantment> DECISIVE_STRIKE = REGISTER.register("decisive_strike", DecisiveStrikeEnchantment::new);
+    public static final RegistryObject<Enchantment> BULLY = REGISTER.register("bully", BullyEnchantment::new);
+    public static final RegistryObject<Enchantment> DUELIST = REGISTER.register("duelist", CrossbowDamageEnchantment::new);
+    public static final RegistryObject<Enchantment> BALLISTA = REGISTER.register("ballista", CrossbowDamageEnchantment::new);
 
     //  hatchet enchantments
-    @ObjectHolder(value = Fantazia.MODID + ":phasing", registryName = "enchantment")
-    public static final PhasingEnchantment PHASING = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":ricochet", registryName = "enchantment")
-    public static final RicochetEnchantment RICOCHET = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":headshot", registryName = "enchantment")
-    public static final HeadshotEnchantment HEADSHOT = null;
-
-    private FTZEnchantments() {
-        super(ForgeRegistries.ENCHANTMENTS);
-
-        this.register("disintegration", DisintegrationEnchantment::new);
-        this.register("ice_aspect", IceAspectEnchantment::new);
-        this.register("freeze", FreezeEnchantment::new);
-        this.register("decisive_strike", DecisiveStrikeEnchantment::new);
-        this.register("bully", BullyEnchantment::new);
-        this.register("duelist", CrossbowDamageEnchantment::new);
-        this.register("ballista", CrossbowDamageEnchantment::new);
-
-        this.register("phasing", PhasingEnchantment::new);
-        this.register("ricochet", RicochetEnchantment::new);
-        this.register("headshot", HeadshotEnchantment::new);
+    public static final RegistryObject<Enchantment> PHASING = REGISTER.register("phasing", PhasingEnchantment::new);
+    public static final RegistryObject<Enchantment> RICOCHET = REGISTER.register("ricochet", RicochetEnchantment::new);
+    public static final RegistryObject<Enchantment> HEADSHOT = REGISTER.register("headshot", HeadshotEnchantment::new);
+    public static void register() {
+        REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
     public static class Categories {
         public static final EnchantmentCategory HATCHET = EnchantmentCategory.create("hatchet", item -> item instanceof HatchetItem);

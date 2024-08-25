@@ -24,28 +24,24 @@ public class FantazicRegistry {
         return register;
     }
     public static final DeferredRegister<Spell> SPELLS = createRegister(Keys.SPELL);
-    public static final DeferredRegister<BasicAura<?,?>> AURAS = createRegister(Keys.AURA);
+    public static final DeferredRegister<BasicAura<?>> AURAS = createRegister(Keys.AURA);
     public static void register(IEventBus bus) {
-        makeRegistry();
+        BakedRegistries.init();
         REGISTRIES.forEach(deferredRegister -> deferredRegister.register(bus));
-    }
-    private static void makeRegistry() {
-        BakedRegistries.SPELL = SPELLS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
-        BakedRegistries.AURA = AURAS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
     }
     private static <T> RegistryBuilder<T> taggedRegistryBuilder() {
         return new RegistryBuilder<T>().hasTags();
     }
     public static final class Keys {
-
         public static final ResourceKey<Registry<Spell>> SPELL = Fantazia.resKey("spell");
-        public static final ResourceKey<Registry<BasicAura<?,?>>> AURA = Fantazia.resKey("aura");
+        public static final ResourceKey<Registry<BasicAura<?>>> AURA = Fantazia.resKey("aura");
         public static final ResourceKey<Registry<HealingType>> HEALING_TYPE = Fantazia.resKey("healing_type");
         private static void init() {}
     }
     public static final class BakedRegistries {
-        public static Supplier<IForgeRegistry<Spell>> SPELL = () -> null;
-        public static Supplier<IForgeRegistry<BasicAura<?,?>>> AURA = () -> null;
+        public static Supplier<IForgeRegistry<Spell>> SPELL = SPELLS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
+        public static Supplier<IForgeRegistry<BasicAura<?>>> AURA = AURAS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
+        private static void init() {}
     }
     private static void init()
     {

@@ -1,11 +1,16 @@
 package net.arkadiyhimself.fantazia.client.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
 import net.arkadiyhimself.fantazia.data.talents.TalentTreeData;
+import net.arkadiyhimself.fantazia.data.talents.reload.TalentTabManager;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.TalentBuyingC2S;
+import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,15 +25,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 public class TalentsScreen extends Screen {
     private static final ResourceLocation BACKGROUND = Fantazia.res("textures/gui/talent/background.png");
     private static final ResourceLocation FRAME = Fantazia.res("textures/gui/talent/frame.png");
+    private static final ResourceLocation WISDOM_WIDGET = Fantazia.res("textures/gui/talent/wisdom_widget.png");
     public static final int frame = 176;
     public static final int background = 160;
     private final List<TalentTab> TABS = Lists.newArrayList();
-    private final TalentTab ABILITIES;
-    private final TalentTab STATS_WISDOM;
     private final TalentsHolder talentsHolder;
     private double scrollX = 0;
     private double scrollY = 0;
@@ -46,10 +51,15 @@ public class TalentsScreen extends Screen {
     public TalentsScreen(TalentsHolder talentsHolder) {
         super(GameNarrator.NO_TITLE);
         this.talentsHolder = talentsHolder;
-        this.ABILITIES = new TalentTab(this, 0, Fantazia.res("textures/gui/talent/tab/abilities.png"), Component.translatable("fantazia.talent_tabs.abilities"), "abilities", TalentTreeData.abilities().values().stream().toList(), talentsHolder);
-        this.STATS_WISDOM = new TalentTab(this, 1, Fantazia.res("textures/gui/talent/tab/stats_wisdom.png"), Component.translatable("fantazia.talent_tabs.stats_wisdom"), "stats_wisdom", TalentTreeData.statsWisdom().values().stream().toList(), talentsHolder);
-        TABS.add(ABILITIES);
-        TABS.add(STATS_WISDOM);
+     //   TalentTab ABILITIES = new TalentTab(Fantazia.res("textures/gui/talent/tab/abilities.png"), Component.translatable("fantazia.talent_tabs.abilities"));
+
+     //   TalentTab STATS_WISDOM = new TalentTab(Fantazia.res("textures/gui/talent/tab/stats_wisdom.png"), Component.translatable("fantazia.talent_tabs.stats_wisdom"));
+        for (Map.Entry<ResourceLocation, TalentTab> entry : TalentTabManager.getTabs().entrySet()) {
+            ResourceLocation tabID = entry.getKey();
+            List<IHierarchy<BasicTalent>> iHierarchyList = TalentTreeData.getTabHierarchies().get(tabID);
+            TalentTab talentTab = entry.getValue().hierarchies(iHierarchyList);
+            TABS.add(talentTab);
+        }
     }
     @Override
     protected void init() {
@@ -69,10 +79,7 @@ public class TalentsScreen extends Screen {
         this.renderBG(pGuiGraphics);
         this.renderTalents(pGuiGraphics, pMouseX, pMouseY);
         this.renderFrame(pGuiGraphics);
-        if (selectedTab == STATS_WISDOM) {
-            int wisdom = talentsHolder.getWisdom();
-            pGuiGraphics.drawString(font, String.valueOf(wisdom), frX + frame + 32, frY + 88, 4693243);
-        }
+        this.renderWisdom(pGuiGraphics);
 
         super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
@@ -91,11 +98,14 @@ public class TalentsScreen extends Screen {
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if (pButton == 0) {
-            for (TalentTab talentTab : TABS) {
+            for (int i = 0; i < TABS.size(); i++) {
+                TalentTab talentTab = TABS.get(i);
                 if (talentTab == selectedTab) continue;
-                if (talentTab.isMouseOver(frX, frY, pMouseX, pMouseY, false)) {
+                if (talentTab.isMouseOver(frX, frY, pMouseX, pMouseY, false, i)) {
                     selectedTab = talentTab;
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.get(), 1f,1f));
+                    scrollX = 0;
+                    scrollY = 0;
                     return super.mouseClicked(pMouseX, pMouseY, pButton);
                 }
             }
@@ -111,19 +121,21 @@ public class TalentsScreen extends Screen {
     public boolean isPauseScreen() {
         return false;
     }
-
     private void renderTabs(GuiGraphics pGuiGraphics, int mouseX, int mouseY) {
-        for (TalentTab talentTab : this.TABS) {
+        for (int i = 0; i < TABS.size(); i++) {
+            TalentTab talentTab = TABS.get(i);
             boolean sel = talentTab == this.selectedTab;
-            if (sel) talentTab.drawTab(frX, frY, pGuiGraphics, true);
+
+            if (sel) talentTab.drawTab(frX, frY, pGuiGraphics, true, i);
             else {
-                boolean mouseOver = talentTab.isMouseOver(frX, frY, mouseX, mouseY, false);
+                boolean mouseOver = talentTab.isMouseOver(frX, frY, mouseX, mouseY, false, i);
                 float clr = mouseOver ? 0.75f : 0.5f;
                 pGuiGraphics.setColor(clr, clr, clr, clr);
-                talentTab.drawTab(frX, frY, pGuiGraphics, false);
+                talentTab.drawTab(frX, frY, pGuiGraphics, false, i);
                 pGuiGraphics.setColor(1f,1f,1f,1f);
             }
-            if (talentTab.isMouseOver(frX, frY, mouseX, mouseY, sel)) talentTab.renderTooltip(pGuiGraphics, mouseX, mouseY, font);
+
+            if (talentTab.isMouseOver(frX, frY, mouseX, mouseY, sel, i)) talentTab.renderTooltip(pGuiGraphics, mouseX, mouseY, font);
         }
     }
     private void renderBG(GuiGraphics guiGraphics) {
@@ -139,10 +151,21 @@ public class TalentsScreen extends Screen {
         if (this.selectedTab == null) return;
         int x0 = (int) scrollX;
         int y0 = (int) scrollY;
-        this.selectedTab.drawInsides(guiGraphics, font, x0, y0, mouseX, mouseY, bgX, bgY);
+        this.selectedTab.drawInsides(guiGraphics, talentsHolder, font, x0, y0, mouseX, mouseY, bgX, bgY);
     }
     private void renderFrame(GuiGraphics pGuiGraphics) {
         pGuiGraphics.blit(FRAME, frX, frY, 0, 0, frame, frame, frame, frame);
+    }
+    private void renderWisdom(GuiGraphics guiGraphics) {
+        int x0 = frX + frame + 10;
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        guiGraphics.blit(WISDOM_WIDGET, x0, frY,0,0,100,30,100,30);
+        RenderSystem.disableBlend();
+        int wisdom = talentsHolder.getWisdom();
+        Component component = GuiHelper.bakeComponent("fantazia.gui.talent.wisdom", null, new ChatFormatting[]{ChatFormatting.DARK_PURPLE}, wisdom);
+        guiGraphics.drawString(font, component, x0 + 12, frY + 11, 0);
+
     }
     private void scroll(double pX, double pY) {
         this.scrollX = Mth.clamp(this.scrollX + pX, -this.maxX + background, this.minX);

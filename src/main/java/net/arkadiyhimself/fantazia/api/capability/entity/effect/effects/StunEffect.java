@@ -6,12 +6,14 @@ import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHolder;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
+import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -28,60 +30,20 @@ public class StunEffect extends EffectHolder implements IDamageReacting {
     private int delay = 0;
     private int color = 0;
     private boolean shift = false;
-    @SuppressWarnings("ConstantConditions")
     public StunEffect(LivingEntity owner) {
-        super(owner, FTZMobEffects.STUN);
-    }
-    public boolean stunned() {
-        return getDur() > 0;
-    }
-    public int getPoints() {
-        return points;
-    }
-    public boolean hasPoints() {
-        return getPoints() > 0;
-    }
-    public boolean renderBar() {
-        return stunned() || hasPoints();
-    }
-    @SuppressWarnings("ConstantConditions")
-    public int getMaxPoints() {
-        return (int) this.getOwner().getAttributeValue(FTZAttributes.MAX_STUN_POINTS);
-    }
-    @SuppressWarnings("ConstantConditions")
-    private void attackStunned(int dur) {
-        points = 0;
-        delay = 0;
-        EffectHelper.makeStunned(getOwner(), dur);
-    }
-    public int getColor() {
-        return color;
-    }
-
-    private void colorTick() {
-        if (shift) color += 15;
-        else  color -= 15;
-        if (color <= 160)  shift = true;
-        if (color >= 255)  shift = false;
+        super(owner, FTZMobEffects.STUN.get());
     }
     @Override
     public void onHit(LivingHurtEvent event) {
         if (FantazicCombat.blocksDamage(getOwner()) || event.isCanceled() || event.getAmount() <= 0 || event.getEntity().hurtTime > 0 || stunned()) return;
         DamageSource source = event.getSource();
         float amount = event.getAmount();
+
+        if (meleeHit(source, amount)) return;
+
         int premature = (int) ((float) points / getMaxPoints() * DURATION);
 
-        if (source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.PLAYER_ATTACK)) {
-            delay = DELAY;
-            int newPoints = (int) (amount / getOwner().getMaxHealth() * getMaxPoints()) * 2;
-            int minPoints = (int) (getMaxPoints() * 0.05f);
-            newPoints = Math.max(minPoints, newPoints);
-            points += ((int) (Math.min(getMaxPoints() * 0.7f, newPoints)));
-            if (points >= getMaxPoints()) {
-                attackStunned(DURATION);
-                getOwner().playSound(FTZSoundEvents.ATTACK_STUNNED);
-            }
-        } else if (source.is(DamageTypeTags.IS_EXPLOSION)) {
+        if (source.is(DamageTypeTags.IS_EXPLOSION)) {
             int dur = (int) Math.max(premature, amount * 5);
             int blastProtect = EnchantmentHelper.getEnchantmentLevel(Enchantments.BLAST_PROTECTION, getOwner());
             if (blastProtect > 0) dur /= blastProtect;
@@ -101,17 +63,17 @@ public class StunEffect extends EffectHolder implements IDamageReacting {
         colorTick();
     }
     @Override
-    public CompoundTag serialize() {
-        CompoundTag tag = super.serialize();
-        tag.putInt(ID + "points", points);
-        tag.putInt(ID + "color", color);
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = super.serialize(toDisk);
+        tag.putInt("points", points);
+        tag.putInt("color", color);
         return tag;
     }
     @Override
-    public void deserialize(CompoundTag tag) {
-        super.deserialize(tag);
-        points = tag.contains(ID + "points") ? tag.getInt(ID + "points") : 0;
-        color = tag.contains(ID + "color") ? tag.getInt(ID + "color") : 0;
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        super.deserialize(tag, fromDisk);
+        points = tag.contains("points") ? tag.getInt("points") : 0;
+        color = tag.contains("color") ? tag.getInt("color") : 0;
     }
     @Override
     public void respawn() {
@@ -129,5 +91,64 @@ public class StunEffect extends EffectHolder implements IDamageReacting {
     public void ended() {
         super.ended();
         if (getOwner() instanceof ServerPlayer serverPlayer) NetworkHandler.sendToPlayer(new PlayAnimationS2C(""), serverPlayer);
+    }
+    // returns false if damage source was not a melee attack
+    private boolean meleeHit(DamageSource source, float amount) {
+        boolean attack = source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.PLAYER_ATTACK);
+        boolean parry = source.is(FTZDamageTypes.PARRY);
+
+        if (!attack && !parry) return false;
+
+        int basicPoints;
+        int finalPoints;
+
+        double maxPoint = getMaxPoints();
+
+        if (attack) {
+            delay = Math.max(delay, DELAY);
+            basicPoints = (int) (amount * 25);
+            finalPoints = (int) Mth.clamp(basicPoints,maxPoint * 0.025f, maxPoint * 0.85f);
+        } else {
+            delay = Math.max(delay, DELAY * 2);
+            basicPoints = (int) (amount * 15.75);
+            finalPoints = (int) Math.max(basicPoints, maxPoint * 0.25f);
+        }
+        points += finalPoints;
+        if (points < getMaxPoints()) return true;
+
+        attackStunned(DURATION);
+        getOwner().playSound(FTZSoundEvents.ATTACK_STUNNED.get());
+
+        return true;
+    }
+    public boolean stunned() {
+        return getDur() > 0;
+    }
+    public int getPoints() {
+        return points;
+    }
+    public boolean hasPoints() {
+        return getPoints() > 0;
+    }
+    public boolean renderBar() {
+        return stunned() || hasPoints();
+    }
+    public int getMaxPoints() {
+        return (int) this.getOwner().getAttributeValue(FTZAttributes.MAX_STUN_POINTS.get());
+    }
+    private void attackStunned(int dur) {
+        points = 0;
+        delay = 0;
+        EffectHelper.makeStunned(getOwner(), dur);
+    }
+    public int getColor() {
+        return color;
+    }
+
+    private void colorTick() {
+        if (shift) color += 15;
+        else color -= 15;
+        if (color <= 160)  shift = true;
+        if (color >= 255)  shift = false;
     }
 }

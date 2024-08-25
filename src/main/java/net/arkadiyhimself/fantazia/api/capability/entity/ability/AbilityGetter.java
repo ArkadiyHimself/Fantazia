@@ -4,28 +4,37 @@ import dev._100media.capabilitysyncer.core.CapabilityAttacher;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullConsumer;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 
 import javax.annotation.Nullable;
 
 public class AbilityGetter extends CapabilityAttacher {
+    public static <T extends AbilityHolder> @Nullable T takeAbilityHolder(Player player, Class<T> tClass) {
+        AbilityManager abilityManager = getUnwrap(player);
+        if (abilityManager == null) return null;
+        return abilityManager.takeAbility(tClass);
+    }
+    public static <T extends AbilityHolder> void abilityConsumer(Player player, Class<T> tClass, NonNullConsumer<T> consumer) {
+        AbilityManager abilityManager = getUnwrap(player);
+        if (abilityManager == null) return;
+        abilityManager.getAbility(tClass).ifPresent(consumer);
+    }
     private static final Class<AbilityManager> ABILITY_CLASS = AbilityManager.class;
     public static final Capability<AbilityManager> ABILITY = getCapability(new CapabilityToken<>() {});
     public static final ResourceLocation ABILITY_RL = Fantazia.res("ability");
-    @SuppressWarnings("ConstantConditions")
     @Nullable
-    public static AbilityManager getUnwrap(LivingEntity entity) {
-        if (!(entity instanceof Player)) return null;
-        if (entity == null) return null;
-        return get(entity).orElse(null);
+    @SuppressWarnings("ConstantConditions")
+    public static AbilityManager getUnwrap(Player player) {
+        if (player == null) return null;
+        return get(player).orElse(null);
     }
-    public static LazyOptional<AbilityManager> get(LivingEntity entity) {
-        return entity.getCapability(ABILITY);
+    public static LazyOptional<AbilityManager> get(Player player) {
+        return player.getCapability(ABILITY);
     }
     private static void attacher(AttachCapabilitiesEvent<Entity> event, Player player) {
         genericAttachCapability(event, new AbilityManager(player), ABILITY, ABILITY_RL);

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Function;
 
 /**
- * {@link MonoHierarchy} is a unicellular Hierarchy consisting of one single element. The element does not have any «parents» or «children»
+ * {@link MonoHierarchy} is a unicellular Hierarchy consisting of one single element. This element does not have any «parents» or «children»
  */
 public class MonoHierarchy<T> implements IHierarchy<T> {
     private final @NotNull T MAIN;
@@ -31,7 +31,7 @@ public class MonoHierarchy<T> implements IHierarchy<T> {
     }
     @Override
     public boolean contains(T t) {
-        return t == MAIN;
+        return t.equals(MAIN);
     }
     @Override
     public <M> MonoHierarchy<M> transform(@NotNull Function<T, M> transformer) throws HierarchyException {

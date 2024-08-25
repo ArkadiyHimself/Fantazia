@@ -13,9 +13,8 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 public class LayeredBarrierEffect extends EffectHolder implements IDamageReacting {
     private int layers;
     private float color;
-    @SuppressWarnings("ConstantConditions")
     public LayeredBarrierEffect(LivingEntity owner) {
-        super(owner, FTZMobEffects.LAYERED_BARRIER);
+        super(owner, FTZMobEffects.LAYERED_BARRIER.get());
     }
     public boolean hasBarrier() {
         return layers > 0;
@@ -48,18 +47,18 @@ public class LayeredBarrierEffect extends EffectHolder implements IDamageReactin
     }
 
     @Override
-    public CompoundTag serialize() {
-        CompoundTag tag = super.serialize();
-        tag.putInt(ID + "layers", this.layers);
-        tag.putFloat(ID + "color", this.color);
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = super.serialize(toDisk);
+        tag.putInt("layers", this.layers);
+        tag.putFloat("color", this.color);
         return tag;
     }
 
     @Override
-    public void deserialize(CompoundTag tag) {
-        super.deserialize(tag);
-        layers = tag.contains(ID + "layers") ? tag.getInt(ID + "layers") : 0;
-        color = tag.contains(ID + "color") ? tag.getFloat(ID + "color") : 0;
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        super.deserialize(tag, fromDisk);
+        layers = tag.contains("layers") ? tag.getInt("layers") : 0;
+        color = tag.contains("color") ? tag.getFloat("color") : 0;
     }
 
     @Override
@@ -69,13 +68,17 @@ public class LayeredBarrierEffect extends EffectHolder implements IDamageReactin
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     public void onHit(LivingHurtEvent event) {
         if (!hasBarrier() || event.getSource().is(FTZDamageTypeTags.PIERCES_BARRIER)) return;
 
         color = 1f;
         event.setCanceled(true);
         layers--;
-        if (layers <= 0 && getOwner().hasEffect(FTZMobEffects.LAYERED_BARRIER)) EffectCleansing.forceCleanse(getOwner(), FTZMobEffects.LAYERED_BARRIER);
+        if (layers <= 0 && getOwner().hasEffect(FTZMobEffects.LAYERED_BARRIER.get())) EffectCleansing.forceCleanse(getOwner(), FTZMobEffects.LAYERED_BARRIER.get());
+    }
+
+    @Override
+    public boolean syncedDuration() {
+        return false;
     }
 }

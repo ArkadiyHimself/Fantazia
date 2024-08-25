@@ -7,6 +7,7 @@ import net.arkadiyhimself.fantazia.api.capability.itemstack.StackDataManager;
 import net.arkadiyhimself.fantazia.api.capability.itemstack.stackdata.CommonStackData;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -15,6 +16,23 @@ public class HatchetStuck extends DataHolder implements ITicking {
     private ItemStack STACK = ItemStack.EMPTY;
     public HatchetStuck(LivingEntity livingEntity) {
         super(livingEntity);
+    }
+    @Override
+    public String ID() {
+        return null;
+    }
+
+    @Override
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = new CompoundTag();
+        if (!toDisk) return tag;
+        tag.putInt("delay", delay);
+        return tag;
+    }
+
+    @Override
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        this.delay = tag.getInt("delay");
     }
 
     @Override

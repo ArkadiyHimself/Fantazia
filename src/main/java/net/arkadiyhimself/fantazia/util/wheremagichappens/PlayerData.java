@@ -56,6 +56,10 @@ public class PlayerData {
     public static void setPersistentBoolean(Player player, String tag, boolean value) {
         setPersistentTag(player, tag, ByteTag.valueOf(value));
     }
+    public static void setPersistentBoolean(Player player, String tag) {
+        setPersistentTag(player, tag, ByteTag.valueOf(true));
+    }
+
 
     /**
      * Retrieves the given boolean tag from the player's persistent NBT.

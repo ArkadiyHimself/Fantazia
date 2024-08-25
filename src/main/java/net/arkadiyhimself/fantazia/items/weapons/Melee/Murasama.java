@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ClientValues;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.api.items.ITooltipBuilder;
@@ -79,9 +78,7 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
                 warden.setAttackTarget(player);
             }
         }
-        AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-        if (abilityManager == null) return;
-        abilityManager.getAbility(ClientValues.class).ifPresent(ClientValues::taunt);
+        AbilityGetter.abilityConsumer(player, ClientValues.class, ClientValues::taunt);
     }
 
     public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot pEquipmentSlot) {
@@ -107,12 +104,12 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
             }
 
             ChatFormatting[] noShift = new ChatFormatting[]{ChatFormatting.RED};
-            for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + ".desc." + i, noShift, null);
+            for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, noShift, null));
 
             return components;
         }
 
-        GuiHelper.addComponent(components, "tooltip.fantazia.common.weapon", new ChatFormatting[]{ChatFormatting.RED}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.taunt.name").getString());
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.weapon", new ChatFormatting[]{ChatFormatting.RED}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.taunt.name").getString()));
         components.add(Component.translatable(" "));
         String text = Component.translatable(basicPath + ".lines").getString();
 
@@ -123,7 +120,7 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
         }
 
         ChatFormatting[] main = new ChatFormatting[]{ChatFormatting.GOLD};
-        for (int i = 1; i <= lines; i++) GuiHelper.addComponent(components, basicPath + "." + i, main, null);
+        for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, main, null));
 
         return components;
     }

@@ -22,7 +22,7 @@ public class MobEffectTagsProvider extends IntrinsicHolderTagsProvider<MobEffect
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
-        this.tag(FTZMobEffectTags.BARRIER).add(FTZMobEffects.BARRIER, FTZMobEffects.LAYERED_BARRIER, FTZMobEffects.ABSOLUTE_BARRIER);
-        this.tag(FTZMobEffectTags.INTERRUPT).add(FTZMobEffects.STUN, FTZMobEffects.MICROSTUN);
+        this.tag(FTZMobEffectTags.BARRIER).add(FTZMobEffects.BARRIER.get(), FTZMobEffects.LAYERED_BARRIER.get(), FTZMobEffects.ABSOLUTE_BARRIER.get());
+        this.tag(FTZMobEffectTags.INTERRUPT).add(FTZMobEffects.STUN.get(), FTZMobEffects.MICROSTUN.get());
     }
 }

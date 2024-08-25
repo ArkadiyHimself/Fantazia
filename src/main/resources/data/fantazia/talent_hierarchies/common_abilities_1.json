@@ -1,8 +1,9 @@
 {
   "hierarchy": "chaotic",
-  "tab": "abilities",
+  "tab": "fantazia:abilities",
   "values" : [
     "fantazia:double_jump",
-    "fantazia:melee_block"
+    "fantazia:melee_block",
+    "fantazia:wall_climbing"
   ]
 }

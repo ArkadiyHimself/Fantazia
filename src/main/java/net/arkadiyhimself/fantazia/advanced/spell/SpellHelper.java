@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.advanced.spell;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ClientValues;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.items.casters.SpellCaster;
@@ -16,9 +15,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +30,9 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class SpellHelper {
+    public enum TargetedResult {
+        DEFAULT, REFLECTED, BLOCKED
+    }
     public static boolean trySelfSpell(LivingEntity entity, SelfSpell spell, boolean ignoreConditions) {
         if (spell.conditions(entity) || ignoreConditions) {
             spell.onCast(entity);
@@ -41,9 +46,11 @@ public class SpellHelper {
         T target = getTarget(caster, spell);
         if (target == null) return false;
         spell.before(caster, target);
+
+        boolean blockable = !spell.is(FTZSpellTags.NOT_BLOCKABLE);
         boolean blocked = false;
         if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
-            TargetedResult result = abilityBlocking(target);
+            TargetedResult result = spellDeflecting(target);
             blocked = result == TargetedResult.REFLECTED || result == TargetedResult.BLOCKED;
             if (result == TargetedResult.REFLECTED && !spell.is(FTZSpellTags.NOT_REFLECTABLE) && spell.canAffect(caster)) {
                 spell.after(target, (T) caster);
@@ -73,7 +80,7 @@ public class SpellHelper {
         spell.before(caster, target);
         boolean blocked = false;
         if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
-            TargetedResult result = abilityBlocking(target);
+            TargetedResult result = spellDeflecting(target);
             blocked = result == TargetedResult.REFLECTED || result == TargetedResult.BLOCKED;
             if (result == TargetedResult.REFLECTED && spell.canAffect(caster)) spell.after(target, (T) caster);
         }
@@ -89,7 +96,7 @@ public class SpellHelper {
             spell.before(caster, target);
             boolean blocked = false;
             if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
-                TargetedResult result = abilityBlocking(target);
+                TargetedResult result = spellDeflecting(target);
                 blocked = result == TargetedResult.REFLECTED || result == TargetedResult.BLOCKED;
                 if (result == TargetedResult.REFLECTED && spell.canAffect(caster)) spell.after(target, (T) caster);
             }
@@ -97,43 +104,56 @@ public class SpellHelper {
         }
         return newTargets;
     }
-    @SuppressWarnings("ConstantConditions")
-    public static TargetedResult abilityBlocking(LivingEntity target) {
-        if (target instanceof ServerPlayer serverPlayer) {
-            List<SlotResult> slotResults = InventoryHelper.findCurios(serverPlayer, "passivecaster");
-            for (SlotResult slotResult : slotResults) {
-                Item item = slotResult.stack().getItem();
-                Spell spell;
-                if (item instanceof SpellCaster spellCaster && (spell = spellCaster.getSpell()) == FTZSpells.REFLECT && !serverPlayer.getCooldowns().isOnCooldown(spellCaster)) {
-                    serverPlayer.getCooldowns().addCooldown(spellCaster, spell.getRecharge());
-                    serverPlayer.level().playSound(null, serverPlayer.blockPosition(), spell.getCastSound(), SoundSource.PLAYERS);
-                    AbilityManager abilityManager = AbilityGetter.getUnwrap(serverPlayer);
-                    if (abilityManager != null) abilityManager.getAbility(ClientValues.class).ifPresent(ClientValues::onMirrorActivation);
-                    return TargetedResult.REFLECTED;
-                }
-            }
-        }
-        int num = switch (Minecraft.getInstance().options.particles().get()) {
-            case MINIMAL -> 20;
-            case DECREASED -> 30;
-            case ALL -> 40;
-        };
-        if (target.hasEffect(FTZMobEffects.REFLECT)) {
-            for (int i = 0; i < num; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.FROM_CENTER);
-            EffectCleansing.forceCleanse(target, FTZMobEffects.REFLECT);
-            target.level().playSound(null, target.blockPosition(), FTZSoundEvents.REFLECT, SoundSource.PLAYERS);
+    public static TargetedResult spellDeflecting(LivingEntity target) {
+        if (target instanceof ServerPlayer serverPlayer && SpellHelper.hasActiveSpell(serverPlayer, FTZSpells.REFLECT.get())) {
+            AbilityGetter.abilityConsumer(serverPlayer, ClientValues.class, ClientValues::onMirrorActivation);
             return TargetedResult.REFLECTED;
         }
-        if (target.hasEffect(FTZMobEffects.DEFLECT)) {
-            for (int i = 0; i < num; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.FROM_CENTER);
-            EffectCleansing.forceCleanse(target, FTZMobEffects.DEFLECT);
-            target.level().playSound(null, target.blockPosition(), FTZSoundEvents.DEFLECT, SoundSource.PLAYERS);
-            return TargetedResult.BLOCKED;
-        }
-        return TargetedResult.DEFAULT;
+
+        boolean reflect = target.hasEffect(FTZMobEffects.REFLECT.get());
+        boolean deflect = target.hasEffect(FTZMobEffects.DEFLECT.get());
+
+        if (reflect) EffectCleansing.forceCleanse(target, FTZMobEffects.REFLECT.get());
+        else if (deflect) EffectCleansing.forceCleanse(target, FTZMobEffects.DEFLECT.get());
+        else return TargetedResult.DEFAULT;
+
+        for (int i = 0; i < 20 + Minecraft.getInstance().options.particles().get().getId() * 20; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.FROM_CENTER);
+
+        target.level().playSound(null, target.blockPosition(), reflect ? FTZSoundEvents.REFLECT.get() : FTZSoundEvents.DEFLECT.get(), SoundSource.PLAYERS);
+
+        return reflect ? TargetedResult.REFLECTED : TargetedResult.BLOCKED;
     }
-    public enum TargetedResult {
-        DEFAULT, REFLECTED, BLOCKED
+    public static boolean wardenSonicBoom(LivingAttackEvent event) {
+        Entity att = event.getSource().getEntity();
+        if (!(att instanceof Warden warden) || !event.getSource().is(DamageTypes.SONIC_BOOM)) return false;
+        LivingEntity target = event.getEntity();
+
+        if (target instanceof ServerPlayer player && SpellHelper.hasActiveSpell(player, FTZSpells.REFLECT.get())) {
+            AbilityGetter.abilityConsumer(player, ClientValues.class, ClientValues::onMirrorActivation);
+            event.setCanceled(true);
+            VisualHelper.rayOfParticles(player, warden, ParticleTypes.SONIC_BOOM);
+            player.level().playSound(null, player.blockPosition(), FTZSoundEvents.MYSTIC_MIRROR.get(), SoundSource.NEUTRAL);
+            warden.hurt(event.getEntity().level().damageSources().sonicBoom(player), 15f);
+            return true;
+        }
+
+        boolean reflect = target.hasEffect(FTZMobEffects.REFLECT.get());
+        boolean deflect = target.hasEffect(FTZMobEffects.DEFLECT.get());
+
+        if (reflect) EffectCleansing.forceCleanse(target, FTZMobEffects.REFLECT.get());
+        else if (deflect) EffectCleansing.forceCleanse(target, FTZMobEffects.DEFLECT.get());
+        else return false;
+
+        event.setCanceled(true);
+
+        for (int i = 0; i < 20 + Minecraft.getInstance().options.particles().get().getId() * 20; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.FROM_CENTER);
+        target.level().playSound(null, target.blockPosition(), reflect ? FTZSoundEvents.REFLECT.get() : FTZSoundEvents.DEFLECT.get(), SoundSource.NEUTRAL);
+
+        if (reflect) {
+            VisualHelper.rayOfParticles(target, warden, ParticleTypes.SONIC_BOOM);
+            warden.hurt(warden.level().damageSources().sonicBoom(target), 15f);
+        }
+        return true;
     }
     public static boolean hasSpell(LivingEntity entity, Spell spell) {
         List<SlotResult> slotResults = Lists.newArrayList();

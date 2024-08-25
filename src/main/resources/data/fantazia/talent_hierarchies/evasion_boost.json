@@ -1,14 +1,14 @@
 {
-  "tab": "stats_wisdom",
+  "tab": "fantazia:stat_modifiers",
   "attribute_chain": true,
   "chains": 5,
   "element": {
     "iconTexture": "fantazia:textures/gui/talents/evasion_boost.png",
     "title": "fantazia.talent.evasion_boost",
-    "wisdomCost": 10,
-    "attributeID": "fantazia:evasion",
-    "modifierID": "evasion_talent",
-    "amount": 0.05,
+    "wisdom": 10,
+    "attribute": "fantazia:evasion",
+    "name": "evasion_talent",
+    "amount": 5,
     "operation": "addition"
   }
 }

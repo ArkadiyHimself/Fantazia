@@ -4,23 +4,25 @@ import net.arkadiyhimself.fantazia.api.capability.ITicking;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 
 public class ClientValues extends AbilityHolder implements ITicking {
-    private static final String ID = "rendering_values:";
     public ClientValues(Player player) {
         super(player);
     }
+    @Override
+    public String ID() {
+        return "client_values";
+    }
+
     @Override
     public void tick() {
         if (showMirrorLayer) {
             mirrorLayerSize = Math.min(3f, mirrorLayerSize + 0.25f);
             mirrorLayerVis = Math.max(0, mirrorLayerSize - 0.05f);
         }
-        if (mirrorLayerSize == 3f) {
-            showMirrorLayer = false;
-        }
-        tauntTicks = Math.max(0, tauntTicks - 1);
+        if (mirrorLayerSize == 3f) showMirrorLayer = false;
+        if (tauntTicks > 0) tauntTicks--;
+        if (wisdomTick > 0) wisdomTick--;
     }
     @Override
     public void respawn() {
@@ -28,32 +30,32 @@ public class ClientValues extends AbilityHolder implements ITicking {
     }
 
     @Override
-    public CompoundTag serialize() {
+    public CompoundTag serialize(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
 
-        tag.putDouble(ID + "dX", deltaMovement.x());
-        tag.putDouble(ID + "dY", deltaMovement.y());
-        tag.putDouble(ID + "dZ", deltaMovement.z());
+        // must be saved
+        tag.putInt("tauntTicks", tauntTicks);
 
-        tag.putFloat(ID + "mirrorLayerSize", mirrorLayerSize);
-        tag.putFloat(ID + "mirrorLayerVis", mirrorLayerVis);
-        tag.putBoolean(ID + "showMirrorLayer", showMirrorLayer);
+        // not so important
+        if (toDisk) return tag;
+        tag.putFloat("mirrorLayerSize", mirrorLayerSize);
+        tag.putFloat("mirrorLayerVis", mirrorLayerVis);
+        tag.putBoolean("showMirrorLayer", showMirrorLayer);
 
-        tag.putInt(ID + "tauntTicks", tauntTicks);
+        tag.putInt("lastWisdom", lastWisdom);
+        tag.putInt("wisdomTick", wisdomTick);
         return tag;
     }
     @Override
-    public void deserialize(CompoundTag tag) {
-        double dX = tag.contains(ID + "dX") ? tag.getDouble(ID + "dX") : 0;
-        double dY = tag.contains(ID + "dY") ? tag.getDouble(ID + "dY") : 0;
-        double dZ = tag.contains(ID + "dZ") ? tag.getDouble(ID + "dZ") : 0;
-        deltaMovement = new Vec3(dX, dY, dZ);
+    public void deserialize(CompoundTag tag, boolean fromDisk) {
+        mirrorLayerSize = tag.contains("mirrorLayerSize") ? tag.getFloat("mirrorLayerSize") : 1f;
+        mirrorLayerVis = tag.contains("mirrorLayerVis") ? tag.getFloat("mirrorLayerVis") : 1f;
+        showMirrorLayer = tag.contains("showMirrorLayer") && tag.getBoolean("showMirrorLayer");
 
-        mirrorLayerSize = tag.contains(ID + "mirrorLayerSize") ? tag.getFloat(ID + "mirrorLayerSize") : 1f;
-        mirrorLayerVis = tag.contains(ID + "mirrorLayerVis") ? tag.getFloat(ID + "mirrorLayerVis") : 1f;
-        showMirrorLayer = tag.contains(ID + "showMirrorLayer") && tag.getBoolean(ID + "showMirrorLayer");
+        tauntTicks = tag.contains("tauntTicks") ? tag.getInt("tauntTicks") : 0;
 
-        tauntTicks = tag.contains(ID + "tauntTicks") ? tag.getInt(ID + "tauntTicks") : 0;
+        lastWisdom = tag.contains("lastWisdom") ? tag.getInt("lastWisdom") : 0;
+        wisdomTick = tag.contains("wisdomTick") ? tag.getInt("wisdomTick") : 0;
     }
 
     // mystic mirror layer
@@ -67,12 +69,24 @@ public class ClientValues extends AbilityHolder implements ITicking {
     }
 
     // stuff
-    public Vec3 deltaMovement = new Vec3(0,0,0);
     private int tauntTicks = 0;
     public void taunt() {
         tauntTicks = 30;
     }
     public boolean isTaunting() {
         return tauntTicks > 0;
+    }
+    // wisdom obtained
+    private int lastWisdom = 0;
+    private int wisdomTick = 0;
+    public void obtainedWisdom(int value) {
+        lastWisdom = value;
+        if (value > 0) wisdomTick = 60;
+    }
+    public int getLastWisdom() {
+        return lastWisdom;
+    }
+    public int getWisdomTick() {
+        return wisdomTick;
     }
 }

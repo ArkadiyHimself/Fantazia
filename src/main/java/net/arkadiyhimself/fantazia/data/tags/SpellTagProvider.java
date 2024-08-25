@@ -22,7 +22,7 @@ public class SpellTagProvider extends IntrinsicHolderTagsProvider<Spell> {
     @SuppressWarnings("ConstantConditions")
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         tag(FTZSpellTags.NOT_BLOCKABLE);
-        tag(FTZSpellTags.NOT_REFLECTABLE).add(FTZSpells.DEVOUR);
-        tag(FTZSpellTags.THROUGH_WALLS).add(FTZSpells.SONIC_BOOM);
+        tag(FTZSpellTags.NOT_REFLECTABLE).add(FTZSpells.DEVOUR.get());
+        tag(FTZSpellTags.THROUGH_WALLS).add(FTZSpells.SONIC_BOOM.get());
     }
 }

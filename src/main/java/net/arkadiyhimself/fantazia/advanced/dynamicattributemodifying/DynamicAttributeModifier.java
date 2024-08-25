@@ -47,6 +47,9 @@ public class DynamicAttributeModifier {
     public DynamicAttributeModifier(Attribute attribute, AttributeModifier modifier, Function<LivingEntity, Float> percentGetter) {
         this(attribute, modifier.getId(), modifier.getName(), modifier.getAmount(), modifier.getOperation(), percentGetter);
     }
+    public AttributeModifier maximumModifier() {
+        return new AttributeModifier(id, name, amount, operation);
+    }
     public void tick(LivingEntity entity) {
         tryRemove(entity);
         tryAdd(entity);

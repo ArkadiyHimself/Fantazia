@@ -23,7 +23,7 @@ import java.util.List;
 
 public class AuraCarrierCommand {
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_AURA = (context, builder) -> {
-        List<RegistryObject<BasicAura<?,?>>> auras = List.copyOf(FantazicRegistry.AURAS.getEntries());
+        List<RegistryObject<BasicAura<?>>> auras = List.copyOf(FantazicRegistry.AURAS.getEntries());
         return SharedSuggestionProvider.suggestResource(auras.stream().map(RegistryObject::getId), builder);
     };
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -31,11 +31,11 @@ public class AuraCarrierCommand {
     }
     private static int createAura(CommandContext<CommandSourceStack> commandContext) {
         ResourceLocation id = commandContext.getArgument("aura", ResourceLocation.class);
-        List<RegistryObject<BasicAura<?,?>>> auras = List.copyOf(FantazicRegistry.AURAS.getEntries()).stream().toList();
-        BasicAura<?,?> aura = null;
-        for (RegistryObject<BasicAura<?,?>> basicAuraRegistryObject : auras) if (basicAuraRegistryObject.getId().equals(id)) aura = basicAuraRegistryObject.get();
+        List<RegistryObject<BasicAura<?>>> auras = List.copyOf(FantazicRegistry.AURAS.getEntries()).stream().toList();
+        BasicAura<?> aura = null;
+        for (RegistryObject<BasicAura<?>> basicAuraRegistryObject : auras) if (basicAuraRegistryObject.getId().equals(id)) aura = basicAuraRegistryObject.get();
         if (aura == null) return 0;
-        BasicAura<?, ?> finalAura = aura;
+        BasicAura<?> finalAura = aura;
 
         BlockPos blockpos = BlockPos.containing(commandContext.getSource().getPosition());
         ServerLevel serverlevel = commandContext.getSource().getLevel();

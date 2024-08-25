@@ -2,14 +2,13 @@ package net.arkadiyhimself.fantazia.blocks;
 
 import com.google.common.collect.ImmutableMap;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DarkFlameTicks;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
+import net.arkadiyhimself.fantazia.registries.FTZBlocks;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.SnowGolem;
@@ -61,10 +60,10 @@ public class AncientFlameBlock extends BaseFireBlock {
         if (pEntity instanceof LivingEntity livingEntity) {
             float dmg = this.DAMAGE;
             if (livingEntity instanceof SnowGolem) dmg *= 2.5f;
-            pEntity.hurt(new DamageSource(pLevel.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(FTZDamageTypes.ANCIENT_FLAME)), dmg);
-            DataManager dataManager = DataGetter.getUnwrap(livingEntity);
-            if (dataManager == null) return;
-            dataManager.getData(DarkFlameTicks.class).ifPresent(darkFlameTicks -> darkFlameTicks.setFlameTicks(livingEntity instanceof Player player && (player.isCreative() || player.isSpectator()) ? 3 : 100));
+            FTZDamageTypes.DamageSources sources = LevelCapHelper.getDamageSources(pLevel);
+            if (sources != null) pEntity.hurt(sources.ancientFlame(), dmg);
+            int flameTicks = livingEntity instanceof Player player && (player.getAbilities().instabuild) ? 3 : 100;
+            DataGetter.dataConsumer(livingEntity, DarkFlameTicks.class, darkFlameTicks -> darkFlameTicks.setFlameTicks(flameTicks));
         }
     }
     @Override
@@ -117,6 +116,7 @@ public class AncientFlameBlock extends BaseFireBlock {
         } else return this.defaultBlockState();
     }
     public boolean canCatchFire(BlockGetter world, BlockPos pos) {
-        return !world.getBlockState(pos).isAir();
+        BlockState state = world.getBlockState(pos);
+        return !state.isAir() && !state.is(Blocks.FIRE) && !state.is(FTZBlocks.ANCIENT_FLAME.get());
     }
 }

@@ -23,12 +23,12 @@ public class AdvancedHealCommand {
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher, CommandBuildContext context) {
         commandDispatcher.register(Commands.literal("advancedheal").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
                 .then(Commands.argument("target", EntityArgument.entity()).then(Commands.argument("amount", FloatArgumentType.floatArg(0)).executes(ctx -> {
-                    HealingSources sources = LevelCapHelper.healingSources(ctx.getSource().getLevel());
+                    HealingSources sources = LevelCapHelper.getHealingSources(ctx.getSource().getLevel());
                     if (sources == null) return 0;
                     return heal(ctx.getSource(), EntityArgument.getEntity(ctx, "target"), FloatArgumentType.getFloat(ctx, "amount"), sources.generic());
                 })
                         .then(Commands.argument("healingType", ResourceArgument.resource(context, FantazicRegistry.Keys.HEALING_TYPE)).executes(ctx -> {
-                            HealingSources sources = LevelCapHelper.healingSources(ctx.getSource().getLevel());
+                            HealingSources sources = LevelCapHelper.getHealingSources(ctx.getSource().getLevel());
                             if (sources == null) return 0;
                             return heal(ctx.getSource(), EntityArgument.getEntity(ctx, "target"), FloatArgumentType.getFloat(ctx, "amount"), new HealingSource(ResourceArgument.getResource(ctx, "healingType", FantazicRegistry.Keys.HEALING_TYPE)));
                         })))));

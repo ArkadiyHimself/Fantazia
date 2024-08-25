@@ -20,9 +20,8 @@ public class BarrierEffect extends EffectHolder implements IDamageReacting {
     private float INITIAL = 0;
     private float color = 0;
     private int hitCD = 0;
-    @SuppressWarnings("ConstantConditions")
     public BarrierEffect(LivingEntity owner) {
-        super(owner, FTZMobEffects.BARRIER);
+        super(owner, FTZMobEffects.BARRIER.get());
     }
     public float getHealth() {
         return health;
@@ -41,20 +40,19 @@ public class BarrierEffect extends EffectHolder implements IDamageReacting {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     public void onHit(LivingHurtEvent event) {
         if (!hasBarrier() || event.getSource().is(FTZDamageTypeTags.PIERCES_BARRIER)) return;
 
         color = 1f;
         float dmg = event.getAmount();
         float newHP = health - dmg;
-        boolean furious = getOwner().hasEffect(FTZMobEffects.FURY);
+        boolean furious = getOwner().hasEffect(FTZMobEffects.FURY.get());
         if (newHP > 0) {
             event.setCanceled(true);
             health -= dmg;
 
             if (hitCD <= 0) {
-                getOwner().level().playSound(null, getOwner().blockPosition(), FTZSoundEvents.BARRIER_HIT, SoundSource.AMBIENT);
+                getOwner().level().playSound(null, getOwner().blockPosition(), FTZSoundEvents.BARRIER_HIT.get(), SoundSource.AMBIENT);
                 hitCD = 10;
                 int num = switch (Minecraft.getInstance().options.particles().get()) {
                     case ALL -> 30;
@@ -67,15 +65,10 @@ public class BarrierEffect extends EffectHolder implements IDamageReacting {
         } else {
             event.setAmount(-newHP);
             remove();
-            getOwner().level().playSound(null, getOwner().blockPosition(), FTZSoundEvents.BARRIER_BREAK, SoundSource.AMBIENT);
-            if (event.getEntity().hasEffect(FTZMobEffects.BARRIER)) EffectCleansing.forceCleanse(event.getEntity(), FTZMobEffects.BARRIER);
-
-            int num = switch (Minecraft.getInstance().options.particles().get()) {
-                case ALL -> 30;
-                case DECREASED -> 25;
-                case MINIMAL -> 20;
-            };
-            for (int i = 1; i <= num; i++) VisualHelper.randomParticleOnModel(getOwner(), furious ? BarrierParticle.PIECES_FURY.random() : BarrierParticle.PIECES.random(), VisualHelper.ParticleMovement.FALL);
+            getOwner().level().playSound(null, getOwner().blockPosition(), FTZSoundEvents.BARRIER_BREAK.get(), SoundSource.AMBIENT);
+            if (event.getEntity().hasEffect(FTZMobEffects.BARRIER.get())) EffectCleansing.forceCleanse(event.getEntity(), FTZMobEffects.BARRIER.get());
+            
+            for (int i = 1; i <= 20 + 5 * Minecraft.getInstance().options.particles().get().getId(); i++) VisualHelper.randomParticleOnModel(getOwner(), furious ? BarrierParticle.PIECES_FURY.random() : BarrierParticle.PIECES.random(), VisualHelper.ParticleMovement.FALL);
         }
     }
 
@@ -103,18 +96,18 @@ public class BarrierEffect extends EffectHolder implements IDamageReacting {
         remove();
     }
     @Override
-    public CompoundTag serialize() {
-        CompoundTag tag = super.serialize();
-        tag.putFloat(ID + "health", health);
-        tag.putFloat(ID + "initial", INITIAL);
-        tag.putFloat(ID + "color", color);
+    public CompoundTag serialize(boolean toDisk) {
+        CompoundTag tag = super.serialize(toDisk);
+        tag.putFloat("health", health);
+        tag.putFloat("initial", INITIAL);
+        tag.putFloat("color", color);
         return tag;
     }
     @Override
-    public void deserialize(CompoundTag tag) {
-        super.deserialize(tag);
-        health = tag.contains(ID + "health") ? tag.getFloat(ID + "health") : 0;
-        INITIAL = tag.contains(ID + "initial") ? tag.getFloat(ID + "initial") : 0;
-        color = tag.contains(ID + "color") ? tag.getFloat(ID + "color") : 0;
+    public void deserialize(CompoundTag tag, boolean fromDist) {
+        super.deserialize(tag, fromDist);
+        health = tag.contains("health") ? tag.getFloat("health") : 0;
+        INITIAL = tag.contains("initial") ? tag.getFloat("initial") : 0;
+        color = tag.contains("color") ? tag.getFloat("color") : 0;
     }
 }

@@ -5,119 +5,76 @@ import net.arkadiyhimself.fantazia.events.RegistryEvents;
 import net.arkadiyhimself.fantazia.items.casters.AuraCaster;
 import net.arkadiyhimself.fantazia.items.casters.DashStone;
 import net.arkadiyhimself.fantazia.items.casters.SpellCaster;
-import net.arkadiyhimself.fantazia.items.expendable.ExpendableItem;
-import net.arkadiyhimself.fantazia.items.expendable.TalentGivingItem;
+import net.arkadiyhimself.fantazia.items.expendable.ObscureSubstance;
+import net.arkadiyhimself.fantazia.items.expendable.TalentProvidingItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.FragileBlade;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.Murasama;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Supplier;
 
-public class FTZItems extends FTZRegistry<Item> {
-    @SuppressWarnings("unused")
-    private static final FTZItems INSTANCE = new FTZItems();
-    private void magicItem(final String name, final Supplier<Item> sup) {
-        RegistryObject<Item> item = this.register(name, sup);
+public class FTZItems {
+    private static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, Fantazia.MODID);
+    private static RegistryObject<Item> magicItem(final String name, final Supplier<Item> sup) {
+        RegistryObject<Item> item = REGISTER.register(name, sup);
         RegistryEvents.MAGIC_ITEM.add(item);
+        return item;
     }
-    private void weaponItem(final String name, final Supplier<Item> sup) {
-        RegistryObject<Item> item = this.register(name, sup);
+    private static RegistryObject<Item> weaponItem(final String name, final Supplier<Item> sup) {
+        RegistryObject<Item> item = REGISTER.register(name, sup);
         RegistryEvents.WEAPON_ITEM.add(item);
+        return item;
     }
-    private void expendableItem(final String name, final Supplier<Item> sup) {
-        RegistryObject<Item> item = this.register(name, sup);
+    private static RegistryObject<Item> expendableItem(final String name, final Supplier<Item> sup) {
+        RegistryObject<Item> item = REGISTER.register(name, sup);
         RegistryEvents.EXPENDABLE_ITEM.add(item);
+        return item;
     }
-    @ObjectHolder(value = Fantazia.MODID + ":fragile_blade", registryName = "item")
-    public static final FragileBlade FRAGILE_BLADE = null;
+    public static final RegistryObject<Item> FRAGILE_BLADE = weaponItem("fragile_blade", FragileBlade::new); // finished and implemented
+    public static final RegistryObject<Item> MURASAMA = weaponItem("murasama", Murasama::new);
+    public static final RegistryObject<Item> WOODEN_HATCHET = weaponItem("wooden_hatchet", () -> new HatchetItem(Tiers.WOOD, -2.6f, new Item.Properties())); // finished and implemented
+    public static final RegistryObject<Item> STONE_HATCHET = weaponItem("stone_hatchet", () -> new HatchetItem(Tiers.STONE, -2.6f, new Item.Properties())); // finished and implemented
+    public static final RegistryObject<Item> IRON_HATCHET = weaponItem("iron_hatchet", () -> new HatchetItem(Tiers.IRON, -2.6f, new Item.Properties())); // finished and implemented
+    public static final RegistryObject<Item> GOLDEN_HATCHET = weaponItem("golden_hatchet", () -> new HatchetItem(Tiers.GOLD, -2.6f, new Item.Properties())); // finished and implemented
+    public static final RegistryObject<Item> DIAMOND_HATCHET = weaponItem("diamond_hatchet", () -> new HatchetItem(Tiers.DIAMOND, -2.6f, new Item.Properties())); // finished and implemented
+    public static final RegistryObject<Item> NETHERITE_HATCHET = weaponItem("netherite_hatchet", () -> new HatchetItem(Tiers.NETHERITE, -2.6f, new Item.Properties())); // finished and implemented
+    public static final RegistryObject<Item> DASHSTONE1 = magicItem("dashstone1", () -> new DashStone(1)); // finished and implemented
+    public static final RegistryObject<Item> DASHSTONE2 = magicItem("dashstone2", () -> new DashStone(2));
+    public static final RegistryObject<Item> DASHSTONE3 = magicItem("dashstone3", () -> new DashStone(3));
+    public static final RegistryObject<Item> ENTANGLER = magicItem("entangler", () -> new SpellCaster(FTZSpells.ENTANGLE)); // finished and implemented
+    public static final RegistryObject<Item> SOUL_EATER = magicItem("soul_eater", () -> new SpellCaster(FTZSpells.DEVOUR)); // finished and implemented
+    public static final RegistryObject<Item> SCULK_HEART = magicItem("heart_of_sculk", () -> new SpellCaster(FTZSpells.SONIC_BOOM)); // finished and implemented
+    public static final RegistryObject<Item> MYSTIC_MIRROR = magicItem("mystic_mirror", () -> new SpellCaster(FTZSpells.REFLECT)); // finished and implemented
+    public static final RegistryObject<Item> BLOODLUST_AMULET = magicItem("bloodlust_amulet", () -> new SpellCaster(FTZSpells.DAMNED_WRATH)); // finished and implemented
+    public static final RegistryObject<Item> LEADERS_HORN = magicItem("leaders_horn", () -> new AuraCaster(FTZAuras.LEADERSHIP)); // finished and implemented
+    public static final RegistryObject<Item> TRANQUIL_HERB = magicItem("tranquil_herb", () -> new AuraCaster(FTZAuras.TRANQUIL)); // finished and implemented
+    public static final RegistryObject<Item> SPIRAL_NEMESIS = magicItem("spiral_nemesis", () -> new AuraCaster(FTZAuras.DESPAIR));
+    public static final RegistryObject<Item> OBSCURE_ESSENCE = expendableItem("obscure_substance", () -> new ObscureSubstance(Rarity.UNCOMMON)); // finished and implemented
+    public static final RegistryObject<Item> UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Fantazia.res("double_jump"))); // finished and implemented
+    public static final RegistryObject<Item> ARACHNID_EYE = expendableItem("arachnid_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(64).food(Foods.ARACHNID_EYE))); // finished and implemented
+    public static final RegistryObject<Item> VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(Foods.VITALITY_FRUIT))); // finished and implemented
 
-    @ObjectHolder(value = Fantazia.MODID + ":murasama", registryName = "item")
-    public static final Murasama MURASAMA = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":wooden_hatchet", registryName = "item")
-    public static final HatchetItem WOODEN_HATCHET = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":stone_hatchet", registryName = "item")
-    public static final HatchetItem STONE_HATCHET = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":iron_hatchet", registryName = "item")
-    public static final HatchetItem IRON_HATCHET = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":golden_hatchet", registryName = "item")
-    public static final HatchetItem GOLDEN_HATCHET = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":diamond_hatchet", registryName = "item")
-    public static final HatchetItem DIAMOND_HATCHET = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":netherite_hatchet", registryName = "item")
-    public static final HatchetItem NETHERITE_HATCHET = null; // finished and implemented
-
-    @ObjectHolder(value = Fantazia.MODID + ":dashstone1", registryName = "item")
-    public static final DashStone DASHSTONE1 = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":dashstone2", registryName = "item")
-    public static final DashStone DASHSTONE2 = null;
-    @ObjectHolder(value = Fantazia.MODID + ":dashstone3", registryName = "item")
-    public static final DashStone DASHSTONE3 = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":entangler", registryName = "item")
-    public static final SpellCaster ENTANGLER = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":soul_eater", registryName = "item")
-    public static final SpellCaster SOUL_EATER = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":heart_of_sculk", registryName = "item")
-    public static final SpellCaster SCULK_HEART = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":mystic_mirror", registryName = "item")
-    public static final SpellCaster MYSTIC_MIRROR = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":bloodlust_amulet", registryName = "item")
-    public static final SpellCaster BLOODLUST_AMULET = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":leaders_horn", registryName = "item")
-    public static final AuraCaster LEADERS_HORN = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":tranquil_herb", registryName = "item")
-    public static final AuraCaster TRANQUIL_HERB = null; // finished and implemented
-    @ObjectHolder(value = Fantazia.MODID + ":spiral_nemesis", registryName = "item")
-    public static final AuraCaster SPIRAL_NEMESIS = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":obscure_substance", registryName = "item")
-    public static final ExpendableItem OBSCURE_ESSENCE = null;
-
-    @ObjectHolder(value = Fantazia.MODID + ":unfinished_wings", registryName = "item")
-    public static final AuraCaster UNFINISHED_WINGS = null;
-    private FTZItems() {
-        super(ForgeRegistries.ITEMS);
-
-        weaponItem("fragile_blade", FragileBlade::new);
-        weaponItem("murasama", Murasama::new);
-
-        weaponItem("wooden_hatchet", () -> new HatchetItem(Tiers.WOOD, -2.6f, new Item.Properties()));
-        weaponItem("stone_hatchet", () -> new HatchetItem(Tiers.STONE, -2.5f, new Item.Properties()));
-        weaponItem("iron_hatchet", () -> new HatchetItem(Tiers.IRON, -2.4f, new Item.Properties()));
-        weaponItem("golden_hatchet", () -> new HatchetItem(Tiers.GOLD, -1.5f, new Item.Properties()));
-        weaponItem("diamond_hatchet", () -> new HatchetItem(Tiers.DIAMOND, -2.25f, new Item.Properties()));
-        weaponItem("netherite_hatchet", () -> new HatchetItem(Tiers.NETHERITE, -2f, new Item.Properties()));
-
-        magicItem("dashstone1", () -> new DashStone(1));
-        magicItem("dashstone2", () -> new DashStone(2));
-        magicItem("dashstone3", () -> new DashStone(3));
-
-        magicItem("entangler", () -> new SpellCaster(() -> FTZSpells.ENTANGLE));
-        magicItem("soul_eater", () -> new SpellCaster(() -> FTZSpells.DEVOUR));
-        magicItem("heart_of_sculk", () -> new SpellCaster(() -> FTZSpells.SONIC_BOOM));
-        magicItem("mystic_mirror", () -> new SpellCaster(() -> FTZSpells.REFLECT));
-        magicItem("bloodlust_amulet", () -> new SpellCaster(() -> FTZSpells.DAMNED_WRATH));
-
-        magicItem("leaders_horn", () -> new AuraCaster(() -> FTZAuras.LEADERSHIP));
-        magicItem("tranquil_herb", () -> new AuraCaster(() -> FTZAuras.TRANQUIL));
-        magicItem("spiral_nemesis", () -> new AuraCaster(() -> FTZAuras.DESPAIR));
-
-        expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON));
-        expendableItem("unfinished_wings", () -> new TalentGivingItem(Rarity.UNCOMMON, Fantazia.res("double_jump")));
-    }
-
-    @Override
-    protected void onRegistry(RegisterEvent event) {
+    public static void onRegistry(RegisterEvent event) {
         FTZBlocks.getBlockItems().forEach((block, item) -> event.register(ForgeRegistries.Keys.ITEMS, block, () -> item.apply(ForgeRegistries.BLOCKS.getValue(block))));
+    }
+    public static void register() {
+        REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+    }
+    private static class Foods {
+        static FoodProperties ARACHNID_EYE = new FoodProperties.Builder().effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 100), 1f).effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 3), 1f).effect(() -> new MobEffectInstance(FTZMobEffects.DISARM.get(), 100), 1f).alwaysEat().nutrition(3).saturationMod(2).build();
+        static FoodProperties VITALITY_FRUIT = new FoodProperties.Builder().effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 100, 2), 1f).effect(() -> new MobEffectInstance(MobEffects.SATURATION, 100, 2), 1f).nutrition(5).saturationMod(5f).alwaysEat().build();
     }
 }

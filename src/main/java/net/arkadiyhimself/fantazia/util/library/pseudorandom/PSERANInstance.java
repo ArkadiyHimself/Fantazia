@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.util.library.pseudorandom;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.minecraft.nbt.CompoundTag;
 
 /**
  * The pseudo-random distribution refers to a statistical mechanic of
@@ -18,7 +19,9 @@ public class PSERANInstance {
     private int fails = 0;
     public PSERANInstance(double CHANCE) {
         this.CHANCE = CHANCE;
-        this.initialChance = CHANCE == 0 ? 0 : PSERANHelper.calculateC(CHANCE);
+        if (CHANCE >= 1) this.initialChance = 1;
+        else if (CHANCE <= 0) this.initialChance = 0;
+        else this.initialChance = PSERANHelper.calculateC(CHANCE);
     }
     public double getSupposedChance() {
         return CHANCE;
@@ -26,26 +29,31 @@ public class PSERANInstance {
     public boolean performAttempt() {
         if (Fantazia.RANDOM.nextFloat() < getActualChance()) {
             // success
-            succeed();
+            fails = 0;
             return true;
         } else {
             // fail
-            failed();
+            fails++;
             return false;
         }
     }
     public double getActualChance() {
         return initialChance * (fails + 1);
     }
-    public void succeed() {
-        fails = 0;
-    }
-    public void failed() {
-        fails++;
-    }
     public PSERANInstance transform(double newChance) {
         PSERANInstance newInstance = new PSERANInstance(newChance);
         newInstance.fails = this.fails;
         return newInstance;
+    }
+    public CompoundTag serialize() {
+        CompoundTag tag = new CompoundTag();
+        tag.putDouble("chance", CHANCE);
+        tag.putInt("fails", fails);
+        return tag;
+    }
+    public static PSERANInstance deserialize(CompoundTag tag) {
+        PSERANInstance instance = new PSERANInstance(tag.getDouble("chance"));
+        instance.fails = tag.getInt("fails");
+        return instance;
     }
 }

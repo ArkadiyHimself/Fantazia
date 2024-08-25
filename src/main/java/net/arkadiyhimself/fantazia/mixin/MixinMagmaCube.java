@@ -15,12 +15,12 @@ public class MixinMagmaCube {
     @Inject(at = @At("HEAD"), method = "isDealsDamage",cancellable = true)
     private void dealDamage(CallbackInfoReturnable<Boolean> cir) {
         Slime slime = (Slime) (Object) this;
-        if (slime.hasEffect(FTZMobEffects.STUN) || slime.hasEffect(FTZMobEffects.DISARM)) cir.setReturnValue(false);
+        if (slime.hasEffect(FTZMobEffects.STUN.get()) || slime.hasEffect(FTZMobEffects.DISARM.get())) cir.setReturnValue(false);
     }
     @SuppressWarnings("ConstantConditions")
     @Inject(at = @At("HEAD"), method = "jumpFromGround",cancellable = true)
     private void jumpCancel(CallbackInfo ci) {
         Slime slime = (Slime) (Object) this;
-        if (slime.hasEffect(FTZMobEffects.STUN) || slime.hasEffect(FTZMobEffects.FROZEN)) ci.cancel();
+        if (slime.hasEffect(FTZMobEffects.STUN.get()) || slime.hasEffect(FTZMobEffects.FROZEN.get())) ci.cancel();
     }
 }

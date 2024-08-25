@@ -9,6 +9,7 @@ import net.arkadiyhimself.fantazia.api.capability.IHealReacting;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.*;
 import net.arkadiyhimself.fantazia.api.fantazicevents.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -38,14 +39,16 @@ public class EffectManager extends LivingEntityCapability {
         return NetworkHandler.INSTANCE;
     }
     @Override
-    public CompoundTag serializeNBT(boolean savingToDisk) {
+    public CompoundTag serializeNBT(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
-        EFFECTS.values().forEach(effectHolder -> tag.merge(effectHolder.serialize()));
+
+        for (EffectHolder effectHolder : EFFECTS.values()) if (effectHolder.ID() != null) tag.put(effectHolder.ID(), effectHolder.serialize(toDisk));
+
         return tag;
     }
     @Override
-    public void deserializeNBT(CompoundTag nbt, boolean readingFromDisk) {
-        EFFECTS.values().forEach(effectHolder -> effectHolder.deserialize(nbt));
+    public void deserializeNBT(CompoundTag tab, boolean fromDisk) {
+        for (EffectHolder effectHolder : EFFECTS.values()) if (tab.contains(effectHolder.ID())) effectHolder.deserialize(tab.getCompound(effectHolder.ID()), fromDisk);
     }
     public void tick() {
         EFFECTS.values().forEach(EffectHolder::tick);
@@ -53,6 +56,8 @@ public class EffectManager extends LivingEntityCapability {
     }
     public void grantEffect(Function<LivingEntity, EffectHolder> effect) {
         EffectHolder effectHolder = effect.apply(livingEntity);
+        MobEffect mobEffect = effectHolder.getEffect();
+        if (!FTZMobEffects.Application.isApplicable(livingEntity.getType(), mobEffect)) return;
         if (hasEffect(effectHolder.getEffect())) return;
         EFFECTS.put(effectHolder.getEffect(), effectHolder);
     }
@@ -61,14 +66,10 @@ public class EffectManager extends LivingEntityCapability {
         return ability == null ? LazyOptional.empty() : LazyOptional.of(() -> ability);
     }
     public void effectAdded(MobEffectInstance instance) {
-        EFFECTS.values().forEach(effectHolder -> {
-            if (effectHolder.getEffect() == instance.getEffect()) effectHolder.added(instance);
-        });
+        for (EffectHolder effectHolder : EFFECTS.values()) if (effectHolder.getEffect() == instance.getEffect()) effectHolder.added(instance);
     }
     public void effectEnded(MobEffectInstance instance) {
-        EFFECTS.values().forEach(effectHolder -> {
-            if (effectHolder.getEffect() == instance.getEffect()) effectHolder.ended();
-        });
+        for (EffectHolder effectHolder : EFFECTS.values()) if (effectHolder.getEffect() == instance.getEffect()) effectHolder.ended();
     }
     public void onHit(LivingAttackEvent event) {
         EFFECTS.values().stream().filter(IDamageReacting.class::isInstance).forEach(effectHolder -> ((IDamageReacting) effectHolder).onHit(event));

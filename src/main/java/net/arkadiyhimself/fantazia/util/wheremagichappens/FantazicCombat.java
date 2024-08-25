@@ -3,14 +3,11 @@ package net.arkadiyhimself.fantazia.util.wheremagichappens;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSources;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.EvasionData;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.AbsoluteBarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.BarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.LayeredBarrierEffect;
@@ -52,46 +49,35 @@ public class FantazicCombat {
     }
     public static boolean blocksDamage(LivingEntity entity) {
         if (entity instanceof Player player) {
-            AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-            if (abilityManager != null) {
-                Dash dash = abilityManager.takeAbility(Dash.class);
-                if (dash != null && dash.isDashing() && dash.getLevel() > 1) return true;
-            }
+            Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
+            if (dash != null && dash.isDashing() && dash.getLevel() > 1) return true;
         }
-        EffectManager effectManager = EffectGetter.getUnwrap(entity);
-        if (effectManager != null) {
-            BarrierEffect barrierEffect = effectManager.takeEffect(BarrierEffect.class);
-            if (barrierEffect != null && barrierEffect.hasBarrier()) return true;
 
-            LayeredBarrierEffect layeredBarrierEffect = effectManager.takeEffect(LayeredBarrierEffect.class);
-            if (layeredBarrierEffect != null && layeredBarrierEffect.hasBarrier()) return true;
+        BarrierEffect barrierEffect = EffectGetter.takeEffectHolder(entity, BarrierEffect.class);
+        if (barrierEffect != null && barrierEffect.hasBarrier()) return true;
 
-            AbsoluteBarrierEffect absoluteBarrierEffect = effectManager.takeEffect(AbsoluteBarrierEffect.class);
-            if (absoluteBarrierEffect != null && absoluteBarrierEffect.hasBarrier()) return true;
-        }
+        LayeredBarrierEffect layeredBarrierEffect = EffectGetter.takeEffectHolder(entity, LayeredBarrierEffect.class);
+        if (layeredBarrierEffect != null && layeredBarrierEffect.hasBarrier()) return true;
+
+        AbsoluteBarrierEffect absoluteBarrierEffect = EffectGetter.takeEffectHolder(entity, AbsoluteBarrierEffect.class);
+        if (absoluteBarrierEffect != null && absoluteBarrierEffect.hasBarrier()) return true;
+
         return false;
     }
     public static boolean isInvulnerable(LivingEntity entity) {
         if (entity instanceof Player player) {
-            AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-            if (abilityManager != null) {
-                Dash dash = abilityManager.takeAbility(Dash.class);
-                if (dash != null && dash.isDashing() && dash.getLevel() >= 2) return true;
-            }
+            Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
+            if (dash != null && dash.isDashing() && dash.getLevel() >= 2) return true;
         }
         return entity.isInvulnerable() || entity.hurtTime > 0;
     }
     public static boolean isPhasing(LivingEntity entity) {
         if (entity instanceof Player player) {
-            AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
-            if (abilityManager != null) {
-                Dash dash = abilityManager.takeAbility(Dash.class);
-                if (dash != null && dash.isDashing() && dash.getLevel() >= 3) return true;
-            }
+            Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
+            if (dash != null && dash.isDashing() && dash.getLevel() >= 3) return true;
         }
         return false;
     }
-    @SuppressWarnings("ConstantConditions")
     public static void meleeAttack(LivingHurtEvent event) {
         boolean meleeAttack = event.getSource().is(DamageTypes.PLAYER_ATTACK) || event.getSource().is(DamageTypes.MOB_ATTACK);
         boolean parry = event.getSource().is(FTZDamageTypes.PARRY);
@@ -100,17 +86,15 @@ public class FantazicCombat {
 
         float amount = event.getAmount();
 
-        AttributeInstance lifeSteal = livingAtt.getAttribute(FTZAttributes.LIFESTEAL);
+        AttributeInstance lifeSteal = livingAtt.getAttribute(FTZAttributes.LIFESTEAL.get());
         double heal = lifeSteal == null ? 0 : lifeSteal.getValue() * event.getAmount();
-        HealingSources healingSources = LevelCapHelper.healingSources(event.getEntity().level());
+        HealingSources healingSources = LevelCapHelper.getHealingSources(livingAtt.level());
         if (heal > 0 && healingSources != null) AdvancedHealing.heal(livingAtt, healingSources.lifesteal(target), (float) heal);
 
-        float bullyDMG = livingAtt.getMainHandItem().getEnchantmentLevel(FTZEnchantments.BULLY) * 1.5f;
+        float bullyDMG = livingAtt.getMainHandItem().getEnchantmentLevel(FTZEnchantments.BULLY.get()) * 1.5f;
         if (bullyDMG > 0) {
             EffectHelper.microStun(target);
-            EffectManager effectManager = EffectGetter.getUnwrap(target);
-            if (effectManager == null) return;
-            StunEffect stunEffect = effectManager.takeEffect(StunEffect.class);
+            StunEffect stunEffect = EffectGetter.takeEffectHolder(target, StunEffect.class);
             if (stunEffect != null && stunEffect.stunned()) event.setAmount(amount + bullyDMG);
         }
 
@@ -151,9 +135,7 @@ public class FantazicCombat {
         if (!flag1) return false;
 
         LivingEntity livingEntity = event.getEntity();
-        DataManager dataManager = DataGetter.getUnwrap(livingEntity);
-        if (dataManager == null) return false;
-        EvasionData evasionData = dataManager.takeData(EvasionData.class);
+        EvasionData evasionData = DataGetter.takeDataHolder(livingEntity, EvasionData.class);
         if (evasionData == null) return false;
         if (evasionData.getIFrames() > 0) event.setCanceled(true);
         else if (evasionData.tryEvade()) event.setCanceled(true);
@@ -162,9 +144,7 @@ public class FantazicCombat {
     public static boolean attemptEvasion(ProjectileImpactEvent event) {
         if (!(event.getRayTraceResult() instanceof EntityHitResult entityHitResult) || !(entityHitResult.getEntity() instanceof LivingEntity livingEntity)) return false;
         if (event.getProjectile() instanceof ThrownHatchet thrownHatchet && thrownHatchet.isPhasing()) return false;
-        DataManager dataManager = DataGetter.getUnwrap(livingEntity);
-        if (dataManager == null) return false;
-        EvasionData evasionData = dataManager.takeData(EvasionData.class);
+        EvasionData evasionData = DataGetter.takeDataHolder(livingEntity, EvasionData.class);
         if (evasionData == null) return false;
         if (evasionData.getIFrames() > 0) event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
         else if (evasionData.tryEvade()) event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
