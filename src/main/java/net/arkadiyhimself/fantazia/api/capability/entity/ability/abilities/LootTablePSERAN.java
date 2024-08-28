@@ -43,7 +43,6 @@ public class LootTablePSERAN extends AbilityHolder {
 
         LOOT_MODIFIERS.clear();
         LOOT_MODIFIERS.addAll(modifierHolders);
-        int i = 0;
     }
     public void attemptLoot(@NotNull ObjectArrayList<ItemStack> generatedLoot, ResourceLocation location) {
         for (LootModifierHolder holder : LOOT_MODIFIERS) if (holder.isModified(location)) holder.tryModify(generatedLoot);

@@ -18,7 +18,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotResult;
 
 import java.util.Optional;

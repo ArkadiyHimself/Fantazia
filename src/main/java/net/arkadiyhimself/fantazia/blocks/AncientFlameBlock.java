@@ -77,7 +77,7 @@ public class AncientFlameBlock extends BaseFireBlock {
     }
 
     @Override
-    public BlockState getStateForPlacement(BlockPlaceContext pContext) {
+    public @NotNull BlockState getStateForPlacement(BlockPlaceContext pContext) {
         return this.getStateForPlacement(pContext.getLevel(), pContext.getClickedPos());
     }
 
@@ -103,7 +103,7 @@ public class AncientFlameBlock extends BaseFireBlock {
         if (blockState.getValue(WEST)) voxelshape = Shapes.or(voxelshape, WEST_AABB);
         return voxelshape.isEmpty() ? DOWN_AABB : voxelshape;
     }
-    protected BlockState getStateForPlacement(BlockGetter pLevel, BlockPos pPos) {
+    public BlockState getStateForPlacement(BlockGetter pLevel, BlockPos pPos) {
         BlockPos blockpos = pPos.below();
         BlockState blockstate = pLevel.getBlockState(blockpos);
         if (!canCatchFire(pLevel, pPos.relative(Direction.DOWN)) && !blockstate.isFaceSturdy(pLevel, blockpos, Direction.UP)) {

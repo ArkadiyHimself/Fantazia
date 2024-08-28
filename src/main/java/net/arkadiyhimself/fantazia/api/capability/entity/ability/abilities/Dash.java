@@ -65,7 +65,7 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
             duration--;
             serverPlayer.hurtMarked = true;
             serverPlayer.setDeltaMovement(velocity);
-            for (int i = 1; i <= Minecraft.getInstance().options.particles().get().getId() + 1; i++) VisualHelper.randomParticleOnModel(serverPlayer, getParticleType(), VisualHelper.ParticleMovement.CHASE_OPPOSITE);
+            for (int i = 1; i <= Minecraft.getInstance().options.particles().get().getId() + 1; i++) VisualHelper.randomParticleOnModel(serverPlayer, getParticleType(), VisualHelper.ParticleMovement.AWAY);
             if (level == 1 && getPlayer().horizontalCollision) getPlayer().hurt(getPlayer().level().damageSources().flyIntoWall(), 3f);
 
         } else {

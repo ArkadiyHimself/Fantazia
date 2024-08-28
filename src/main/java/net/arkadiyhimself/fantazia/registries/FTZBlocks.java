@@ -20,14 +20,14 @@ import java.util.function.Supplier;
 public class FTZBlocks {
     private static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, Fantazia.MODID);
     private static final Map<ResourceLocation, BlockItemSupplier> BLOCK_ITEMS = Maps.newHashMap();
-    private static RegistryObject<Block> registerBlock(final String name, final Supplier<Block> blockSupplier, final BlockItemSupplier sup) {
+    private static <T extends Block> RegistryObject<T> registerBlock(final String name, final Supplier<T> blockSupplier, final BlockItemSupplier sup) {
         registerItemBlock(name, sup);
         return REGISTER.register(name, blockSupplier);
     }
     private static void registerItemBlock(String name, BlockItemSupplier supplier) {
         BLOCK_ITEMS.put(Fantazia.res(name), supplier);
     }
-    public static final RegistryObject<Block> ANCIENT_FLAME = registerBlock("ancient_flame", AncientFlameBlock::new, RegularBlockItem::new);
+    public static final RegistryObject<AncientFlameBlock> ANCIENT_FLAME = registerBlock("ancient_flame", AncientFlameBlock::new, RegularBlockItem::new);
 
     protected static Map<ResourceLocation, BlockItemSupplier> getBlockItems() {
         return Collections.unmodifiableMap(BLOCK_ITEMS);

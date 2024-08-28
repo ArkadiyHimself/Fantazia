@@ -36,7 +36,6 @@ public class SelfSpell extends Spell {
     public void onCast(LivingEntity livingEntity) {
         onCast.accept(livingEntity);
     }
-
     @Override
     public SelfSpell cleanse(Cleanse cleanse) {
         super.cleanse(cleanse);

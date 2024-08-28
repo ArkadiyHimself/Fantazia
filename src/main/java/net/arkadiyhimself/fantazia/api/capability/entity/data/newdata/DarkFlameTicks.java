@@ -12,17 +12,14 @@ public class DarkFlameTicks extends DataHolder implements ITicking {
     public DarkFlameTicks(LivingEntity livingEntity) {
         super(livingEntity);
     }
-
     @Override
     public String ID() {
         return "dark_flame";
     }
-
     @Override
     public void respawn() {
         flameTicks = 0;
     }
-
     @Override
     public void tick() {
         if (flameTicks > 0) flameTicks--;

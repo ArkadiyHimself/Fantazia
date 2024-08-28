@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "fantazia:item/passivecaster/bloodlust_amulet"
+    "layer0": "fantazia:item/spellcaster/bloodlust_amulet"
   }
 }

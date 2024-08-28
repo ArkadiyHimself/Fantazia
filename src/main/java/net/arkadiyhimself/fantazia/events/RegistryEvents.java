@@ -94,7 +94,6 @@ public class RegistryEvents {
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    @SuppressWarnings("ConstantConditions")
     public static void registerRenderer(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(FTZEntityTypes.HATCHET.get(), ThrownHatchetRenderer::new);
     }
@@ -110,7 +109,6 @@ public class RegistryEvents {
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    @SuppressWarnings("ConstantConditions")
     public static void registerParticles(final RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(FTZParticleTypes.BLOOD1.get(), BloodParticle.Provider::new);
         event.registerSpriteSet(FTZParticleTypes.BLOOD2.get(), BloodParticle.Provider::new);
@@ -145,6 +143,8 @@ public class RegistryEvents {
         event.registerSpriteSet(FTZParticleTypes.REGEN1.get(), GenericParticle.Provider::new);
         event.registerSpriteSet(FTZParticleTypes.REGEN2.get(), GenericParticle.Provider::new);
         event.registerSpriteSet(FTZParticleTypes.REGEN3.get(), GenericParticle.Provider::new);
+
+        event.registerSpriteSet(FTZParticleTypes.TIME_TRAVEL.get(), TimeTravelParticle.Provider::new);
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

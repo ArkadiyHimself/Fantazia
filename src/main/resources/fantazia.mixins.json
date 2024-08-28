@@ -18,7 +18,8 @@
     "MixinMouseHandler",
     "MixinPlayer",
     "MixinSlime",
-    "MixinVibrationUser"
+    "MixinVibrationUser",
+    "MixinWarden"
   ],
   "client": [
     "LivingEntityRendererAccessor",

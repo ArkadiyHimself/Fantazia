@@ -212,7 +212,7 @@ public class FTZGuis {
 
         String string1 = "DEVELOPER MODE";
         int width1 = font.width(string1);
-        guiGraphics.drawString(font, string1, screenWidth - width1,0,16755200);
+        guiGraphics.drawString(font, string1, screenWidth - width1, 0, 16755200);
     });
     public static IGuiOverlay FURY_VEINS = ((gui, guiGraphics, partialTick, screenWidth, screenHeight) -> {
         LocalPlayer player = Minecraft.getInstance().player;

@@ -12,6 +12,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
@@ -21,59 +22,20 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
+@OnlyIn(Dist.CLIENT)
 public class VisualHelper {
-    public enum ParticleMovement {
-        REGULAR(0,0,0),
-        CHASE(dx -> dx * 1.5, dy -> dy * 0.2 + 0.1, dz -> dz * 1.5),
-        FALL(0,-0.15,0),
-        ASCEND(0,-0.15,0),
-        CHASE_AND_FALL(dx -> dx * 1.5, dy -> 0.15, dz -> dz * 1.5),
-        CHASE_OPPOSITE(dx -> dx * -1.5, dy -> dy * -0.2 - 0.1, dz -> dz * -1.5),
-        CHASE_AND_FALL_OPPOSITE(dx -> dx * -1.5, dy -> 0.15, dz -> dz * -1.5),
-        FROM_CENTER(dx -> dx * 1.5, dy -> dy * 1.5, dz -> dz * 1.5),
-        TO_CENTER(dx -> dx * -1.5, dy -> dy * -1.5, dz -> dz * -1.5);
-        private final Function<Double, Double> xSpeed;
-        private final Function<Double, Double> ySpeed;
-        private final Function<Double, Double> zSpeed;
-        ParticleMovement(Function<Double, Double> xSpeed, Function<Double, Double> ySpeed, Function<Double, Double> zSpeed) {
-            this.xSpeed = xSpeed;
-            this.ySpeed = ySpeed;
-            this.zSpeed = zSpeed;
-        }
-        ParticleMovement(double dx, double dy, double dz) {
-            this.xSpeed = x -> dx;
-            this.ySpeed = y -> dy;
-            this.zSpeed = z -> dz;
-        }
-        public Vec3 modify(Vec3 vec3) {
-            double dx = vec3.x();
-            double dy = vec3.y();
-            double dz = vec3.z();
-            return new Vec3(xSpeed(dx), ySpeed(dy), zSpeed(dz));
-        }
-        public double xSpeed(double playerX) {
-            return xSpeed.apply(playerX);
-        }
-        public double ySpeed(double playerX) {
-            return ySpeed.apply(playerX);
-        }
-        public double zSpeed(double playerX) {
-            return zSpeed.apply(playerX);
-        }
-    }
+    private static final EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
     public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type) {
         if (particle == null || !(entity.level() instanceof ServerLevel serverLevel)) return;
         // getting entity's height and width
         float radius = entity.getBbWidth() * (float) 0.7;
         float height = entity.getBbHeight();
-
-        double dx = entity.getDeltaMovement().x();
-        double dy = entity.getDeltaMovement().y();
-        double dz = entity.getDeltaMovement().z();
 
         Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius);
         double x = vec3.x();
@@ -84,23 +46,19 @@ public class VisualHelper {
         double y0 = entity.getY() + y;
         double z0 = entity.getZ() + z;
 
+        Vec3 delta = type.modify(new Vec3(x0, y0, z0), entity.getDeltaMovement());
 
-        double DX = type.xSpeed(dx);
-        double DY = type.xSpeed(dy);
-        double DZ = type.xSpeed(dz);
-
-        NetworkHandler.sendToPlayers(new AddParticleS2C(new Vec3(x0, y0, z0), new Vec3(DX, DY, DZ), particle), serverLevel);
+        NetworkHandler.sendToPlayers(new AddParticleS2C(new Vec3(x0, y0, z0), delta, particle), serverLevel);
     }
     public static <T extends ParticleOptions> void rayOfParticles(LivingEntity caster, LivingEntity target, T type) {
+        if (!(caster.level() instanceof ServerLevel serverLevel)) return;
         Vec3 vec3 = caster.position().add(0.0D, 1.2F, 0.0D);
         Vec3 vec31 = target.getEyePosition().subtract(vec3);
         Vec3 vec32 = vec31.normalize();
 
         for (int i = 1; i < Mth.floor(vec31.length()) + 7; ++i) {
             Vec3 vec33 = vec3.add(vec32.scale(i));
-            if (caster.level() instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(type, vec33.x, vec33.y, vec33.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
-            }
+            serverLevel.sendParticles(type, vec33.x, vec33.y, vec33.z, 1, 0.0D, 0.0D, 0.0D, 0.0D);
         }
     }
     public static void fireVertex(PoseStack.Pose pMatrixEntry, VertexConsumer pBuffer, float pX, float pY, float pZ, float pTexU, float pTexV) {
@@ -144,7 +102,7 @@ public class VisualHelper {
         }
         poseStack.popPose();
     }
-    public static <T extends LivingEntity, M extends EntityModel<T>> void renderBlinkingEntity(T entity, LivingEntityRenderer<T,M> renderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
+    public static <T extends LivingEntity, M extends EntityModel<T>> void renderEvasion(T entity, LivingEntityRenderer<T,M> renderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
         poseStack.pushPose();
 
         float scale = Fantazia.RANDOM.nextFloat(-0.75F,0.75F);
@@ -180,6 +138,24 @@ public class VisualHelper {
         renderer.getModel().renderToBuffer(poseStack, consumer, packedLight, packedOverlay, r, g, b,0.65f);
 
         poseStack.popPose();
-
+    }
+    public enum ParticleMovement {
+        REGULAR(new Vec3(0,0,0)),
+        CHASE((pos, delta) -> new Vec3(delta.x() * 1.5, delta.y() * 0.2 + 0.1, delta.z() * 1.5)),
+        FALL(new Vec3(0,-0.15,0)),
+        ASCEND(new Vec3(0,0.15,0)),
+        CHASE_AND_FALL((pos, delta) -> new Vec3(delta.x() * 1.5, 0.15, delta.z() * 1.5)),
+        AWAY((pos, delta) -> new Vec3(delta.x() - 1.5, delta.y() * -0.2 - 0.1, delta.z() - 1.5)),
+        AWAY_AND_FALL((pos, delta) -> new Vec3(delta.x() - 1.5, -0.15, delta.z() - 1.5));
+        private final BiFunction<Vec3, Vec3, Vec3> modifier;
+        ParticleMovement(BiFunction<Vec3, Vec3, Vec3> modifier) {
+            this.modifier = modifier;
+        }
+        ParticleMovement(Vec3 vec3) {
+            this.modifier = (pos, delta) -> vec3;
+        }
+        public Vec3 modify(Vec3 position, Vec3 delta) {
+            return modifier.apply(position, delta);
+        }
     }
 }

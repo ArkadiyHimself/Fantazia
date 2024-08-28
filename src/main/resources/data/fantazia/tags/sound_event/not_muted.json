@@ -3,16 +3,16 @@
     "minecraft:entity.generic.explode",
     "minecraft:entity.warden.sonic_boom",
     "minecraft:ui.toast.challenge_complete",
-    "fantazia:fury_heartbeat1",
-    "fantazia:fury_heartbeat2",
+    "fantazia:ui.fury_heartbeat1",
+    "fantazia:ui.fury_heartbeat2",
     "fantazia:dash.dash1_recharge",
     "fantazia:dash.dash2_recharge",
     "fantazia:dash.dash3_recharge",
-    "fantazia:ringing",
-    "fantazia:fury_dispel",
-    "fantazia:fury_prolong",
-    "fantazia:bloodlust_amulet",
-    "fantazia:doomed",
-    "fantazia:denied"
+    "fantazia:ui.ringing",
+    "fantazia:ui.fury_dispel",
+    "fantazia:ui.fury_prolong",
+    "fantazia:ui.bloodlust_amulet",
+    "fantazia:ui.doomed",
+    "fantazia:ui.denied"
   ]
 }

@@ -117,7 +117,7 @@ public class SpellHelper {
         else if (deflect) EffectCleansing.forceCleanse(target, FTZMobEffects.DEFLECT.get());
         else return TargetedResult.DEFAULT;
 
-        for (int i = 0; i < 20 + Minecraft.getInstance().options.particles().get().getId() * 20; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.FROM_CENTER);
+        for (int i = 0; i < 20 + Minecraft.getInstance().options.particles().get().getId() * 20; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.REGULAR);
 
         target.level().playSound(null, target.blockPosition(), reflect ? FTZSoundEvents.REFLECT.get() : FTZSoundEvents.DEFLECT.get(), SoundSource.PLAYERS);
 
@@ -146,7 +146,7 @@ public class SpellHelper {
 
         event.setCanceled(true);
 
-        for (int i = 0; i < 20 + Minecraft.getInstance().options.particles().get().getId() * 20; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.FROM_CENTER);
+        for (int i = 0; i < 20 + Minecraft.getInstance().options.particles().get().getId() * 20; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.ASCEND);
         target.level().playSound(null, target.blockPosition(), reflect ? FTZSoundEvents.REFLECT.get() : FTZSoundEvents.DEFLECT.get(), SoundSource.NEUTRAL);
 
         if (reflect) {

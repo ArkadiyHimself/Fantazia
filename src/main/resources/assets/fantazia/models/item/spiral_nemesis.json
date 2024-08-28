@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "fantazia:item/passivecaster/spiral_nemesis"
+    "layer0": "fantazia:item/auracaster/spiral_nemesis"
   }
 }

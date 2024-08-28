@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DAMHolder;
 import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
-import net.arkadiyhimself.fantazia.util.library.SPHEREBOX;
+import net.arkadiyhimself.fantazia.util.library.SphereBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -77,8 +77,8 @@ public class AuraInstance<T extends Entity> {
         if (aura.ownerCond(owner)) aura.ownerTick(owner);
         if (!level.isClientSide()) blocksInside().forEach(blockPos -> aura.blockTick(blockPos, this));
     }
-    public SPHEREBOX getSphericalBox() {
-        return new SPHEREBOX(aura.getRadius(), this.center);
+    public SphereBox getSphericalBox() {
+        return new SphereBox(aura.getRadius(), this.center);
     }
     public List<T> entitiesInside() {
         Class<T> type = aura.affectedClass();
