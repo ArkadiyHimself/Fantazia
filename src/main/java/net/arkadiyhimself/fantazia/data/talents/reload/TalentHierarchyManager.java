@@ -42,6 +42,7 @@ public class TalentHierarchyManager extends SimpleJsonResourceReloadListener {
     protected void apply(Map<ResourceLocation, JsonElement> jsonElementMap, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profilerFiller) throws TalentDataException {
         TABS.values().forEach(List::clear);
         for (Map.Entry<ResourceLocation, JsonElement> entry : jsonElementMap.entrySet()) {
+
             ResourceLocation hierarchyID = entry.getKey();
             JsonObject object = entry.getValue().getAsJsonObject();
             if (object.has("attribute_chain") && object.get("attribute_chain").getAsBoolean()) {
@@ -60,6 +61,7 @@ public class TalentHierarchyManager extends SimpleJsonResourceReloadListener {
                 case MONO -> createMonoHierarchy(object);
                 case CHAIN -> createChainHierarchy(object);
                 case CHAOTIC -> createChaoticHierarchy(object);
+                case COMPLEX -> null;
             };
 
             ResourceLocation tab = new ResourceLocation(object.get("tab").getAsString());

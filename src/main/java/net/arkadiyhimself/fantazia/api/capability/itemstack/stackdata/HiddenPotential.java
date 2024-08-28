@@ -79,7 +79,7 @@ public class HiddenPotential extends StackDataHolder implements ITicking, IDamag
         delay = damage >= MAX ? DELAY_UNLEASH : DELAY_REGULAR;
         DAMAGE_LEVEL cur = damageLevel();
         if (old != HiddenPotential.DAMAGE_LEVEL.MAXIMUM && cur == HiddenPotential.DAMAGE_LEVEL.MAXIMUM) victim.playSound(FTZSoundEvents.FRAG_SWORD_UNLEASHED.get());
-        victim.playSound(getSound());
+        victim.playSound(getSound(), 0.35f,1f);
 
         return damage;
     }

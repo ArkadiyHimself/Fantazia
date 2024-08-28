@@ -15,21 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class SPHEREBOX {
+public class SphereBox {
     private final double RADIUS;
     private final double centerX;
     private final double centerY;
     private final double centerZ;
-    public SPHEREBOX(double radius, double x, double y, double z) {
+    public SphereBox(double radius, double x, double y, double z) {
         this.RADIUS = java.lang.Math.abs(radius);
         this.centerX = x;
         this.centerY = y;
         this.centerZ = z;
     }
-    public SPHEREBOX(float radius, float centerX, float centerY, float centerZ) {
+    public SphereBox(float radius, float centerX, float centerY, float centerZ) {
         this((double) radius, (double) centerX, (double) centerY, (double) centerZ);
     }
-    public SPHEREBOX(double radius, Vec3 center) {
+    public SphereBox(double radius, Vec3 center) {
         this(radius, center.x(), center.y(), center.z());
     }
     public double radius() {
@@ -76,8 +76,8 @@ public class SPHEREBOX {
     public double volume() {
         return 4f / 3 * java.lang.Math.PI * RADIUS * RADIUS * RADIUS;
     }
-    public SPHEREBOX inflate(float multiplier) {
-        return new SPHEREBOX(RADIUS * multiplier, getCenter());
+    public SphereBox inflate(float multiplier) {
+        return new SphereBox(RADIUS * multiplier, getCenter());
     }
     public List<Entity> entitiesInside(Level level, Predicate<Entity> filter) {
         if (level == null) return Lists.newArrayList();
@@ -137,7 +137,7 @@ public class SPHEREBOX {
     public List<BlockPos> blocksInside(Level level) {
         return blocksInside(level, blockPos -> true);
     }
-    public boolean intersects(SPHEREBOX spherebox) {
+    public boolean intersects(SphereBox spherebox) {
         double dist = spherebox.getCenter().distanceTo(this.getCenter());
         return dist <= java.lang.Math.abs(spherebox.radius() + this.radius());
     }
@@ -154,14 +154,14 @@ public class SPHEREBOX {
     public double actualDistance(BlockPos blockPos) {
         return actualDistance(blockPos.getCenter());
     }
-    public static SPHEREBOX fromOppositePoints(Vec3 point1, Vec3 point2) {
+    public static SphereBox fromOppositePoints(Vec3 point1, Vec3 point2) {
         double radius = point1.distanceTo(point2) / 2;
         Vec3 center = FantazicMath.findCenter(point1, point2);
-        return new SPHEREBOX(radius, center);
+        return new SphereBox(radius, center);
     }
-    public static SPHEREBOX fromCenterAndPoint(Vec3 center, Vec3 vec3) {
+    public static SphereBox fromCenterAndPoint(Vec3 center, Vec3 vec3) {
         double radius = center.distanceTo(vec3);
-        return new SPHEREBOX(radius, center);
+        return new SphereBox(radius, center);
     }
 
 }

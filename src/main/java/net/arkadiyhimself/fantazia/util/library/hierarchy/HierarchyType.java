@@ -6,7 +6,8 @@ import org.jetbrains.annotations.NotNull;
 public enum HierarchyType {
     MONO("mono"),
     CHAIN("chain"),
-    CHAOTIC("chaotic");
+    CHAOTIC("chaotic"),
+    COMPLEX("complex");
     private final String type;
     HierarchyType(String type) {
         this.type = type;

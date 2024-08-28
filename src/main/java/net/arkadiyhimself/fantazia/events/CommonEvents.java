@@ -271,7 +271,6 @@ public class CommonEvents {
         DamageSource source = event.getSource();
         float amount = event.getAmount();
         LivingEntity target = event.getEntity();
-        int i = 0;
         if (event.getEntity().level().isClientSide()) return;
         if (source.is(FTZDamageTypes.BLEEDING)) VisualHelper.randomParticleOnModel(target, BloodParticle.BLOOD.random(), VisualHelper.ParticleMovement.FALL);
 
@@ -280,7 +279,6 @@ public class CommonEvents {
         if (target instanceof Player player) AbilityGetter.get(player).ifPresent(abilityManager -> abilityManager.onHit(event));
         EffectGetter.get(target).ifPresent(effectManager -> effectManager.onHit(event));
         DataGetter.get(target).ifPresent(dataManager -> dataManager.onHit(event));
-
 
         for (Map.Entry<ResourceKey<DamageType>, Float> entry : AuraHelper.damageMultipliers(target).entrySet()) if (source.is(entry.getKey())) event.setAmount(amount * entry.getValue());
 

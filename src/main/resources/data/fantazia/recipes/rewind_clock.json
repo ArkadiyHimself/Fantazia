@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category" : "misc",
+  "pattern": [
+    "Y#Y",
+    "#X#",
+    "Y#Y"
+  ],
+  "key": {
+    "X" : {
+      "item": "minecraft:clock"
+    },
+    "#" : {
+      "item": "minecraft:gold_ingot"
+    },
+    "Y" : {
+      "item": "fantazia:obscure_substance"
+    }
+  },
+  "result": {
+    "item": "fantazia:enigmatic_clock"
+  },
+  "show_notification": true
+}

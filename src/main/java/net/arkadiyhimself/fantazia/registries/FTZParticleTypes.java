@@ -48,6 +48,7 @@ public class FTZParticleTypes {
     public static final RegistryObject<SimpleParticleType> REGEN1 = REGISTER.register("regen1", () -> new SimpleParticleType(true)); // finished and implemented
     public static final RegistryObject<SimpleParticleType> REGEN2 = REGISTER.register("regen2", () -> new SimpleParticleType(true)); // finished and implemented
     public static final RegistryObject<SimpleParticleType> REGEN3 = REGISTER.register("regen3", () -> new SimpleParticleType(true)); // finished and implemented
+    public static final RegistryObject<SimpleParticleType> TIME_TRAVEL = REGISTER.register("time_travel", () -> new SimpleParticleType(true));
     public static void register() {
         REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

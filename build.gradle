@@ -4,6 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -140,6 +141,7 @@ dependencies {
 }
 jar {
     manifest {
+        archiveClassifier = 'slim'
         attributes([
                 "Specification-Title"     : mod_id,
                 "Specification-Vendor"    : mod_authors,
@@ -152,6 +154,16 @@ jar {
     }
 }
 
+shadowJar {
+    archiveClassifier = ''
+    configurations = [project.configurations.shade]
+    relocate 'dev._100media.capabilitysyncer', "${project.group}.relocated.capabilitysyncer"
+    finalizedBy 'reobfShadowJar'
+}
+
+reobf {
+    shadowJar {}
+}
 jar.finalizedBy('reobfJar')
 
 publishing {

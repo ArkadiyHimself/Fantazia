@@ -1,4 +1,9 @@
 {
   "replace": false,
-  "values": ["fantazia:entangler", "fantazia:soul_eater", "fantazia:heart_of_sculk"]
+  "values": [
+    "fantazia:entangler",
+    "fantazia:soul_eater",
+    "fantazia:heart_of_sculk",
+    "fantazia:enigmatic_clock"
+  ]
 }

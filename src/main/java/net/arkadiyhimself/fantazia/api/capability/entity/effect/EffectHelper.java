@@ -15,7 +15,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class EffectHelper {
     public static float bleedingDamage(LivingEntity entity, Vec3 vec3) {
-        float movement = (float) vec3.horizontalDistance() / 6250f;
+        float movement = (float) vec3.horizontalDistance() / 500f;
 
         if (entity instanceof Player player) {
             Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);

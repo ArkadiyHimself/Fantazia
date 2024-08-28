@@ -9,7 +9,7 @@ import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.registries.FTZEntityTypes;
-import net.arkadiyhimself.fantazia.util.library.SPHEREBOX;
+import net.arkadiyhimself.fantazia.util.library.SphereBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -257,7 +257,7 @@ public class ThrownHatchet extends AbstractArrow {
         this.setDeltaMovement(newV3);
     }
     public boolean ricochetTarget(Predicate<LivingEntity> livingEntityPredicate) {
-        SPHEREBOX spherebox = new SPHEREBOX(8, this.position());
+        SphereBox spherebox = new SphereBox(8, this.position());
         List<LivingEntity> entityList = spherebox.entitiesInside(level(), LivingEntity.class);
         entityList.removeIf(this::noLOS);
         entityList.removeIf(Predicate.not(livingEntityPredicate));

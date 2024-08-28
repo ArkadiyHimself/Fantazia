@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "fantazia:item/passivecaster/leaders_horn"
+    "layer0": "fantazia:item/auracaster/leaders_horn"
   },
   "display": {
     "thirdperson_righthand": {

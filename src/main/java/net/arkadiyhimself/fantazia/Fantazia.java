@@ -30,7 +30,7 @@ public class Fantazia {
     public static final String MODID = "fantazia";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final Random RANDOM = new Random();
-    public static final boolean DEVELOPER_MODE = true;
+    public static final boolean DEVELOPER_MODE = false;
     private static final CustomItemRenderer CUSTOM_RENDERER = new CustomItemRenderer();
     public Fantazia() {
         GeckoLib.initialize();

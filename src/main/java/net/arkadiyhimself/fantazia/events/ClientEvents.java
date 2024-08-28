@@ -117,7 +117,7 @@ public class ClientEvents {
         M model = renderer.getModel();
 
         if (!event.getEntity().canChangeDimensions()) return;
-        if (entity instanceof Player player && (player.isSpectator() || player.isCreative())) return;
+        if (entity instanceof Player player && player.isSpectator()) return;
         if (!entity.getPassengers().isEmpty()) return;
 
         DarkFlameTicks darkFlameTicks = DataGetter.takeDataHolder(entity, DarkFlameTicks.class);
@@ -157,11 +157,12 @@ public class ClientEvents {
         MultiBufferSource buffers = event.getMultiBufferSource();
         LivingEntityRenderer<T, M> renderer = event.getRenderer();
         M model = renderer.getModel();
+        float partialTick = event.getPartialTick();
         int packedLight = event.getPackedLight();
         int packedOverlay = LivingEntityRenderer.getOverlayCoords(entity, 0);
 
-        EvasionData evasionData = DataGetter.takeDataHolder(event.getEntity(), EvasionData.class);
-        if (evasionData != null && evasionData.getIFrames() > 0) VisualHelper.renderBlinkingEntity(entity, renderer, poseStack, buffers, packedLight, packedOverlay);
+        EvasionData evasionData = DataGetter.takeDataHolder(entity, EvasionData.class);
+        if (evasionData != null && evasionData.getIFrames() > 0) VisualHelper.renderEvasion(entity, renderer, poseStack, buffers, packedLight, packedOverlay);
     }
     @SubscribeEvent
     public static void mouseScrolling(InputEvent.MouseScrollingEvent event) {
