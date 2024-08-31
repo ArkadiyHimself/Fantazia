@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.data.loot;
 
+import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;

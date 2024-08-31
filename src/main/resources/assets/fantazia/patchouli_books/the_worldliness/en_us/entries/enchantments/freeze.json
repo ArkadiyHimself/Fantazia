@@ -1,0 +1,17 @@
+{
+  "name": "book.fantazia.entry.enchantments.freeze.name",
+  "icon": "minecraft:enchanted_book",
+  "category": "fantazia:enchantments",
+  "pages": [
+    {
+      "type": "text",
+      "text": "book.fantazia.entry.enchantments.freeze.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item": "minecraft:bow",
+      "title": "book.fantazia.entry.enchantments.freeze.heading",
+      "text": "book.fantazia.entry.enchantments.freeze.page.2"
+    }
+  ]
+}

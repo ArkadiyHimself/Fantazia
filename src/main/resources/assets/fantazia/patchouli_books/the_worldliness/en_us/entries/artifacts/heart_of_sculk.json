@@ -1,0 +1,21 @@
+{
+  "name": "book.fantazia.entry.artifacts.heart_of_sculk.name",
+  "icon": "fantazia:heart_of_sculk",
+  "category": "fantazia:artifacts",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.heart_of_sculk.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item" : "fantazia:heart_of_sculk",
+      "title" : "book.fantazia.entry.artifacts.heart_of_sculk.heading",
+      "text" : "book.fantazia.entry.artifacts.heart_of_sculk.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.heart_of_sculk.page.3"
+    }
+  ]
+}

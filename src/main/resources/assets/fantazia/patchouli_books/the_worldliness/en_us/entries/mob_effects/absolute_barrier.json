@@ -1,0 +1,15 @@
+{
+  "name": "book.fantazia.entry.mob_effects.absolute_barrier.name",
+  "icon": "fantazia:textures/mob_effect/absolute_barrier.png",
+  "category": "fantazia:mob_effects",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.mob_effects.absolute_barrier.page.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.mob_effects.absolute_barrier.page.2"
+    }
+  ]
+}

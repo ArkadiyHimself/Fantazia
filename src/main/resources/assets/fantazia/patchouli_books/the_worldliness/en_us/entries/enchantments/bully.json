@@ -1,0 +1,17 @@
+{
+  "name": "book.fantazia.entry.enchantments.bully.name",
+  "icon": "minecraft:enchanted_book",
+  "category": "fantazia:enchantments",
+  "pages": [
+    {
+      "type": "text",
+      "text": "book.fantazia.entry.enchantments.bully.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item": "tag:minecraft:swords",
+      "title": "book.fantazia.entry.enchantments.bully.heading",
+      "text": "book.fantazia.entry.enchantments.bully.page.2"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "book.fantazia.entry.enchantments.ice_aspect.name",
+  "icon": "minecraft:enchanted_book",
+  "category": "fantazia:enchantments",
+  "pages": [
+    {
+      "type": "text",
+      "text": "book.fantazia.entry.enchantments.ice_aspect.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item": "tag:minecraft:swords",
+      "title": "book.fantazia.entry.enchantments.ice_aspect.heading",
+      "text": "book.fantazia.entry.enchantments.ice_aspect.page.2"
+    }
+  ]
+}

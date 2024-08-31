@@ -43,7 +43,6 @@ public class Fantazia {
         EffectGetter.register();
         DataGetter.register();
         FeatureGetter.register();
-
         StackDataGetter.register();
         LevelCapGetter.register();
 

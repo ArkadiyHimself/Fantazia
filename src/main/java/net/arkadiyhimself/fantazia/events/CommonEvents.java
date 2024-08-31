@@ -331,7 +331,7 @@ public class CommonEvents {
     public static void effectRemoved(MobEffectEvent.Remove event) {
         MobEffect effect = event.getEffect();
         LivingEntity livingEntity = event.getEntity();
-        EffectGetter.get(livingEntity).ifPresent(effectManager -> effectManager.effectEnded(event.getEffectInstance()));
+        EffectGetter.get(livingEntity).ifPresent(effectManager -> effectManager.effectEnded(event.getEffect()));
 
         if (livingEntity instanceof ServerPlayer player) if (effect == FTZMobEffects.STUN.get()) NetworkHandler.sendToPlayer(new PlayAnimationS2C(""), player);
     }
@@ -341,7 +341,7 @@ public class CommonEvents {
         if (effectInstance == null) return;
         MobEffect effect = effectInstance.getEffect();
         LivingEntity livingEntity = event.getEntity();
-        EffectGetter.get(livingEntity).ifPresent(effectManager -> effectManager.effectEnded(effectInstance));
+        EffectGetter.get(livingEntity).ifPresent(effectManager -> effectManager.effectEnded(effect));
 
     }
     @SubscribeEvent

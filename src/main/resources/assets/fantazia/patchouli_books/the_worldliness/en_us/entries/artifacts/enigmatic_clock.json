@@ -1,0 +1,21 @@
+{
+  "name": "book.fantazia.entry.artifacts.enigmatic_clock.name",
+  "icon": "fantazia:enigmatic_clock",
+  "category": "fantazia:artifacts",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.enigmatic_clock.page.1"
+    },
+    {
+      "type": "crafting",
+      "recipe": "fantazia:enigmatic_clock",
+      "title" : "book.fantazia.entry.artifacts.enigmatic_clock.heading",
+      "text" : "book.fantazia.entry.artifacts.enigmatic_clock.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.enigmatic_clock.page.3"
+    }
+  ]
+}

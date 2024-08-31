@@ -123,6 +123,9 @@ repositories {
     maven {
         url = "https://maven.theillusivec4.top/"
     }
+    maven {
+        url 'https://maven.blamejared.com'
+    }
 }
 configurations {
     shade
@@ -138,6 +141,8 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     runtimeOnly fg.deobf("io.github.kosmx.bendy-lib:bendy-lib-forge:${bendy_lib_version}")
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouly_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouly_version}")
 }
 jar {
     manifest {

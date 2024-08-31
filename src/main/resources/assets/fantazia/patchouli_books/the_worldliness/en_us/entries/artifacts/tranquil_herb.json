@@ -1,0 +1,21 @@
+{
+  "name": "book.fantazia.entry.artifacts.tranquil_herb.name",
+  "icon": "fantazia:tranquil_herb",
+  "category": "fantazia:artifacts",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.tranquil_herb.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item" : "fantazia:tranquil_herb",
+      "title" : "book.fantazia.entry.artifacts.tranquil_herb.heading",
+      "text" : "book.fantazia.entry.artifacts.tranquil_herb.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.tranquil_herb.page.3"
+    }
+  ]
+}

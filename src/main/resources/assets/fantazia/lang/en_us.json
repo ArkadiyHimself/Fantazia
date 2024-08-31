@@ -411,6 +411,7 @@
   "item.fantazia.arachnid_eye" : "Arachnid Eye",
   "item.fantazia.vitality_fruit" : "§5Vitality Fruit",
   "item.fantazia.ancient_spark" : "Ancient Spark",
+  "item.fantazia.the_worldliness" : "The Worldliness",
 
   "fantazia.talent.dash1.name" : "§7Swift Dash",
   "fantazia.talent.dash1.desc.lines" : "1",
@@ -470,5 +471,186 @@
 
   "curios.identifier.dashstone" : "Swiftness Stone",
   "curios.identifier.spellcaster" : "Spell Caster",
-  "curios.identifier.passivecaster" : "Passive Caster"
+  "curios.identifier.passivecaster" : "Passive Caster",
+
+  "book.fantazia.landing_text" : "Since the beginning of humanity people tried to understand what they could not explain, grasp what they could not comprehend, obtain the knowledge they could not posses, using the science and common sense, something that the human's mind can acknowledge. However humanity will never understand everything about the world around themselves; some secrets will remain hidden, some mysteries will remain unexplained, some truths will remain untold...",
+
+  "book.fantazia.category.artifacts.name" : "§5Artifacts",
+  "book.fantazia.category.artifacts.desc" : "In this world one is always surrounded by supernatural, but one can not see it due to lack of own connection to it. However, sometimes the magical essence is so concentrated in one physical object that it gains mysterious properties that some would consider magical. In fact, some have learnt how to influence those properties to create artifacts which fit a niche functionality and can bring great help to someone who uses them",
+
+  "book.fantazia.category.mob_effects.name" : "§dEffects",
+  "book.fantazia.category.mob_effects.desc": "Effects are among the most explored and understood parts of magic existing in this world, with recipes for countless potions and foods that can apply different effects to the one who consumes them. Just like any magic, effects can be both beneficial and harmful to someone, making them extremely useful everywhere from battlefield to everyday life",
+
+  "book.fantazia.category.expendables.name" : "§1Expendables",
+  "book.fantazia.category.expendables.desc" : "Not all magic relics have to be unique and rare artifacts, some of them are quite easy to find in the world, although in turn those objects do not stay after being used and are consumed instead",
+
+  "book.fantazia.category.enchantments.name" : "§dEnchantments",
+  "book.fantazia.category.enchantments.desc" : "Another way to influence a property of item with magic, although more sophisticated. Usually enchantments boost one particular property of the item, but rarely can they provide some unusual capabilities",
+
+  "book.fantazia.entry.artifacts.dashstone.name" : "§5The Swiftness Stones",
+  "book.fantazia.entry.artifacts.dashstone.page.1" : "Nobody knows the origins of these mysterious stones, who created them, or if they even have a creator; what is even more unexplainable is their attraction to certain people. They seem to somehow find their way into hands of those people, almost like fate itself is responsible for it...",
+  "book.fantazia.entry.artifacts.dashstone.page.2" : "Although the initial power of those relics seems pretty simple, it being a swift leap forward, they are not to be underestimated. The hidden potential inside every single one of them allows to warp reality itself to the will of their wearer, allowing one to move through the fabric of reality itself ",
+
+  "book.fantazia.entry.artifacts.entangler.name" : "§5Life-Death Entangler",
+  "book.fantazia.entry.artifacts.entangler.heading" : "The Spell Caster",
+  "book.fantazia.entry.artifacts.entangler.page.1" : "For a long time already, mortality has been portrayed as natural part of our lives. People have been convinced to accept their inevitable demise and use it as a motivation to live own live to its fullest. But is it actually a natural part of what we are, or is it a decease, a sickness that plagues all living creatures that we simply feel to helpless to fight due to our inability to prevent it?",
+  "book.fantazia.entry.artifacts.entangler.page.2" : "Using the power of a totem which allows to bypass our own demise, we can create an artifact which allows to stand on a fine line life and death",
+  "book.fantazia.entry.artifacts.entangler.page.3" : "The entangler embodies humanity's desire to avoid death, and thus helps with it. This artifact can be activated when its owner is on the verge of dying, and using it makes one effectively immortal, even if it is only for a brief moment",
+
+  "book.fantazia.entry.artifacts.soul_eater.name" : "§5The Soul Eater",
+  "book.fantazia.entry.artifacts.soul_eater.heading" : "The Spell Caster",
+  "book.fantazia.entry.artifacts.soul_eater.page.1" : "The souls of living creatures have always been considered sacred, untouchable. However, that does not change the fact that souls are also rich sources of energy, and they can be harvested. After all, if it was wrong to use a soul for one's own profit, why are they good for that?",
+  "book.fantazia.entry.artifacts.soul_eater.page.2" : "Of course, something so unholy that it allows to devour others' souls would only be found in the deepest pits of The Nether, be it remnants of bastions, or fortresses of an already dead civilisation",
+  "book.fantazia.entry.artifacts.soul_eater.page.3" : "This artifact allows to devour one's soul whole, leaving no trace of the victim. Doing so benefits the devourer, healing their wounds and providing great power, albeit temporarily. Of course, such immense power would have a cost: the wearer of this spell caster suffers from insatiable hunger, desiring more and more souls",
+
+  "book.fantazia.entry.artifacts.heart_of_sculk.name" : "§5Heart of The Sculk",
+  "book.fantazia.entry.artifacts.heart_of_sculk.heading" : "The Spell Caster",
+  "book.fantazia.entry.artifacts.heart_of_sculk.page.1" : "The origins of sculk remain unclear even to this day; it's unknown where it originated, or if it's origins are even of the overworld. However, even from such undiscovered substance, humanity still found a way to harvest its powers",
+  "book.fantazia.entry.artifacts.heart_of_sculk.page.2" : "The only places where such an artifact can be found are Ancient Cities, where sculk was explored and studies for benefits of people",
+  "book.fantazia.entry.artifacts.heart_of_sculk.page.3" : "This mysterious heart allows its owner to strike their enemies with a powerful sonic boom, as well as detect sound vibrations emitted by other creatures, akin to wardens created by sculk",
+
+  "book.fantazia.entry.artifacts.mystic_mirror.name" : "§5Mystic Mirror",
+  "book.fantazia.entry.artifacts.mystic_mirror.heading" : "The Spell Caster",
+  "book.fantazia.entry.artifacts.mystic_mirror.page.1" : "Not all artifacts are meant to harm someone's foes, some of them are have defensive capabilities, protecting their owner from harm instead. This mysterious mirror is one of those artifacts, although it only helps against other spell casters",
+  "book.fantazia.entry.artifacts.mystic_mirror.page.2" : "Using the obscure substance, one can influence properties of a reflective material to also reflect something more than just light",
+  "book.fantazia.entry.artifacts.mystic_mirror.page.3" : "Embodying one's desire to avoid being harmed, the Mirror protects its owner from any magical spells targeted at them, reflecting them back at the caster",
+
+  "book.fantazia.entry.artifacts.bloodlust_amulet.name" : "§5Amulet of Bloodlust",
+  "book.fantazia.entry.artifacts.bloodlust_amulet.heading" : "The Spell Caster",
+  "book.fantazia.entry.artifacts.bloodlust_amulet.page.1" : "Even through anger making someone stronger can be interpreted as adrenaline flowing in person's veins and making one's muscles work to their full potential, it remains unclear as to why it also causes one to be harmed worse than usual. However, that negative effect can be reduced",
+  "book.fantazia.entry.artifacts.bloodlust_amulet.page.2" : "This amulet can be discovered in depth of Nether, yet it is unknown what this artifact has to do with this dimension in particular",
+  "book.fantazia.entry.artifacts.bloodlust_amulet.page.3" : "Embodying humans' bloodlust and brutality, this artifact is fueled by one's fear of it that is felt by someone close to pass away, and in turn the amulet turns that fear into wrath. The amulet also allows its owner to tame their fury, tuning down its negative effects and even gaining some additional benefits from it",
+
+  "book.fantazia.entry.artifacts.enigmatic_clock.name": "§5Enigmatic Clock",
+  "book.fantazia.entry.artifacts.enigmatic_clock.heading" : "The Spell Caster",
+  "book.fantazia.entry.artifacts.enigmatic_clock.page.1" : "Does time have a beginning? Will time ever have an end? Those questions are most likely among the mysteries that will always remain unknown to us. But even such ungraspable concept as flow of time can be bent to someone's will, assuming they have means to do that",
+  "book.fantazia.entry.artifacts.enigmatic_clock.page.2" : "A regular clock, being the embodiment of the concept of time itself for a human's mind, has potential to influence this concept, which can be unleashed with enough magical essence",
+  "book.fantazia.entry.artifacts.enigmatic_clock.page.3" : "The ability of the clock embodies one's deep desire to go back to past and fix mistakes they regret, allowing its user to return back in time, which reverts one's state to how it was",
+
+  "book.fantazia.entry.artifacts.leaders_horn.name" : "§5Leader's Horn",
+  "book.fantazia.entry.artifacts.leaders_horn.heading" : "The Aura Caster",
+  "book.fantazia.entry.artifacts.leaders_horn.page.1" : "There are people in the world who are simply born to be leaders, to be followed by everyone else. It may be charisma which helps with this, or respect which was gained through hard work, or something else entirely",
+  "book.fantazia.entry.artifacts.leaders_horn.page.2" : "This horn were always associated with leadership by humans, so it is no surprise that they have potential to actually empower those who are being lead by someone who carries one. The Leader's Horn can be found in pillager outposts, often replacing regular one",
+  "book.fantazia.entry.artifacts.leaders_horn.page.3" : "The aura created by this artifact empowers all allies of its owner, making them even stronger",
+
+  "book.fantazia.entry.artifacts.tranquil_herb.name" : "§2Tranquil Herb",
+  "book.fantazia.entry.artifacts.tranquil_herb.heading" : "The Aura Caster",
+  "book.fantazia.entry.artifacts.tranquil_herb.page.1" : "Before science was as advanced as it is right now, people could only notice patterns between different phenomena and draw conclusions out of them. Using plants and other flora for medical purposes is a good example of it, hence why plants are tightly associated with medicine in one's mind",
+  "book.fantazia.entry.artifacts.tranquil_herb.page.2" : "This weird herb can be found deep underground in mineshafts, where those plants would be more useful than on a battlefield",
+  "book.fantazia.entry.artifacts.tranquil_herb.page.3" : "This herb creates an aura which calms and soothes one's mental state and heals one's physical state, albeit very slowly",
+
+  "book.fantazia.entry.artifacts.spiral_nemesis.name" : "§5Spiral Nemesis",
+  "book.fantazia.entry.artifacts.spiral_nemesis.heading" : "The Aura Caster",
+  "book.fantazia.entry.artifacts.spiral_nemesis.page.1" : "Among all the emotions a human may experience, fear is probably the most powerful, being the most primal. After all, fear is what helped humanity survive in the harsh times, before humans became apex predators",
+  "book.fantazia.entry.artifacts.spiral_nemesis.page.2" : "",
+  "book.fantazia.entry.artifacts.spiral_nemesis.page.3" : "This stone uses the fear of death that creatures feel, and manifests it into reality, making their doom even more imminent",
+
+  "book.fantazia.entry.mob_effects.absolute_barrier.name" : "§dAbsolute Barrier",
+  "book.fantazia.entry.mob_effects.absolute_barrier.page.1" : "Among different kinds of barrier this one is the most powerful, protecting its host unconditionally from almost all sources of harm. Not only that, but this barrier will also stay on the creature as long as the effect is there, unlike other barrier types which can wear off after taking damage too much",
+  "book.fantazia.entry.mob_effects.absolute_barrier.page.2" : "It shows itself as a mysterious purple «armor» with different symbols drawn upon it, which covers its host",
+
+  "book.fantazia.entry.mob_effects.barrier.name" : "§bBarrier",
+  "book.fantazia.entry.mob_effects.barrier.page.1" : "The most basic and most simple kind of barrier. It protects its user from most kinds of «outside» damage as the cost of its own «health», and when the barrier loses all of its health it disappears automatically. Of course, this kind of barrier being so simple means that it is also one of the easiest barriers to obtain",
+  "book.fantazia.entry.mob_effects.barrier.page.2" : "This barrier appears on its host as a transparent blue «armor» with occasional spots on it, that glow brighter for brief moment after taking damage",
+
+  "book.fantazia.entry.mob_effects.deafened.name" : "§3Deafened",
+  "book.fantazia.entry.mob_effects.deafened.page.1" : "Another rather simple effect which makes one's ability to hear or detect sound vibrations cease to exist, albeit temporarily. The way to get deafened is quite intuitive as well: sudden loud sounds from something like an explosion or a sound wave so powerful that it literally damages you",
+  "book.fantazia.entry.mob_effects.deafened.page.2" : "Of course, such niche effect can only affect a select few types of creatures, which have an ability to hear to take away. The effect appears above one's head as sound waves fading in and out",
+
+  "book.fantazia.entry.mob_effects.deflect.name" : "§bDeflect",
+  "book.fantazia.entry.mob_effects.deflect.page.1" : "",
+  "book.fantazia.entry.mob_effects.deflect.page.2" : "",
+
+  "book.fantazia.entry.mob_effects.disarm.name" : "§9Disarm",
+  "book.fantazia.entry.mob_effects.disarm.page.1" : "This effect is rather simple, rendering any creature it affects unable to perform a melee attack, making it defenseless. Although one should also keep in mind that the effect does not prevent from performing range attacks or harming others in ways other than regular melee attacks",
+  "book.fantazia.entry.mob_effects.disarm.page.2" : "It shows itself in quite obvious ways, as a broken weapon above one's head, symbolising deprivation of an ability to strike",
+
+  "book.fantazia.entry.mob_effects.doomed.name" : "§4Doomed",
+  "book.fantazia.entry.mob_effects.doomed.page.1" : "One of the most terrifying effects to be affected by, as the spirits of the dead swarm one's body trying to drag the soul to the afterlife where they came from. Of course, they aren't powerful enough to do that, but these unrested spirits still manage to almost pull the soul out, making it extremely vulnerable to any harm, as any damage to the body will immediately destroy the soul",
+  "book.fantazia.entry.mob_effects.doomed.page.2" : "The creepy way of this effect appearing on someone it affects is those exact souls swarming the poor victim and whispering to victim telling to join them...",
+
+  "book.fantazia.entry.mob_effects.frozen.name" : "§bFrozen",
+  "book.fantazia.entry.mob_effects.frozen.page.1" : "Perhaps the simples effect to understand as it is literally the result of being in extremely cold environment for a long time. As low temperatures usually do, it causes one to be much slower in almost everything, from moving to performing most of the actions, And those creatures resistant to fire are harmed especially bad by such cold",
+  "book.fantazia.entry.mob_effects.frozen.page.2" : "Aside of the affected creature being drastically slowed down, this effect also appears as a snow crystal above one's head",
+
+  "book.fantazia.entry.mob_effects.fury.name": "§cFury",
+  "book.fantazia.entry.mob_effects.fury.page.1" : "Although an emotion is usually but a state on one's mind, powerful emotions like love, despair or determination can affect a person, almost like they are also magical in a way. Anger is one of those emotions, and in huge amounts anger can make one stronger, albeit temporarily, but it also makes one reckless and not careful of the damage they receive, which causes this damage to be more drastic",
+  "book.fantazia.entry.mob_effects.fury.page.2" : "You will know when someone is furious, as they literally glow in the bloody-scarlet colours, and you will know if you yourself are furious.",
+
+  "book.fantazia.entry.mob_effects.haemorrhage.name" : "§4Haemorrhage",
+  "book.fantazia.entry.mob_effects.haemorrhage.page.1" : "Yet another quite simple effect which makes one lose their bleed out extremely quickly when they try to move. One must be struck extremely badly to receive such a wound that they start bleeding. And of course, healing that wound causes the haemorrhage to be healed as well",
+  "book.fantazia.entry.mob_effects.haemorrhage.page.2" : "Bleeding out is of course quite noticeable as blood literally flows on the ground",
+
+  "book.fantazia.entry.mob_effects.might.name" : "§6Might",
+  "book.fantazia.entry.mob_effects.might.page.1" : "Does what it says and says what it does. Similar to strength, it increases one's melee attack damage. Come on, it's not rocket science",
+  "book.fantazia.entry.mob_effects.might.page.2" : "It is one of effects which does not have obvious ways to show itself to others, so one should be careful if they are not sure that it is not there",
+
+  "book.fantazia.entry.mob_effects.stun.name" : "§4Stun",
+  "book.fantazia.entry.mob_effects.stun.page.1" : "One of harsher effects as it stupefies the creature, rendering it unable to perform any actions such as moving, using items, spells, or anything else. Stunned creature is essentially helpless, able to neither fight or flee, making it vulnerable",
+  "book.fantazia.entry.mob_effects.stun.page.2" : "Whenever entity is struck by a melee attack, its stun meter is filled, as it can be seen above one's head; eventually the victim can be overwhelmed by attacks and it gets stunned for several seconds. Some extreme forms of harm, such as explosion or falling, can be so overwhelming that they instantly knock out the creature",
+
+  "book.fantazia.entry.expendables.obscure_substance.name" : "§5Obscure Substance",
+  "book.fantazia.entry.expendables.obscure_substance.page.1" : "This weird dust, not even being an artifact, represents magic at its most basic appearance, stripped of its shape or form; and just like regular dust it takes form that one wishes to give it: this substance is used in creation of every and all magic artifacts and other expendable items in one way or another",
+  "book.fantazia.entry.expendables.obscure_substance.page.2" : "Obscure Substance can be found anywhere in the world, any place which was not inhabited by anyone for a long time, almost like a memory of the past magic rituals which were happening in those places by those who have left our world a long time ago",
+
+  "book.fantazia.entry.expendables.unfinished_wings.name" : "§cUnfinished Wings",
+  "book.fantazia.entry.expendables.unfinished_wings.page.1" : "Have you ever wished you were able to just escape from all your problems? Life can be cruel, it feels like absolutely nothing can be done with the situation, you'd wish you just had wings to fly away... Well those wings will not help with that, but they give a cool double jump!",
+  "book.fantazia.entry.expendables.unfinished_wings.page.2" : "The wings can be crafted out of remains of creatures that have wings themselves, fueled by magical energy. After that, those wings can be consumed to partially obtain the power of flight",
+
+  "book.fantazia.entry.expendables.arachnid_eye.name" : "§dArachnid Eye",
+  "book.fantazia.entry.expendables.arachnid_eye.page.1" : "Another item which allows to obtain an ability of other creature; the eye allows to climb walls like spiders can, almost like climbing a ladder",
+  "book.fantazia.entry.expendables.arachnid_eye.page.2" : "Combining an eye of a spider with results of its hard work, and fueling them with magic power allows to give it special properties: consume the eye after that and harvest spider's power",
+
+  "book.fantazia.entry.expendables.vitality_fruit.name" : "§5Vitality Fruits",
+  "book.fantazia.entry.expendables.vitality_fruit.page.1" : "These mysterious fruits have a weird property to boost one's life essence, making them more tough to eliminate. The vitality improving effect is permanent, staying even after one's reincarnation",
+  "book.fantazia.entry.expendables.vitality_fruit.page.2" : "Even weirder property of these exotic foods is always finding their way into hands of a seemingly randomly chosen person. One seems to always find those fruits inside remnants of old civilisation, like it was predetermined...",
+
+  "book.fantazia.entry.expendables.ancient_spark.name" : "§dAncient Spark",
+  "book.fantazia.entry.expendables.ancient_spark.page.1" : "This is but a little spark from the Time Before Mind, just a manifestation of this world's memory of the long forgotten past. Using them allows to summon the ancient flame, although it has already almost faded away...",
+  "book.fantazia.entry.expendables.ancient_spark.page.2" : "Fueling easily flammable and hot materials with magic makes the flame they create even more powerful, almost as powerful as how the ancient flame was in the past",
+
+  "book.fantazia.entry.enchantments.disintegration.name" : "Disintegration",
+  "book.fantazia.entry.enchantments.disintegration.heading" : "Sword Enchantment",
+  "book.fantazia.entry.enchantments.disintegration.page.1" : "Imagine yourself just suddenly... disappearing. One moment you were there, your body was completely intact, but the next moment you are simply not there... no dead body lying on the ground, no remains that could keep memories of your life, no trace of yourself... a truly horrifying death.",
+  "book.fantazia.entry.enchantments.disintegration.page.2" : "This terrible enchantment allows to turn the remains of your slayed enemies into experience, leaving absolutely no reminder of them afterwards, like they never even existed",
+
+  "book.fantazia.entry.enchantments.ice_aspect.name" : "Ice Aspect",
+  "book.fantazia.entry.enchantments.ice_aspect.heading" : "Sword Enchantment",
+  "book.fantazia.entry.enchantments.ice_aspect.page.1" : "A simple enchantment that rivals the Fire Aspect being it direct opposite, manipulating the element of ice instead of fire",
+  "book.fantazia.entry.enchantments.ice_aspect.page.2" : "Despite this and Fire Aspect being opposites, they are very much alike in many ways; like its counterpart, Ice Aspect is also applied to weapons, but unlike Fire Aspect, it freezes the creatures instead",
+
+  "book.fantazia.entry.enchantments.freeze.name" : "Freeze",
+  "book.fantazia.entry.enchantments.freeze.heading" : "Bow Enchantment",
+  "book.fantazia.entry.enchantments.freeze.page.1" : "Another enchantment that has a counterpart, rivaling Flame enchantment for bows",
+  "book.fantazia.entry.enchantments.freeze.page.2" : "Being the opposite of Flame, it fuels the arrows shot by bow with ice element instead of fire",
+
+  "book.fantazia.entry.enchantments.decisive_strike.name" : "Decisive Strike",
+  "book.fantazia.entry.enchantments.decisive_strike.heading" : "Weapon Enchantment",
+  "book.fantazia.entry.enchantments.decisive_strike.page.1" : "A sneaky enchantment that does not seem to do anything on its own, but in hands of someone with precision and fighting experience it has capability to be deadly",
+  "book.fantazia.entry.enchantments.decisive_strike.page.2" : "As its name suggests, Decisive Strike is all about concentrating all your strength in a single attack to finish its target for good; the enchantment drastically increases the bonus damage from critical hits, making them even more lethal",
+
+  "book.fantazia.entry.enchantments.bully.name" : "Bully",
+  "book.fantazia.entry.enchantments.bully.heading" : "Sword Enchantment",
+  "book.fantazia.entry.enchantments.bully.page.1" : "What can be more fun than beating up a helpless person lying on the ground? They literally can not do anything to you as you beat them, literally the most joy inducing thing ever!",
+  "book.fantazia.entry.enchantments.bully.page.2" : "The enchantment makes beating helpless people not only fun but also effective: it drastically increases damage dealt to stunned enemies who can not do anything",
+
+  "book.fantazia.entry.enchantments.duelist_ballista.name" : "Duelist and Ballista",
+  "book.fantazia.entry.enchantments.duelist_ballista.heading" : "Crossbow Enchantments",
+  "book.fantazia.entry.enchantments.duelist_ballista.page.1" : "Two crossbow enchantments which both make the weapon more deadly, although only against specific types of enemies, which makes both of them quite niche but rather effective in situations they're meant for",
+  "book.fantazia.entry.enchantments.duelist_ballista.page.2" : "Duelist's effect is directly connected to its namesake, as it increases damage dealt to other range-attack enemies; at the same time Ballista is effective against flying enemies or even just those who are not standing on the ground",
+
+  "book.fantazia.entry.enchantments.phasing.name" : "Phasing",
+  "book.fantazia.entry.enchantments.phasing.heading" : "Hatchet Enchantment",
+  "book.fantazia.entry.enchantments.phasing.page.1" : "Not even those who dedicated their life to creating enchantments fully understand how exactly this one works; what is known is that this enchantment interacts with the spirit world allowing an inanimate object to enter it",
+  "book.fantazia.entry.enchantments.phasing.page.2" : "Phasing warps the properties of a hatchet, making it intangible and ignore physical obstacles",
+
+  "book.fantazia.entry.enchantments.ricochet.name" : "Ricochet",
+  "book.fantazia.entry.enchantments.ricochet.heading" : "Hatchet Enchantment",
+  "book.fantazia.entry.enchantments.ricochet.page.1" : "Can inanimate objects have a mind of their own? Is it possible for something that is not alive to have will of its own? This enchantment is what makes some ask those questions",
+  "book.fantazia.entry.enchantments.ricochet.page.2" : "As the name suggests, it makes hatchets ricochet from walls, but not the same way as a regular object would fly of the wall, but instead trying to find the nearest enemy nearby and flying towards it instead",
+
+  "book.fantazia.entry.enchantments.headshot.name" : "Headshot",
+  "book.fantazia.entry.enchantments.headshot.heading" : "Hatchet Enchantment",
+  "book.fantazia.entry.enchantments.headshot.page.1" : "Is it not weird how most creatures have a weak spot? What is being talked about is the same spot that brain is located; striking someone's head can often lead to a swift death, so it makes even less sense to concentrate such an important part of the body in such a visible spot",
+  "book.fantazia.entry.enchantments.headshot.page.2" : "Does what is says and says what it does. Drastically increases damage dealt to an enemy by a thrown hatchet, if it hit creature's head"
 }

@@ -31,19 +31,19 @@ public class FantazicLootModifier extends LootModifier {
     }
 
     @Override
-    @SuppressWarnings("ConstantConditions")
     protected @NotNull ObjectArrayList<ItemStack> doApply(@NotNull ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
         ResourceLocation id = context.getQueriedLootTableId();
+        boolean chest = LootTablesHelper.isVanillaChest(context);
         if (!(entity instanceof Player player)) return generatedLoot;
 
-        if (!PlayerData.hasPersistentTag(player, "LootedFirstDashstone")) {
+        if (!PlayerData.hasPersistentTag(player, "LootedFirstDashstone") && chest) {
             PlayerData.setPersistentBoolean(player, "LootedFirstDashstone");
             generatedLoot.add(new ItemStack(FTZItems.DASHSTONE1.get()));
         }
 
         AbilityGetter.abilityConsumer(player, LootTablePSERAN.class, lootTablePSERAN -> lootTablePSERAN.attemptLoot(generatedLoot, id));
-        if (!LootTablesHelper.isVillage(id)) addItem(generatedLoot, FTZItems.OBSCURE_ESSENCE.get(), -2, 3);
+        if (chest && !LootTablesHelper.isVillage(id)) addItem(generatedLoot, FTZItems.OBSCURE_ESSENCE.get(), -2, 3);
 
         return generatedLoot;
     }

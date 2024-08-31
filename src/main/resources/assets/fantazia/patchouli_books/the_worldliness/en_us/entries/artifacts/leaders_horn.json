@@ -1,0 +1,21 @@
+{
+  "name": "book.fantazia.entry.artifacts.leaders_horn.name",
+  "icon": "fantazia:leaders_horn",
+  "category": "fantazia:artifacts",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.leaders_horn.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item" : "fantazia:leaders_horn",
+      "title" : "book.fantazia.entry.artifacts.leaders_horn.heading",
+      "text" : "book.fantazia.entry.artifacts.leaders_horn.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.leaders_horn.page.3"
+    }
+  ]
+}

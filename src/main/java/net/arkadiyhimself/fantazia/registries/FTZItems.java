@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.events.RegistryEvents;
+import net.arkadiyhimself.fantazia.items.TheWorldliness;
 import net.arkadiyhimself.fantazia.items.casters.AuraCaster;
 import net.arkadiyhimself.fantazia.items.casters.DashStone;
 import net.arkadiyhimself.fantazia.items.casters.SpellCaster;
@@ -44,6 +45,7 @@ public class FTZItems {
         RegistryEvents.EXPENDABLE_ITEM.add(item);
         return item;
     }
+    public static final RegistryObject<Item> THE_WORLDLINESS = REGISTER.register("the_worldliness", TheWorldliness::new);
     // melee weapons
     public static final RegistryObject<Item> FRAGILE_BLADE = weaponItem("fragile_blade", FragileBlade::new); // finished and implemented
     public static final RegistryObject<Item> MURASAMA = weaponItem("murasama", Murasama::new);

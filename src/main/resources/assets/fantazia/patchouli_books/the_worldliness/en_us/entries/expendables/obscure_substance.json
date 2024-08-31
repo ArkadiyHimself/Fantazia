@@ -1,0 +1,16 @@
+{
+  "name": "book.fantazia.entry.expendables.obscure_substance.name",
+  "icon": "fantazia:obscure_substance",
+  "category": "fantazia:expendables",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.expendables.obscure_substance.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item" : "fantazia:obscure_substance",
+      "text" : "book.fantazia.entry.expendables.obscure_substance.page.2"
+    }
+  ]
+}

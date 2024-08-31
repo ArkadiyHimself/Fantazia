@@ -1,0 +1,17 @@
+{
+  "name": "book.fantazia.entry.enchantments.duelist_ballista.name",
+  "icon": "minecraft:enchanted_book",
+  "category": "fantazia:enchantments",
+  "pages": [
+    {
+      "type": "text",
+      "text": "book.fantazia.entry.enchantments.duelist_ballista.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item": "minecraft:crossbow",
+      "title": "book.fantazia.entry.enchantments.duelist_ballista.heading",
+      "text": "book.fantazia.entry.enchantments.duelist_ballista.page.2"
+    }
+  ]
+}

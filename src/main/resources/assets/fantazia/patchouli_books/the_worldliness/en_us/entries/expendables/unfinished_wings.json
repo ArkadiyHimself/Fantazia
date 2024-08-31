@@ -1,0 +1,16 @@
+{
+  "name": "book.fantazia.entry.expendables.unfinished_wings.name",
+  "icon": "fantazia:unfinished_wings",
+  "category": "fantazia:expendables",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.expendables.unfinished_wings.page.1"
+    },
+    {
+      "type": "crafting",
+      "recipe" : "fantazia:unfinished_wings",
+      "text" : "book.fantazia.entry.expendables.unfinished_wings.page.2"
+    }
+  ]
+}

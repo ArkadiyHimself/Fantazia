@@ -1,0 +1,16 @@
+{
+  "name": "book.fantazia.entry.expendables.ancient_spark.name",
+  "icon": "fantazia:ancient_spark",
+  "category": "fantazia:expendables",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.expendables.ancient_spark.page.1"
+    },
+    {
+      "type": "crafting",
+      "recipe" : "fantazia:ancient_spark",
+      "text" : "book.fantazia.entry.expendables.ancient_spark.page.2"
+    }
+  ]
+}

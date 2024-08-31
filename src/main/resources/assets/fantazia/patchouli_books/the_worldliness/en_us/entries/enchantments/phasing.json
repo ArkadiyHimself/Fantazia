@@ -1,0 +1,17 @@
+{
+  "name": "book.fantazia.entry.enchantments.phasing.name",
+  "icon": "minecraft:enchanted_book",
+  "category": "fantazia:enchantments",
+  "pages": [
+    {
+      "type": "text",
+      "text": "book.fantazia.entry.enchantments.phasing.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item": "tag:fantazia:hatchets",
+      "title": "book.fantazia.entry.enchantments.phasing.heading",
+      "text": "book.fantazia.entry.enchantments.phasing.page.2"
+    }
+  ]
+}

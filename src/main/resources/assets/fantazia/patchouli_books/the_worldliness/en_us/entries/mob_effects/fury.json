@@ -1,0 +1,15 @@
+{
+  "name": "book.fantazia.entry.mob_effects.fury.name",
+  "icon": "fantazia:textures/mob_effect/fury.png",
+  "category": "fantazia:mob_effects",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.mob_effects.fury.page.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.mob_effects.fury.page.2"
+    }
+  ]
+}

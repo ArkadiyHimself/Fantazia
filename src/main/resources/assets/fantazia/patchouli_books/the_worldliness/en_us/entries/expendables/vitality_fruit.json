@@ -1,0 +1,16 @@
+{
+  "name": "book.fantazia.entry.expendables.vitality_fruit.name",
+  "icon": "fantazia:vitality_fruit",
+  "category": "fantazia:expendables",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.expendables.vitality_fruit.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item" : "fantazia:vitality_fruit",
+      "text" : "book.fantazia.entry.expendables.vitality_fruit.page.2"
+    }
+  ]
+}

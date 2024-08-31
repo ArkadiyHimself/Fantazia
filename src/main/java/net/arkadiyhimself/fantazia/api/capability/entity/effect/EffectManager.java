@@ -68,8 +68,8 @@ public class EffectManager extends LivingEntityCapability {
     public void effectAdded(MobEffectInstance instance) {
         for (EffectHolder effectHolder : EFFECTS.values()) if (effectHolder.getEffect() == instance.getEffect()) effectHolder.added(instance);
     }
-    public void effectEnded(MobEffectInstance instance) {
-        for (EffectHolder effectHolder : EFFECTS.values()) if (effectHolder.getEffect() == instance.getEffect()) effectHolder.ended();
+    public void effectEnded(MobEffect effect) {
+        for (EffectHolder effectHolder : EFFECTS.values()) if (effectHolder.getEffect() == effect) effectHolder.ended();
     }
     public void onHit(LivingAttackEvent event) {
         EFFECTS.values().stream().filter(IDamageReacting.class::isInstance).forEach(effectHolder -> ((IDamageReacting) effectHolder).onHit(event));

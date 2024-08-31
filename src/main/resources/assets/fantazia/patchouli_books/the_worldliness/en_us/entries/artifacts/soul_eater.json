@@ -1,0 +1,21 @@
+{
+  "name": "book.fantazia.entry.artifacts.soul_eater.name",
+  "icon": "fantazia:soul_eater",
+  "category": "fantazia:artifacts",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.soul_eater.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item" : "fantazia:soul_eater",
+      "title" : "book.fantazia.entry.artifacts.soul_eater.heading",
+      "text" : "book.fantazia.entry.artifacts.soul_eater.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.soul_eater.page.3"
+    }
+  ]
+}

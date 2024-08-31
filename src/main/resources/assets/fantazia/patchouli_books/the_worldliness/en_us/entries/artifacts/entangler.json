@@ -1,0 +1,21 @@
+{
+  "name": "book.fantazia.entry.artifacts.entangler.name",
+  "icon": "fantazia:entangler",
+  "category": "fantazia:artifacts",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.entangler.page.1"
+    },
+    {
+      "type": "crafting",
+      "recipe": "fantazia:entangler",
+      "title" : "book.fantazia.entry.artifacts.entangler.heading",
+      "text" : "book.fantazia.entry.artifacts.entangler.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.entangler.page.3"
+    }
+  ]
+}

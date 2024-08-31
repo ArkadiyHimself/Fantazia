@@ -1,0 +1,17 @@
+{
+  "name": "book.fantazia.entry.enchantments.disintegration.name",
+  "icon": "minecraft:enchanted_book",
+  "category": "fantazia:enchantments",
+  "pages": [
+    {
+      "type": "text",
+      "text": "book.fantazia.entry.enchantments.disintegration.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item": "tag:minecraft:swords",
+      "title": "book.fantazia.entry.enchantments.disintegration.heading",
+      "text": "book.fantazia.entry.enchantments.disintegration.page.2"
+    }
+  ]
+}
