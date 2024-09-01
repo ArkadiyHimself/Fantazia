@@ -32,17 +32,17 @@ public class FTZItems {
     private static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, Fantazia.MODID);
     private static RegistryObject<Item> magicItem(final String name, final Supplier<Item> sup) {
         RegistryObject<Item> item = REGISTER.register(name, sup);
-        RegistryEvents.MAGIC_ITEM.add(item);
+        RegistryEvents.ARTIFACTS.add(item);
         return item;
     }
     private static RegistryObject<Item> weaponItem(final String name, final Supplier<Item> sup) {
         RegistryObject<Item> item = REGISTER.register(name, sup);
-        RegistryEvents.WEAPON_ITEM.add(item);
+        RegistryEvents.WEAPONS.add(item);
         return item;
     }
     private static RegistryObject<Item> expendableItem(final String name, final Supplier<Item> sup) {
         RegistryObject<Item> item = REGISTER.register(name, sup);
-        RegistryEvents.EXPENDABLE_ITEM.add(item);
+        RegistryEvents.EXPENDABLES.add(item);
         return item;
     }
     public static final RegistryObject<Item> THE_WORLDLINESS = REGISTER.register("the_worldliness", TheWorldliness::new);

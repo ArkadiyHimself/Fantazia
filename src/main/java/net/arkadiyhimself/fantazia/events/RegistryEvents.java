@@ -21,6 +21,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,13 +44,12 @@ import java.util.concurrent.CompletableFuture;
 
 @Mod.EventBusSubscriber(modid = Fantazia.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RegistryEvents {
-    public static final ArrayList<RegistryObject<Item>> MAGIC_ITEM = new ArrayList<>();
-    public static final ArrayList<RegistryObject<Item>> WEAPON_ITEM = new ArrayList<>();
-    public static final ArrayList<RegistryObject<Item>> EXPENDABLE_ITEM = new ArrayList<>();
+    public static final ArrayList<RegistryObject<Item>> ARTIFACTS = new ArrayList<>();
+    public static final ArrayList<RegistryObject<Item>> WEAPONS = new ArrayList<>();
+    public static final ArrayList<RegistryObject<Item>> EXPENDABLES = new ArrayList<>();
     private static IAnimation registerPlayerAnimation(AbstractClientPlayer player) {
         return new ModifierLayer<>();
     }
-
     @SubscribeEvent
     public static void attributeModification(final EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, FTZAttributes.MANA_REGEN_MULTIPLIER.get());
@@ -57,11 +57,11 @@ public class RegistryEvents {
         event.add(EntityType.PLAYER, FTZAttributes.MAX_MANA.get());
         event.add(EntityType.PLAYER, FTZAttributes.MAX_STAMINA.get());
         event.add(EntityType.PLAYER, FTZAttributes.CAST_RANGE_ADDITION.get());
-        event.getTypes().forEach(entityType -> {
+        for (EntityType<? extends LivingEntity> entityType : event.getTypes()) {
             event.add(entityType, FTZAttributes.MAX_STUN_POINTS.get());
             event.add(entityType, FTZAttributes.LIFESTEAL.get());
             event.add(entityType, FTZAttributes.EVASION.get());
-        });
+        }
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
@@ -150,9 +150,9 @@ public class RegistryEvents {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         List<RegistryObject<Item>> items = new ArrayList<>();
-        items.addAll(MAGIC_ITEM);
-        items.addAll(WEAPON_ITEM);
-        items.addAll(EXPENDABLE_ITEM);
+        items.addAll(ARTIFACTS);
+        items.addAll(WEAPONS);
+        items.addAll(EXPENDABLES);
         for (RegistryObject<Item> item : items) if (item.get() instanceof IChangingIcon icon) icon.registerVariants();
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(Fantazia.res("animation"), 42, RegistryEvents::registerPlayerAnimation);
     }
@@ -160,9 +160,9 @@ public class RegistryEvents {
     @SubscribeEvent
     public static void creativeTabContents(BuildCreativeModeTabContentsEvent event) {
         CreativeModeTab tab = event.getTab();
-        if (tab == FTZCreativeModeTabs.FTZ_MAGIC) for (RegistryObject<Item> item : MAGIC_ITEM) event.accept(item);
-        if (tab == FTZCreativeModeTabs.FTZ_WEAPONS) for (RegistryObject<Item> item : WEAPON_ITEM) event.accept(item);
-        if (tab == FTZCreativeModeTabs.FTZ_EXPENDABLE) for (RegistryObject<Item> item : EXPENDABLE_ITEM) event.accept(item);
+        if (tab == FTZCreativeModeTabs.ARTIFACTS) for (RegistryObject<Item> item : ARTIFACTS) event.accept(item);
+        if (tab == FTZCreativeModeTabs.WEAPONS) for (RegistryObject<Item> item : WEAPONS) event.accept(item);
+        if (tab == FTZCreativeModeTabs.EXPENDABLES) for (RegistryObject<Item> item : EXPENDABLES) event.accept(item);
     }
     @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {

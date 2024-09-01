@@ -2,7 +2,7 @@
   "name": "item.fantazia.the_worldliness",
   "landing_text": "book.fantazia.landing_text",
   "version": 1,
-  "creative_tab": "fantazia:magic_tab",
+  "creative_tab": "fantazia:artifacts",
   "i18n": true,
   "custom_book_item": "fantazia:the_worldliness",
   "model": "fantazia:the_worldliness",
