@@ -1,0 +1,33 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "spider_eye": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:spider_eye"]
+          }
+        ]
+      }
+    },
+    "substance" : {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["fantazia:obscure_substance"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements" : [
+    [
+      "spider_eye"
+    ],
+    [
+      "substance"
+    ]
+  ]
+}

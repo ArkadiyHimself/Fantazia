@@ -1,0 +1,15 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "substance": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:stick"]
+          }
+        ]
+      }
+    }
+  }
+}

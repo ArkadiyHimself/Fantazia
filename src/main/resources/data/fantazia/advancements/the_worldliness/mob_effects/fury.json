@@ -1,0 +1,12 @@
+{
+  "criteria": {
+    "effect": {
+      "conditions": {
+        "effects": {
+          "fantazia:fury": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  }
+}

@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.artifacts.soul_eater.name",
   "icon": "fantazia:soul_eater",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/soul_eater",
   "pages": [
     {
       "type": "patchouli:text",

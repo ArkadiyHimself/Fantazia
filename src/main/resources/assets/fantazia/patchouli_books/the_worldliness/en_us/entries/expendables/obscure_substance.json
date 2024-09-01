@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.expendables.obscure_substance.name",
   "icon": "fantazia:obscure_substance",
   "category": "fantazia:expendables",
+  "advancement" : "fantazia:the_worldliness/expendables/obscure_substance",
   "pages": [
     {
       "type": "patchouli:text",

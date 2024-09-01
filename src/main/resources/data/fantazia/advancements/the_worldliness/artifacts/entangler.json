@@ -1,0 +1,15 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "totem": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:totem_of_undying"]
+          }
+        ]
+      }
+    }
+  }
+}

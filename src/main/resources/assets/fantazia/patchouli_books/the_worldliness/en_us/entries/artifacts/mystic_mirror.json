@@ -2,6 +2,8 @@
   "name": "book.fantazia.entry.artifacts.mystic_mirror.name",
   "icon": "fantazia:mystic_mirror",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/mystic_mirror",
+  "read_by_default": false,
   "pages": [
     {
       "type": "patchouli:text",

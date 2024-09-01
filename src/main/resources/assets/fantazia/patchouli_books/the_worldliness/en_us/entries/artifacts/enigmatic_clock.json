@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.artifacts.enigmatic_clock.name",
   "icon": "fantazia:enigmatic_clock",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/enigmatic_clock",
   "pages": [
     {
       "type": "patchouli:text",

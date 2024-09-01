@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.mob_effects.barrier.name",
   "icon": "fantazia:textures/mob_effect/barrier.png",
   "category": "fantazia:mob_effects",
+  "advancement" : "fantazia:the_worldliness/mob_effects/barrier",
   "pages": [
     {
       "type": "patchouli:text",

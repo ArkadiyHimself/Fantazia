@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.mob_effects.might.name",
   "icon": "fantazia:textures/mob_effect/might.png",
   "category": "fantazia:mob_effects",
+  "advancement" : "fantazia:the_worldliness/mob_effects/might",
   "pages": [
     {
       "type": "patchouli:text",

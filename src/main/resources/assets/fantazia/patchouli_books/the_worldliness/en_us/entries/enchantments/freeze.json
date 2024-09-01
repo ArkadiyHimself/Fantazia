@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.enchantments.freeze.name",
   "icon": "minecraft:enchanted_book",
   "category": "fantazia:enchantments",
+  "advancement": "fantazia:the_worldliness/enchantments/generic",
   "pages": [
     {
       "type": "text",

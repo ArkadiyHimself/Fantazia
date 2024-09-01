@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.artifacts.entangler.name",
   "icon": "fantazia:entangler",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/entangler",
   "pages": [
     {
       "type": "patchouli:text",

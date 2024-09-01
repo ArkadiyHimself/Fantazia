@@ -1,0 +1,12 @@
+{
+  "criteria": {
+    "effect": {
+      "conditions": {
+        "effects": {
+          "fantazia:deafened": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  }
+}

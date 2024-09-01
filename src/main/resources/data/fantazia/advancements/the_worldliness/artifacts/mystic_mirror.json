@@ -1,0 +1,33 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "glass": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:glass"]
+          }
+        ]
+      }
+    },
+    "substance" : {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["fantazia:obscure_substance"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements" : [
+    [
+      "glass"
+    ],
+    [
+      "substance"
+    ]
+  ]
+}

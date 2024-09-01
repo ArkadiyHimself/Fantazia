@@ -1,0 +1,12 @@
+{
+  "criteria": {
+    "effect": {
+      "conditions": {
+        "effects": {
+          "fantazia:disarm": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  }
+}

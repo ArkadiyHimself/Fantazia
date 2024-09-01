@@ -1,0 +1,12 @@
+{
+  "criteria": {
+    "effect": {
+      "conditions": {
+        "effects": {
+          "fantazia:stun": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  }
+}

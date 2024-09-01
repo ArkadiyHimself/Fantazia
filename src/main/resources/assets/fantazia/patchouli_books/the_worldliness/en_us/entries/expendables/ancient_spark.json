@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.expendables.ancient_spark.name",
   "icon": "fantazia:ancient_spark",
   "category": "fantazia:expendables",
+  "advancement" : "fantazia:the_worldliness/expendables/ancient_spark",
   "pages": [
     {
       "type": "patchouli:text",

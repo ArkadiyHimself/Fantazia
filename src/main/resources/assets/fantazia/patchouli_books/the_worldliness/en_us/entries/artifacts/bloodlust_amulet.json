@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.artifacts.bloodlust_amulet.name",
   "icon": "fantazia:bloodlust_amulet",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/bloodlust_amulet",
   "pages": [
     {
       "type": "patchouli:text",

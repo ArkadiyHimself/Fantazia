@@ -1,0 +1,33 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "phantom_membrane": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:phantom_membrane"]
+          }
+        ]
+      }
+    },
+    "substance" : {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["fantazia:obscure_substance"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements" : [
+    [
+      "phantom_membrane"
+    ],
+    [
+      "substance"
+    ]
+  ]
+}

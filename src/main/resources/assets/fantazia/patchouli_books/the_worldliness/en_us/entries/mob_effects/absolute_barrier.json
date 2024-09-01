@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.mob_effects.absolute_barrier.name",
   "icon": "fantazia:textures/mob_effect/absolute_barrier.png",
   "category": "fantazia:mob_effects",
+  "advancement" : "fantazia:the_worldliness/mob_effects/absolute_barrier",
   "pages": [
     {
       "type": "patchouli:text",

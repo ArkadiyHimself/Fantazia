@@ -1,0 +1,15 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "fruit": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["fantazia:vitality_fruit"]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.artifacts.tranquil_herb.name",
   "icon": "fantazia:tranquil_herb",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/tranquil_herb",
   "pages": [
     {
       "type": "patchouli:text",

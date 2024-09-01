@@ -1,0 +1,12 @@
+{
+  "criteria": {
+    "effect": {
+      "conditions": {
+        "effects": {
+          "fantazia:frozen": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  }
+}

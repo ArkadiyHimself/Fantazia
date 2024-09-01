@@ -1,0 +1,11 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria" : {
+    "entered_nether" : {
+      "trigger" : "minecraft:changed_dimension",
+      "conditions" : {
+        "to": "minecraft:the_nether"
+      }
+    }
+  }
+}

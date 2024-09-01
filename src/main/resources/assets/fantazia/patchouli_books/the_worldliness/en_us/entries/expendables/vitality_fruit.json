@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.expendables.vitality_fruit.name",
   "icon": "fantazia:vitality_fruit",
   "category": "fantazia:expendables",
+  "advancement" : "fantazia:the_worldliness/expendables/vitality_fruit",
   "pages": [
     {
       "type": "patchouli:text",

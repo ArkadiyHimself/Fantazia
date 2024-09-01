@@ -1,0 +1,18 @@
+{
+  "name": "book.fantazia.entry.weapons.hatchets.name",
+  "icon": "fantazia:iron_hatchet",
+  "category": "fantazia:weapons",
+  "advancement" : "fantazia:the_worldliness/weapons/hatchets",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.weapons.hatchets.page.1"
+    },
+    {
+      "type": "crafting",
+      "recipe": "fantazia:iron_hatchet",
+      "title" : "book.fantazia.entry.weapons.hatchets.heading",
+      "text" : "book.fantazia.entry.weapons.hatchets.page.2"
+    }
+  ]
+}

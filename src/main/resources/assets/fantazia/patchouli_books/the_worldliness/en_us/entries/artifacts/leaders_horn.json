@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.artifacts.leaders_horn.name",
   "icon": "fantazia:leaders_horn",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/leaders_horn",
   "pages": [
     {
       "type": "patchouli:text",

@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.expendables.arachnid_eye.name",
   "icon": "fantazia:arachnid_eye",
   "category": "fantazia:expendables",
+  "advancement" : "fantazia:the_worldliness/expendables/arachnid_eye",
   "pages": [
     {
       "type": "patchouli:text",

@@ -487,6 +487,9 @@
   "book.fantazia.category.enchantments.name" : "§dEnchantments",
   "book.fantazia.category.enchantments.desc" : "Another way to influence a property of item with magic, although more sophisticated. Usually enchantments boost one particular property of the item, but rarely can they provide some unusual capabilities",
 
+  "book.fantazia.category.weapons.name" : "§4Weapons",
+  "book.fantazia.category.weapons.desc" : "A wild variety of all the tools targeted for slaying someone who you do not like; swords, hatchets, melee weapons, range weapons; you will surely find a way to kill someone who annoys you!",
+
   "book.fantazia.entry.artifacts.dashstone.name" : "§5The Swiftness Stones",
   "book.fantazia.entry.artifacts.dashstone.page.1" : "Nobody knows the origins of these mysterious stones, who created them, or if they even have a creator; what is even more unexplainable is their attraction to certain people. They seem to somehow find their way into hands of those people, almost like fate itself is responsible for it...",
   "book.fantazia.entry.artifacts.dashstone.page.2" : "Although the initial power of those relics seems pretty simple, it being a swift leap forward, they are not to be underestimated. The hidden potential inside every single one of them allows to warp reality itself to the will of their wearer, allowing one to move through the fabric of reality itself ",
@@ -652,5 +655,15 @@
   "book.fantazia.entry.enchantments.headshot.name" : "Headshot",
   "book.fantazia.entry.enchantments.headshot.heading" : "Hatchet Enchantment",
   "book.fantazia.entry.enchantments.headshot.page.1" : "Is it not weird how most creatures have a weak spot? What is being talked about is the same spot that brain is located; striking someone's head can often lead to a swift death, so it makes even less sense to concentrate such an important part of the body in such a visible spot",
-  "book.fantazia.entry.enchantments.headshot.page.2" : "Does what is says and says what it does. Drastically increases damage dealt to an enemy by a thrown hatchet, if it hit creature's head"
+  "book.fantazia.entry.enchantments.headshot.page.2" : "Does what is says and says what it does. Drastically increases damage dealt to an enemy by a thrown hatchet, if it hit creature's head",
+
+  "book.fantazia.entry.weapons.fragile_blade.name" : "§5Fragile Blade",
+  "book.fantazia.entry.weapons.fragile_blade.heading" : "Melee Weapon",
+  "book.fantazia.entry.weapons.fragile_blade.page.1" : "At first glance this blade made of glass does not look like anything special; most would think of it as weak and easily destructible, but be not deceived: it only starts as being weak, getting more powerful with each consecutive strike, until it reaches full potential. It should be kept in mind, however, that despite being magical, the blade is still as fragile as glass, as it loses its power when owner is harmed",
+  "book.fantazia.entry.weapons.fragile_blade.page.2" : "Glass is known to be reflective, sure, but it can also be quite sharp; this property can too be influenced by magical essence, creating the fragile but sharp weapon",
+
+  "book.fantazia.entry.weapons.hatchets.name" : "§cHatchets",
+  "book.fantazia.entry.weapons.hatchets.heading" : "Universal Weapon",
+  "book.fantazia.entry.weapons.hatchets.page.1" : "A universal weapon useful for both melee and range attacks, although weaker in both situations than weapons created specifically for melee or range. Either way, it is a solid choice for those who do not have access to more powerful weapons",
+  "book.fantazia.entry.weapons.hatchets.page.2" : "A rather simple recipe, combining a handle made of sticks with a small head made of regular materials"
 }

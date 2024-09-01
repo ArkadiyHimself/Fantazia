@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.expendables.unfinished_wings.name",
   "icon": "fantazia:unfinished_wings",
   "category": "fantazia:expendables",
+  "advancement" : "fantazia:the_worldliness/expendables/unfinished_wings",
   "pages": [
     {
       "type": "patchouli:text",

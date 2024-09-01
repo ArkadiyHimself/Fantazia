@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.artifacts.heart_of_sculk.name",
   "icon": "fantazia:heart_of_sculk",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/heart_of_sculk",
   "pages": [
     {
       "type": "patchouli:text",

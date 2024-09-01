@@ -2,6 +2,7 @@
   "name": "book.fantazia.entry.artifacts.dashstone.name",
   "icon": "fantazia:dashstone1",
   "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/dashstone",
   "pages": [
     {
       "type": "patchouli:text",
