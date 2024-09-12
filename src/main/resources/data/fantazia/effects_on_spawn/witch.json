@@ -1,0 +1,12 @@
+{
+  "entity_types" : [
+    "minecraft:witch"
+  ],
+  "effect_instances" : {
+    "fantazia:cursed_mark" : {
+      "chance" : 0.25,
+      "level" : 1,
+      "hidden" : true
+    }
+  }
+}

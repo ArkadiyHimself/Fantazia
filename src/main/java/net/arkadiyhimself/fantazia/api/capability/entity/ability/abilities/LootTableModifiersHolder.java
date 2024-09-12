@@ -15,13 +15,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LootTablePSERAN extends AbilityHolder {
-    private final List<LootModifierHolder> LOOT_MODIFIERS = LootInstanceManager.createModifiers();
-    public LootTablePSERAN(Player player) {
+public class LootTableModifiersHolder extends AbilityHolder {
+    private final List<LootModifierHolder> lootModifierHolders = LootInstanceManager.createModifiers();
+    public LootTableModifiersHolder(Player player) {
         super(player);
     }
     @Override
-    public String ID() {
+    public String id() {
         return "loot_table";
     }
     @Override
@@ -29,7 +29,7 @@ public class LootTablePSERAN extends AbilityHolder {
         CompoundTag tag = new CompoundTag();
         if (!toDisk) return tag;
         ListTag lootModifiers = new ListTag();
-        for (LootModifierHolder holder : LOOT_MODIFIERS) lootModifiers.add(holder.serialize());
+        for (LootModifierHolder holder : lootModifierHolders) lootModifiers.add(holder.serialize());
         tag.put("lootModifiers", lootModifiers);
         return tag;
     }
@@ -41,14 +41,14 @@ public class LootTablePSERAN extends AbilityHolder {
         for (int i = 0; i < lootModifiers.size(); i++) modifierHolders.add(LootModifierHolder.deserialize(lootModifiers.getCompound(i)));
         if (lootModifiers.isEmpty()) return;
 
-        LOOT_MODIFIERS.clear();
-        LOOT_MODIFIERS.addAll(modifierHolders);
+        lootModifierHolders.clear();
+        lootModifierHolders.addAll(modifierHolders);
     }
     public void attemptLoot(@NotNull ObjectArrayList<ItemStack> generatedLoot, ResourceLocation location) {
-        for (LootModifierHolder holder : LOOT_MODIFIERS) if (holder.isModified(location)) holder.tryModify(generatedLoot);
+        for (LootModifierHolder holder : lootModifierHolders) if (holder.isModified(location)) holder.tryModify(generatedLoot);
     }
     public void reset() {
-        LOOT_MODIFIERS.clear();
-        LOOT_MODIFIERS.addAll(LootInstanceManager.createModifiers());
+        lootModifierHolders.clear();
+        lootModifierHolders.addAll(LootInstanceManager.createModifiers());
     }
 }

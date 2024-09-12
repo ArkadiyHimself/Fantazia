@@ -11,11 +11,13 @@ import net.arkadiyhimself.fantazia.api.items.IChangingIcon;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
 import net.arkadiyhimself.fantazia.client.models.entity.ftzentities.ThrownHatchetRenderer;
 import net.arkadiyhimself.fantazia.client.models.item.CustomItemRenderer;
+import net.arkadiyhimself.fantazia.data.criteritas.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.tags.HealingTypeTagsProvider;
 import net.arkadiyhimself.fantazia.data.tags.MobEffectTagsProvider;
 import net.arkadiyhimself.fantazia.data.tags.SpellTagProvider;
 import net.arkadiyhimself.fantazia.particless.*;
 import net.arkadiyhimself.fantazia.registries.*;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -34,6 +36,7 @@ import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
@@ -44,9 +47,10 @@ import java.util.concurrent.CompletableFuture;
 
 @Mod.EventBusSubscriber(modid = Fantazia.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class RegistryEvents {
-    public static final ArrayList<RegistryObject<Item>> ARTIFACTS = new ArrayList<>();
-    public static final ArrayList<RegistryObject<Item>> WEAPONS = new ArrayList<>();
-    public static final ArrayList<RegistryObject<Item>> EXPENDABLES = new ArrayList<>();
+    private RegistryEvents() {}
+    public static final List<RegistryObject<Item>> ARTIFACTS = new ArrayList<>();
+    public static final List<RegistryObject<Item>> WEAPONS = new ArrayList<>();
+    public static final List<RegistryObject<Item>> EXPENDABLES = new ArrayList<>();
     private static IAnimation registerPlayerAnimation(AbstractClientPlayer player) {
         return new ModifierLayer<>();
     }
@@ -90,7 +94,6 @@ public class RegistryEvents {
         event.registerAboveAll("developer_mode", FTZGuis.DEVELOPER_MODE);
         event.registerBelowAll("frozen_effect", FTZGuis.FROZEN_EFFECT);
         event.registerBelowAll("fury_veins", FTZGuis.FURY_VEINS);
-
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
@@ -155,6 +158,10 @@ public class RegistryEvents {
         items.addAll(EXPENDABLES);
         for (RegistryObject<Item> item : items) if (item.get() instanceof IChangingIcon icon) icon.registerVariants();
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(Fantazia.res("animation"), 42, RegistryEvents::registerPlayerAnimation);
+    }
+    @SubscribeEvent
+    public static void commonSetup(FMLCommonSetupEvent event) {
+        CriteriaTriggers.register(ObtainTalentTrigger.INSTANCE);
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

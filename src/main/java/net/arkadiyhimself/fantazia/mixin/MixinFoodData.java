@@ -14,6 +14,6 @@ public abstract class MixinFoodData {
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;heal(F)V"), method = "tick")
     private void advancedHeal(Player player, float v) {
         HealingSources healingSources = LevelCapHelper.getHealingSources(player.level());
-        if (healingSources != null) AdvancedHealing.heal(player, healingSources.naturalRegen(), v);
+        if (healingSources != null) AdvancedHealing.tryHeal(player, healingSources.naturalRegen(), v);
     }
 }

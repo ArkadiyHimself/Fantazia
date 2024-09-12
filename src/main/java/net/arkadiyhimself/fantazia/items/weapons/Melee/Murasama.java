@@ -90,7 +90,7 @@ public class Murasama extends MeleeWeaponItem implements ITooltipBuilder {
     }
 
     @Override
-    public List<Component> buildItemTooltip(ItemStack stack) {
+    public List<Component> itemTooltip(ItemStack stack) {
         List<Component> components = Lists.newArrayList();
         String basicPath = "weapon.fantazia.taunt";
         int lines;

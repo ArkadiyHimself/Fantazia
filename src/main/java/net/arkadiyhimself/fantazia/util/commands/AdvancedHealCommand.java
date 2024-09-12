@@ -35,7 +35,7 @@ public class AdvancedHealCommand {
     }
     private static int heal(CommandSourceStack stack, Entity pTarget, float pAmount, HealingSource pSource) throws CommandSyntaxException {
         if (!(pTarget instanceof LivingEntity livingEntity)) return 0;
-        if (AdvancedHealing.heal(livingEntity, pSource, pAmount)) {
+        if (AdvancedHealing.tryHeal(livingEntity, pSource, pAmount)) {
             stack.sendSuccess(() -> Component.translatable("commands.advancedheal.success", pAmount, pTarget.getDisplayName()), true);
             return 1;
         } else throw ERROR_INVULNERABLE.create();

@@ -10,7 +10,7 @@ public class ClientValues extends AbilityHolder implements ITicking {
         super(player);
     }
     @Override
-    public String ID() {
+    public String id() {
         return "client_values";
     }
 

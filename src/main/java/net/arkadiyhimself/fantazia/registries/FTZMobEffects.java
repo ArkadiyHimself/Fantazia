@@ -38,6 +38,7 @@ public class FTZMobEffects {
     public static final RegistryObject<MobEffect> CORROSION = REGISTER.register("corrosion", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 16057348,true).addAttributeModifier(Attributes.ARMOR, "df08f537-e143-4f64-90e8-4a46c505de44", -1f, AttributeModifier.Operation.ADDITION));
     public static final RegistryObject<MobEffect> MANA_BOOST = REGISTER.register("mana_boost", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 4693243, true).addAttributeModifier(FTZAttributes.MAX_MANA.get(), "5baca776-6b3a-4b35-b8b4-f5cbbf4eef8a", 4f, AttributeModifier.Operation.ADDITION));
     public static final RegistryObject<MobEffect> STAMINA_BOOST = REGISTER.register("stamina_boost", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 4693243, true).addAttributeModifier(FTZAttributes.MAX_STAMINA.get(), "a68bc117-5fd8-4864-9758-56233c8f26c9", 4f, AttributeModifier.Operation.ADDITION));
+    public static final RegistryObject<MobEffect> CURSED_MARK = REGISTER.register("cursed_mark", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 0, true));
     public static void register() {
         REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

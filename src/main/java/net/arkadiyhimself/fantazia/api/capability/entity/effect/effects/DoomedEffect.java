@@ -74,7 +74,7 @@ public class DoomedEffect extends EffectHolder implements IDamageReacting {
     }
 
     @Override
-    public boolean syncedDuration() {
-        return false;
+    public boolean unSyncedDuration() {
+        return true;
     }
 }

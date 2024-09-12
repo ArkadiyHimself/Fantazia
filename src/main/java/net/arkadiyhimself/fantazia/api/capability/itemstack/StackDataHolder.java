@@ -6,10 +6,10 @@ import net.minecraft.world.item.ItemStack;
 
 public abstract class StackDataHolder implements INBTwrite {
     private final ItemStack stack;
-    public StackDataHolder(ItemStack stack) {
+    protected StackDataHolder(ItemStack stack) {
         this.stack = stack;
     }
-    public abstract String ID();
+    public abstract String id();
     @Override
     public CompoundTag serialize(boolean toDisk) {
         return new CompoundTag();

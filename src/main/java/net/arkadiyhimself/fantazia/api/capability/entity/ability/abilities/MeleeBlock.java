@@ -58,7 +58,7 @@ public class MeleeBlock extends AbilityHolder implements ITicking, ITalentListen
         super(player);
     }
     @Override
-    public String ID() {
+    public String id() {
         return "melee_block";
     }
     @Override

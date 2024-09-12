@@ -7,9 +7,11 @@ import net.arkadiyhimself.fantazia.util.library.hierarchy.ComplexHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.HierarchyException;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,10 +24,13 @@ public class BasicTalent implements ITooltipBuilder {
     private final int wisdom;
     @Nullable
     private IHierarchy<BasicTalent> hierarchy = null;
-    public BasicTalent(ResourceLocation iconTexture, String title, int wisdom) {
+    @Nullable
+    private final ResourceLocation advancement;
+    public BasicTalent(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement) {
         this.iconTexture = iconTexture;
         this.title = title;
         this.wisdom = wisdom;
+        this.advancement = advancement;
     }
 
     @Override
@@ -86,17 +91,22 @@ public class BasicTalent implements ITooltipBuilder {
     public boolean isPurchased() {
         return wisdom > 0;
     }
+    public @Nullable ResourceLocation getAdvancement() {
+        return advancement;
+    }
     public static final class Builder {
         private final ResourceLocation iconTexture;
         private final String title;
         private final int wisdom;
-        public Builder(ResourceLocation iconTexture, String title, int wisdom) {
+        private final ResourceLocation advancement;
+        public Builder(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement) {
             this.iconTexture = iconTexture;
             this.title = title;
             this.wisdom = wisdom;
+            this.advancement = advancement;
         }
         public BasicTalent build() {
-            return new BasicTalent(iconTexture, title, wisdom);
+            return new BasicTalent(iconTexture, title, wisdom, advancement);
         }
     }
 }

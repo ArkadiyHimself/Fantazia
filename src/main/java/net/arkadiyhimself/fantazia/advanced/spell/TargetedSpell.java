@@ -67,7 +67,7 @@ public class TargetedSpell<T extends LivingEntity> extends Spell {
     }
 
     @Override
-    public List<Component> buildItemTooltip(@javax.annotation.Nullable ItemStack itemStack) {
+    public List<Component> itemTooltip(@javax.annotation.Nullable ItemStack itemStack) {
         List<Component> components = Lists.newArrayList();
         if (this.getID() == null) return components;
         String basicPath = "ability." + this.getID().getNamespace() + "." + this.getID().getPath();

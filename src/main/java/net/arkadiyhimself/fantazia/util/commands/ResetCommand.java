@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.util.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.LootTablePSERAN;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.LootTableModifiersHolder;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ManaData;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.StaminaData;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
@@ -31,7 +31,7 @@ public class ResetCommand {
                 .then(Commands.literal("loot_modifiers").executes(context -> {
                     ServerPlayer serverPlayer = context.getSource().getPlayer();
                     if (serverPlayer == null) return 0;
-                    AbilityGetter.abilityConsumer(serverPlayer, LootTablePSERAN.class, LootTablePSERAN::reset);
+                    AbilityGetter.abilityConsumer(serverPlayer, LootTableModifiersHolder.class, LootTableModifiersHolder::reset);
                     return 1;
                 })));
     }

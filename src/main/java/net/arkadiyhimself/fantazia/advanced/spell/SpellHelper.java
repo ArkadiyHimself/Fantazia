@@ -47,7 +47,6 @@ public class SpellHelper {
         if (target == null) return false;
         spell.before(caster, target);
 
-        boolean blockable = !spell.is(FTZSpellTags.NOT_BLOCKABLE);
         boolean blocked = false;
         if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
             TargetedResult result = spellDeflecting(target);

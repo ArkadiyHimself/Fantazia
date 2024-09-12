@@ -13,10 +13,7 @@ import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.*;
 import net.arkadiyhimself.fantazia.client.gui.FantazicGui;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.client.render.bars.DeafeningType;
-import net.arkadiyhimself.fantazia.client.render.bars.DisarmedSwordType;
-import net.arkadiyhimself.fantazia.client.render.bars.SnowCrystalType;
-import net.arkadiyhimself.fantazia.client.render.bars.StunBarType;
+import net.arkadiyhimself.fantazia.client.render.bars.*;
 import net.arkadiyhimself.fantazia.client.screen.TalentsScreen;
 import net.arkadiyhimself.fantazia.items.casters.AuraCaster;
 import net.arkadiyhimself.fantazia.items.casters.SpellCaster;
@@ -142,8 +139,10 @@ public class ClientEvents {
         FrozenEffect frozenEffect = EffectGetter.takeEffectHolder(entity, FrozenEffect.class);
         DisarmEffect disarmEffect = EffectGetter.takeEffectHolder(entity, DisarmEffect.class);
         DeafenedEffect deafenedEffect = EffectGetter.takeEffectHolder(entity, DeafenedEffect.class);
+        CursedMarkEffect cursedMarkEffect = EffectGetter.takeEffectHolder(entity, CursedMarkEffect.class);
 
-        if (disarmEffect != null && disarmEffect.renderDisarm()) DisarmedSwordType.render(poseStack, buffers, yOffset - 10);
+        if (cursedMarkEffect != null && cursedMarkEffect.isMarked()) CursedMarkType.render(poseStack, buffers, yOffset);
+        else if (disarmEffect != null && disarmEffect.renderDisarm()) DisarmedSwordType.render(poseStack, buffers, yOffset - 10);
         else if (frozenEffect != null && frozenEffect.renderFreeze()) SnowCrystalType.render(frozenEffect, poseStack, buffers, yOffset);
         else if (deafenedEffect != null && deafenedEffect.renderDeaf()) DeafeningType.render(deafenedEffect, poseStack, buffers, yOffset);
 
@@ -218,14 +217,14 @@ public class ClientEvents {
             tooltip.clear();
             tooltip.add(GuiHelper.bakeComponent(name.getString(), null, null));
             tooltip.add(Component.translatable(" "));
-            tooltip.addAll(fragileBlade.buildItemTooltip(stack));
+            tooltip.addAll(fragileBlade.itemTooltip(stack));
         }
         if (stack.getItem() instanceof Murasama murasama) {
             Component name = event.getToolTip().get(0).copy();
             tooltip.clear();
             tooltip.add(GuiHelper.bakeComponent(name.getString(), null, null));
             tooltip.add(Component.translatable(" "));
-            tooltip.addAll(murasama.buildItemTooltip(stack));
+            tooltip.addAll(murasama.itemTooltip(stack));
         }
     }
     @SubscribeEvent

@@ -1,0 +1,12 @@
+{
+  "criteria": {
+    "effect": {
+      "conditions": {
+        "effects": {
+          "fantazia:doomed": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  }
+}

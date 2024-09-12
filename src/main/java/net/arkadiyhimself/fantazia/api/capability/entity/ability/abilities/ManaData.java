@@ -18,7 +18,7 @@ public class ManaData extends AbilityHolder implements ITalentListener, ITicking
         super(player);
     }
     @Override
-    public String ID() {
+    public String id() {
         return "mana";
     }
     @Override

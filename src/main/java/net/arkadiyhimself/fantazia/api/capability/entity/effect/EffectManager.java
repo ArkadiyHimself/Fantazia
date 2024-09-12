@@ -111,6 +111,7 @@ public class EffectManager extends LivingEntityCapability {
             effectManager.grantEffect(DeafenedEffect::new);
             effectManager.grantEffect(DoomedEffect::new);
             effectManager.grantEffect(HaemorrhageEffect::new);
+            effectManager.grantEffect(CursedMarkEffect::new);
         }
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AuraHelper {
-
+    private AuraHelper() {}
     // sorts a list of aura instances with a complicated algorithm, removing an aura instance if entity doesn't Primary Conditions and then prioritising instances where entity matches Secondary Conditions
     public static <T extends Entity> List<AuraInstance<T>> sortUniqueAura(List<AuraInstance<T>> instances, @NotNull T entity) {
         instances.removeIf(auraInstance -> auraInstance.notInside(entity));
@@ -72,7 +72,7 @@ public class AuraHelper {
         return damageImmune;
     }
 
-    public static <T extends Entity> HashMap<ResourceKey<DamageType>, Float> damageMultipliers(@NotNull T entity) {
+    public static <T extends Entity> Map<ResourceKey<DamageType>, Float> damageMultipliers(@NotNull T entity) {
         HashMap<ResourceKey<DamageType>, Float> damageMultiply = Maps.newHashMap();
         List<AuraInstance<T>> auraInstances = getAffectingAuras(entity);
 

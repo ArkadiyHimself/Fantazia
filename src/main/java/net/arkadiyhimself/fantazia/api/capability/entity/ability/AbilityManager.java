@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class AbilityManager extends PlayerCapability {
-    private final List<AbilityHolder> ABILITIES = Lists.newArrayList();
+    private final List<AbilityHolder> abilityHolders = Lists.newArrayList();
     public AbilityManager(Player player) {
         super(player);
         AbilityProvider.provide(this);
@@ -40,40 +40,40 @@ public class AbilityManager extends PlayerCapability {
     public CompoundTag serializeNBT(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
 
-        for (AbilityHolder holder : ABILITIES) if (holder.ID() != null) tag.put(holder.ID(), holder.serialize(toDisk));
+        for (AbilityHolder holder : abilityHolders) if (holder.id() != null) tag.put(holder.id(), holder.serialize(toDisk));
 
         return tag;
     }
     @Override
     public void deserializeNBT(CompoundTag tag, boolean fromDisk) {
-        for (AbilityHolder holder : ABILITIES) if (tag.contains(holder.ID())) holder.deserialize(tag.getCompound(holder.ID()), fromDisk);
+        for (AbilityHolder holder : abilityHolders) if (tag.contains(holder.id())) holder.deserialize(tag.getCompound(holder.id()), fromDisk);
     }
     public void tick() {
-        ABILITIES.stream().filter(ITicking.class::isInstance).forEach(abilityHolder -> ((ITicking) abilityHolder).tick());
+        abilityHolders.stream().filter(ITicking.class::isInstance).forEach(abilityHolder -> ((ITicking) abilityHolder).tick());
         updateTracking();
     }
     public void onHit(LivingAttackEvent event) {
-        ABILITIES.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
+        abilityHolders.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
     }
     public void onHit(LivingHurtEvent event) {
-        ABILITIES.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
+        abilityHolders.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
     }
     public void onHit(LivingDamageEvent event) {
-        ABILITIES.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
+        abilityHolders.stream().filter(IDamageReacting.class::isInstance).forEach(abilityHolder -> ((IDamageReacting)abilityHolder).onHit(event));
     }
     public void respawn() {
-        ABILITIES.forEach(AbilityHolder::respawn);
+        abilityHolders.forEach(AbilityHolder::respawn);
     }
     public void talentUnlocked(BasicTalent talent) {
-        ABILITIES.stream().filter(ITalentListener.class::isInstance).forEach(abilityHolder -> ((ITalentListener) abilityHolder).onTalentUnlock(talent));
+        abilityHolders.stream().filter(ITalentListener.class::isInstance).forEach(abilityHolder -> ((ITalentListener) abilityHolder).onTalentUnlock(talent));
     }
     public void talentRevoked(BasicTalent talent) {
-        ABILITIES.stream().filter(ITalentListener.class::isInstance).forEach(abilityHolder -> ((ITalentListener) abilityHolder).onTalentRevoke(talent));
+        abilityHolders.stream().filter(ITalentListener.class::isInstance).forEach(abilityHolder -> ((ITalentListener) abilityHolder).onTalentRevoke(talent));
     }
     public void grantAbility(Function<Player, AbilityHolder> ability) {
         AbilityHolder abilityHolder = ability.apply(player);
         if (hasAbility(abilityHolder.getClass())) return;
-        ABILITIES.add(abilityHolder);
+        abilityHolders.add(abilityHolder);
     }
     public <T extends AbilityHolder> LazyOptional<T> getAbility(Class<T> tClass) {
         T ability = takeAbility(tClass);
@@ -81,11 +81,11 @@ public class AbilityManager extends PlayerCapability {
     }
     @Nullable
     public <T extends AbilityHolder> T takeAbility(Class<T> tClass) {
-        for (AbilityHolder playerAbility : ABILITIES) if (tClass == playerAbility.getClass()) return tClass.cast(playerAbility);
+        for (AbilityHolder playerAbility : abilityHolders) if (tClass == playerAbility.getClass()) return tClass.cast(playerAbility);
         return null;
     }
     public <T extends AbilityHolder> boolean hasAbility(Class<T> tClass) {
-        for (AbilityHolder playerAbility : ABILITIES) if (tClass.isInstance(playerAbility)) return true;
+        for (AbilityHolder playerAbility : abilityHolders) if (tClass.isInstance(playerAbility)) return true;
         return false;
     }
     private static class AbilityProvider {
@@ -97,7 +97,7 @@ public class AbilityManager extends PlayerCapability {
             abilityManager.grantAbility(ManaData::new);
             abilityManager.grantAbility(StaminaData::new);
             abilityManager.grantAbility(VibrationListen::new);
-            abilityManager.grantAbility(LootTablePSERAN::new);
+            abilityManager.grantAbility(LootTableModifiersHolder::new);
             abilityManager.grantAbility(TalentsHolder::new);
         }
     }

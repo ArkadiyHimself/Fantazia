@@ -128,6 +128,11 @@
   "effect.fantazia.stamina_boost.lines" : "1",
   "effect.fantazia.stamina_boost.tooltip.1" : "Increases maximum stamina",
 
+  "effect.fantazia.cursed_mark" : "§4 Mark of Curse",
+  "effect.fantazia.cursed_mark.lines" : "2",
+  "effect.fantazia.cursed_mark.tooltip.1" : "You are marked with misfortune...",
+  "effect.fantazia.cursed_mark.tooltip.2" : "If you are slayed, the killed will be doomed.",
+
   "item.fantazia.wooden_hatchet" : "Wooden Hatchet",
   "item.fantazia.stone_hatchet" : "Stone Hatchet",
   "item.fantazia.iron_hatchet" : "Iron Hatchet",
@@ -400,11 +405,22 @@
   "aura.fantazia.despair.1" : "Hopelessness and fear of certain doom",
   "aura.fantazia.despair.2" : "fills hearts of your foes, if they have",
   "aura.fantazia.despair.3" : "less health than you, causing them to",
-  "aura.fantazia.despair.4" : "deal less damage with their attacks",
-  "aura.fantazia.despair.5" : "and receive decrease to armor",
+  "aura.fantazia.despair.4" : "deal less damage with attacks and get",
+  "aura.fantazia.despair.5" : "slower the closer they are to owner",
   "aura.fantazia.despair.stats.lines" : "2",
   "aura.fantazia.despair.stats.1" : "§c * -35% attack damage",
-  "aura.fantazia.despair.stats.2" : "§c * -5 armor",
+  "aura.fantazia.despair.stats.2" : "§c * Up to -80% movement speed",
+
+  "item.fantazia." : "",
+  "aura.fantazia.corrosive.desc.lines" : "1",
+  "aura.fantazia.corrosive.desc.1" : "§cExtremely caustic!",
+  "aura.fantazia.corrosive.name": "§4Corrosive",
+  "aura.fantazia.corrosive.lines" : "",
+  "aura.fantazia.corrosive.1" : "Corrodes the protection of monsters,",
+  "aura.fantazia.corrosive.2" : "making them more vulnerable to attacks",
+  "aura.fantazia.corrosive.stats.lines" : "2",
+  "aura.fantazia.corrosive.stats.1" : "§c * -3 armor",
+  "aura.fantazia.corrosive.stats.2" : "§c * -20% durability",
 
   "item.fantazia.obscure_substance" : "§5Obscure Substance",
   "item.fantazia.unfinished_wings" : "§cUnfinished Wings",
@@ -473,6 +489,25 @@
   "curios.identifier.spellcaster" : "Spell Caster",
   "curios.identifier.passivecaster" : "Passive Caster",
 
+  "advancement_tab.fantazia" : "§5Fantazia",
+  "advancement_tab.fantazia.desc": "Embrace your destiny and shape it the way you see fit",
+
+  "advancements.fantazia.dashstone1" : "§7Fate",
+  "advancements.fantazia.dashstone1.desc" : "Find and equip your Stone of Swiftness",
+
+  "advancements.fantazia.dashstone2" : "§1Mind",
+  "advancements.fantazia.dashstone2.desc" : "Upgrade your Stone of Swiftness",
+
+  "advancements.fantazia.dashstone3" : "§5Chaos",
+  "advancements.fantazia.dashstone3.desc": "Finish your Stone of Swiftness",
+
+  "advancements.fantazia.talent_obtain" : "A Star rises",
+  "advancements.fantazia.talent_obtain.desc" : "Obtain your very first talent",
+
+  "advancements.fantazia.the_worldliness" : "From generation to generation...",
+  "advancements.fantazia.the_worldliness.desc" : "Obtain The Worldliness",
+
+
   "book.fantazia.landing_text" : "Since the beginning of humanity people tried to understand what they could not explain, grasp what they could not comprehend, obtain the knowledge they could not posses, using the science and common sense, something that the human's mind can acknowledge. However humanity will never understand everything about the world around themselves; some secrets will remain hidden, some mysteries will remain unexplained, some truths will remain untold...",
 
   "book.fantazia.category.artifacts.name" : "§5Artifacts",
@@ -489,6 +524,9 @@
 
   "book.fantazia.category.weapons.name" : "§4Weapons",
   "book.fantazia.category.weapons.desc" : "A wild variety of all the tools targeted for slaying someone who you do not like; swords, hatchets, melee weapons, range weapons; you will surely find a way to kill someone who annoys you!",
+
+  "book.fantazia.category.world.name" : "§dWorld",
+  "book.fantazia.category.world.desc" : "Since the very moment the first human became self-aware, very notorious questions have emerged from the depth of a human's mind: 'what created us?', 'what is the point of life?', 'does the universe have an end?' and so many more... Those questions motivated humans to evolve and their culture to also evolve; art, literature, philosophy... all of these works of mind have been nothing but an attempt to understand the world around us",
 
   "book.fantazia.entry.artifacts.dashstone.name" : "§5The Swiftness Stones",
   "book.fantazia.entry.artifacts.dashstone.page.1" : "Nobody knows the origins of these mysterious stones, who created them, or if they even have a creator; what is even more unexplainable is their attraction to certain people. They seem to somehow find their way into hands of those people, almost like fate itself is responsible for it...",
@@ -609,7 +647,7 @@
   "book.fantazia.entry.expendables.vitality_fruit.page.2" : "Even weirder property of these exotic foods is always finding their way into hands of a seemingly randomly chosen person. One seems to always find those fruits inside remnants of old civilisation, like it was predetermined...",
 
   "book.fantazia.entry.expendables.ancient_spark.name" : "§dAncient Spark",
-  "book.fantazia.entry.expendables.ancient_spark.page.1" : "This is but a little spark from the Time Before Mind, just a manifestation of this world's memory of the long forgotten past. Using them allows to summon the ancient flame, although it has already almost faded away...",
+  "book.fantazia.entry.expendables.ancient_spark.page.1" : "This is but a little spark from the Era Before Mind, just a manifestation of this world's memory of the long forgotten past. Using them allows to summon the ancient flame, although it has already almost faded away...",
   "book.fantazia.entry.expendables.ancient_spark.page.2" : "Fueling easily flammable and hot materials with magic makes the flame they create even more powerful, almost as powerful as how the ancient flame was in the past",
 
   "book.fantazia.entry.enchantments.disintegration.name" : "Disintegration",
@@ -665,5 +703,35 @@
   "book.fantazia.entry.weapons.hatchets.name" : "§cHatchets",
   "book.fantazia.entry.weapons.hatchets.heading" : "Universal Weapon",
   "book.fantazia.entry.weapons.hatchets.page.1" : "A universal weapon useful for both melee and range attacks, although weaker in both situations than weapons created specifically for melee or range. Either way, it is a solid choice for those who do not have access to more powerful weapons",
-  "book.fantazia.entry.weapons.hatchets.page.2" : "A rather simple recipe, combining a handle made of sticks with a small head made of regular materials"
+  "book.fantazia.entry.weapons.hatchets.page.2" : "A rather simple recipe, combining a handle made of sticks with a small head made of regular materials",
+
+  "book.fantazia.entry.world.the_worldliness.name" : "The Worldliness",
+  "book.fantazia.entry.world.the_worldliness.page.1" : "From one generation to another, from fathers to sons, from teachers to students, humanity has always been evolving, getting smarter, wiser and more intelligent. This progress of culture is constantly getting faster and faster, and the depth of one's knowledge a hundred tears ago is incomparable to what is known nowadays, and humanity constantly gets smarter than it was a moment ago",
+  "book.fantazia.entry.world.the_worldliness.page.2" : "Of course, the knowledge always had a cost. Throughout our history, people have been constantly making mistakes which they learned from, some were screwed by life and were forced to adapt and evolve, for it is suffering that builds one's spirit. However, what emerges from those misfortunes is truly unstoppable and better than it used to be",
+  "book.fantazia.entry.world.the_worldliness.page.3" : "But humans are still mortal, and life is still tragically short; the amount of thoughts one can make throughout their lifetime will always be finite and no one will ever know everything, for the world is limitless and will never be known completely. This is the exact reason for people to create persistent representation of their knowledge and wisdom in books and other forms of information",
+  "book.fantazia.entry.world.the_worldliness.page.4" : "The knowledge was passed from one to another, from parent to child, to make life of the next generation ever so slightly easier than the previous one. This resulted in different nations getting different culture and different traditions and shaped people into who they are nowadays, whether they believe it or not",
+  "book.fantazia.entry.world.the_worldliness.page.5" : "The Worldliness is the culmination of all the knowledge of this world, carefully gathered from every human that has ever lived, their wisdom. Although the book starts with it being empty, it reveals more and more of itself as its owner explores the world",
+
+  "book.fantazia.entry.world.fate.name" : "Fate",
+  "book.fantazia.entry.world.fate.page.1" : "Being present in most mythologies and legends, Fate always had place in the culture. Some stories revolved around embracing one's own fate and letting it guide you, others revolve around breaking free from the cruel grasp of fate and carving your own path. What doesn't change in any of those stories is the importance of Destiny and its influence on our life",
+  "book.fantazia.entry.world.fate.page.2" : "Although it might seem that the Fate is purely part of humans' life, it is in fact quite the opposite. Existing much, much earlier, perhaps since the beginning of everything, Fate was influencing all inanimate objects across the universe; it has been controlling the planets, stars, and even whole galaxies and nothing could escape its grasp, no matter how powerful and grand said cosmic body might seem to mortals...",
+  "book.fantazia.entry.world.fate.page.3" : "Star is destined to eventually become a dwarf and evaporate, a black hole is destined to lose their energy via radiation and eventually die out, a galaxy is destined to have all its stars fade away and eventually die itself, no cosmic body is free from its predetermined path, nor they have the will to overpower their destiny and become free. This is the difference between living and non-living",
+  "book.fantazia.entry.world.fate.page.4" : "Of course, Fate also tries to control living creatures, including humanity, but be not fooled for it is not, in fact, a natural part of our life; some may inherit a good life full of happiness, others may get a lifetime of misfortune and tragedy, but the fate is indifferent to humans' conditions and is unbothered by our troubles or joy, for we are but a small part of its grand schemes",
+
+  "book.fantazia.entry.world.mind.name" : "Mind",
+  "book.fantazia.entry.world.mind.page.1" : "The universe is full of cosmic objects out of our comprehension: black holes, galaxies, nebulae, star clusters... All of them controlled by fate and destined to die eventually. No cosmic body, no matter how colossal it might seem, no matter its capabilities to warp space-time around itself, can escape what has been predetermined for it, for it has no capacity to do so",
+  "book.fantazia.entry.world.mind.page.2" : "Fate has no problem influencing non-living things because those lack any desire and will to resist it... but bodies with a will and a mind of their own?.. Sometimes people seem to forget how actually anomalous the life on our planet truly is; there are not many living creatures in the world, which makes those that exist in our universe special, including ourselves",
+  "book.fantazia.entry.world.mind.page.3" : "Maybe humans do not have entire planets or small stars orbiting around themselves, maybe they lack capacity to radiate immense energy every second or to distort the very fabric of reality with mere presence, but those possessing a mind have something no cosmic body has: an ability to choose what to do, means to obey one's own will instead of the cruel and indifferent predetermination",
+  "book.fantazia.entry.world.mind.page.4" : "The beginning of human civilisation and their capability for self-awareness gave birth to the new force, Mind, that rivals Fate and is a manifestation or people's desire to break free from the destiny and carve own path, shaping the world the way they wish, how they see fit. It is the culmination of humanity's collective mind, seeming to possess its own will",
+
+  "book.fantazia.entry.world.chaos.name" : "Chaos",
+  "book.fantazia.entry.world.chaos.page.1" : "Despite being the opposites, Mind and Fate are actually not not that different from each other; they both try to shape the world and enforce the order upon it, just one has a purpose and the other is devoid of it. Both of them ultimately try to enforce a law on things, organize everything they can according to their vision, both lack any entropy",
+  "book.fantazia.entry.world.chaos.page.2" : "Still, the world seems to be very unorganized and chaotic, because it is. Born of the eternal conflict between two mentioned forces, Chaos is the embodiment of disorder and unpredictability, devoid of law, reason or purpose, nor has it a reason; not being the force of good, evil, or really anything, it just exists...",
+  "book.fantazia.entry.world.chaos.page.3" : "It is also unknown whether Chaos even has a will of its own, or it just acts the way it is meant to, but without others having capacity to know what is going to happen... What is known for sure, however, is that Chaos is as important and as big part of the world, as Mind or Fate, and it will prevail as long as Mind and Fate exist",
+
+  "book.fantazia.entry.world.talents.name" : "Talents",
+  "book.fantazia.entry.world.talents.page.1" : "Everyone has their own strengths and weaknesses; an artist has a capacity to turn an empty canvas into something great, a warrior is capable to protect those they care about, a farmer can provide people with food and resources needed to survive; everyone has a way to express their skill and passion towards their craft, that is how life works",
+  "book.fantazia.entry.world.talents.page.2" : "It does not even matter if those skills are given to someone from their birth or received as they grow up and learn about the world around them; after all, what is a talent if not something that has to be studied, mastered and perfected? In fact, any person can learn any skill, as long as they are willing to put their time and mind into it",
+  "book.fantazia.entry.world.talents.page.3" : "This is exactly how talents work for You, who is reading this. Any talent that is available can be learnt and sometimes even mastered, given enough effort, as they do not require one to be special. Some require to perform special rituals to obtain, some require enough intelligence and wisdom to be understood...",
+  "book.fantazia.entry.world.talents.page.4" : "Of course, some of those talents are more... supernatural than the others; certain talents allow to do some relatively grounded and basic skills, while others change one's very traits, often giving them properties of other living beings..."
 }

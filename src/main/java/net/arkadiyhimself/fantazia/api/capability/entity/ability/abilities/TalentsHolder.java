@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.api.capability.INBTwrite;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
+import net.arkadiyhimself.fantazia.data.criteritas.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
 import net.arkadiyhimself.fantazia.data.talents.TalentHelper;
 import net.arkadiyhimself.fantazia.data.talents.reload.TalentManager;
@@ -22,6 +23,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +40,7 @@ public class TalentsHolder extends AbilityHolder {
         super(player);
     }
     @Override
-    public String ID() {
+    public String id() {
         return "talents_holder";
     }
 
@@ -110,8 +112,10 @@ public class TalentsHolder extends AbilityHolder {
         if (!isUnlockAble(talent)) return false;
 
         TalentHelper.onTalentUnlock(getPlayer(), talent);
+        TALENTS.add(talent);
+        if (getPlayer() instanceof ServerPlayer serverPlayer) ObtainTalentTrigger.INSTANCE.trigger(serverPlayer, this, talent);
         sendTalentToast(talent);
-        return TALENTS.add(talent);
+        return true;
     }
     public boolean revokeTalent(@NotNull BasicTalent talent) {
         if (!TALENTS.contains(talent)) return false;

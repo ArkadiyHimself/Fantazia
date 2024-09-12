@@ -18,6 +18,7 @@ public class TalentTreeData {
     // tab's id || list of talent hierarchies within the tab
     private static final Map<ResourceLocation, List<IHierarchy<BasicTalent>>> TAB_HIERARCHIES = Maps.newHashMap();
 
+
     public static ImmutableMap<ResourceLocation, IHierarchy<BasicTalent>> getAllHierarchies() {
         return ImmutableMap.copyOf(ALL_HIERARCHIES);
     }

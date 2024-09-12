@@ -13,6 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 public class HiddenPotential extends StackDataHolder implements ITicking, IDamageReacting {
+    private static final String DAMAGE_ID = "damage";
+    private static final String DELAY_ID = "delay";
     public enum DAMAGE_LEVEL {
         STARTING(0), LOW(1), MEDIUM(2), HIGH(3), MAXIMUM(4);
         final int level;
@@ -34,7 +36,7 @@ public class HiddenPotential extends StackDataHolder implements ITicking, IDamag
     }
 
     @Override
-    public String ID() {
+    public String id() {
         return "hidden_potential";
     }
 
@@ -46,15 +48,15 @@ public class HiddenPotential extends StackDataHolder implements ITicking, IDamag
     @Override
     public CompoundTag serialize(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
-        tag.putFloat("damage", damage);
-        if (delay == 0) tag.putInt("delay", delay);
+        tag.putFloat(DAMAGE_ID, damage);
+        if (delay == 0) tag.putInt(DELAY_ID, delay);
         return tag;
     }
 
     @Override
     public void deserialize(CompoundTag tag, boolean fromDisk) {
-        damage = tag.contains("damage") ? tag.getFloat("damage") : MIN;
-        delay = tag.contains("delay") ? tag.getInt("delay") : DELAY_REGULAR;
+        damage = tag.contains(DAMAGE_ID) ? tag.getFloat(DAMAGE_ID) : MIN;
+        delay = tag.contains(DELAY_ID) ? tag.getInt(DELAY_ID) : DELAY_REGULAR;
     }
 
     @Override

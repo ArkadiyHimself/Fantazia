@@ -23,6 +23,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class AbilityHelper {
+    private AbilityHelper() {}
     public static Vec3 calculateViewVector(float pXRot, float pYRot) {
         float f = pXRot * ((float)Math.PI / 180F);
         float f1 = -pYRot * ((float)Math.PI / 180F);
@@ -80,12 +81,12 @@ public class AbilityHelper {
     }
 
     public static boolean isOccluded(Level pLevel, Vec3 pFrom, Vec3 pTo) {
-        Vec3 vec3 = new Vec3((double) Mth.floor(pFrom.x) + 0.5D, (double) Mth.floor(pFrom.y) + 0.5D, (double) Mth.floor(pFrom.z) + 0.5D);
-        Vec3 vec31 = new Vec3((double) Mth.floor(pTo.x) + 0.5D, (double) Mth.floor(pTo.y) + 0.5D, (double) Mth.floor(pTo.z) + 0.5D);
+        Vec3 vec3 = new Vec3(Mth.floor(pFrom.x) + 0.5D, Mth.floor(pFrom.y) + 0.5D,  Mth.floor(pFrom.z) + 0.5D);
+        Vec3 vec31 = new Vec3(Mth.floor(pTo.x) + 0.5D,  Mth.floor(pTo.y) + 0.5D,  Mth.floor(pTo.z) + 0.5D);
 
         for (Direction direction : Direction.values()) {
             Vec3 vec32 = vec3.relative(direction, 1.0E-5F);
-            if (pLevel.isBlockInLine(new ClipBlockStateContext(vec32, vec31, (p_223780_) -> p_223780_.is(BlockTags.OCCLUDES_VIBRATION_SIGNALS))).getType() != HitResult.Type.BLOCK) return false;
+            if (pLevel.isBlockInLine(new ClipBlockStateContext(vec32, vec31, blockState -> blockState.is(BlockTags.OCCLUDES_VIBRATION_SIGNALS))).getType() != HitResult.Type.BLOCK) return false;
         }
         return true;
     }

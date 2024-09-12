@@ -26,7 +26,7 @@ public class DoubleJump extends AbilityHolder implements ITalentListener, ITicki
         super(player);
     }
     @Override
-    public String ID() {
+    public String id() {
         return "double_jump";
     }
     @Override

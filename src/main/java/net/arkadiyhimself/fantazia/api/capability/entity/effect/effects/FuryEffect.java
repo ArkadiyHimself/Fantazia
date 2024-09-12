@@ -99,7 +99,7 @@ public class FuryEffect extends EffectHolder implements IDamageReacting {
         if (attacker instanceof LivingEntity livAtt && livAtt.hasEffect(FTZMobEffects.FURY.get())) {
             event.setAmount(event.getAmount() * 2);
             HealingSources healingSources = LevelCapHelper.getHealingSources(target.level());
-            if (SpellHelper.hasSpell(livAtt, FTZSpells.DAMNED_WRATH.get()) && healingSources != null) AdvancedHealing.heal(livAtt, healingSources.lifesteal(target), 0.15f * event.getAmount());
+            if (SpellHelper.hasSpell(livAtt, FTZSpells.DAMNED_WRATH.get()) && healingSources != null) AdvancedHealing.tryHeal(livAtt, healingSources.lifesteal(target), 0.15f * event.getAmount());
         }
 
         if (getDur() <= 0) return;

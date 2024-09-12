@@ -21,7 +21,7 @@ public class StaminaData extends AbilityHolder implements ITalentListener, ITick
     }
 
     @Override
-    public String ID() {
+    public String id() {
         return "stamina";
     }
 

@@ -49,7 +49,7 @@ public class AbsoluteBarrierEffect extends EffectHolder implements IDamageReacti
         if (getDur() > 0 && !event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) event.setCanceled(true);
     }
     @Override
-    public boolean syncedDuration() {
-        return false;
+    public boolean unSyncedDuration() {
+        return true;
     }
 }

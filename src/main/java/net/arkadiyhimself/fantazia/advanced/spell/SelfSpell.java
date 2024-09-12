@@ -19,8 +19,8 @@ import java.util.function.Supplier;
 public class SelfSpell extends Spell {
     private Predicate<LivingEntity> conditions = livingEntity -> true;
     private Consumer<LivingEntity> onCast = livingEntity -> {};
-    public SelfSpell(float MANACOST, int recharge, Supplier<SoundEvent> soundEvent) {
-        super(MANACOST, recharge, soundEvent);
+    public SelfSpell(float manacost, int recharge, Supplier<SoundEvent> soundEvent) {
+        super(manacost, recharge, soundEvent);
     }
     public SelfSpell setConditions(Predicate<LivingEntity> conditions) {
         this.conditions = conditions;
@@ -43,7 +43,7 @@ public class SelfSpell extends Spell {
     }
 
     @Override
-    public List<Component> buildItemTooltip(@Nullable ItemStack itemStack) {
+    public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         List<Component> components = Lists.newArrayList();
         if (this.getID() == null) return components;
         String basicPath = "ability." + this.getID().getNamespace() + "." + this.getID().getPath();

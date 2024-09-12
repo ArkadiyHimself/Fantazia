@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface ITooltipBuilder {
-    default List<Component> buildItemTooltip(@Nullable ItemStack stack) {
+    default List<Component> itemTooltip(@Nullable ItemStack stack) {
         return Lists.newArrayList();
     }
     default List<Component> buildIconTooltip() {

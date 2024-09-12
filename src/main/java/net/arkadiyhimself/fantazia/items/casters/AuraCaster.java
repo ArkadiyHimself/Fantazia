@@ -63,7 +63,7 @@ public class AuraCaster extends Item implements IChangingIcon {
     }
     public List<Component> buildTooltip() {
         List<Component> components = Lists.newArrayList();
-        if (getBasicAura() != null) components.addAll(getBasicAura().buildItemTooltip(null));
+        if (getBasicAura() != null) components.addAll(getBasicAura().itemTooltip(null));
         return components;
     }
 }

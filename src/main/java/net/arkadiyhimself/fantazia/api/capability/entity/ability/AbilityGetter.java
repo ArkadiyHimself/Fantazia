@@ -30,7 +30,6 @@ public class AbilityGetter extends CapabilityAttacher {
     @Nullable
     @SuppressWarnings("ConstantConditions")
     public static AbilityManager getUnwrap(Player player) {
-        if (player == null) return null;
         return get(player).orElse(null);
     }
     public static LazyOptional<AbilityManager> get(Player player) {

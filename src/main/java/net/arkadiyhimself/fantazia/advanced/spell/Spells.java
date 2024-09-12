@@ -27,7 +27,10 @@ import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class Spells {
+    private Spells() {}
+
     public static final class Self {
+        private Self() {}
         public static final SelfSpell ENTANGLE = new SelfSpell(0, 50, FTZSoundEvents.ENTANGLE)
                 .setConditions(entity -> entity.getHealth() <= entity.getMaxHealth() * 0.15f)
                 .setOnCast(entity -> EffectHelper.giveBarrier(entity, 10))
@@ -41,13 +44,13 @@ public class Spells {
                     LivingData data = DataGetter.takeDataHolder(entity, LivingData.class);
                     if (data == null || !data.tryReadParameters(0)) return;
                     EffectCleansing.tryCleanseAll(entity, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
-                    if (!(entity.level() instanceof ServerLevel serverLevel)) return;
-                  //  for (int i = 0; i < 12; i++) serverLevel.sendParticles(FTZParticleTypes.TIME_TRAVEL.get(), entity.getRandomX(0.25d), entity.getRandomY() - 0.25, entity.getRandomZ(0.25d), 2, (Fantazia.RANDOM.nextDouble() - 0.25D) * 2.0D, -Fantazia.RANDOM.nextDouble(-0.5,0.5), (Fantazia.RANDOM.nextDouble() - 0.25D) * 2.0D, 0.05);
+                    if (!(entity.level() instanceof ServerLevel)) return;
                     for (int i = 0; i < 12; i++) VisualHelper.randomParticleOnModel(entity, FTZParticleTypes.TIME_TRAVEL.get(), VisualHelper.ParticleMovement.REGULAR);
                 })
                 .cleanse(Cleanse.MEDIUM);
     }
     public static final class Targeted {
+        private Targeted() {}
         public static final TargetedSpell<LivingEntity> SONIC_BOOM = new TargetedSpell<>(LivingEntity.class, 12f, 4.5f, 240, () -> SoundEvents.WARDEN_SONIC_BOOM)
                 .setConditions((caster, target) -> !(target instanceof ArmorStand))
                 .setBefore((caster, target) -> {
@@ -60,7 +63,7 @@ public class Spells {
                 .setAfter((caster, target) -> {
                     float healing = target.getMobType() == MobType.UNDEAD ? target.getHealth() / 8 : target.getHealth() / 4;
                     HealingSources healingSources = LevelCapHelper.getHealingSources(target.level());
-                    if (healingSources != null) AdvancedHealing.heal(caster, healingSources.devour(target), healing);
+                    if (healingSources != null) AdvancedHealing.tryHeal(caster, healingSources.devour(target), healing);
                     EffectHelper.effectWithoutParticles(caster, FTZMobEffects.BARRIER.get(),  500, (int) target.getHealth() / 4 - 1);
                     EffectHelper.effectWithoutParticles(caster, FTZMobEffects.MIGHT.get(), 500, (int) target.getHealth() / 4 - 1);
                     FantazicCombat.dropExperience(target, 5);
@@ -88,6 +91,7 @@ public class Spells {
                 });
     }
     public static final class Passive {
+        private Passive() {}
         public static final PassiveSpell REFLECT = new PassiveSpell(1.5f, 200, FTZSoundEvents.REFLECT);
         public static final PassiveSpell DAMNED_WRATH = new PassiveSpell(0f, 600, FTZSoundEvents.BLOODLUST_AMULET).cleanse(Cleanse.MEDIUM);
     }

@@ -9,7 +9,7 @@ public class CommonStackData extends StackDataHolder {
         super(stack);
     }
     @Override
-    public String ID() {
+    public String id() {
         return null;
     }
 

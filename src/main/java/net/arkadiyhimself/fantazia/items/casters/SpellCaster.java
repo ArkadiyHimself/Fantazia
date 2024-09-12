@@ -43,7 +43,7 @@ public class SpellCaster extends Item {
     }
     public List<Component> buildTooltip() {
         List<Component> components = Lists.newArrayList();
-        if (getSpell() != null) components.addAll(getSpell().buildItemTooltip(null));
+        if (getSpell() != null) components.addAll(getSpell().itemTooltip(null));
         return components;
     }
 }

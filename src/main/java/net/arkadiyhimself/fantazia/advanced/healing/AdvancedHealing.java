@@ -18,13 +18,10 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 
 public class AdvancedHealing {
-    public static boolean heal(LivingEntity entity, HealingSource source, float amount) {
+    private AdvancedHealing() {}
+    public static boolean tryHeal(LivingEntity entity, HealingSource source, float amount) {
         float j = FTZEvents.ForgeExtension.onAdvancedHealing(entity, source, amount);
-        if (j <= 0) return false;
-        if (entity instanceof ArmorStand) return false;
-        if (entity.getHealth() == entity.getMaxHealth()) return false;
-        if (cancelHeal(entity) && !source.is(FTZHealingTypeTags.NOT_CANCELLABLE)) return false;
-        if (FantazicCombat.isInvulnerable(entity) && !source.is(FTZHealingTypeTags.BYPASSES_INVULNERABILITY)) return false;
+        if (!canHeal(entity, source)) return false;
         if (AuraHelper.affected(entity, FTZAuras.DESPAIR.get()) && !source.is(FTZHealingTypeTags.UNHOLY)) j *= 0.5f;
         entity.setHealth(entity.getHealth() + j);
         if (entity instanceof Player player) player.causeFoodExhaustion(source.type().exhaustion());
@@ -45,9 +42,11 @@ public class AdvancedHealing {
         for (int i = 0; i <= num; i++) VisualHelper.randomParticleOnModel(entity, particleTypes.random(), VisualHelper.ParticleMovement.REGULAR);
         return true;
     }
+    private static boolean canHeal(LivingEntity entity, HealingSource source) {
+        return !(entity instanceof ArmorStand) && entity.getHealth() < entity.getMaxHealth() && (!cancelHeal(entity) || source.is(FTZHealingTypeTags.NOT_CANCELLABLE)) && (!FantazicCombat.isInvulnerable(entity) || source.is(FTZHealingTypeTags.BYPASSES_INVULNERABILITY));
+    }
     private static boolean cancelHeal(LivingEntity entity) {
         if (entity.hasEffect(FTZMobEffects.FROZEN.get()) || entity.hasEffect(FTZMobEffects.DOOMED.get())) return true;
-        if (SpellHelper.hasSpell(entity, FTZSpells.ENTANGLE.get())) return true;
-        return false;
+        return SpellHelper.hasSpell(entity, FTZSpells.ENTANGLE.get());
     }
 }

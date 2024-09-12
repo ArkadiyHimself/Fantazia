@@ -16,6 +16,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 public class BarrierEffect extends EffectHolder implements IDamageReacting {
+    private static final String healthID = "health";
+    private static final String initialID = "initial";
+    private static final String colorID = "color";
     private float health = 0;
     private float INITIAL = 0;
     private float color = 0;
@@ -98,16 +101,16 @@ public class BarrierEffect extends EffectHolder implements IDamageReacting {
     @Override
     public CompoundTag serialize(boolean toDisk) {
         CompoundTag tag = super.serialize(toDisk);
-        tag.putFloat("health", health);
-        tag.putFloat("initial", INITIAL);
-        tag.putFloat("color", color);
+        tag.putFloat(healthID, health);
+        tag.putFloat(initialID, INITIAL);
+        tag.putFloat(colorID, color);
         return tag;
     }
     @Override
     public void deserialize(CompoundTag tag, boolean fromDist) {
         super.deserialize(tag, fromDist);
-        health = tag.contains("health") ? tag.getFloat("health") : 0;
-        INITIAL = tag.contains("initial") ? tag.getFloat("initial") : 0;
-        color = tag.contains("color") ? tag.getFloat("color") : 0;
+        health = tag.contains(healthID) ? tag.getFloat(healthID) : 0;
+        INITIAL = tag.contains(initialID) ? tag.getFloat(initialID) : 0;
+        color = tag.contains(colorID) ? tag.getFloat(colorID) : 0;
     }
 }

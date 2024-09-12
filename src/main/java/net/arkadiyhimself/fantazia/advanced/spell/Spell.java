@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class Spell implements ITooltipBuilder {
-    private final float MANACOST;
+    private final float manacost;
     private final int recharge;
     private final Supplier<SoundEvent> castSound;
     private Cleanse strength = null;
     protected boolean hasCleanse = false;
-    public Spell(float MANACOST, int recharge, @Nullable Supplier<SoundEvent> castSound) {
+    protected Spell(float manacost, int recharge, @Nullable Supplier<SoundEvent> castSound) {
         this.recharge = recharge;
-        this.MANACOST = MANACOST;
+        this.manacost = manacost;
         this.castSound = castSound == null ? () -> null : castSound;
     }
     public Spell cleanse(Cleanse cleanse) {
@@ -33,7 +33,7 @@ public abstract class Spell implements ITooltipBuilder {
         return this;
     }
     public float getManacost() {
-        return MANACOST;
+        return manacost;
     }
     public int getRecharge() {
         return recharge;
@@ -59,7 +59,7 @@ public abstract class Spell implements ITooltipBuilder {
         return hasCleanse;
     }
     @Override
-    public List<Component> buildItemTooltip(@Nullable ItemStack itemStack) {
+    public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         return Lists.newArrayList();
     }
     public boolean is(TagKey<Spell> tagKey) {

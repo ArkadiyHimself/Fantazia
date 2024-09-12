@@ -31,8 +31,8 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
     private static final float STAMINA = 1.5f;
     private static final int DEFAULT_DUR = 7;
     private static final int DEFAULT_RECHARGE = 100;
-    private int INITIAL_DUR = 1;
-    private int INITIAL_RECHARGE = 1;
+    private int initialDur = 1;
+    private int initialRecharge = 1;
     private int duration = 0;
     private int recharge = 0;
     private int level = 0;
@@ -46,7 +46,7 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
     }
 
     @Override
-    public String ID() {
+    public String id() {
         return "dash";
     }
 
@@ -79,7 +79,7 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
             }
         }
 
-        if (duration == INITIAL_DUR - 5 && INITIAL_DUR >= 6 && level < 3) NetworkHandler.sendToPlayer(new PlayAnimationS2C("dash.middle"), serverPlayer);
+        if (duration == initialDur - 5 && initialDur >= 6 && level < 3) NetworkHandler.sendToPlayer(new PlayAnimationS2C("dash.middle"), serverPlayer);
 
         if (recharged && recharge == 0) {
             recharged = false;
@@ -90,9 +90,9 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
     public CompoundTag serialize(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("level", this.level);
-        tag.putInt("initial_dur", this.INITIAL_DUR);
+        tag.putInt("initial_dur", this.initialDur);
         tag.putInt("duration", this.duration);
-        tag.putInt("initial_recharge", this.INITIAL_RECHARGE);
+        tag.putInt("initial_recharge", this.initialRecharge);
         tag.putInt("recharge", this.recharge);
         return tag;
     }
@@ -100,9 +100,9 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
     @Override
     public void deserialize(CompoundTag tag, boolean fromDisk) {
         this.level = tag.contains("level") ?  tag.getInt("level") : 0;
-        this.INITIAL_DUR = tag.contains("initial_dur") ?  tag.getInt("initial_dur") : 1;
+        this.initialDur = tag.contains("initial_dur") ?  tag.getInt("initial_dur") : 1;
         this.duration = tag.contains("duration") ?  tag.getInt("duration") : 0;
-        this.INITIAL_RECHARGE = tag.contains("initial_recharge") ?  tag.getInt("initial_recharge") : 1;
+        this.initialRecharge = tag.contains("initial_recharge") ?  tag.getInt("initial_recharge") : 1;
         this.recharge = tag.contains("recharge") ?  tag.getInt("recharge") : 0;
     }
     @Override
@@ -188,7 +188,7 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
 
         velocity = vec3;
         recharge = getInitRecharge();
-        INITIAL_RECHARGE = recharge;
+        initialRecharge = recharge;
         wasDashing = true;
         recharged = true;
 
@@ -198,7 +198,7 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
     }
     public void actuallyDash(int duration) {
         this.duration = duration;
-        this.INITIAL_DUR = duration;
+        this.initialDur = duration;
         if (level < 3) NetworkHandler.sendToPlayer(new PlayAnimationS2C("dash.start"), getPlayer());
     }
     public void stopDash() {

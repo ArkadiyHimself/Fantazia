@@ -14,11 +14,11 @@ public class MixinMobEffect {
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;heal(F)V"), method = "applyEffectTick")
     private void advancedHeal(LivingEntity entity, float pHealAmount) {
         HealingSources healingSources = LevelCapHelper.getHealingSources(entity.level());
-        if (healingSources != null) AdvancedHealing.heal(entity, healingSources.mobEffectRegen(), pHealAmount);
+        if (healingSources != null) AdvancedHealing.tryHeal(entity, healingSources.mobEffectRegen(), pHealAmount);
     }
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;heal(F)V"), method = "applyInstantenousEffect")
     private void advancedInstantHeal(LivingEntity entity, float pHealAmount) {
         HealingSources healingSources = LevelCapHelper.getHealingSources(entity.level());
-        if (healingSources != null) AdvancedHealing.heal(entity, healingSources.mobEffect(), pHealAmount);
+        if (healingSources != null) AdvancedHealing.tryHeal(entity, healingSources.mobEffect(), pHealAmount);
     }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "book.fantazia.entry.world.mind.name",
+  "icon": "minecraft:book",
+  "category": "fantazia:world",
+  "advancement" : "fantazia:the_worldliness/world/mind",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.world.mind.page.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.mind.page.2"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.mind.page.3"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.mind.page.4"
+    }
+  ]
+}

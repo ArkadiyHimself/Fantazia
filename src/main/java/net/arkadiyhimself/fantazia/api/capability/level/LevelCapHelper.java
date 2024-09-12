@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 
 public class LevelCapHelper {
+    private LevelCapHelper() {}
     public static @Nullable HealingSources getHealingSources(Level level) {
         LevelCap levelCap = LevelCapGetter.getLevelCap(level);
         if (levelCap == null) return null;

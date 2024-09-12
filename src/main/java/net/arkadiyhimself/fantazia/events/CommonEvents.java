@@ -23,6 +23,7 @@ import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.LivingData
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.CursedMarkEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.StunEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureManager;
@@ -36,6 +37,7 @@ import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.api.fantazicevents.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.data.loot.LootInstanceManager;
+import net.arkadiyhimself.fantazia.data.spawn.MobEffectsOnSpawnManager;
 import net.arkadiyhimself.fantazia.data.talents.AttributeTalent;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
 import net.arkadiyhimself.fantazia.data.talents.TalentHelper;
@@ -72,10 +74,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -124,6 +123,7 @@ import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Fantazia.MODID)
 public class CommonEvents {
+    private CommonEvents() {}
     @SubscribeEvent
     public static void livingDeath(LivingDeathEvent event) {
         LivingEntity livingTarget = event.getEntity();
@@ -135,12 +135,10 @@ public class CommonEvents {
         }
         LivingData livingData = DataGetter.takeDataHolder(livingTarget, LivingData.class);
         Spell entangle = FTZSpells.ENTANGLE.get();
-        if (SpellHelper.hasSpell(livingTarget, entangle) && livingData != null && livingData.getPrevHP() > livingTarget.getMaxHealth() * 0.1f) {
-            if (FTZEvents.ForgeExtension.onDeathPrevention(event.getEntity(),entangle)) {
-                EffectCleansing.tryCleanseAll(livingTarget, entangle.hasCleanse() ? entangle.getStrength() : Cleanse.POWERFUL, MobEffectCategory.HARMFUL);
-                event.setCanceled(true);
-                livingTarget.setHealth(livingTarget.getMaxHealth() * 0.1f);
-            }
+        if (SpellHelper.hasSpell(livingTarget, entangle) && livingData != null && livingData.getPrevHP() > livingTarget.getMaxHealth() * 0.1f && FTZEvents.ForgeExtension.onDeathPrevention(event.getEntity(),entangle)) {
+            EffectCleansing.tryCleanseAll(livingTarget, entangle.hasCleanse() ? entangle.getStrength() : Cleanse.POWERFUL, MobEffectCategory.HARMFUL);
+            event.setCanceled(true);
+            livingTarget.setHealth(livingTarget.getMaxHealth() * 0.1f);
         }
 
         if (source.getEntity() instanceof LivingEntity attacker) {
@@ -158,6 +156,8 @@ public class CommonEvents {
                 TalentsHolder.ProgressHolder progressHolder = AbilityHelper.getProgressHolder(player);
                 if (progressHolder != null) progressHolder.award("slayed", id);
             }
+            CursedMarkEffect cursedMarkEffect = EffectGetter.takeEffectHolder(livingTarget, CursedMarkEffect.class);
+            if (cursedMarkEffect != null && cursedMarkEffect.isMarked()) EffectHelper.makeDoomed(attacker, 600);
         }
     }
     @SubscribeEvent
@@ -220,7 +220,7 @@ public class CommonEvents {
     public static void livingHeal(LivingHealEvent event) {
         HealingSources healingSources = LevelCapHelper.getHealingSources(event.getEntity().level());
         if (healingSources == null) return;
-        boolean flag = AdvancedHealing.heal(event.getEntity(), healingSources.generic(), event.getAmount());
+        boolean flag = AdvancedHealing.tryHeal(event.getEntity(), healingSources.generic(), event.getAmount());
         if (flag) event.setCanceled(true);
         if (SpellHelper.hasSpell(event.getEntity(), FTZSpells.ENTANGLE.get()) || event.getEntity().hasEffect(FTZMobEffects.FROZEN.get())) event.setCanceled(true);
     }
@@ -321,6 +321,11 @@ public class CommonEvents {
                 durability.setBaseValue(base);
             }
         }
+    }
+    @SubscribeEvent
+    public static void mobSpawn(MobSpawnEvent.FinalizeSpawn event) {
+        Mob mob = event.getEntity();
+        FantazicCombat.grantEffectsOnSpawn(mob);
     }
     @SubscribeEvent
     public static void levelTick(TickEvent.LevelTickEvent event) {
@@ -524,6 +529,7 @@ public class CommonEvents {
         event.addListener(new WisdomRewardManager());
         event.addListener(new TalentTabManager());
         event.addListener(new LootInstanceManager());
+        event.addListener(new MobEffectsOnSpawnManager());
     }
     @SubscribeEvent
     public static void levelLoad(LevelEvent.Load event) {
@@ -531,7 +537,7 @@ public class CommonEvents {
     }
     @SubscribeEvent
     public static void advancementProgress(AdvancementEvent.AdvancementProgressEvent event) {
-        if (event.getAdvancementProgress().isDone()) TalentHelper.onAdvancementObtain(event.getAdvancement(), event.getEntity());
+        if (event.getAdvancementProgress().isDone() && event.getProgressType() == AdvancementEvent.AdvancementProgressEvent.ProgressType.GRANT) TalentHelper.onAdvancementObtain(event.getAdvancement(), event.getEntity());
     }
     @SubscribeEvent
     public static void playerBrewedPotion(PlayerBrewedPotionEvent event) {

@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class PassiveSpell extends Spell {
-    public PassiveSpell(float MANACOST, int recharge, Supplier<SoundEvent> castSound) {
-        super(MANACOST, recharge, castSound);
+    public PassiveSpell(float manacost, int recharge, Supplier<SoundEvent> castSound) {
+        super(manacost, recharge, castSound);
     }
-    public PassiveSpell(float MANACOST, int recharge) {
-        super(MANACOST, recharge, null);
+    public PassiveSpell(float manacost, int recharge) {
+        super(manacost, recharge, null);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class PassiveSpell extends Spell {
     }
 
     @Override
-    public List<Component> buildItemTooltip(@Nullable ItemStack itemStack) {
+    public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         List<Component> components = Lists.newArrayList();
         if (getID() == null) return components;
         String basicPath = "ability." + this.getID().getNamespace() + "." + this.getID().getPath();
@@ -37,7 +37,7 @@ public class PassiveSpell extends Spell {
             String desc = Component.translatable(basicPath + ".desc.lines").getString();
             try {
                 lines = Integer.parseInt(desc);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored){}
             if (lines > 0) {
                 components.add(Component.translatable(" "));
                 for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
@@ -67,7 +67,7 @@ public class PassiveSpell extends Spell {
         String desc = Component.translatable(basicPath + ".lines").getString();
         try {
             lines = Integer.parseInt(desc);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored){}
 
         if (lines > 0) for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, text, null));
 
@@ -75,7 +75,7 @@ public class PassiveSpell extends Spell {
         lines = 0;
         try {
             lines = Integer.parseInt(pass);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored){}
 
         if (lines > 0) {
             components.add(Component.translatable(" "));

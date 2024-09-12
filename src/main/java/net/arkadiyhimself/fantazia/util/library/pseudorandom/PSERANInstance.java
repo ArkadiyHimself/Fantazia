@@ -14,18 +14,19 @@ import net.minecraft.nbt.CompoundTag;
  * has the highest point.
  */
 public class PSERANInstance {
-    private final double CHANCE;
+    private final double chance;
     private final double initialChance;
     private int fails = 0;
-    public PSERANInstance(double CHANCE) {
-        this.CHANCE = CHANCE;
-        if (CHANCE >= 1) this.initialChance = 1;
-        else if (CHANCE <= 0) this.initialChance = 0;
-        else this.initialChance = PSERANHelper.calculateC(CHANCE);
+    public PSERANInstance(double chance) {
+        this.chance = chance;
+        if (chance >= 1) this.initialChance = 1;
+        else if (chance <= 0) this.initialChance = 0;
+        else this.initialChance = PSERANHelper.calculateC(chance);
     }
     public double getSupposedChance() {
-        return CHANCE;
+        return chance;
     }
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean performAttempt() {
         if (Fantazia.RANDOM.nextFloat() < getActualChance()) {
             // success
@@ -47,7 +48,7 @@ public class PSERANInstance {
     }
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
-        tag.putDouble("chance", CHANCE);
+        tag.putDouble("chance", chance);
         tag.putInt("fails", fails);
         return tag;
     }

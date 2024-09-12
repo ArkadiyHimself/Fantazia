@@ -1,0 +1,7 @@
+{
+  "criteria" : {
+    "talent_obtain": {
+      "trigger": "fantazia:talent_obtain"
+    }
+  }
+}

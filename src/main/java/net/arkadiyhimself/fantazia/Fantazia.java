@@ -12,15 +12,11 @@ import net.arkadiyhimself.fantazia.client.models.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.ItemModelShaper;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Registry;
-import net.minecraft.data.advancements.packs.VanillaAdventureAdvancements;
-import net.minecraft.data.advancements.packs.VanillaHusbandryAdvancements;
-import net.minecraft.data.advancements.packs.VanillaStoryAdvancements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -35,7 +31,7 @@ public class Fantazia {
     public static final String MODID = "fantazia";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final Random RANDOM = new Random();
-    public static final boolean DEVELOPER_MODE = true;
+    public static final boolean DEVELOPER_MODE = false;
     private static final CustomItemRenderer CUSTOM_RENDERER = new CustomItemRenderer();
     public Fantazia() {
         GeckoLib.initialize();

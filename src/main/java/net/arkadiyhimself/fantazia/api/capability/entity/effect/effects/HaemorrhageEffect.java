@@ -71,7 +71,7 @@ public class HaemorrhageEffect extends EffectHolder implements IDamageReacting, 
         soundCD = tag.contains("soundCD") ? tag.getInt("soundCD") : 0;
     }
     @Override
-    public boolean syncedDuration() {
-        return false;
+    public boolean unSyncedDuration() {
+        return true;
     }
 }

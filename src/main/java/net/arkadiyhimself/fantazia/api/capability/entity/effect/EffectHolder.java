@@ -9,17 +9,19 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class EffectHolder implements IEffect {
+    private static final String durationId = "duration";
+    private static final String initialId = "initial";
     private final LivingEntity owner;
     private final MobEffect mobEffect;
-    protected int INITIAL_DUR = 1;
+    protected int initialDur = 1;
     protected int duration = 0;
-    public EffectHolder(LivingEntity owner, MobEffect mobEffect) {
+    protected EffectHolder(LivingEntity owner, MobEffect mobEffect) {
         this.owner = owner;
         this.mobEffect = mobEffect;
     }
     @Override
     public int getInitDur() {
-        return INITIAL_DUR;
+        return initialDur;
     }
     @Override
     public int getDur() {
@@ -36,12 +38,17 @@ public abstract class EffectHolder implements IEffect {
     @Override
     public void respawn() {
         duration = 0;
-        INITIAL_DUR = 0;
+        initialDur = 0;
     }
     @Override
     public void added(MobEffectInstance instance) {
-        this.INITIAL_DUR = instance.getDuration();
-        this.duration = instance.getDuration();
+        if (instance.isInfiniteDuration()) {
+            this.initialDur = 1;
+            this.duration = 1;
+        } else {
+            this.initialDur = instance.getDuration();
+            this.duration = instance.getDuration();
+        }
     }
     @Override
     public void ended() {
@@ -50,28 +57,28 @@ public abstract class EffectHolder implements IEffect {
     @Override
     public CompoundTag serialize(boolean toDisk) {
         CompoundTag tag = new CompoundTag();
-        if (!syncedDuration()) return tag;
-        tag.putInt("duration", duration);
-        tag.putInt("initial_dur", INITIAL_DUR);
+        if (unSyncedDuration()) return tag;
+        tag.putInt(durationId, duration);
+        tag.putInt(initialId, initialDur);
         return tag;
     }
     @Override
     public void deserialize(CompoundTag tag, boolean fromDisk) {
-        if (!syncedDuration()) return;
-        duration = tag.contains("duration") ? tag.getInt("duration") : 0;
-        if (tag.contains("initial_dur")) INITIAL_DUR = tag.getInt("initial_dur");
+        if (unSyncedDuration()) return;
+        duration = tag.contains(durationId) ? tag.getInt(durationId) : 0;
+        if (tag.contains(initialId)) initialDur = tag.getInt(initialId);
     }
     @Override
     public void tick() {
         MobEffectInstance effectInstance = getOwner().getEffect(getEffect());
         if (effectInstance == null) duration = 0;
-        else duration = effectInstance.getDuration();
+        else duration = effectInstance.isInfiniteDuration() ? getInitDur() : effectInstance.getDuration();
     }
     public String ID() {
         ResourceLocation id = ForgeRegistries.MOB_EFFECTS.getKey(mobEffect);
         return id == null ? null : id.toString();
     }
-    public boolean syncedDuration() {
-        return true;
+    public boolean unSyncedDuration() {
+        return false;
     }
 }

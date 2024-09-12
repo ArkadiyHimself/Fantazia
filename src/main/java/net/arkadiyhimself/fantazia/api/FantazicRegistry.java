@@ -33,6 +33,9 @@ public class FantazicRegistry {
         return new RegistryBuilder<T>().hasTags();
     }
     public static final class Keys {
+        private Keys() {
+        }
+
         public static final ResourceKey<Registry<Spell>> SPELL = Fantazia.resKey("spell");
         public static final ResourceKey<Registry<BasicAura<?>>> AURA = Fantazia.resKey("aura");
         public static final ResourceKey<Registry<HealingType>> HEALING_TYPE = Fantazia.resKey("healing_type");

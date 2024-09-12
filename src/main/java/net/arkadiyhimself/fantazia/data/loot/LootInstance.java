@@ -34,7 +34,7 @@ public class LootInstance {
         if (!instance.performAttempt()) return;
         generatedLoot.add(new ItemStack(added));
         if (replaced != null) generatedLoot.removeIf(stack -> stack.is(replaced));
-        if (firstTime && !looted) looted = true;
+        looted = true;
     }
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
@@ -58,7 +58,7 @@ public class LootInstance {
     public static LootInstance deserialize(CompoundTag tag) {
         ResourceLocation addedID = new ResourceLocation(tag.getString("added"));
         Item added = ForgeRegistries.ITEMS.getValue(addedID);
-        if (added == null) throw new IllegalStateException("Item's id has not been found");
+        if (added == null) throw new IllegalStateException("Item has not been found: " + addedID);
 
         PSERANInstance pseranInstance = PSERANInstance.deserialize(tag.getCompound("random"));
 
@@ -77,7 +77,7 @@ public class LootInstance {
         private final Item item;
         private final double chance;
         private final @Nullable Item replaced;
-        private boolean firstTime = false;
+        private final boolean firstTime;
         public Builder(Item item, double chance, @Nullable Item replaced, boolean firstTime) {
             this.item = item;
             this.chance = chance;

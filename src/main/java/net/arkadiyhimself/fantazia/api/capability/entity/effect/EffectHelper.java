@@ -43,6 +43,9 @@ public class EffectHelper {
         if (livingEntity.getLastDamageSource() != null && livingEntity.getLastDamageSource().is(FTZDamageTypeTags.NOT_TURNING_RED)) return false;
         return true;
     }
+    public static void infiniteEffect(LivingEntity entity, MobEffect effect, int level) {
+        effectWithoutParticles(entity, effect, -1, level);
+    }
     public static void effectWithoutParticles(LivingEntity entity, MobEffect effect, int duration, int level) {
         entity.addEffect(new MobEffectInstance(effect, duration, level, true, false, true));
     }

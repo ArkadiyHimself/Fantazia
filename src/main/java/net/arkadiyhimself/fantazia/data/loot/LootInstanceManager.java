@@ -17,25 +17,23 @@ public class LootInstanceManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
             .setPrettyPrinting().create();
-    private static final List<LootModifierHolder.Builder> LOOT_MODIFIER_HOLDER_MAP = Lists.newArrayList();
+    private static final List<LootModifierHolder.Builder> lootModifierHolders = Lists.newArrayList();
     public LootInstanceManager() {
         super(GSON, "loot_instances");
     }
     @Override
     protected void apply(@NotNull Map<ResourceLocation, JsonElement> jsonElementMap, @NotNull ResourceManager pResourceManager, @NotNull ProfilerFiller pProfiler) {
-        LOOT_MODIFIER_HOLDER_MAP.clear();
-        jsonElementMap.forEach(LootInstanceManager::readLoot);
+        lootModifierHolders.clear();
+        jsonElementMap.values().forEach(LootInstanceManager::readLoot);
     }
-    private static void readLoot(ResourceLocation location, JsonElement element) {
+    private static void readLoot(JsonElement element) {
         JsonObject object = element.getAsJsonObject();
-        JsonArray array = object.getAsJsonArray("loot_tables");
         LootModifierHolder.Builder builder = new LootModifierHolder.Builder();
 
-        for (JsonElement loot_tables : array.asList()) builder.addLootTable(new ResourceLocation(loot_tables.getAsString()));
+        JsonArray lootTables = object.getAsJsonArray("loot_tables");
+        for (JsonElement lootTable : lootTables.asList()) builder.addLootTable(new ResourceLocation(lootTable.getAsString()));
 
-        JsonObject instances = object.getAsJsonObject("loot_instances");
-
-        for (Map.Entry<String, JsonElement> entry : instances.entrySet()) {
+        for (Map.Entry<String, JsonElement> entry : object.getAsJsonObject("loot_instances").entrySet()) {
             JsonObject lootInstance = entry.getValue().getAsJsonObject();
 
             ResourceLocation itemID = new ResourceLocation(entry.getKey());
@@ -53,11 +51,11 @@ public class LootInstanceManager extends SimpleJsonResourceReloadListener {
             boolean firstTime = lootInstance.has("first_time") && lootInstance.get("first_time").getAsBoolean();
             builder.addLootInstance(item, chance, replaced, firstTime);
         }
-        LOOT_MODIFIER_HOLDER_MAP.add(builder);
+        lootModifierHolders.add(builder);
     }
     public static List<LootModifierHolder> createModifiers() {
         List<LootModifierHolder> holders = Lists.newArrayList();
-        for (LootModifierHolder.Builder builder : LOOT_MODIFIER_HOLDER_MAP) holders.add(builder.build());
+        for (LootModifierHolder.Builder builder : lootModifierHolders) holders.add(builder.build());
         return holders;
     }
 }

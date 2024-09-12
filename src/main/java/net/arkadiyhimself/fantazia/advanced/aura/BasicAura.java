@@ -37,7 +37,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     }
     private final TYPE type;
     private final Class<T> tClass;
-    private final float RANGE;
+    private final float range;
     /**
      * Contains attributes and respective attribute modifiers that are
      * <br>
@@ -83,7 +83,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * to determine whether {@link BasicAura#onTickOwner} should be performed or not
      */
-    private Predicate<Entity> ownerConditions = (owner) -> true;
+    private Predicate<Entity> ownerConditions = owner -> true;
     /**
      * OnTick is performed every tick on every entity inside the aura.
      * <br>
@@ -103,7 +103,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     /**
      * OnTickOwner is performed every tick on the owner of the aura
      */
-    private Consumer<Entity> onTickOwner = (owner) -> {};
+    private Consumer<Entity> onTickOwner = owner -> {};
     /**
      * OnTickBlock is performed every tick on all blocks within aura
      */
@@ -113,7 +113,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * be immune to while within aura
      */
-    private final List<ResourceKey<DamageType>> IMMUNITIES = Lists.newArrayList();
+    private final List<ResourceKey<DamageType>> immunities = Lists.newArrayList();
     /**
      * Whenever a suitable entity inside aura takes damage from a {@link net.minecraft.world.damagesource.DamageSource source},
      * <br>
@@ -121,14 +121,14 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * by respective float value inside this map
      */
-    private final Map<ResourceKey<DamageType>, Float> MULTIPLIERS = Maps.newHashMap();
+    private final Map<ResourceKey<DamageType>, Float> multipliers = Maps.newHashMap();
     public BasicAura(float range, Class<T> affectedType) {
-        this.RANGE = range;
+        this.range = range;
         this.type = TYPE.MIXED;
         this.tClass = affectedType;
     }
     public BasicAura(float range, TYPE type, Class<T> affectedType) {
-        this.RANGE = range;
+        this.range = range;
         this.type = type;
         this.tClass = affectedType;
     }
@@ -165,12 +165,12 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return this;
     }
     public BasicAura<T> addDamageImmunities(ResourceKey<DamageType> immunity) {
-        this.IMMUNITIES.add(immunity);
+        this.immunities.add(immunity);
         return this;
     }
     public BasicAura<T> addDamageMultipliers(Map.Entry<ResourceKey<DamageType>, Float> damageMultiplier) throws IllegalArgumentException {
         if (damageMultiplier.getValue() <= 0) throw new IllegalArgumentException("Use damage immunities list instead");
-        this.MULTIPLIERS.put(damageMultiplier.getKey(), damageMultiplier.getValue());
+        this.multipliers.put(damageMultiplier.getKey(), damageMultiplier.getValue());
         return this;
     }
     public BasicAura<T> tickingOnBlocks(BiConsumer<BlockPos, AuraInstance<T>> onTick) {
@@ -185,7 +185,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         int li = 0;
         try {
             li = Integer.parseInt(lines);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored){}
 
         if (li > 0) {
             ChatFormatting[] head = switch (this.type) {
@@ -199,7 +199,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return components;
     }
     @Override
-    public List<Component> buildItemTooltip(@Nullable ItemStack stack) {
+    public List<Component> itemTooltip(@Nullable ItemStack stack) {
         List<Component> components = Lists.newArrayList();
         if (this.getID() == null) return components;
         String basicPath = "aura." + this.getID().getNamespace() + "." + this.getID().getPath();
@@ -209,7 +209,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
             String desc = Component.translatable(basicPath + ".desc.lines").getString();
             try {
                 amo = Integer.parseInt(desc);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored){}
 
             if (amo > 0) for (int i = 1; i <= amo; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
             return components;
@@ -245,7 +245,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         String desc = Component.translatable(basicPath + ".lines").getString();
         try {
             amo = Integer.parseInt(desc);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored){}
 
         if (amo > 0) for (int i = 1; i <= amo; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, text, null));
 
@@ -253,7 +253,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         String pass = Component.translatable(basicPath + ".stats.lines").getString();
         try {
             amo = Integer.parseInt(pass);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored){}
 
         if (amo > 0) {
             components.add(Component.translatable(" "));
@@ -283,7 +283,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     }
 
     public float getRadius() {
-        return RANGE;
+        return range;
     }
     public boolean couldAffect(T entity, Entity owner) {
         return primaryFilter.test(entity, owner) && entity != owner;
@@ -319,9 +319,9 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         onTickBlock.accept(blockPos, auraInstance);
     }
     public ImmutableList<ResourceKey<DamageType>> immunities() {
-        return ImmutableList.copyOf(IMMUNITIES);
+        return ImmutableList.copyOf(immunities);
     }
     public Map<ResourceKey<DamageType>, Float> multipliers() {
-        return Collections.unmodifiableMap(MULTIPLIERS);
+        return Collections.unmodifiableMap(multipliers);
     }
 }

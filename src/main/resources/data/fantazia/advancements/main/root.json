@@ -1,0 +1,21 @@
+{
+  "display": {
+    "icon": {
+      "item": "fantazia:obscure_substance"
+    },
+    "title": {
+      "translate": "advancement_tab.fantazia"
+    },
+    "description": {
+      "translate": "advancement_tab.fantazia.desc"
+    },
+    "background": "minecraft:textures/block/polished_blackstone_bricks.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "automatic": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

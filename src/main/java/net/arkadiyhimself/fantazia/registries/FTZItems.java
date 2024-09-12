@@ -29,6 +29,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.function.Supplier;
 
 public class FTZItems {
+    private FTZItems() {}
     private static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, Fantazia.MODID);
     private static RegistryObject<Item> magicItem(final String name, final Supplier<Item> sup) {
         RegistryObject<Item> item = REGISTER.register(name, sup);
@@ -79,10 +80,9 @@ public class FTZItems {
     // expendables
     public static final RegistryObject<Item> OBSCURE_ESSENCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON)); // finished and implemented
     public static final RegistryObject<Item> UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Fantazia.res("double_jump"))); // finished and implemented
-    public static final RegistryObject<Item> ARACHNID_EYE = expendableItem("arachnid_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(64).food(Foods.ARACHNID_EYE))); // finished and implemented
-    public static final RegistryObject<Item> VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(Foods.VITALITY_FRUIT))); // finished and implemented
-    public static final RegistryObject<Item> ANCIENT_SPARK = expendableItem("ancient_spark", AncientSpark::new);
-
+    public static final RegistryObject<Item> ARACHNID_EYE = expendableItem("arachnid_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(64).food(Foods.arachnidEye))); // finished and implemented
+    public static final RegistryObject<Item> VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(Foods.vitalityFruit))); // finished and implemented
+    public static final RegistryObject<Item> ANCIENT_SPARK = expendableItem("ancient_spark", AncientSpark::new); // finished and implemented
     public static void onRegistry(RegisterEvent event) {
         FTZBlocks.getBlockItems().forEach((block, item) -> event.register(ForgeRegistries.Keys.ITEMS, block, () -> item.apply(ForgeRegistries.BLOCKS.getValue(block))));
     }
@@ -90,7 +90,7 @@ public class FTZItems {
         REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
     private static class Foods {
-        static FoodProperties ARACHNID_EYE = new FoodProperties.Builder().effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 100), 1f).effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 3), 1f).effect(() -> new MobEffectInstance(FTZMobEffects.DISARM.get(), 100), 1f).alwaysEat().nutrition(3).saturationMod(2).build();
-        static FoodProperties VITALITY_FRUIT = new FoodProperties.Builder().effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 100, 2), 1f).effect(() -> new MobEffectInstance(MobEffects.SATURATION, 100, 2), 1f).nutrition(5).saturationMod(5f).alwaysEat().build();
+        static FoodProperties arachnidEye = new FoodProperties.Builder().effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 100), 1f).effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 3), 1f).effect(() -> new MobEffectInstance(FTZMobEffects.DISARM.get(), 100), 1f).alwaysEat().nutrition(3).saturationMod(2).build();
+        static FoodProperties vitalityFruit = new FoodProperties.Builder().effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 100, 2), 1f).effect(() -> new MobEffectInstance(MobEffects.SATURATION, 100, 2), 1f).nutrition(5).saturationMod(5f).alwaysEat().build();
     }
 }

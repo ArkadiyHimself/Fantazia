@@ -13,6 +13,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -23,7 +24,6 @@ public class TalentManager extends SimpleJsonResourceReloadListener {
 
     // talent's id || talent itself
     private static final Map<ResourceLocation, BasicTalent> TALENTS = Maps.newHashMap();
-
     public TalentManager() {
         super(GSON, "talents");
     }
@@ -42,8 +42,9 @@ public class TalentManager extends SimpleJsonResourceReloadListener {
     public static void addAttributeTalent(ResourceLocation id, BasicTalent talent) {
         TALENTS.put(id, talent);
     }
-    public static Advancement getAdvancement(BasicTalent talent, MinecraftServer server) {
-        ResourceLocation advID = talent.getID().withPrefix("ftz_talents/");
+    public static @Nullable Advancement getAdvancement(BasicTalent talent, MinecraftServer server) {
+        ResourceLocation advID = talent.getAdvancement();
+        if (advID == null) return null;
         return server.getAdvancements().getAdvancement(advID);
     }
 }

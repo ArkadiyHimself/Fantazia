@@ -1,0 +1,24 @@
+{
+  "name": "book.fantazia.entry.world.fate.name",
+  "icon": "minecraft:book",
+  "category": "fantazia:world",
+  "advancement" : "fantazia:the_worldliness/world/fate",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.world.fate.page.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.fate.page.2"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.fate.page.3"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.fate.page.4"
+    }
+  ]
+}

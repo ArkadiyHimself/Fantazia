@@ -17,28 +17,28 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class LootModifierHolder {
-    private final ImmutableList<ResourceLocation> LOOT_TABLES;
-    private final ImmutableList<LootInstance> LOOT_INSTANCES;
+    private final ImmutableList<ResourceLocation> lootTables;
+    private final ImmutableList<LootInstance> lootInstances;
     public LootModifierHolder(List<ResourceLocation> locations, List<LootInstance> instances) {
-        this.LOOT_TABLES = ImmutableList.copyOf(locations);
-        this.LOOT_INSTANCES = ImmutableList.copyOf(instances);
+        this.lootTables = ImmutableList.copyOf(locations);
+        this.lootInstances = ImmutableList.copyOf(instances);
     }
     public boolean isModified(ResourceLocation lootTable) {
-        return LOOT_TABLES.contains(lootTable);
+        return lootTables.contains(lootTable);
     }
     public void tryModify(@NotNull ObjectArrayList<ItemStack> generatedLoot) {
-        for (LootInstance instance : LOOT_INSTANCES) instance.tryAddLoot(generatedLoot);
+        for (LootInstance instance : lootInstances) instance.tryAddLoot(generatedLoot);
     }
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
 
-        ListTag lootTables = new ListTag();
-        for (ResourceLocation location : LOOT_TABLES) lootTables.add(StringTag.valueOf(location.toString()));
-        tag.put("lootTables", lootTables);
+        ListTag lootTablesTag = new ListTag();
+        for (ResourceLocation location : this.lootTables) lootTablesTag.add(StringTag.valueOf(location.toString()));
+        tag.put("lootTables", lootTablesTag);
 
-        ListTag lootInstances = new ListTag();
-        for (LootInstance lootInstance : LOOT_INSTANCES) lootInstances.add(lootInstance.serialize());
-        tag.put("lootInstances", lootInstances);
+        ListTag lootInstancesTag = new ListTag();
+        for (LootInstance lootInstance : this.lootInstances) lootInstancesTag.add(lootInstance.serialize());
+        tag.put("lootInstances", lootInstancesTag);
 
         return tag;
     }

@@ -6,6 +6,7 @@
     "iconTexture": "fantazia:textures/gui/talents/health_boost.png",
     "title": "fantazia.talent.health_boost",
     "wisdom": 0,
+    "advancement" : "fantazia:ftz_talents/health_boost",
     "attribute": "minecraft:generic.max_health",
     "name": "health_talent",
     "amount": 4,

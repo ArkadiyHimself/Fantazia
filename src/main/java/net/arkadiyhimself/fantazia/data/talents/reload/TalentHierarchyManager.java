@@ -71,7 +71,7 @@ public class TalentHierarchyManager extends SimpleJsonResourceReloadListener {
         }
     }
     private List<ResourceLocation> getOrCreateTabHierarchies(ResourceLocation location) {
-        if (!TABS.containsKey(location)) TABS.put(location, Lists.newArrayList());
+        TABS.computeIfAbsent(location, location1 -> Lists.newArrayList());
         return TABS.get(location);
     }
     private MonoHierarchy<ResourceLocation> createMonoHierarchy(JsonObject jsonObject) {

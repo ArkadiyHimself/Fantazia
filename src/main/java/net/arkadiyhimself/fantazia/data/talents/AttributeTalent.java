@@ -24,8 +24,8 @@ public class AttributeTalent extends BasicTalent {
     private final double amount;
     private final AttributeModifier.Operation operation;
     private final Attribute attribute;
-    public AttributeTalent(ResourceLocation iconTexture, String title, int wisdom, Attribute attribute, String name, double amount, AttributeModifier.Operation operation) {
-        super(iconTexture, title, wisdom);
+    public AttributeTalent(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement, Attribute attribute, String name, double amount, AttributeModifier.Operation operation) {
+        super(iconTexture, title, wisdom, advancement);
         this.attribute = attribute;
         this.name = name;
         this.amount = amount;
@@ -76,19 +76,20 @@ public class AttributeTalent extends BasicTalent {
     public AttributeModifier.Operation getOperation() {
         return operation;
     }
-
     public static class Builder {
         private final ResourceLocation iconTexture;
         private final String title;
         private final int wisdom;
+        private final ResourceLocation advancement;
         private final ResourceLocation attribute;
         private final String name;
         private final double amount;
         private final String operation;
-        public Builder(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation attribute, String name, double amount, String operation) {
+        public Builder(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement, ResourceLocation attribute, String name, double amount, String operation) {
             this.iconTexture = iconTexture;
             this.title = title;
             this.wisdom = wisdom;
+            this.advancement = advancement;
             this.attribute = attribute;
             this.name = name;
             this.amount = amount;
@@ -98,12 +99,12 @@ public class AttributeTalent extends BasicTalent {
             Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(attribute);
             if (attr == null) throw new TalentDataException("Could not resolve attribute: " + attribute.toString());
             AttributeModifier.Operation operation1 = switch (operation) {
-                default -> throw new TalentDataException("Could not resolve operation: " + operation);
                 case "addition" -> AttributeModifier.Operation.ADDITION;
                 case "multiply_base" -> AttributeModifier.Operation.MULTIPLY_BASE;
                 case "multiply_total" -> AttributeModifier.Operation.MULTIPLY_TOTAL;
+                default -> throw new TalentDataException("Could not resolve operation: " + operation);
             };
-            return new AttributeTalent(iconTexture, title, wisdom, attr, name, amount, operation1);
+            return new AttributeTalent(iconTexture, title, wisdom, advancement, attr, name, amount, operation1);
         }
     }
 }

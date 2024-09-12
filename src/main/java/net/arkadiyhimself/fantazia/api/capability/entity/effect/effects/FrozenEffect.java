@@ -12,7 +12,7 @@ public class FrozenEffect extends EffectHolder {
         return getOwner().getPercentFrozen();
     }
     public float effectPercent() {
-        return (float) duration / ((float) INITIAL_DUR);
+        return (float) duration / ((float) initialDur);
     }
     public boolean renderFreeze() {
         return freezePercent() > 0 || effectPercent() > 0;

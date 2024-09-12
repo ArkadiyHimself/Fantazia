@@ -59,7 +59,7 @@ public class FragileBlade extends MeleeWeaponItem implements IChangingIcon, IToo
         });
     }
     @Override
-    public List<Component> buildItemTooltip(@Nullable ItemStack stack) {
+    public List<Component> itemTooltip(@Nullable ItemStack stack) {
         List<Component> components = Lists.newArrayList();
         StackDataManager stackDataManager = StackDataGetter.getUnwrap(stack);
         if (stackDataManager == null) return components;

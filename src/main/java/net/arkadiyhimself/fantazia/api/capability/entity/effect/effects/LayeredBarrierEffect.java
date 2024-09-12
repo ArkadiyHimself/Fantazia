@@ -78,7 +78,7 @@ public class LayeredBarrierEffect extends EffectHolder implements IDamageReactin
     }
 
     @Override
-    public boolean syncedDuration() {
-        return false;
+    public boolean unSyncedDuration() {
+        return true;
     }
 }

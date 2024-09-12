@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.LootTablePSERAN;
+import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.LootTableModifiersHolder;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.PlayerData;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +42,7 @@ public class FantazicLootModifier extends LootModifier {
             generatedLoot.add(new ItemStack(FTZItems.DASHSTONE1.get()));
         }
 
-        AbilityGetter.abilityConsumer(player, LootTablePSERAN.class, lootTablePSERAN -> lootTablePSERAN.attemptLoot(generatedLoot, id));
+        AbilityGetter.abilityConsumer(player, LootTableModifiersHolder.class, lootTableModifiersHolder -> lootTableModifiersHolder.attemptLoot(generatedLoot, id));
         if (chest && !LootTablesHelper.isVillage(id)) addItem(generatedLoot, FTZItems.OBSCURE_ESSENCE.get(), -2, 3);
 
         return generatedLoot;

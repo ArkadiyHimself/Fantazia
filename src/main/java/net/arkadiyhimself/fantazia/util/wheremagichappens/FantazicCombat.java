@@ -8,6 +8,7 @@ import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.EvasionData;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
+import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHolder;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.AbsoluteBarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.BarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.LayeredBarrierEffect;
@@ -18,20 +19,28 @@ import net.arkadiyhimself.fantazia.api.capability.entity.feature.features.ArrowE
 import net.arkadiyhimself.fantazia.api.capability.itemstack.StackDataGetter;
 import net.arkadiyhimself.fantazia.api.capability.itemstack.StackDataManager;
 import net.arkadiyhimself.fantazia.api.capability.itemstack.stackdata.HiddenPotential;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCap;
+import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
 import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.tags.FTZEntityTypeTags;
+import net.minecraft.server.commands.EffectCommands;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
@@ -41,6 +50,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 public class FantazicCombat {
+    private FantazicCombat() {}
     public static void dropExperience(LivingEntity entity, float multiplier) {
         if (entity.level() instanceof ServerLevel) {
             int reward = (int) (entity.getExperienceReward() * multiplier);
@@ -89,7 +99,7 @@ public class FantazicCombat {
         AttributeInstance lifeSteal = livingAtt.getAttribute(FTZAttributes.LIFESTEAL.get());
         double heal = lifeSteal == null ? 0 : lifeSteal.getValue() * event.getAmount();
         HealingSources healingSources = LevelCapHelper.getHealingSources(livingAtt.level());
-        if (heal > 0 && healingSources != null) AdvancedHealing.heal(livingAtt, healingSources.lifesteal(target), (float) heal);
+        if (heal > 0 && healingSources != null) AdvancedHealing.tryHeal(livingAtt, healingSources.lifesteal(target), (float) heal);
 
         float bullyDMG = livingAtt.getMainHandItem().getEnchantmentLevel(FTZEnchantments.BULLY.get()) * 1.5f;
         if (bullyDMG > 0) {
@@ -137,8 +147,7 @@ public class FantazicCombat {
         LivingEntity livingEntity = event.getEntity();
         EvasionData evasionData = DataGetter.takeDataHolder(livingEntity, EvasionData.class);
         if (evasionData == null) return false;
-        if (evasionData.getIFrames() > 0) event.setCanceled(true);
-        else if (evasionData.tryEvade()) event.setCanceled(true);
+        if (evasionData.getIFrames() > 0 || evasionData.tryEvade()) event.setCanceled(true);
         return event.isCanceled();
     }
     public static boolean attemptEvasion(ProjectileImpactEvent event) {
@@ -146,8 +155,12 @@ public class FantazicCombat {
         if (event.getProjectile() instanceof ThrownHatchet thrownHatchet && thrownHatchet.isPhasing()) return false;
         EvasionData evasionData = DataGetter.takeDataHolder(livingEntity, EvasionData.class);
         if (evasionData == null) return false;
-        if (evasionData.getIFrames() > 0) event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
-        else if (evasionData.tryEvade()) event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
+        if (evasionData.getIFrames() > 0 || evasionData.tryEvade()) event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
         return event.getImpactResult() == ProjectileImpactEvent.ImpactResult.SKIP_ENTITY;
+    }
+    public static void grantEffectsOnSpawn(LivingEntity livingEntity) {
+        if (!(livingEntity.level() instanceof ServerLevel level)) return;
+        LevelCap levelCap = LevelCapGetter.getLevelCap(level);
+        if (levelCap != null) levelCap.tryApplyEffects(livingEntity);
     }
 }

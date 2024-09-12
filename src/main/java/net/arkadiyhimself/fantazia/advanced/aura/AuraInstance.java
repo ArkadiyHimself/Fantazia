@@ -28,8 +28,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class AuraInstance<T extends Entity> {
-    private final List<T> SUPPOSEDLY_INSIDE = Lists.newArrayList();
-    private final List<DynamicAttributeModifier> DAMs = Lists.newArrayList();
+    private final List<T> supposedlyInside = Lists.newArrayList();
+    private final List<DynamicAttributeModifier> dynamicAttributeModifiers = Lists.newArrayList();
     @NotNull
     private final Entity owner;
     private final Level level;
@@ -49,8 +49,7 @@ public class AuraInstance<T extends Entity> {
                 double rad = aura.getRadius();
                 return 1 - (float) ((float) distance / rad);
             });
-            DynamicAttributeModifier DAM = new DynamicAttributeModifier(entry.getKey(), entry.getValue(), percent);
-            DAMs.add(DAM);
+            dynamicAttributeModifiers.add(new DynamicAttributeModifier(entry.getKey(), entry.getValue(), percent));
         }
     }
     public BasicAura<T> getAura() {
@@ -64,11 +63,11 @@ public class AuraInstance<T extends Entity> {
         FTZEvents.onAuraTick(this);
         this.center = owner.position();
 
-        for (T entity : entitiesInside()) if (!SUPPOSEDLY_INSIDE.contains(entity)) enterAura(entity);
-        for (T entity : SUPPOSEDLY_INSIDE) if (!entitiesInside().contains(entity)) exitAura(entity);
-        SUPPOSEDLY_INSIDE.removeIf(entity -> !entitiesInside().contains(entity));
+        for (T entity : entitiesInside()) if (!supposedlyInside.contains(entity)) enterAura(entity);
+        for (T entity : supposedlyInside) if (!entitiesInside().contains(entity)) exitAura(entity);
+        supposedlyInside.removeIf(entity -> !entitiesInside().contains(entity));
 
-        SUPPOSEDLY_INSIDE.forEach(entity -> {
+        supposedlyInside.forEach(entity -> {
             if (aura.canAffect(entity, owner)) {
                 aura.entityTick(entity, owner);
                 if (entity instanceof LivingEntity livingEntity) removeModifiers(livingEntity);
@@ -96,7 +95,7 @@ public class AuraInstance<T extends Entity> {
     public void enterAura(T entity) {
         FTZEvents.onAuraEnter(this, entity);
         if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.translatable("entered"));
-        SUPPOSEDLY_INSIDE.add(entity);
+        supposedlyInside.add(entity);
         if (!aura.canAffect(entity, getOwner())) return;
         if (!(entity instanceof LivingEntity livingEntity)) return;
         removeModifiers(livingEntity);
@@ -108,8 +107,8 @@ public class AuraInstance<T extends Entity> {
         applyModifiers(livingEntity);
     }
     public boolean notInside(Entity entity) {
-        if (!aura.affectedClass().isInstance(entity)) return true;
-        return !SUPPOSEDLY_INSIDE.contains(aura.affectedClass().cast(entity));
+        if (!aura.affectedClass().isInstance(entity) && !Fantazia.DEVELOPER_MODE) return true;
+        return !supposedlyInside.contains(aura.affectedClass().cast(entity));
     }
     public void discard() {
         if (!level.isClientSide()) LevelCapGetter.get(level).ifPresent(levelCap -> levelCap.removeAuraInstance(this));
@@ -124,7 +123,7 @@ public class AuraInstance<T extends Entity> {
 
         DAMHolder damHolder = DataGetter.takeDataHolder(livingEntity, DAMHolder.class);
         if (damHolder == null) return;
-        DAMs.forEach(damHolder::removeDAM);
+        dynamicAttributeModifiers.forEach(damHolder::removeDAM);
     }
     public void removeModifiers(LivingEntity livingEntity) {
         for (Map.Entry<Attribute, AttributeModifier> entry : aura.getAttributeModifiers().entrySet()) {
@@ -134,7 +133,7 @@ public class AuraInstance<T extends Entity> {
 
         DAMHolder damHolder = DataGetter.takeDataHolder(livingEntity, DAMHolder.class);
         if (damHolder == null) return;
-        DAMs.forEach(damHolder::addDAM);
+        dynamicAttributeModifiers.forEach(damHolder::addDAM);
     }
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();

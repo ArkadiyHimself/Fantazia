@@ -1,22 +1,24 @@
 package net.arkadiyhimself.fantazia.data.talents;
 
 import com.google.common.collect.ImmutableList;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityManager;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.talents.reload.TalentManager;
-import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
-import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class TalentHelper {
+    private TalentHelper() {}
     public static void onTalentUnlock(@NotNull Player player, @NotNull BasicTalent talent) {
         AbilityManager abilityManager = AbilityGetter.getUnwrap(player);
         if (abilityManager != null) abilityManager.talentUnlocked(talent);
@@ -52,24 +54,17 @@ public class TalentHelper {
     }
     public static void onAdvancementObtain(@NotNull Advancement advancement, @NotNull Player player) throws TalentDataException {
         ResourceLocation id = advancement.getId();
-        if (!id.getPath().startsWith("ftz_talents/")) return;
-        if (player instanceof ServerPlayer serverPlayer) revokeAdvancement(serverPlayer, advancement);
-        String modid = id.getNamespace();
-        String path = id.getPath().substring(12);
-        ResourceLocation talentID = new ResourceLocation(modid, path);
+        if (!id.getNamespace().equals(Fantazia.MODID)) return;
+        List<IHierarchy<BasicTalent>> upgradedHierarchies = Lists.newArrayList();
 
-        BasicTalent talent = TalentManager.getTalents().get(talentID);
-        IHierarchy<BasicTalent> hierarchy = TalentTreeData.getAllHierarchies().get(talentID);
-
-        if (talent != null) AbilityGetter.abilityConsumer(player, TalentsHolder.class, talentsHolder -> talentsHolder.obtainTalent(talent));
-        else if (hierarchy instanceof ChainHierarchy<BasicTalent> chainHierarchy) {
-            BasicTalent talent1 = findUnlockableTalent(player, chainHierarchy);
-            if (talent1 == null) return;
-            AbilityGetter.abilityConsumer(player, TalentsHolder.class, talentsHolder -> talentsHolder.obtainTalent(talent1));
+        TalentsHolder talentsHolder = AbilityGetter.takeAbilityHolder(player, TalentsHolder.class);
+        if (talentsHolder == null) return;
+        for (BasicTalent talent : TalentManager.getTalents().values()) {
+            IHierarchy<BasicTalent> hierarchy = talent.getHierarchy();
+            if (!id.equals(talent.getAdvancement()) || hierarchy == null || upgradedHierarchies.contains(hierarchy) || talentsHolder.hasTalent(talent) || !talentsHolder.isUnlockAble(talent)) continue;
+            if (player instanceof ServerPlayer serverPlayer) revokeAdvancement(serverPlayer, advancement);
+            upgradedHierarchies.add(hierarchy);
+            talentsHolder.obtainTalent(talent);
         }
-    }
-    private static @Nullable BasicTalent findUnlockableTalent(@NotNull Player player, @NotNull ChainHierarchy<BasicTalent> chainHierarchy) {
-        if (chainHierarchy instanceof ChaoticHierarchy<BasicTalent>) return null;
-        return chainHierarchy.getElements().stream().filter(talent -> !hasTalent(player, talent)).findFirst().orElse(null);
     }
 }
