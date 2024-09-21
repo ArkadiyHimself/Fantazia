@@ -1,0 +1,33 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "pearl": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:ender_pearl"]
+          }
+        ]
+      }
+    },
+    "substance" : {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["fantazia:obscure_substance"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements" : [
+    [
+      "pearl"
+    ],
+    [
+      "substance"
+    ]
+  ]
+}

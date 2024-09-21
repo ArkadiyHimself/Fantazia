@@ -1,0 +1,15 @@
+{
+  "loot_tables": [
+    "minecraft:entities/enderman"
+  ],
+  "loot_instances": {
+    "fantazia:spiral_nemesis": {
+      "chance": 0.075,
+      "first_time": true
+    },
+    "fantazia:insight_essence" : {
+      "chance" : 1,
+      "first_time" : true
+    }
+  }
+}

@@ -61,7 +61,7 @@ public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu>
         guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, components, mouseX, mouseY);
     }
 
-    public MixinEffectScreenRenderer(T pMenu, Inventory pPlayerInventory, Component pTitle) {
+    protected MixinEffectScreenRenderer(T pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }
     @Unique

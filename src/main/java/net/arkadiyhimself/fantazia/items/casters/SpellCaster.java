@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.items.casters;
 
+import net.arkadiyhimself.fantazia.advanced.spell.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.SelfSpell;
-import net.arkadiyhimself.fantazia.advanced.spell.Spell;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.advanced.spell.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class SpellCaster extends Item {
-    private final Supplier<Spell> spell;
-    public SpellCaster(Supplier<Spell> spell) {
+    private final Supplier<AbstractSpell> spell;
+    public SpellCaster(Supplier<AbstractSpell> spell) {
         super(new Properties().stacksTo(1).fireResistant().rarity(Rarity.RARE));
         this.spell = spell;
     }
@@ -38,7 +38,7 @@ public class SpellCaster extends Item {
         return flag;
     }
     @Nullable
-    public Spell getSpell() {
+    public AbstractSpell getSpell() {
         return spell.get();
     }
     public List<Component> buildTooltip() {

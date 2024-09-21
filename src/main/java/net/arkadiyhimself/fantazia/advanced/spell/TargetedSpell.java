@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
-public class TargetedSpell<T extends LivingEntity> extends Spell {
+public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
     private BiPredicate<LivingEntity, T> conditions = ((livingEntity, t) -> true);
     private BiConsumer<LivingEntity, T> beforeDeflect = (entity, t) -> {};
     private BiConsumer<LivingEntity, T> afterDeflect = (entity, t) -> {};
@@ -70,7 +70,7 @@ public class TargetedSpell<T extends LivingEntity> extends Spell {
     public List<Component> itemTooltip(@javax.annotation.Nullable ItemStack itemStack) {
         List<Component> components = Lists.newArrayList();
         if (this.getID() == null) return components;
-        String basicPath = "ability." + this.getID().getNamespace() + "." + this.getID().getPath();
+        String basicPath = "spell." + this.getID().getNamespace() + "." + this.getID().getPath();
         int lines = 0;
         if (!Screen.hasShiftDown()) {
             String desc = Component.translatable(basicPath + ".desc.lines").getString();

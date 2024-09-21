@@ -22,6 +22,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.List;
 
 public class AuraCarrierCommand {
+    private AuraCarrierCommand() {}
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_AURA = (context, builder) -> {
         List<RegistryObject<BasicAura<?>>> auras = List.copyOf(FantazicRegistry.AURAS.getEntries());
         return SharedSuggestionProvider.suggestResource(auras.stream().map(RegistryObject::getId), builder);

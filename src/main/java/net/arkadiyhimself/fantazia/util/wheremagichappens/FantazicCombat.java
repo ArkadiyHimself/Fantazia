@@ -8,7 +8,6 @@ import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.EvasionData;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHolder;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.AbsoluteBarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.BarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.LayeredBarrierEffect;
@@ -23,24 +22,21 @@ import net.arkadiyhimself.fantazia.api.capability.level.LevelCap;
 import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
 import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
+import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.tags.FTZEntityTypeTags;
-import net.minecraft.server.commands.EffectCommands;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
@@ -52,9 +48,9 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 public class FantazicCombat {
     private FantazicCombat() {}
     public static void dropExperience(LivingEntity entity, float multiplier) {
-        if (entity.level() instanceof ServerLevel) {
+        if (entity.level() instanceof ServerLevel serverLevel) {
             int reward = (int) (entity.getExperienceReward() * multiplier);
-            ExperienceOrb.award((ServerLevel) entity.level(), entity.position(), reward);
+            ExperienceOrb.award(serverLevel, entity.position(), reward);
         }
     }
     public static boolean blocksDamage(LivingEntity entity) {
@@ -124,7 +120,7 @@ public class FantazicCombat {
     public static boolean isRanged(LivingEntity livingEntity) {
         if (livingEntity.getType().is(FTZEntityTypeTags.RANGED_ATTACK)) return true;
         Item item = livingEntity.getItemInHand(InteractionHand.MAIN_HAND).getItem();
-        return item instanceof BowItem || item instanceof TridentItem || item instanceof CrossbowItem;
+        return item instanceof BowItem || item instanceof TridentItem || item instanceof CrossbowItem || item instanceof HatchetItem;
     }
     public static void arrowImpact(AbstractArrow arrow, LivingEntity entity) {
         FeatureManager featureManager = FeatureGetter.getUnwrap(arrow);

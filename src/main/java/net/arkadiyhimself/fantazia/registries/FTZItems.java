@@ -8,6 +8,7 @@ import net.arkadiyhimself.fantazia.items.casters.DashStone;
 import net.arkadiyhimself.fantazia.items.casters.SpellCaster;
 import net.arkadiyhimself.fantazia.items.expendable.AncientSpark;
 import net.arkadiyhimself.fantazia.items.expendable.ExpendableItem;
+import net.arkadiyhimself.fantazia.items.expendable.InsightBottle;
 import net.arkadiyhimself.fantazia.items.expendable.TalentProvidingItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.FragileBlade;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.Murasama;
@@ -46,7 +47,7 @@ public class FTZItems {
         RegistryEvents.EXPENDABLES.add(item);
         return item;
     }
-    public static final RegistryObject<Item> THE_WORLDLINESS = REGISTER.register("the_worldliness", TheWorldliness::new);
+    public static final RegistryObject<Item> THE_WORLDLINESS = REGISTER.register("the_worldliness", TheWorldliness::new); // implemented and extended
     // melee weapons
     public static final RegistryObject<Item> FRAGILE_BLADE = weaponItem("fragile_blade", FragileBlade::new); // finished and implemented
     public static final RegistryObject<Item> MURASAMA = weaponItem("murasama", Murasama::new);
@@ -70,12 +71,14 @@ public class FTZItems {
     public static final RegistryObject<Item> SCULK_HEART = magicItem("heart_of_sculk", () -> new SpellCaster(FTZSpells.SONIC_BOOM)); // finished and implemented
     public static final RegistryObject<Item> MYSTIC_MIRROR = magicItem("mystic_mirror", () -> new SpellCaster(FTZSpells.REFLECT)); // finished and implemented
     public static final RegistryObject<Item> BLOODLUST_AMULET = magicItem("bloodlust_amulet", () -> new SpellCaster(FTZSpells.DAMNED_WRATH)); // finished and implemented
-    public static final RegistryObject<Item> ENIGMATIC_CLOCK = magicItem("enigmatic_clock", () -> new SpellCaster(FTZSpells.REWIND));
+    public static final RegistryObject<Item> ENIGMATIC_CLOCK = magicItem("enigmatic_clock", () -> new SpellCaster(FTZSpells.REWIND)); // finished and implemented
+    public static final RegistryObject<Item> NIMBLE_DAGGER = magicItem("nimble_dagger", () -> new SpellCaster(FTZSpells.BOUNCE));
 
     // auracasters
     public static final RegistryObject<Item> LEADERS_HORN = magicItem("leaders_horn", () -> new AuraCaster(FTZAuras.LEADERSHIP)); // finished and implemented
     public static final RegistryObject<Item> TRANQUIL_HERB = magicItem("tranquil_herb", () -> new AuraCaster(FTZAuras.TRANQUIL)); // finished and implemented
-    public static final RegistryObject<Item> SPIRAL_NEMESIS = magicItem("spiral_nemesis", () -> new AuraCaster(FTZAuras.DESPAIR));
+    public static final RegistryObject<Item> SPIRAL_NEMESIS = magicItem("spiral_nemesis", () -> new AuraCaster(FTZAuras.DESPAIR)); // finished and implemented
+    public static final RegistryObject<Item> ACID_BOTTLE = magicItem("acid_bottle", () -> new AuraCaster(FTZAuras.CORROSIVE)); // finished and implemented
 
     // expendables
     public static final RegistryObject<Item> OBSCURE_ESSENCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON)); // finished and implemented
@@ -83,6 +86,7 @@ public class FTZItems {
     public static final RegistryObject<Item> ARACHNID_EYE = expendableItem("arachnid_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(64).food(Foods.arachnidEye))); // finished and implemented
     public static final RegistryObject<Item> VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(Foods.vitalityFruit))); // finished and implemented
     public static final RegistryObject<Item> ANCIENT_SPARK = expendableItem("ancient_spark", AncientSpark::new); // finished and implemented
+    public static final RegistryObject<Item> INSIGHT_ESSENCE = expendableItem("insight_essence", InsightBottle::new);
     public static void onRegistry(RegisterEvent event) {
         FTZBlocks.getBlockItems().forEach((block, item) -> event.register(ForgeRegistries.Keys.ITEMS, block, () -> item.apply(ForgeRegistries.BLOCKS.getValue(block))));
     }

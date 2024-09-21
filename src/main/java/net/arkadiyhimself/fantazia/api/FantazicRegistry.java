@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.api;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
-import net.arkadiyhimself.fantazia.advanced.spell.Spell;
+import net.arkadiyhimself.fantazia.advanced.spell.AbstractSpell;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -23,7 +23,7 @@ public class FantazicRegistry {
         REGISTRIES.add(register);
         return register;
     }
-    public static final DeferredRegister<Spell> SPELLS = createRegister(Keys.SPELL);
+    public static final DeferredRegister<AbstractSpell> SPELLS = createRegister(Keys.SPELL);
     public static final DeferredRegister<BasicAura<?>> AURAS = createRegister(Keys.AURA);
     public static void register(IEventBus bus) {
         BakedRegistries.init();
@@ -36,13 +36,13 @@ public class FantazicRegistry {
         private Keys() {
         }
 
-        public static final ResourceKey<Registry<Spell>> SPELL = Fantazia.resKey("spell");
+        public static final ResourceKey<Registry<AbstractSpell>> SPELL = Fantazia.resKey("spell");
         public static final ResourceKey<Registry<BasicAura<?>>> AURA = Fantazia.resKey("aura");
         public static final ResourceKey<Registry<HealingType>> HEALING_TYPE = Fantazia.resKey("healing_type");
         private static void init() {}
     }
     public static final class BakedRegistries {
-        public static Supplier<IForgeRegistry<Spell>> SPELL = SPELLS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
+        public static Supplier<IForgeRegistry<AbstractSpell>> SPELL = SPELLS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
         public static Supplier<IForgeRegistry<BasicAura<?>>> AURA = AURAS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
         private static void init() {}
     }

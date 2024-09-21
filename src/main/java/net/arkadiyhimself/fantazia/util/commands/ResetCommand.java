@@ -11,6 +11,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ResetCommand {
+    private ResetCommand() {}
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("reset")
                 .then(Commands.literal("talents").executes(context -> {

@@ -19,6 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public class AdvancedHealCommand {
+    private AdvancedHealCommand() {}
     private static final SimpleCommandExceptionType ERROR_INVULNERABLE = new SimpleCommandExceptionType(Component.translatable("commands.advancedheal.invulnerable"));
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher, CommandBuildContext context) {
         commandDispatcher.register(Commands.literal("advancedheal").requires(commandSourceStack -> commandSourceStack.hasPermission(2))

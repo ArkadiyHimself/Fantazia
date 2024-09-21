@@ -3,8 +3,8 @@ package net.arkadiyhimself.fantazia.util.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.arkadiyhimself.fantazia.advanced.spell.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.SelfSpell;
-import net.arkadiyhimself.fantazia.advanced.spell.Spell;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.advanced.spell.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
@@ -25,13 +25,14 @@ import java.util.Collection;
 import java.util.List;
 
 public class SpellCastCommand {
+    private SpellCastCommand() {}
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_SELF_SPELL = (context, builder) -> {
-        List<RegistryObject<Spell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistry.SPELLS.getEntries()));
+        List<RegistryObject<AbstractSpell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistry.SPELLS.getEntries()));
         spells.removeIf(spell -> !(spell.get() instanceof SelfSpell));
         return SharedSuggestionProvider.suggestResource(spells.stream().map(RegistryObject::getId), builder);
     };
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_TARGETED_SPELL = (context, builder) -> {
-        List<RegistryObject<Spell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistry.SPELLS.getEntries()));
+        List<RegistryObject<AbstractSpell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistry.SPELLS.getEntries()));
         spells.removeIf(spell -> !(spell.get() instanceof TargetedSpell<?>));
         return SharedSuggestionProvider.suggestResource(spells.stream().map(RegistryObject::getId), builder);
     };
@@ -56,9 +57,9 @@ public class SpellCastCommand {
         ServerPlayer player = commandContext.getSource().getPlayer();
         if (player == null) return;
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<RegistryObject<Spell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
+        List<RegistryObject<AbstractSpell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
         SelfSpell spell = null;
-        for (RegistryObject<Spell> spellRegistryObject : registryObjects) if (spellRegistryObject.getId().equals(id) && spellRegistryObject.get() instanceof SelfSpell selfSpell) spell = selfSpell;
+        for (RegistryObject<AbstractSpell> spellRegistryObject : registryObjects) if (spellRegistryObject.getId().equals(id) && spellRegistryObject.get() instanceof SelfSpell selfSpell) spell = selfSpell;
         if (spell == null) return;
         SelfSpell finalSpell = spell;
         commandContext.getSource().sendSuccess(() -> Component.translatable("commands.spellcast.self.success", finalSpell.getName()), true);
@@ -68,9 +69,9 @@ public class SpellCastCommand {
         ServerPlayer player = commandContext.getSource().getPlayer();
         if (player == null) return;
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<RegistryObject<Spell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
+        List<RegistryObject<AbstractSpell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
         TargetedSpell<?> spell = null;
-        for (RegistryObject<Spell> spellRegistryObject : registryObjects) if (spellRegistryObject.getId().equals(id) && spellRegistryObject.get() instanceof TargetedSpell<?> selfSpell) spell = selfSpell;
+        for (RegistryObject<AbstractSpell> spellRegistryObject : registryObjects) if (spellRegistryObject.getId().equals(id) && spellRegistryObject.get() instanceof TargetedSpell<?> selfSpell) spell = selfSpell;
         if (spell == null) return;
         TargetedSpell<?> finalSpell = spell;
         LivingEntity target = SpellHelper.commandTargetedSpell(player, spell);
@@ -87,9 +88,9 @@ public class SpellCastCommand {
             return;
         }
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<RegistryObject<Spell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
+        List<RegistryObject<AbstractSpell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
         TargetedSpell<?> spell = null;
-        for (RegistryObject<Spell> spellRegistryObject : registryObjects) if (spellRegistryObject.getId().equals(id) && spellRegistryObject.get() instanceof TargetedSpell<?> selfSpell) spell = selfSpell;
+        for (RegistryObject<AbstractSpell> spellRegistryObject : registryObjects) if (spellRegistryObject.getId().equals(id) && spellRegistryObject.get() instanceof TargetedSpell<?> selfSpell) spell = selfSpell;
         if (spell == null) return;
         TargetedSpell<?> finalSpell = spell;
         List<? extends LivingEntity> cast = SpellHelper.commandTargetedSpell(player, finalSpell, livingEntities);

@@ -4,7 +4,7 @@
   ],
   "effect_instances" : {
     "fantazia:cursed_mark" : {
-      "chance" : 0.25,
+      "chance" : 0.35,
       "level" : 1,
       "hidden" : true
     }

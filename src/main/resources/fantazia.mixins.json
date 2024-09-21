@@ -2,7 +2,7 @@
   "required": true,
   "package": "net.arkadiyhimself.fantazia.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "${mod_id}.refmap.json",
+  "refmap": "fantazia.refmap.json",
   "mixins": [
     "MixinArrowItem",
     "MixinCrossbowItem",
@@ -34,5 +34,8 @@
     "MixinParticle",
     "MixinWolfRenderer"
   ],
+  "injectors": {
+    "defaultRequire": 1
+  },
   "minVersion": "0.8"
 }

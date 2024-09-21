@@ -7,6 +7,7 @@
   "custom_book_item": "fantazia:the_worldliness",
   "model": "fantazia:the_worldliness",
   "book_texture": "fantazia:textures/gui/the_worldliness.png",
+  "crafting_texture" : "fantazia:textures/gui/the_worldliness_crafting.png",
   "use_resource_pack": true,
   "show_progress": false
 }

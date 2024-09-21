@@ -1,0 +1,11 @@
+{
+  "loot_tables": [
+    "minecraft:entities/evoker"
+  ],
+  "loot_instances": {
+    "fantazia:insight_essence" : {
+      "chance" : 1,
+      "first_time" : true
+    }
+  }
+}

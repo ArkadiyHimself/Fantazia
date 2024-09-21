@@ -19,15 +19,14 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 mixin {
     add sourceSets.main, "fantazia.refmap.json"
-
     config "fantazia.mixins.json"
 }
-
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
     mappings channel: 'parchment', version: '2023.09.03-1.20.1'
     runs {
         client {
+            arg '-mixin.config=fantazia.mixins.json'
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
@@ -45,7 +44,7 @@ minecraft {
 
         server {
             workingDirectory project.file('run')
-
+            arg '-mixin.config=fantazia.mixins.json'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             property 'forge.logging.markers', 'REGISTRIES'
@@ -154,7 +153,8 @@ jar {
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : mod_version,
                 "Implementation-Vendor"   : mod_authors,
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'MixinConfigs'          : 'fantazia.mixins.json',
         ])
     }
 }

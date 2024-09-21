@@ -273,6 +273,15 @@
       }
     ]
   },
+  "spell.bounce" : {
+    "subtitle": "fantazia.subtitles.rewind",
+    "sounds": [
+      {
+        "name" : "fantazia:spells/bounce",
+        "stream" : false
+      }
+    ]
+  },
   "targeted.reflect" : {
     "subtitle": "fantazia.subtitles.reflect",
     "sounds": [

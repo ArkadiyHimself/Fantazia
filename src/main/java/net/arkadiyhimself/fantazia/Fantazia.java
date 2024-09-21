@@ -16,7 +16,6 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -25,13 +24,12 @@ import org.slf4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 
 import java.util.Random;
-
 @Mod(Fantazia.MODID)
 public class Fantazia {
     public static final String MODID = "fantazia";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final Random RANDOM = new Random();
-    public static final boolean DEVELOPER_MODE = false;
+    public static final boolean DEVELOPER_MODE = true;
     private static final CustomItemRenderer CUSTOM_RENDERER = new CustomItemRenderer();
     public Fantazia() {
         GeckoLib.initialize();

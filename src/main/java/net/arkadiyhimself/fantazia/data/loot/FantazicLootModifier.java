@@ -33,17 +33,21 @@ public class FantazicLootModifier extends LootModifier {
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(@NotNull ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+        Entity killer = context.getParamOrNull(LootContextParams.KILLER_ENTITY);
         ResourceLocation id = context.getQueriedLootTableId();
         boolean chest = LootTablesHelper.isVanillaChest(context);
+        boolean slayed = LootTablesHelper.isSlayed(context);
+
+        if (chest && !LootTablesHelper.isVillage(id)) addItem(generatedLoot, FTZItems.OBSCURE_ESSENCE.get(), -2, 3);
+        if (slayed && killer instanceof Player playerKiller) AbilityGetter.abilityConsumer(playerKiller, LootTableModifiersHolder.class, lootTableModifiersHolder -> lootTableModifiersHolder.attemptLoot(generatedLoot, id));
+
         if (!(entity instanceof Player player)) return generatedLoot;
 
+        AbilityGetter.abilityConsumer(player, LootTableModifiersHolder.class, lootTableModifiersHolder -> lootTableModifiersHolder.attemptLoot(generatedLoot, id));
         if (!PlayerData.hasPersistentTag(player, "LootedFirstDashstone") && chest) {
             PlayerData.setPersistentBoolean(player, "LootedFirstDashstone");
             generatedLoot.add(new ItemStack(FTZItems.DASHSTONE1.get()));
         }
-
-        AbilityGetter.abilityConsumer(player, LootTableModifiersHolder.class, lootTableModifiersHolder -> lootTableModifiersHolder.attemptLoot(generatedLoot, id));
-        if (chest && !LootTablesHelper.isVillage(id)) addItem(generatedLoot, FTZItems.OBSCURE_ESSENCE.get(), -2, 3);
 
         return generatedLoot;
     }
@@ -51,7 +55,6 @@ public class FantazicLootModifier extends LootModifier {
     public Codec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
     }
-
     private static void addItem(@NotNull ObjectArrayList<ItemStack> generatedLoot, Item item, int max, int min) {
         int amo = Math.round(Mth.lerp(Fantazia.RANDOM.nextFloat(), min, max));
         if (amo > 0) generatedLoot.add(new ItemStack(item, amo));

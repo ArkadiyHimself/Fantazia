@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class PassiveSpell extends Spell {
+public class PassiveSpell extends AbstractSpell {
     public PassiveSpell(float manacost, int recharge, Supplier<SoundEvent> castSound) {
         super(manacost, recharge, castSound);
     }
@@ -31,7 +31,7 @@ public class PassiveSpell extends Spell {
     public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         List<Component> components = Lists.newArrayList();
         if (getID() == null) return components;
-        String basicPath = "ability." + this.getID().getNamespace() + "." + this.getID().getPath();
+        String basicPath = "spell." + this.getID().getNamespace() + "." + this.getID().getPath();
         int lines = 0;
         if (!Screen.hasShiftDown()) {
             String desc = Component.translatable(basicPath + ".desc.lines").getString();

@@ -64,7 +64,7 @@ public class SpellHelper {
     }
     @SuppressWarnings("unchecked")
     private static <T extends LivingEntity> @Nullable T getTarget(LivingEntity caster, TargetedSpell<T> spell) {
-        List<LivingEntity> targets = getTargets(caster, 1f, spell.getRange(), spell.is(FTZSpellTags.THROUGH_WALLS));
+        List<LivingEntity> targets = getTargets(caster, 1.5f, spell.getRange(), spell.is(FTZSpellTags.THROUGH_WALLS));
         targets.removeIf(Predicate.not(spell::canAffect));
         List<T> newTargets = (List<T>) targets;
         newTargets.removeIf(living -> !spell.conditions(caster, living));
@@ -154,7 +154,7 @@ public class SpellHelper {
         }
         return true;
     }
-    public static boolean hasSpell(LivingEntity entity, Spell spell) {
+    public static boolean hasSpell(LivingEntity entity, AbstractSpell spell) {
         List<SlotResult> slotResults = Lists.newArrayList();
         slotResults.addAll(InventoryHelper.findCurios(entity, "passivecaster"));
         slotResults.addAll(InventoryHelper.findCurios(entity, "spellcaster"));
@@ -166,7 +166,7 @@ public class SpellHelper {
         }
         return flag;
     }
-    public static boolean hasActiveSpell(LivingEntity entity, Spell spell) {
+    public static boolean hasActiveSpell(LivingEntity entity, AbstractSpell spell) {
         List<SlotResult> slotResults = Lists.newArrayList();
         slotResults.addAll(InventoryHelper.findCurios(entity, "passivecaster"));
         slotResults.addAll(InventoryHelper.findCurios(entity, "spellcaster"));
@@ -190,6 +190,8 @@ public class SpellHelper {
         List<LivingEntity> entities = new ArrayList<>();
 
         for (int distance = 1; distance < maxDist; ++distance) {
+
+
             head = head.add(new Vector3(caster.getLookAngle()).multiply(distance)).add(0.0, 0.5, 0.0);
             List<LivingEntity> list = caster.level().getEntitiesOfClass(LivingEntity.class, new AABB(head.x - range, head.y - range, head.z - range, head.x + range, head.y + range, head.z + range));
             list.removeIf(entity -> (entity == caster || (!caster.hasLineOfSight(entity) && !(seeThruWalls && Minecraft.getInstance().shouldEntityAppearGlowing(entity)))));

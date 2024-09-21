@@ -16,18 +16,18 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public abstract class Spell implements ITooltipBuilder {
+public abstract class AbstractSpell implements ITooltipBuilder {
     private final float manacost;
     private final int recharge;
     private final Supplier<SoundEvent> castSound;
     private Cleanse strength = null;
     protected boolean hasCleanse = false;
-    protected Spell(float manacost, int recharge, @Nullable Supplier<SoundEvent> castSound) {
+    protected AbstractSpell(float manacost, int recharge, @Nullable Supplier<SoundEvent> castSound) {
         this.recharge = recharge;
         this.manacost = manacost;
         this.castSound = castSound == null ? () -> null : castSound;
     }
-    public Spell cleanse(Cleanse cleanse) {
+    public AbstractSpell cleanse(Cleanse cleanse) {
         strength = cleanse;
         hasCleanse = true;
         return this;
@@ -40,13 +40,13 @@ public abstract class Spell implements ITooltipBuilder {
     }
     @Nullable
     public ResourceLocation getID() {
-        List<RegistryObject<Spell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
-        for (RegistryObject<Spell> basicAuraRegistryObject : registryObjects) if (basicAuraRegistryObject.get() == this) return basicAuraRegistryObject.getId();
+        List<RegistryObject<AbstractSpell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
+        for (RegistryObject<AbstractSpell> basicAuraRegistryObject : registryObjects) if (basicAuraRegistryObject.get() == this) return basicAuraRegistryObject.getId();
         return null;
     }
     public Component getName() {
         if (getID() == null) return null;
-        return Component.translatable("ability." + getID().getNamespace() + "." + getID().getPath() + ".name");
+        return Component.translatable("spell." + getID().getNamespace() + "." + getID().getPath() + ".name");
     }
     @Nullable
     public SoundEvent getCastSound() {
@@ -62,8 +62,8 @@ public abstract class Spell implements ITooltipBuilder {
     public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         return Lists.newArrayList();
     }
-    public boolean is(TagKey<Spell> tagKey) {
-        ITagManager<Spell> tagManager = FantazicRegistry.BakedRegistries.SPELL.get().tags();
+    public boolean is(TagKey<AbstractSpell> tagKey) {
+        ITagManager<AbstractSpell> tagManager = FantazicRegistry.BakedRegistries.SPELL.get().tags();
         return tagManager != null && tagManager.getTag(tagKey).contains(this);
     }
 }

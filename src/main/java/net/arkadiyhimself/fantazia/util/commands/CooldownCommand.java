@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Collection;
 
 public class CooldownCommand {
+    private CooldownCommand() {}
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(Commands.literal("cooldown").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
                 // add

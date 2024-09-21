@@ -27,10 +27,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 
 @OnlyIn(Dist.CLIENT)
 public class VisualHelper {
-    private static final EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
     public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type) {
         if (particle == null || !(entity.level() instanceof ServerLevel serverLevel)) return;
         // getting entity's height and width
@@ -74,7 +74,7 @@ public class VisualHelper {
         float f3 = entity.getBbHeight() / f;
         float f4 = 0.0F;
         poseStack.mulPose(Axis.YP.rotationDegrees(-Minecraft.getInstance().getEntityRenderDispatcher().camera.getYRot()));
-        poseStack.translate(0.0F, 0.0F, -0.3F + (float)((int)f3) * 0.02F);
+        poseStack.translate(0.0F, 0.0F, -0.3F + (f3) * 0.02F);
         float f5 = 0.0F;
         int i = 0;
         VertexConsumer vertexconsumer = buffers.getBuffer(Sheets.cutoutBlockSheet());
@@ -148,7 +148,7 @@ public class VisualHelper {
         AWAY((pos, delta) -> new Vec3(delta.x() - 1.5, delta.y() * -0.2 - 0.1, delta.z() - 1.5)),
         AWAY_AND_FALL((pos, delta) -> new Vec3(delta.x() - 1.5, -0.15, delta.z() - 1.5));
         private final BiFunction<Vec3, Vec3, Vec3> modifier;
-        ParticleMovement(BiFunction<Vec3, Vec3, Vec3> modifier) {
+        ParticleMovement(BinaryOperator<Vec3> modifier) {
             this.modifier = modifier;
         }
         ParticleMovement(Vec3 vec3) {

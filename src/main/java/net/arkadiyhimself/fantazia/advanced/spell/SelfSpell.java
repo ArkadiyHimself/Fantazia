@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class SelfSpell extends Spell {
+public class SelfSpell extends AbstractSpell {
     private Predicate<LivingEntity> conditions = livingEntity -> true;
     private Consumer<LivingEntity> onCast = livingEntity -> {};
     public SelfSpell(float manacost, int recharge, Supplier<SoundEvent> soundEvent) {
@@ -46,7 +46,7 @@ public class SelfSpell extends Spell {
     public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         List<Component> components = Lists.newArrayList();
         if (this.getID() == null) return components;
-        String basicPath = "ability." + this.getID().getNamespace() + "." + this.getID().getPath();
+        String basicPath = "spell." + this.getID().getNamespace() + "." + this.getID().getPath();
         int lines = 0;
         if (!Screen.hasShiftDown()) {
             String desc = Component.translatable(basicPath + ".desc.lines").getString();

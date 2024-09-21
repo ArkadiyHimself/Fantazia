@@ -1,0 +1,44 @@
+{
+  "parent" : "fantazia:main/root",
+  "criteria": {
+    "spellcaster": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "curios:spellcaster"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "passivecaster" : {
+      "conditions": {
+        "items": [
+          {
+            "tag": "curios:passivecaster"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.fantazia.caster.desc"
+    },
+    "hidden": true,
+    "icon": {
+      "item": "fantazia:entangler"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.caster"
+    }
+  },
+  "requirements" : [
+    [
+      "spellcaster",
+      "passivecaster"
+    ]
+  ]
+}

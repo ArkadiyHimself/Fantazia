@@ -25,6 +25,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.phys.Vec3;
 
 public class Spells {
     private Spells() {}
@@ -88,6 +89,21 @@ public class Spells {
                         saturation = devour - hunger;
                     }
                     player.getFoodData().eat(food, saturation);
+                });
+        public static final TargetedSpell<LivingEntity> BOUNCE = new TargetedSpell<>(LivingEntity.class, 16f, 3.5f, 160)
+                .setConditions((caster, entity) -> !FantazicCombat.isInvulnerable(entity))
+                .setBefore((caster, entity) -> {
+                    for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() * 8 + 16; i++) VisualHelper.randomParticleOnModel(caster, ParticleTypes.PORTAL, VisualHelper.ParticleMovement.REGULAR);
+                    caster.level().playSound(null, caster.blockPosition(), FTZSoundEvents.BOUNCE.get(), SoundSource.NEUTRAL);
+                })
+                .setAfter((caster, entity) -> {
+                    Vec3 delta1 = entity.position().subtract(caster.position());
+                    Vec3 normal = delta1.normalize();
+                    Vec3 delta2 = delta1.subtract(normal.scale(0.5));
+                    Vec3 finalPos = caster.position().add(delta2);
+                    caster.teleportTo(finalPos.x(), entity.getY(), finalPos.z());
+                    EffectHelper.microStun(entity);
+                    EffectHelper.makeDisarmed(entity, 50);
                 });
     }
     public static final class Passive {

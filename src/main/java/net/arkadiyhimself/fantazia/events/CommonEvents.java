@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSources;
-import net.arkadiyhimself.fantazia.advanced.spell.Spell;
+import net.arkadiyhimself.fantazia.advanced.spell.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHelper;
@@ -23,7 +23,6 @@ import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.LivingData
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectManager;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.CursedMarkEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.StunEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.feature.FeatureManager;
@@ -134,7 +133,7 @@ public class CommonEvents {
             livingTarget.setHealth(1f);
         }
         LivingData livingData = DataGetter.takeDataHolder(livingTarget, LivingData.class);
-        Spell entangle = FTZSpells.ENTANGLE.get();
+        AbstractSpell entangle = FTZSpells.ENTANGLE.get();
         if (SpellHelper.hasSpell(livingTarget, entangle) && livingData != null && livingData.getPrevHP() > livingTarget.getMaxHealth() * 0.1f && FTZEvents.ForgeExtension.onDeathPrevention(event.getEntity(),entangle)) {
             EffectCleansing.tryCleanseAll(livingTarget, entangle.hasCleanse() ? entangle.getStrength() : Cleanse.POWERFUL, MobEffectCategory.HARMFUL);
             event.setCanceled(true);
@@ -156,15 +155,16 @@ public class CommonEvents {
                 TalentsHolder.ProgressHolder progressHolder = AbilityHelper.getProgressHolder(player);
                 if (progressHolder != null) progressHolder.award("slayed", id);
             }
-            CursedMarkEffect cursedMarkEffect = EffectGetter.takeEffectHolder(livingTarget, CursedMarkEffect.class);
-            if (cursedMarkEffect != null && cursedMarkEffect.isMarked()) EffectHelper.makeDoomed(attacker, 600);
+            if ((instance = livingTarget.getEffect(FTZMobEffects.CURSED_MARK.get())) != null) {
+                int dur = 600 + instance.getAmplifier() * 600;
+                EffectHelper.makeDoomed(attacker, dur);
+            }
         }
     }
     @SubscribeEvent
     public static void entityLeaveLevel(EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof LivingEntity livingEntity) DataGetter.dataConsumer(livingEntity, AuraOwning.class, AuraOwning::clearAll);
         FeatureGetter.get(event.getEntity()).ifPresent(FeatureManager::onDeath);
-
     }
     @SubscribeEvent
     public static void livingDrops(LivingDropsEvent event) {
@@ -237,7 +237,7 @@ public class CommonEvents {
         float pre = target.getHealth();
         float post = target.getHealth() - event.getAmount();
         if (target.level().isClientSide()) return;
-        Spell damned = FTZSpells.DAMNED_WRATH.get();
+        AbstractSpell damned = FTZSpells.DAMNED_WRATH.get();
         if (post < 0.3f * target.getMaxHealth() && !source.is(FTZDamageTypes.REMOVAL)) {
             if (SpellHelper.hasActiveSpell(target, damned)) {
                 EffectCleansing.tryCleanseAll(target, damned.hasCleanse() ? damned.getStrength() : Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
@@ -367,7 +367,6 @@ public class CommonEvents {
     @SubscribeEvent
     public static void livingTick(LivingEvent.LivingTickEvent event) {
         LivingEntity livingEntity = event.getEntity();
-        Level level = livingEntity.level();
 
         if (livingEntity.isDeadOrDying() || livingEntity.level().isClientSide()) return;
         if (livingEntity.getHealth() > livingEntity.getMaxHealth()) {
@@ -556,7 +555,6 @@ public class CommonEvents {
     }
     @SubscribeEvent
     public static void playerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        ResourceKey<Level> from = event.getFrom();
         ResourceKey<Level> to = event.getTo();
         TalentsHolder.ProgressHolder progressHolder = AbilityHelper.getProgressHolder(event.getEntity());
         if (progressHolder != null && !to.equals(Level.OVERWORLD)) progressHolder.award("visited_" + to.location(), 50);

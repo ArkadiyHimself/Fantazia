@@ -8,8 +8,12 @@ import org.apache.commons.compress.utils.Lists;
 import java.util.List;
 
 public class LootTablesHelper {
+    private LootTablesHelper() {}
     public static boolean isVanillaChest(LootContext context) {
         return String.valueOf(context.getQueriedLootTableId()).startsWith("minecraft:chests/");
+    }
+    public static boolean isSlayed(LootContext context) {
+        return String.valueOf(context.getQueriedLootTableId().getPath()).startsWith("entities");
     }
     public static boolean isNether(ResourceLocation resLoc) {
         List<ResourceLocation> lootChestList = Lists.newArrayList();

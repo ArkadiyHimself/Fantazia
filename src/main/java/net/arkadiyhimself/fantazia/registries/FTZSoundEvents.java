@@ -50,7 +50,8 @@ public class FTZSoundEvents {
     public static final RegistryObject<SoundEvent> BLOODLUST_AMULET = soundEvent("ui.bloodlust_amulet", 6f);; // implemented
     public static final RegistryObject<SoundEvent> EVASION = soundEvent("entity.evasion", 8f); // implemented
     public static final RegistryObject<SoundEvent> REWIND = soundEvent("spell.rewind", 12f); // implemented
-    public static final RegistryObject<SoundEvent> ANCIENT_SPARK = soundEvent("item.ancient_spark.use", 8f);
+    public static final RegistryObject<SoundEvent> ANCIENT_SPARK = soundEvent("item.ancient_spark.use", 8f); // implemented
+    public static final RegistryObject<SoundEvent> BOUNCE = soundEvent("spell.bounce", 24f);
     public static void register() {
         REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 public class NetworkHandler {
+    private NetworkHandler() {}
     private static final String PROTOCOL_VERSION = "1.0";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
             Fantazia.res("main"),
@@ -70,13 +71,13 @@ public class NetworkHandler {
 
         packets.forEach(consumer -> consumer.accept(INSTANCE, getNextId()));
     }
-    public static <MSG> void sendToServer(MSG msg) {
+    public static <T> void sendToServer(T msg) {
         INSTANCE.sendToServer(msg);
     }
-    public static <MSG> void sendToPlayer(MSG msg, Player player) {
+    public static <T> void sendToPlayer(T msg, Player player) {
         if (player instanceof ServerPlayer serverPlayer) INSTANCE.send(PacketDistributor.PLAYER.with(() -> serverPlayer), msg);
     }
-    public static <MSG> void sendToPlayers(MSG msg, ServerLevel level) {
+    public static <T> void sendToPlayers(T msg, ServerLevel level) {
         for (ServerPlayer player : level.players()) INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), msg);
     }
 }

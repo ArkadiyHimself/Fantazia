@@ -5,7 +5,7 @@
   "element": {
     "iconTexture": "fantazia:textures/gui/talents/evasion_boost.png",
     "title": "fantazia.talent.evasion_boost",
-    "wisdom": 10,
+    "wisdom": 25,
     "attribute": "fantazia:evasion",
     "name": "evasion_talent",
     "amount": 5,

@@ -17,6 +17,11 @@
       "chance" : 0.07,
       "level" : 0,
       "hidden" : false
+    },
+    "fantazia:might" : {
+      "chance" : 0.2,
+      "level" : 4,
+      "hidden" : false
     }
   }
 }

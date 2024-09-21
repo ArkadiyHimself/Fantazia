@@ -1,0 +1,19 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "dashstone": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:witch"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

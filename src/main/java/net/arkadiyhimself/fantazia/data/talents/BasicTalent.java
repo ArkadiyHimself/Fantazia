@@ -7,11 +7,9 @@ import net.arkadiyhimself.fantazia.util.library.hierarchy.ComplexHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.HierarchyException;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 

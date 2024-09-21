@@ -1,0 +1,22 @@
+{
+  "name": "book.fantazia.entry.artifacts.nimble_dagger.name",
+  "icon": "fantazia:nimble_dagger",
+  "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/nimble_dagger",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.nimble_dagger.page.1"
+    },
+    {
+      "type": "crafting",
+      "recipe": "fantazia:nimble_dagger",
+      "title" : "book.fantazia.entry.artifacts.nimble_dagger.heading",
+      "text" : "book.fantazia.entry.artifacts.nimble_dagger.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.nimble_dagger.page.3"
+    }
+  ]
+}

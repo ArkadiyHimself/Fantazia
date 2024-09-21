@@ -6,14 +6,16 @@ import net.arkadiyhimself.fantazia.advanced.healing.HealingSources;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.LivingData;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.StunEffect;
 import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
@@ -22,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import org.checkerframework.checker.units.qual.A;
 
 public class Auras {
     private Auras() {
@@ -79,7 +80,6 @@ public class Auras {
                 if (state.getBlock() instanceof BonemealableBlock bonemealableBlock && !(state.getBlock() instanceof GrassBlock) && bonemealableBlock.isValidBonemealTarget(level, blockPos, state, level.isClientSide) && level instanceof ServerLevel serverLevel && bonemealableBlock.isBonemealSuccess(level, level.random, blockPos, state)) bonemealableBlock.performBonemeal(serverLevel, level.random, blockPos, state);
             });
     public static final BasicAura<LivingEntity> DESPAIR = new BasicAura<>(8f, BasicAura.TYPE.NEGATIVE, LivingEntity.class)
-            .addPrimaryFilter((entity, owner) ->!(entity instanceof Mob mob) || mob.getTarget() == owner)
             .addSecondaryFilter((entity, owner) -> (owner instanceof LivingEntity livingOwner && livingOwner.getHealth() > entity.getHealth() || entity.hasEffect(FTZMobEffects.DOOMED.get())) && !entity.hasEffect(FTZMobEffects.FURY.get()))
             .addAttributeModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier("despair_damage", -0.35, AttributeModifier.Operation.MULTIPLY_TOTAL))
             .addDynamicAttributeModifier(Attributes.MOVEMENT_SPEED, new AttributeModifier("despair_slow", -0.8, AttributeModifier.Operation.MULTIPLY_TOTAL));

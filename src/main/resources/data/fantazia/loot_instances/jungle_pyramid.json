@@ -1,7 +1,6 @@
 {
   "loot_tables": [
-    "minecraft:chests/jungle_temple",
-    "minecraft:chests/desert_pyramid"
+    "minecraft:chests/jungle_temple"
   ],
   "loot_instances": {
     "fantazia:vitality_fruit": {

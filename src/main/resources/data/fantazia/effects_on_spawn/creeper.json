@@ -1,0 +1,12 @@
+{
+  "entity_types" : [
+    "minecraft:creeper"
+  ],
+  "effect_instances" : {
+    "fantazia:layered_barrier" : {
+      "chance" : 0.15,
+      "level" : 4,
+      "hidden" : true
+    }
+  }
+}
