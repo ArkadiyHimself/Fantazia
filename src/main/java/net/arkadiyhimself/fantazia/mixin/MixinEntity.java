@@ -53,6 +53,8 @@ public class MixinEntity {
     }
     @Inject(at = @At("HEAD"), method = "getTeamColor", cancellable = true)
     private void teamColor(CallbackInfoReturnable<Integer> cir) {
+
+
         if (!(entity instanceof LivingEntity livingEntity)) return;
         FuryEffect furyEffect = EffectGetter.takeEffectHolder(livingEntity, FuryEffect.class);
         if (furyEffect != null && furyEffect.isFurious()) cir.setReturnValue(12586510);

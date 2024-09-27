@@ -4,6 +4,7 @@ import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.VibrationListen;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FuryEffect;
+import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.Minecraft;
@@ -48,6 +49,8 @@ public abstract class MixinMinecraft {
             FuryEffect furyEffect = EffectGetter.takeEffectHolder(livingEntity, FuryEffect.class);
             if (furyEffect != null && furyEffect.isFurious() && player.hasLineOfSight(pEntity)) cir.setReturnValue(true);
         }
+
+        if (pEntity instanceof DashStoneEntity) cir.setReturnValue(true);
         VibrationListen vibrationListen = AbilityGetter.takeAbilityHolder(player, VibrationListen.class);
         if (vibrationListen != null && pEntity instanceof LivingEntity && vibrationListen.revealed().contains(pEntity)) cir.setReturnValue(true);
     }

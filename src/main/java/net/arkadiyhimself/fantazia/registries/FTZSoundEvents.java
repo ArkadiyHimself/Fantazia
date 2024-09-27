@@ -52,6 +52,7 @@ public class FTZSoundEvents {
     public static final RegistryObject<SoundEvent> REWIND = soundEvent("spell.rewind", 12f); // implemented
     public static final RegistryObject<SoundEvent> ANCIENT_SPARK = soundEvent("item.ancient_spark.use", 8f); // implemented
     public static final RegistryObject<SoundEvent> BOUNCE = soundEvent("spell.bounce", 24f);
+    public static final RegistryObject<SoundEvent> WIND = soundEvent("ambient.wind", 32f);
     public static void register() {
         REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

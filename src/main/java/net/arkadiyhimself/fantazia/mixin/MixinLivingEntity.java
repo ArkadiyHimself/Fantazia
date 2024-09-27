@@ -25,6 +25,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -76,9 +78,9 @@ public abstract class MixinLivingEntity extends Entity {
     private boolean horizontalCollision() {
         AABB bb = entity.getBoundingBox().inflate(0.2,0,0.2);
         int mX = Mth.floor(bb.minX);
-        int mY = Mth.floor(bb.minY);
+          int mY = Mth.floor(bb.minY);
         int mZ = Mth.floor(bb.minZ);
-        for (int y2 = mY; y2 < bb.maxY; y2++) for (int x2 = mX; x2 < bb.maxX; x2++) for (int z2 = mZ; z2 < bb.maxZ; z2++) if (!level().getBlockState(new BlockPos(x2, y2, z2)).isAir()) return true;
+        for (int y2 = mY; y2 < bb.maxY; y2++) for (int x2 = mX; x2 < bb.maxX; x2++) for (int z2 = mZ; z2 < bb.maxZ; z2++) if (level().getBlockState(new BlockPos(x2, y2, z2)).isSolid()) return true;
         return false;
     }
 }

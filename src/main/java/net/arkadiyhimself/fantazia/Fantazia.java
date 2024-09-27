@@ -16,6 +16,9 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
@@ -24,12 +27,14 @@ import org.slf4j.Logger;
 import software.bernie.geckolib.GeckoLib;
 
 import java.util.Random;
+import java.util.function.Function;
+
 @Mod(Fantazia.MODID)
 public class Fantazia {
     public static final String MODID = "fantazia";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final Random RANDOM = new Random();
-    public static final boolean DEVELOPER_MODE = true;
+    public static final boolean DEVELOPER_MODE = false;
     private static final CustomItemRenderer CUSTOM_RENDERER = new CustomItemRenderer();
     public Fantazia() {
         GeckoLib.initialize();
@@ -71,5 +76,8 @@ public class Fantazia {
     }
     public static <T> ResourceKey<Registry<T>> resKey(String name) {
         return ResourceKey.createRegistryKey(Fantazia.res(name));
+    }
+    public static Function<StructureTemplatePool.Projection, LegacySinglePoolElement> pool(String name) {
+        return StructurePoolElement.legacy(MODID + ":" + name);
     }
 }

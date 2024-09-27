@@ -81,7 +81,7 @@ public class VibrationListen extends AbilityHolder implements ITicking {
     }
     public ImmutableList<LivingEntity> revealed() {
         List<LivingEntity> entities = Lists.newArrayList(REVEAL.keySet().iterator());
-        entities.removeIf(entity -> REVEAL.containsKey(entity) && REVEAL.get(entity) <= 0 && entity == null);
+        entities.removeIf(entity -> REVEAL.containsKey(entity) && REVEAL.get(entity) <= 0 || entity == null);
         return ImmutableList.copyOf(entities);
     }
     public boolean listen() {

@@ -1,4 +1,4 @@
-package net.arkadiyhimself.fantazia.client.models.entity.ftzentities;
+package net.arkadiyhimself.fantazia.client.models.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -31,10 +31,13 @@ public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
     @Override
     public void render(ThrownHatchet pEntity, float pEntityYaw, float pPartialTicks, PoseStack poseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight) {
         poseStack.pushPose();
+
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.yRotO, pEntity.getYRot()) - 90.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.getEntityData().get(ThrownHatchet.VISUAL_ROT0), pEntity.getEntityData().get(ThrownHatchet.VISUAL_ROT1))));
+
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(hatchetModel(pEntity));
         Minecraft.getInstance().getItemRenderer().render(pEntity.getPickupItem(), ItemDisplayContext.GUI, false, poseStack, pBuffer, pPackedLight, pPackedLight, model);
+
         poseStack.popPose();
     }
 
@@ -43,7 +46,7 @@ public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
         return Fantazia.res("");
     }
 
-    public ModelResourceLocation hatchetModel(ThrownHatchet hatchet) {
+    private static ModelResourceLocation hatchetModel(ThrownHatchet hatchet) {
         if (!(hatchet.getPickupItem().getItem() instanceof HatchetItem hatchetItem)) return WOODEN;
         Tier tier = hatchetItem.getTier();
         if (tier == Tiers.STONE) return STONE;

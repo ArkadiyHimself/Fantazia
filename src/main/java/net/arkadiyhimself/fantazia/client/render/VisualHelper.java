@@ -12,10 +12,10 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -138,6 +138,16 @@ public class VisualHelper {
         renderer.getModel().renderToBuffer(poseStack, consumer, packedLight, packedOverlay, r, g, b,0.65f);
 
         poseStack.popPose();
+    }
+    public static void circleOfParticles(ParticleOptions particle, Vec3 pos) {
+        if (Minecraft.getInstance().level == null) return;
+        double d0 = pos.x;
+        double d7 = pos.y;
+        double d9 = pos.z;
+        for(double d12 = 0.0D; d12 < (Math.PI * 2D); d12 += 0.15707963267948966D) {
+            Minecraft.getInstance().level.addParticle(particle, d0 + Math.cos(d12) * 5.0D, d7 - 0.4D, d9 + Math.sin(d12) * 5.0D, Math.cos(d12) * -5.0D, 0.0D, Math.sin(d12) * -5.0D);
+            Minecraft.getInstance().level.addParticle(particle, d0 + Math.cos(d12) * 5.0D, d7 - 0.4D, d9 + Math.sin(d12) * 5.0D, Math.cos(d12) * -7.0D, 0.0D, Math.sin(d12) * -7.0D);
+        }
     }
     public enum ParticleMovement {
         REGULAR(new Vec3(0,0,0)),

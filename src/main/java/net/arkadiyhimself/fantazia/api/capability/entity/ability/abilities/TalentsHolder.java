@@ -107,6 +107,10 @@ public class TalentsHolder extends AbilityHolder {
         if (flag) wisdom -= cost;
         return flag;
     }
+    public boolean buyTalent(ResourceLocation id) {
+        BasicTalent talent = TalentManager.getTalents().get(id);
+        return talent != null && buyTalent(talent);
+    }
     public boolean obtainTalent(@NotNull BasicTalent talent) {
         if (TALENTS.contains(talent)) return false;
         if (!isUnlockAble(talent)) return false;
@@ -116,6 +120,10 @@ public class TalentsHolder extends AbilityHolder {
         if (getPlayer() instanceof ServerPlayer serverPlayer) ObtainTalentTrigger.INSTANCE.trigger(serverPlayer, this, talent);
         sendTalentToast(talent);
         return true;
+    }
+    public boolean obtainTalent(ResourceLocation id) {
+        BasicTalent talent = TalentManager.getTalents().get(id);
+        return talent != null && obtainTalent(talent);
     }
     public boolean revokeTalent(@NotNull BasicTalent talent) {
         if (!TALENTS.contains(talent)) return false;

@@ -20,10 +20,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.phys.Vec3;
 
@@ -104,6 +101,14 @@ public class Spells {
                     caster.teleportTo(finalPos.x(), entity.getY(), finalPos.z());
                     EffectHelper.microStun(entity);
                     EffectHelper.makeDisarmed(entity, 50);
+                });
+        public static final TargetedSpell<LivingEntity> LIGHTNING_STRIKE = new TargetedSpell<>(LivingEntity.class, 12f, 5.5f, 400)
+                .setAfter((caster, entity) -> {
+                    LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(caster.level());
+                    if (lightningBolt == null) return;
+                    lightningBolt.moveTo(entity.position());
+                    lightningBolt.setCause(caster instanceof ServerPlayer serverPlayer ? serverPlayer : null);
+                    caster.level().addFreshEntity(lightningBolt);
                 });
     }
     public static final class Passive {

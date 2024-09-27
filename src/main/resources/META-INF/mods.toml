@@ -3,11 +3,12 @@ loaderVersion="[44,)"
 license="All rights reserved"
 [[mods]]
 modId="fantazia"
-version="${file.jarVersion}"
+version="1.5.0"
 displayName="Fantazia"
 logoFile="FTZ_logo.png"
 credits=""
 authors="ArkadiyHimself"
+displayURL='https://www.curseforge.com/minecraft/mc-mods/fantazia'
 description='''
 
 '''

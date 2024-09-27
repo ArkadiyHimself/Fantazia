@@ -110,8 +110,6 @@ public class ClientEvents {
         PoseStack poseStack = event.getPoseStack();
         Quaternionf cameraOrientation = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
         MultiBufferSource buffers = event.getMultiBufferSource();
-        LivingEntityRenderer<T, M> renderer = event.getRenderer();
-        M model = renderer.getModel();
 
         if (!event.getEntity().canChangeDimensions()) return;
         if (entity instanceof Player player && player.isSpectator()) return;
@@ -155,8 +153,6 @@ public class ClientEvents {
         PoseStack poseStack = event.getPoseStack();
         MultiBufferSource buffers = event.getMultiBufferSource();
         LivingEntityRenderer<T, M> renderer = event.getRenderer();
-        M model = renderer.getModel();
-        float partialTick = event.getPartialTick();
         int packedLight = event.getPackedLight();
         int packedOverlay = LivingEntityRenderer.getOverlayCoords(entity, 0);
 

@@ -5,6 +5,7 @@ import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.AbsoluteBarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.BarrierEffect;
 import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.LayeredBarrierEffect;
+import net.arkadiyhimself.fantazia.data.spawn.MobEffectsOnSpawnManager;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.world.effect.MobEffect;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class EffectHelper {
+    private EffectHelper() {}
     public static float bleedingDamage(LivingEntity entity, Vec3 vec3) {
         float movement = (float) vec3.horizontalDistance() / 500f;
 

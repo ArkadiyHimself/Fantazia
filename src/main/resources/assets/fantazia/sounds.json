@@ -309,6 +309,15 @@
       }
     ]
   },
+  "ambient.wind" : {
+    "subtitle": "fantazia.subtitles.wind",
+    "sounds": [
+      {
+        "name" : "fantazia:entity/dashstone/wind",
+        "stream" : false
+      }
+    ]
+  },
   "entity.bloodloss" : {
     "sounds": [
       {

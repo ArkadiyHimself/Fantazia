@@ -9,7 +9,8 @@ import net.arkadiyhimself.fantazia.api.FantazicRegistry;
 import net.arkadiyhimself.fantazia.api.KeyBinding;
 import net.arkadiyhimself.fantazia.api.items.IChangingIcon;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.client.models.entity.ftzentities.ThrownHatchetRenderer;
+import net.arkadiyhimself.fantazia.client.models.entity.DashStoneRenderer;
+import net.arkadiyhimself.fantazia.client.models.entity.ThrownHatchetRenderer;
 import net.arkadiyhimself.fantazia.client.models.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.data.criteritas.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.tags.HealingTypeTagsProvider;
@@ -75,13 +76,18 @@ public class RegistryEvents {
         event.register(CustomItemRenderer.BLADE2);
         event.register(CustomItemRenderer.BLADE3);
         event.register(CustomItemRenderer.BLADE4);
+
         event.register(CustomItemRenderer.BLADE_MODEL);
+
         event.register(ThrownHatchetRenderer.WOODEN);
         event.register(ThrownHatchetRenderer.STONE);
         event.register(ThrownHatchetRenderer.GOLDEN);
         event.register(ThrownHatchetRenderer.IRON);
         event.register(ThrownHatchetRenderer.DIAMOND);
         event.register(ThrownHatchetRenderer.NETHERITE);
+
+        event.register(DashStoneRenderer.DASHSTONE2);
+        event.register(DashStoneRenderer.DASHSTONE3);
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
@@ -99,6 +105,7 @@ public class RegistryEvents {
     @SubscribeEvent
     public static void registerRenderer(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(FTZEntityTypes.HATCHET.get(), ThrownHatchetRenderer::new);
+        event.registerEntityRenderer(FTZEntityTypes.DASHSTONE.get(), DashStoneRenderer::new);
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
@@ -162,6 +169,7 @@ public class RegistryEvents {
     @SubscribeEvent
     public static void commonSetup(FMLCommonSetupEvent event) {
         CriteriaTriggers.register(ObtainTalentTrigger.INSTANCE);
+        event.enqueueWork(FTZStructureTypes::register);
     }
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

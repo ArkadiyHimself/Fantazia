@@ -11,6 +11,7 @@ import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.registries.FTZEntityTypes;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -121,6 +122,32 @@ public class ThrownHatchet extends AbstractArrow {
         entityData.define(VISUAL_ROT0, 0f);
         entityData.define(VISUAL_ROT1, 0f);
     }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag pCompound) {
+        super.readAdditionalSaveData(pCompound);
+        if (pCompound.contains("hatchet", 10)) this.entityData.set(STACK, ItemStack.of(pCompound.getCompound("hatchet")));
+
+        this.rotSpeed = pCompound.contains("rotSpeed") ? pCompound.getFloat("rotSpeed") : 0;
+        this.ricochets = pCompound.contains("ricochets") ? pCompound.getInt("ricochets") : 0;
+        this.phasingTicks = pCompound.contains("phasingTicks") ? pCompound.getInt("phasingTicks") : 0;
+        this.isPhasing = pCompound.contains("isPhasing") && pCompound.getBoolean("isPhasing");
+        this.retrieving = pCompound.contains("retrieving") && pCompound.getBoolean("retrieving");
+        this.ricocheted = pCompound.contains("ricocheted") && pCompound.getBoolean("ricocheted");
+    }
+    @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag pCompound) {
+        super.addAdditionalSaveData(pCompound);
+        pCompound.put("hatchet", this.getPickupItem().save(new CompoundTag()));
+
+        pCompound.putFloat("rotSpeed", this.rotSpeed);
+        pCompound.putInt("ricochets", this.ricochets);
+        pCompound.putInt("phasingTicks", this.phasingTicks);
+        pCompound.putBoolean("isPhasing", this.isPhasing);
+        pCompound.putBoolean("retrieving", this.retrieving);
+        pCompound.putBoolean("ricocheted", this.ricocheted);
+    }
+
     @Override
     protected void onHitEntity(@NotNull EntityHitResult pResult) {
         if (!(pResult.getEntity() instanceof LivingEntity livingEntity) || level().isClientSide()) return;

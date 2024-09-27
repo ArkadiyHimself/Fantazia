@@ -21,6 +21,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -72,7 +73,8 @@ public class FTZItems {
     public static final RegistryObject<Item> MYSTIC_MIRROR = magicItem("mystic_mirror", () -> new SpellCaster(FTZSpells.REFLECT)); // finished and implemented
     public static final RegistryObject<Item> BLOODLUST_AMULET = magicItem("bloodlust_amulet", () -> new SpellCaster(FTZSpells.DAMNED_WRATH)); // finished and implemented
     public static final RegistryObject<Item> ENIGMATIC_CLOCK = magicItem("enigmatic_clock", () -> new SpellCaster(FTZSpells.REWIND)); // finished and implemented
-    public static final RegistryObject<Item> NIMBLE_DAGGER = magicItem("nimble_dagger", () -> new SpellCaster(FTZSpells.BOUNCE));
+    public static final RegistryObject<Item> NIMBLE_DAGGER = magicItem("nimble_dagger", () -> new SpellCaster(FTZSpells.BOUNCE)); // finished and implemented
+    public static final RegistryObject<Item> CAUGHT_THUNDER = magicItem("caught_thunder", () -> new SpellCaster(FTZSpells.LIGHTNING_STRIKE));
 
     // auracasters
     public static final RegistryObject<Item> LEADERS_HORN = magicItem("leaders_horn", () -> new AuraCaster(FTZAuras.LEADERSHIP)); // finished and implemented

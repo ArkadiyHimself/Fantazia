@@ -180,6 +180,7 @@
   "fantazia.subtitles.fury_prolong" : "Fury prolonged",
   "fantazia.subtitles.evasion" : "Attack evaded",
   "fantazia.subtitles.ancient_spark": "Ancient flame summoned",
+  "fantazia.subtitles.wind" : "Howling wind...",
 
   "key.fantazia" : "Fantazia",
   "key.fantazia.dash" : "Dash",
@@ -382,6 +383,15 @@
   "spell.fantazia.bounce.2" : "to instantly shorten the distance to it.",
   "spell.fantazia.bounce.3" : "Disarms and interrupts the target",
 
+  "item.fantazia.caught_thunder" : "§eCaught Thunder",
+  "spell.fantazia.lightning_strike.desc.lines" : "1",
+  "spell.fantazia.lightning_strike.desc.1" : "§cDo not mess with forces of nature!",
+  "spell.fantazia.lightning_strike.name" : "§6Lightning Strike",
+  "spell.fantazia.lightning_strike.lines" : "3",
+  "spell.fantazia.lightning_strike.1" : "While looking at a creature, use the spell",
+  "spell.fantazia.lightning_strike.2" : "to strike it with a powerful lightning that",
+  "spell.fantazia.lightning_strike.3" : "will hit the target and everyone around it",
+
   "item.fantazia.leaders_horn" : "§5Leader's Horn",
   "aura.fantazia.leadership.desc.lines" : "1",
   "aura.fantazia.leadership.desc.1" : "§5To rule them all...",
@@ -448,14 +458,14 @@
   "fantazia.talent.dash2.name" : "§9Ethereal Jump",
   "fantazia.talent.dash2.desc.lines" : "1",
   "fantazia.talent.dash2.desc.1": "Press the dash button to vault through the spirit world ",
-  "fantazia.talent.dash2.criteria.lines": "0",
-  "fantazia.talent.dash2.criteria.1": "TODO add criteria",
+  "fantazia.talent.dash2.criteria.lines": "1",
+  "fantazia.talent.dash2.criteria.1": "Find a blackstone altar in the nether and approach it",
 
   "fantazia.talent.dash3.name": "§dInterdimensional Leap",
   "fantazia.talent.dash3.desc.lines" : "1",
   "fantazia.talent.dash3.desc.1": "Press the dash button to slash through space-time",
   "fantazia.talent.dash3.criteria.lines": "0",
-  "fantazia.talent.dash3.criteria.1": "TODO add criteria",
+  "fantazia.talent.dash3.criteria.1": "",
 
   "fantazia.talent.double_jump.name": "§aDouble Jump",
   "fantazia.talent.double_jump.desc.lines" : "1",
@@ -618,6 +628,12 @@
   "book.fantazia.entry.artifacts.nimble_dagger.page.1" : "It is no wonder that weaponry is perhaps the most advanced craft we have, since how else would humans kill other humans? A good weapon half a victory after all; having a sharper sword or a heavier bow is an advantage not to look down upon, but not every weapon has to be huge, menacing and being able to cut through humans like through butter",
   "book.fantazia.entry.artifacts.nimble_dagger.page.2" : "Combining a regular dagger, some magical substance and a pearl with teleporting capabilities to be applied to the dagger, we can obtain this incredibly light knife, so light in fact that it is barely useful as an actual weapon",
   "book.fantazia.entry.artifacts.nimble_dagger.page.3" : "Instead, the knife has a utility, allowing its user to instantly close the gap between their enemy and catch them off guard",
+
+  "book.fantazia.entry.artifacts.caught_thunder.name" : "§eCaught Thunder",
+  "book.fantazia.entry.artifacts.caught_thunder.heading" : "Spell Caster",
+  "book.fantazia.entry.artifacts.caught_thunder.page.1" : "The forces of nature were always something no one has control over; be it a small rain, a terrifying hurricane or a mighty thunder, there was not a way to prevent it and let alone summon it, but with progress incomprehensible becomes well-known, and impossible becomes ordinary",
+  "book.fantazia.entry.artifacts.caught_thunder.page.2" : "The artifact can only be found deep within ocean treasures and ruins, well hidden below layers and layers of water",
+  "book.fantazia.entry.artifacts.caught_thunder.page.3" : "This Spell Caster grants slight control over nature, allowing one to summon a powerful lighting strike on top of their foe, dealing great harm to the enemy and everyone nearby",
 
   "book.fantazia.entry.mob_effects.absolute_barrier.name" : "§dAbsolute Barrier",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.1" : "Among different kinds of barrier this one is the most powerful, protecting its host unconditionally from almost all sources of harm. Not only that, but this barrier will also stay on the creature as long as the effect is there, unlike other barrier types which can wear off after taking damage too much",

@@ -60,6 +60,7 @@ import net.arkadiyhimself.fantazia.util.commands.*;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
+import net.arkadiyhimself.fantazia.world.gen.structures.StructureHelper;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -555,8 +556,11 @@ public class CommonEvents {
     }
     @SubscribeEvent
     public static void playerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
+        Level level = event.getEntity().level();
+
         ResourceKey<Level> to = event.getTo();
         TalentsHolder.ProgressHolder progressHolder = AbilityHelper.getProgressHolder(event.getEntity());
         if (progressHolder != null && !to.equals(Level.OVERWORLD)) progressHolder.award("visited_" + to.location(), 50);
+
     }
 }

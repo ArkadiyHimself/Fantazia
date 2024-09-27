@@ -8,6 +8,7 @@ import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
 import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
+import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
 import net.arkadiyhimself.fantazia.networking.NetworkHandler;
 import net.arkadiyhimself.fantazia.networking.packets.PlayAnimationS2C;
@@ -23,14 +24,17 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class Dash extends AbilityHolder implements ITalentListener, ITicking, IDamageReacting {
     private static final float STAMINA = 1.5f;
     private static final int DEFAULT_DUR = 7;
     private static final int DEFAULT_RECHARGE = 100;
+    private @Nullable DashStoneEntity dashstoneEntity = null;
     private int initialDur = 1;
     private int initialRecharge = 1;
     private int duration = 0;
@@ -94,6 +98,7 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
         tag.putInt("duration", this.duration);
         tag.putInt("initial_recharge", this.initialRecharge);
         tag.putInt("recharge", this.recharge);
+        if (dashstoneEntity != null) tag.putInt("entity", this.dashstoneEntity.getId());
         return tag;
     }
 
@@ -104,6 +109,11 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
         this.duration = tag.contains("duration") ?  tag.getInt("duration") : 0;
         this.initialRecharge = tag.contains("initial_recharge") ?  tag.getInt("initial_recharge") : 1;
         this.recharge = tag.contains("recharge") ?  tag.getInt("recharge") : 0;
+        if (tag.contains("entity")) {
+            int id = tag.getInt("entity");
+            Entity entity = getPlayer().level().getEntity(id);
+            if (entity instanceof DashStoneEntity dashstone) this.dashstoneEntity = dashstone;
+        }
     }
     @Override
     public void onHit(LivingAttackEvent event) {
@@ -124,6 +134,10 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
         if (Fantazia.res("dash3").equals(resLoc) && level > 2) level = 2;
         else if (Fantazia.res("dash2").equals(resLoc) && level > 1) level = 1;
         else if (Fantazia.res("dash1").equals(resLoc) && level > 0) level = 0;
+        if (level == 0 && dashstoneEntity != null) {
+            dashstoneEntity.reset();
+            dashstoneEntity = null;
+        }
     }
     private void upgrade(int value) {
         level = value;
@@ -143,24 +157,24 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
     }
     public SimpleParticleType getParticleType() {
         return switch (level) {
-            default -> null;
             case 1 -> ParticleTypes.POOF;
+            default -> null;
         };
     }
     public SoundEvent getDashSound() {
         return switch (level) {
-            default -> null;
             case 1 -> FTZSoundEvents.DASH_DEFAULT.get();
             case 2 -> FTZSoundEvents.DASH_SECOND.get();
             case 3 -> FTZSoundEvents.DASH_FINAL.get();
+            default -> null;
         };
     }
     public SoundEvent getRechargeSound() {
         return switch (level) {
-            default -> null;
             case 1 -> FTZSoundEvents.DASH1_RECHARGE.get();
             case 2 -> FTZSoundEvents.DASH2_RECHARGE.get();
             case 3 -> FTZSoundEvents.DASH3_RECHARGE.get();
+            default -> null;
         };
     }
     public boolean canDash() {
@@ -183,8 +197,8 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
         StaminaData staminaData = AbilityGetter.takeAbilityHolder(getPlayer(), StaminaData.class);
         if (staminaData != null && !staminaData.wasteStamina(STAMINA, true, 65)) return;
 
-        int duration = FTZEvents.onDashStart(getPlayer(), this, getInitDur());
-        if (duration <= 0) return;
+        int actualDur = FTZEvents.onDashStart(getPlayer(), this, getInitDur());
+        if (actualDur <= 0) return;
 
         velocity = vec3;
         recharge = getInitRecharge();
@@ -194,7 +208,7 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
 
         getPlayer().level().playSound(null, getPlayer().blockPosition(), getDashSound(), SoundSource.PLAYERS);
         getPlayer().resetFallDistance();
-        actuallyDash(duration);
+        actuallyDash(actualDur);
     }
     public void actuallyDash(int duration) {
         this.duration = duration;
@@ -208,5 +222,11 @@ public class Dash extends AbilityHolder implements ITalentListener, ITicking, ID
         getPlayer().hurtMarked = true;
         getPlayer().setDeltaMovement(0,0,0);
         NetworkHandler.sendToPlayer(new PlayAnimationS2C(""), getPlayer());
+    }
+    public void setDashstoneEntity(@Nullable DashStoneEntity dashstoneEntity) {
+        this.dashstoneEntity = dashstoneEntity;
+    }
+    public DashStoneEntity getDashstoneEntity() {
+        return dashstoneEntity;
     }
 }

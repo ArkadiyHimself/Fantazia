@@ -1,0 +1,17 @@
+{
+  "structures": [
+    {
+      "structure": "fantazia:blackstone_altar",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+
+    "salt": 1738502718,
+
+    "spacing": 4,
+
+    "separation": 2
+  }
+}

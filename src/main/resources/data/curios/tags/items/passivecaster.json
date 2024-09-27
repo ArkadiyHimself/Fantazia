@@ -1,4 +1,11 @@
 {
   "replace": false,
-  "values": ["fantazia:mystic_mirror", "fantazia:leaders_horn", "fantazia:tranquil_herb", "fantazia:spiral_nemesis", "fantazia:bloodlust_amulet", "fantazia:acid_bottle"]
+  "values": [
+    "fantazia:mystic_mirror",
+    "fantazia:leaders_horn",
+    "fantazia:tranquil_herb",
+    "fantazia:spiral_nemesis",
+    "fantazia:bloodlust_amulet",
+    "fantazia:acid_bottle"
+  ]
 }

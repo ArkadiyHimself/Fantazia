@@ -1,0 +1,22 @@
+{
+  "name": "book.fantazia.entry.artifacts.caught_thunder.name",
+  "icon": "fantazia:caught_thunder",
+  "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/caught_thunder",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.caught_thunder.page.1"
+    },
+    {
+      "type": "spotlight",
+      "item" : "fantazia:caught_thunder",
+      "title" : "book.fantazia.entry.artifacts.caught_thunder.heading",
+      "text" : "book.fantazia.entry.artifacts.caught_thunder.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.caught_thunder.page.3"
+    }
+  ]
+}

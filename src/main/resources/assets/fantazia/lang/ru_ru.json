@@ -180,6 +180,7 @@
   "fantazia.subtitles.fury_prolong": "Продление Ярости",
   "fantazia.subtitles.evasion": "Уклонение",
   "fantazia.subtitles.ancient_spark": "Призыв древнего пламени",
+  "fantazia.subtitles.wind": "Дуновение ветра...",
 
   "key.fantazia": "Фантазия",
   "key.fantazia.dash": "Рывок",
@@ -382,6 +383,15 @@
   "spell.fantazia.bounce.2": "чтобы сократить с ним дистанцию.",
   "spell.fantazia.bounce.3": "Обезоруживает и перебивает цель",
 
+  "item.fantazia.caught_thunder": "§eСхваченная Гроза",
+  "spell.fantazia.lightning_strike.desc.lines": "1",
+  "spell.fantazia.lightning_strike.desc.1": "§cНе шутите с силами природы!",
+  "spell.fantazia.lightning_strike.name": "§6Разряд Молнии",
+  "spell.fantazia.lightning_strike.lines": "3",
+  "spell.fantazia.lightning_strike.1": "Смотря на существо, используйте спелл чтобы",
+  "spell.fantazia.lightning_strike.2": "поразить призвать на цель молнию, что нанесет",
+  "spell.fantazia.lightning_strike.3": "ущерб цели и всем вокруг нее",
+
   "item.fantazia.leaders_horn": "§5Горн Лидера",
   "aura.fantazia.leadership.desc.lines": "1",
   "aura.fantazia.leadership.desc.1": "§5Чтоб править всеми...",
@@ -448,14 +458,14 @@
   "fantazia.talent.dash2.name": "§9Призрачный Прыжок",
   "fantazia.talent.dash2.desc.lines": "1",
   "fantazia.talent.dash2.desc.1": "Нажмите кнопку рывка чтобы прыгнуть сквозь мир духов",
-  "fantazia.talent.dash2.criteria.lines": "0",
-  "fantazia.talent.dash2.criteria.1": "TODO add criteria",
+  "fantazia.talent.dash2.criteria.lines": "1",
+  "fantazia.talent.dash2.criteria.1": "Найдите алтарь из чернокамня в Незере и подойдите к нему",
 
   "fantazia.talent.dash3.name": "§dСкачок Сквозь Измерения",
   "fantazia.talent.dash3.desc.lines": "1",
   "fantazia.talent.dash3.desc.1": "Нажмите кнопку рывка чтобы сделтаь брежь в пространстве-времени",
   "fantazia.talent.dash3.criteria.lines": "0",
-  "fantazia.talent.dash3.criteria.1": "TODO add criteria",
+  "fantazia.talent.dash3.criteria.1": "",
 
   "fantazia.talent.double_jump.name": "§aДвойной Прыжок",
   "fantazia.talent.double_jump.desc.lines": "1",
@@ -615,9 +625,15 @@
 
   "book.fantazia.entry.artifacts.nimble_dagger.name": "§cКлинок Проворника",
   "book.fantazia.entry.artifacts.nimble_dagger.heading": "Заклинатель",
-  "book.fantazia.entry.artifacts.nimble_dagger.page.1" : "Нет ничего удивительно в том, что оружейное ремесло является настолько развитым, ведь как еще человекам убивать других человеков? В конце концов, хорошее оружие - пол победы; наличие более острого меча или более тяжелого лука есть преимущество что не стоит недооценивать, однако не каждое оружие должно быть огромным как скала и острым как стекло",
-  "book.fantazia.entry.artifacts.nimble_dagger.page.2" : "Объединяя обычный клинок, немного волшебной энергии и жемчуг со свойствами телепортации что будут даны этому клинку, мы получаем более легкий клинок, настолько легкий что его даже нельзя использовать непосредственно как оружие",
-  "book.fantazia.entry.artifacts.nimble_dagger.page.3" : "Вместо этого, нож приносит пользу другим образом, позволяя моментально сократить дистанцию с врагом, заставая того врасплох",
+  "book.fantazia.entry.artifacts.nimble_dagger.page.1": "Нет ничего удивительно в том, что оружейное ремесло является настолько развитым, ведь как еще человекам убивать других человеков? В конце концов, хорошее оружие - пол победы; наличие более острого меча или более тяжелого лука есть преимущество что не стоит недооценивать, однако не каждое оружие должно быть огромным как скала и острым как стекло",
+  "book.fantazia.entry.artifacts.nimble_dagger.page.2": "Объединяя обычный клинок, немного волшебной энергии и жемчуг со свойствами телепортации что будут даны этому клинку, мы получаем более легкий клинок, настолько легкий что его даже нельзя использовать непосредственно как оружие",
+  "book.fantazia.entry.artifacts.nimble_dagger.page.3": "Вместо этого, нож приносит пользу другим образом, позволяя моментально сократить дистанцию с врагом, заставая того врасплох",
+
+  "book.fantazia.entry.artifacts.caught_thunder.name": "§eСхваченная Гроза",
+  "book.fantazia.entry.artifacts.caught_thunder.heading": "Заклинатель",
+  "book.fantazia.entry.artifacts.caught_thunder.page.1" : "Силы природы всегда были вне чьего-либо контроля; будь это легкий дождь, устрашающий ураган или мощная гроза, никак нельзя было предотвратить такое бедствие или тем более призвать его, но с прогрессом непонятное становится очевидным, а невозможное - повседневным",
+  "book.fantazia.entry.artifacts.caught_thunder.page.2" : "Этот артифакт может быть найден лишь в сокровищах в глубинах океана, спрятынный за слоями воды",
+  "book.fantazia.entry.artifacts.caught_thunder.page.3" : "Данный заклинатель дарует небольшой контроль над природой, позволяя владельцу призвать мощный удар молнии на врага, приносящий большой вред цели и всем окружающим",
 
   "book.fantazia.entry.mob_effects.absolute_barrier.name": "§dАбсолютный барьер",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.1": "Среди других барьеров, этот является наиболее мощным, защищая владельца без каких-либо условий от практически любых источников вреда. Помимо эторго, данный барьер будет оставаться на существе до тех пор, пока эффект не закончится, в отличии от других барьеров, что исчезают после получения определенного урона",
