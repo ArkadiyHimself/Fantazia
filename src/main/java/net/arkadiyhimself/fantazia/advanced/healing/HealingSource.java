@@ -3,11 +3,11 @@ package net.arkadiyhimself.fantazia.advanced.healing;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 
@@ -56,7 +56,7 @@ public class HealingSource {
     public RandomList<SimpleParticleType> particleTypes() {
         RandomList<SimpleParticleType> types = RandomList.emptyRandomList();
         RandomList<ResourceLocation> resourceLocations = this.type().particleTypes();
-        for (ResourceLocation resourceLocation : resourceLocations) if (ForgeRegistries.PARTICLE_TYPES.containsKey(resourceLocation) && ForgeRegistries.PARTICLE_TYPES.getValue(resourceLocation) instanceof SimpleParticleType simpleParticleType) types.add(simpleParticleType);
+        for (ResourceLocation resourceLocation : resourceLocations) if (BuiltInRegistries.PARTICLE_TYPE.containsKey(resourceLocation) && BuiltInRegistries.PARTICLE_TYPE.get(resourceLocation) instanceof SimpleParticleType simpleParticleType) types.add(simpleParticleType);
         return types;
     }
 }

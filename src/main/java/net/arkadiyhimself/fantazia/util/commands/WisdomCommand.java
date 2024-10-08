@@ -2,8 +2,8 @@ package net.arkadiyhimself.fantazia.util.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,7 +14,7 @@ public class WisdomCommand {
         dispatcher.register(Commands.literal("wisdom").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE)).executes(context -> {
             ServerPlayer serverPlayer = context.getSource().getPlayer();
             if (serverPlayer == null) return 0;
-            TalentsHolder talentsHolder = AbilityGetter.takeAbilityHolder(serverPlayer, TalentsHolder.class);
+            TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(serverPlayer, TalentsHolder.class);
             if (talentsHolder == null) return 0;
             talentsHolder.setWisdom(IntegerArgumentType.getInteger(context, "amount"));
             return 1;

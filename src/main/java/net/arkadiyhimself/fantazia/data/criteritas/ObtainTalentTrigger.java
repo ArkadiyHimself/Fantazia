@@ -1,51 +1,52 @@
 package net.arkadiyhimself.fantazia.data.criteritas;
 
-import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
+import com.google.common.collect.Lists;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.advancements.packs.VanillaNetherAdvancements;
+import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.common.util.EquipCurioTrigger;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ObtainTalentTrigger extends SimpleCriterionTrigger<ObtainTalentTrigger.TriggerInstance> {
-    private static final ResourceLocation ID = Fantazia.res("talent_obtain");
     public static final ObtainTalentTrigger INSTANCE = new ObtainTalentTrigger();
+    public void trigger(@NotNull ServerPlayer pPlayer, @NotNull TalentsHolder talentsHolder) {
+        this.trigger(pPlayer, triggerInstance -> triggerInstance.matches(talentsHolder));
+    }
+
     @Override
-    protected @NotNull TriggerInstance createInstance(@NotNull JsonObject pJson, @NotNull ContextAwarePredicate pPredicate, @NotNull DeserializationContext pDeserializationContext) {
-        TalentPredicate[] talentPredicates = TalentPredicate.fromJsonArray(pJson.get("talents"));
-        return new TriggerInstance(pPredicate, talentPredicates);
+    public @NotNull Codec<TriggerInstance> codec() {
+        return TriggerInstance.CODEC;
     }
-    @Override
-    public @NotNull ResourceLocation getId() {
-        return ID;
-    }
-    public void trigger(@NotNull ServerPlayer pPlayer, @NotNull TalentsHolder talentsHolder, @NotNull BasicTalent talent) {
-        this.trigger(pPlayer, triggerInstance -> triggerInstance.matches(talentsHolder, talent));
-    }
-    public static class TriggerInstance extends AbstractCriterionTriggerInstance {
-        private final TalentPredicate[] predicates;
-        public TriggerInstance(ContextAwarePredicate pPlayer, TalentPredicate[] talentPredicate) {
-            super(ObtainTalentTrigger.ID, pPlayer);
-            this.predicates = talentPredicate;
+
+    public record TriggerInstance(List<TalentPredicate> talentPredicate) implements SimpleInstance {
+
+        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create((instance) -> instance.group(TalentPredicate.CODEC.listOf().optionalFieldOf("talents", List.of()).forGetter(TriggerInstance::talentPredicate)).apply(instance, TriggerInstance::new));
+
+        public boolean matches(@NotNull TalentsHolder talentsHolder) {
+            if (talentPredicate.isEmpty()) return true;
+            List<BasicTalent> talents = Lists.newArrayList(talentsHolder.getTalents());
+            List<TalentPredicate> predicates = new java.util.ArrayList<>(List.copyOf(talentPredicate));
+            predicates.removeIf(talentPredicate1 -> talentPredicate1.matches(talents));
+            return predicates.isEmpty();
         }
-        public boolean matches(@NotNull TalentsHolder talentsHolder, BasicTalent obtained) {
-            int i = this.predicates.length;
-            if (i == 0) return true;
-            else if (i != 1) {
-                List<TalentPredicate> list = new ObjectArrayList<>(this.predicates);
 
-                for (BasicTalent talent : talentsHolder.getTalents()) list.removeIf(talentPredicate -> talentPredicate.matches(talent));
-
-                return list.isEmpty();
-            } else return this.predicates[0].matches(obtained);
+        @Override
+        public @NotNull Optional<ContextAwarePredicate> player() {
+            return Optional.empty();
+        }
+        public @NotNull List<TalentPredicate> talentPredicate() {
+            return this.talentPredicate;
         }
     }
 }

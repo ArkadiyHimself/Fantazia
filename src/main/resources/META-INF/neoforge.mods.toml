@@ -1,0 +1,34 @@
+modLoader="javafml"
+loaderVersion="[2,)"
+license="All rights reserved"
+issueTrackerURL="https://github.com/ArkadiyHimself/Fantazia"
+logoFile="logo.png"
+[[mods]]
+
+modId="fantazia"
+version="1.6.0-NEOFORGE"
+displayName="Fantazia"
+
+displayURL = 'https://www.curseforge.com/minecraft/mc-mods/fantazia'
+authors="ArkadiyHimself"
+
+description='''
+Provides the player with various magic artifacts, abilities and spells
+'''
+
+[[mixins]]
+config="fantazia.mixins.json"
+
+[[dependencies.fantazia]]
+    modId="neoforge"
+    type="required"
+    versionRange="${neo_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.fantazia]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"

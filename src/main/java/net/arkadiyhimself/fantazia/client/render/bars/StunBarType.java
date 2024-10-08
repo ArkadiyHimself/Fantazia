@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.StunEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -33,34 +33,34 @@ public class StunBarType extends RenderStateShard {
         final int light = 0xF000F0;
 
         if (stunEffect.stunned()) {
-            stunPercent = (float) stunEffect.getDur() / (float) stunEffect.getInitDur();
+            stunPercent = (float) stunEffect.duration() / (float) stunEffect.initialDuration();
             int redColor = stunEffect.getColor();
 
             // empty bar
-            stunBar.vertex(poseStack.last().pose(), -16, -4, 0.003F).color(redColor, 255, 255, 255).uv(0.0F, 0.5F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), -16, 0, 0.003F).color(redColor, 255, 255, 255).uv(0.0F, 0.75F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), 16, 0, 0.003F).color(redColor, 255, 255, 255).uv(1.0F, 0.75F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), 16, -4, 0.003F).color(redColor, 255, 255, 255).uv(1.0F, 0.5F).uv2(light).endVertex();
+            stunBar.addVertex(poseStack.last().pose(), -1, -0.25f, 0.003F).setColor(redColor, 255, 255, 255).setUv(0.0F, 0.5F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), -1, 0, 0.003F).setColor(redColor, 255, 255, 255).setUv(0.0F, 0.75F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), 1, 0, 0.003F).setColor(redColor, 255, 255, 255).setUv(1.0F, 0.75F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), 1, -0.25f, 0.003F).setColor(redColor, 255, 255, 255).setUv(1.0F, 0.5F).setLight(light);
 
             // filling
-            stunBar.vertex(poseStack.last().pose(), -14, -4, 0.004F).color(255, 255, 255, 255).uv(0.0F, 0.75F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), -14, 0, 0.004F).color(255, 255, 255, 255).uv(0.0F, 1.0F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), -14 + 28 * stunPercent, 0, 0.004F).color(255, 255, 255, 255).uv(stunPercent, 1.0F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), -14 + 28 * stunPercent, -4, 0.004F).color(255, 255, 255, 255).uv(stunPercent, 0.75F).uv2(light).endVertex();
+            stunBar.addVertex(poseStack.last().pose(), -0.875f, -0.25f, 0.004F).setColor(255, 255, 255, 255).setUv(0.0F, 0.75F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), -0.875f, 0, 0.004F).setColor(255, 255, 255, 255).setUv(0.0F, 1.0F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), -0.875f + 1.75f * stunPercent, 0, 0.004F).setColor(255, 255, 255, 255).setUv(stunPercent, 1.0F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), -0.875f + 1.75f * stunPercent, -0.25f, 0.004F).setColor(255, 255, 255, 255).setUv(stunPercent, 0.75F).setLight(light);
         } else if (stunEffect.hasPoints()) {
-            stunPercent = (float) stunEffect.getPoints() / (float) stunEffect.getMaxPoints();
+             stunPercent = (float) stunEffect.getPoints() / (float) stunEffect.getMaxPoints();
 
             // empty bar
-            stunBar.vertex(poseStack.last().pose(), -16, -4, 0.003F).color(255, 255, 255, 255).uv(0.0F, 0.0F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), -16, 0, 0.003F).color(255, 255, 255, 255).uv(0.0F, 0.25F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), 16, 0, 0.003F).color(255, 255, 255, 255).uv(1.0F, 0.25F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), 16, -4, 0.003F).color(255, 255, 255, 255).uv(1.0F, 0.0F).uv2(light).endVertex();
+            stunBar.addVertex(poseStack.last().pose(), -1, -0.25f, 0.003F).setColor(255, 255, 255, 255).setUv(0.0F, 0.0F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), -1, 0, 0.003F).setColor(255, 255, 255, 255).setUv(0.0F, 0.25F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), 1, 0, 0.003F).setColor(255, 255, 255, 255).setUv(1.0F, 0.25F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), 1, -0.25f, 0.003F).setColor(255, 255, 255, 255).setUv(1.0F, 0.0F).setLight(light);
 
             // filling
-            stunBar.vertex(poseStack.last().pose(), -14, -4, 0.004F).color(255, 255, 255, 255).uv(0.0F, 0.25F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), -14, 0, 0.004F).color(255, 255, 255, 255).uv(0.0F, 0.5F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), -14 + 28 * stunPercent, 0, 0.004F).color(255, 255, 255, 255).uv(stunPercent, 0.5F).uv2(light).endVertex();
-            stunBar.vertex(poseStack.last().pose(), -14 + 28 * stunPercent, -4, 0.004F).color(255, 255, 255, 255).uv(stunPercent, 0.25F).uv2(light).endVertex();
+            stunBar.addVertex(poseStack.last().pose(), -0.875f, -0.25f, 0.004F).setColor(255, 255, 255, 255).setUv(0.0F, 0.25F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), -0.875f, 0, 0.004F).setColor(255, 255, 255, 255).setUv(0.0F, 0.5F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), -0.875f + 1.75f * stunPercent, 0, 0.004F).setColor(255, 255, 255, 255).setUv(stunPercent, 0.5F).setLight(light);
+            stunBar.addVertex(poseStack.last().pose(), -0.875f + 1.75f * stunPercent, -0.25f, 0.004F).setColor(255, 255, 255, 255).setUv(stunPercent, 0.25F).setLight(light);
         }
     }
 }

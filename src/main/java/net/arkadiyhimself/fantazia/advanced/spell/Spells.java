@@ -3,11 +3,11 @@ package net.arkadiyhimself.fantazia.advanced.spell;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
-import net.arkadiyhimself.fantazia.advanced.healing.HealingSources;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.LivingData;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -31,16 +32,16 @@ public class Spells {
         private Self() {}
         public static final SelfSpell ENTANGLE = new SelfSpell(0, 50, FTZSoundEvents.ENTANGLE)
                 .setConditions(entity -> entity.getHealth() <= entity.getMaxHealth() * 0.15f)
-                .setOnCast(entity -> EffectHelper.giveBarrier(entity, 10))
+                .setOnCast(entity -> LivingEffectHelper.giveBarrier(entity, 10))
                 .cleanse(Cleanse.POWERFUL);
         public static final SelfSpell REWIND = new SelfSpell(0,300, FTZSoundEvents.REWIND)
                 .setConditions(entity -> {
-                    LivingData data = DataGetter.takeDataHolder(entity, LivingData.class);
+                    CommonDataHolder data = LivingDataGetter.takeHolder(entity, CommonDataHolder.class);
                     return data != null && data.writtenParameters();
                 })
                 .setOnCast(entity -> {
-                    LivingData data = DataGetter.takeDataHolder(entity, LivingData.class);
-                    if (data == null || !data.tryReadParameters(0)) return;
+                    CommonDataHolder data = LivingDataGetter.takeHolder(entity, CommonDataHolder.class);
+                    if (data == null || !data.tryReadParameters(0, entity)) return;
                     EffectCleansing.tryCleanseAll(entity, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
                     if (!(entity.level() instanceof ServerLevel)) return;
                     for (int i = 0; i < 12; i++) VisualHelper.randomParticleOnModel(entity, FTZParticleTypes.TIME_TRAVEL.get(), VisualHelper.ParticleMovement.REGULAR);
@@ -59,12 +60,12 @@ public class Spells {
         public static final TargetedSpell<Mob> DEVOUR = new TargetedSpell<>(Mob.class, 6f, 5f, 2000)
                 .setConditions((caster, entity) -> entity.getMaxHealth() <= 100)
                 .setAfter((caster, target) -> {
-                    float healing = target.getMobType() == MobType.UNDEAD ? target.getHealth() / 8 : target.getHealth() / 4;
-                    HealingSources healingSources = LevelCapHelper.getHealingSources(target.level());
+                    float healing = target.getType().is(EntityTypeTags.INVERTED_HEALING_AND_HARM) ? target.getHealth() / 8 : target.getHealth() / 4;
+                    HealingSourcesHolder healingSources = LevelAttributesHelper.getHealingSources(target.level());
                     if (healingSources != null) AdvancedHealing.tryHeal(caster, healingSources.devour(target), healing);
-                    EffectHelper.effectWithoutParticles(caster, FTZMobEffects.BARRIER.get(),  500, (int) target.getHealth() / 4 - 1);
-                    EffectHelper.effectWithoutParticles(caster, FTZMobEffects.MIGHT.get(), 500, (int) target.getHealth() / 4 - 1);
-                    FantazicCombat.dropExperience(target, 5);
+                    LivingEffectHelper.effectWithoutParticles(caster, FTZMobEffects.BARRIER,  500, (int) target.getHealth() / 4 - 1);
+                    LivingEffectHelper.effectWithoutParticles(caster, FTZMobEffects.MIGHT, 500, (int) target.getHealth() / 4 - 1);
+                    FantazicCombat.dropExperience(target, 5, caster);
 
                     for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() * 15 + 15; ++i) VisualHelper.randomParticleOnModel(target, ParticleTypes.SMOKE, VisualHelper.ParticleMovement.REGULAR);
                     for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() * 5 + 15; ++i) VisualHelper.randomParticleOnModel(target, ParticleTypes.FLAME, VisualHelper.ParticleMovement.REGULAR);
@@ -99,8 +100,8 @@ public class Spells {
                     Vec3 delta2 = delta1.subtract(normal.scale(0.5));
                     Vec3 finalPos = caster.position().add(delta2);
                     caster.teleportTo(finalPos.x(), entity.getY(), finalPos.z());
-                    EffectHelper.microStun(entity);
-                    EffectHelper.makeDisarmed(entity, 50);
+                    LivingEffectHelper.microStun(entity);
+                    LivingEffectHelper.makeDisarmed(entity, 50);
                 });
         public static final TargetedSpell<LivingEntity> LIGHTNING_STRIKE = new TargetedSpell<>(LivingEntity.class, 12f, 5.5f, 400)
                 .setAfter((caster, entity) -> {

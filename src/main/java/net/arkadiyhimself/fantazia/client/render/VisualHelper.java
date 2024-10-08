@@ -5,25 +5,29 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.networking.NetworkHandler;
-import net.arkadiyhimself.fantazia.networking.packets.AddParticleS2C;
+import net.arkadiyhimself.fantazia.networking.packets.stuff.AddParticleS2C;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
@@ -32,7 +36,7 @@ import java.util.function.BinaryOperator;
 @OnlyIn(Dist.CLIENT)
 public class VisualHelper {
     public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type) {
-        if (particle == null || !(entity.level() instanceof ServerLevel serverLevel)) return;
+        if (particle == null) return;
         // getting entity's height and width
         float radius = entity.getBbWidth() * (float) 0.7;
         float height = entity.getBbHeight();
@@ -48,7 +52,7 @@ public class VisualHelper {
 
         Vec3 delta = type.modify(new Vec3(x0, y0, z0), entity.getDeltaMovement());
 
-        NetworkHandler.sendToPlayers(new AddParticleS2C(new Vec3(x0, y0, z0), delta, particle), serverLevel);
+        PacketDistributor.sendToAllPlayers(new AddParticleS2C(new Vec3(x0, y0, z0).toVector3f(), delta.toVector3f(), particle));
     }
     public static <T extends ParticleOptions> void rayOfParticles(LivingEntity caster, LivingEntity target, T type) {
         if (!(caster.level() instanceof ServerLevel serverLevel)) return;
@@ -62,12 +66,13 @@ public class VisualHelper {
         }
     }
     public static void fireVertex(PoseStack.Pose pMatrixEntry, VertexConsumer pBuffer, float pX, float pY, float pZ, float pTexU, float pTexV) {
-        pBuffer.vertex(pMatrixEntry.pose(), pX, pY, pZ).color(255, 255, 255, 255).uv(pTexU, pTexV).overlayCoords(0, 10).uv2(240).normal(pMatrixEntry.normal(), 0.0F, 1.0F, 0.0F).endVertex();
+        pBuffer.addVertex(pMatrixEntry.pose(), pX, pY, pZ).setColor(255, 255, 255, 255).setUv(pTexU, pTexV).setUv1(0, 10).setLight(240).setNormal(pMatrixEntry.copy(), 0.0F, 1.0F, 0.0F);
     }
     public static void renderAncientFlame(PoseStack poseStack, LivingEntity entity, MultiBufferSource buffers) {
         poseStack.pushPose();
         TextureAtlasSprite textureatlassprite0 = FTZGuis.ANCIENT_FLAME_0.sprite();
         TextureAtlasSprite textureatlassprite1 = FTZGuis.ANCIENT_FLAME_1.sprite();
+
         float f = entity.getBbWidth() * 1.4F;
         poseStack.scale(f, f, f);
         float f1 = 0.5F;
@@ -102,7 +107,7 @@ public class VisualHelper {
         }
         poseStack.popPose();
     }
-    public static <T extends LivingEntity, M extends EntityModel<T>> void renderEvasion(T entity, LivingEntityRenderer<T,M> renderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
+    public static void renderEvasionPlayer(AbstractClientPlayer entity, PlayerRenderer renderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
         poseStack.pushPose();
 
         float scale = Fantazia.RANDOM.nextFloat(-0.75F,0.75F);
@@ -113,13 +118,13 @@ public class VisualHelper {
         RenderType renderType = renderer.getModel().renderType(renderer.getTextureLocation(entity));
         VertexConsumer consumer = buffers.getBuffer(renderType);
 
-        float i1 = Fantazia.RANDOM.nextFloat(0.15f,0.45f);
-        float i2 = Fantazia.RANDOM.nextFloat(0.15f,0.45f);
-        float i3 = Fantazia.RANDOM.nextFloat(0.65f,0.95f);
+        int i1 = Fantazia.RANDOM.nextInt(40,120);
+        int i2 = Fantazia.RANDOM.nextInt(40,120);
+        int i3 = Fantazia.RANDOM.nextInt(165,240);
 
-        float r;
-        float g;
-        float b;
+        int r;
+        int g;
+        int b;
 
         int j = Fantazia.RANDOM.nextInt(1,4);
         if (j == 1) {
@@ -135,7 +140,44 @@ public class VisualHelper {
             g = i3;
             b = i1;
         }
-        renderer.getModel().renderToBuffer(poseStack, consumer, packedLight, packedOverlay, r, g, b,0.65f);
+        renderer.getModel().renderToBuffer(poseStack, consumer, packedLight, packedOverlay, FastColor.ARGB32.color(150, r, g, b));
+
+        poseStack.popPose();
+    }
+    public static <T extends LivingEntity, M extends EntityModel<T>> void renderEvasionEntity(T entity, LivingEntityRenderer<T,M> renderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
+        poseStack.pushPose();
+
+        float scale = Fantazia.RANDOM.nextFloat(-0.75F,0.75F);
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(scale);
+        poseStack.scale(-1,-1,1);
+        poseStack.translate(vec3.x(), -1.501F, vec3.z());
+
+        RenderType renderType = renderer.getModel().renderType(renderer.getTextureLocation(entity));
+        VertexConsumer consumer = buffers.getBuffer(renderType);
+
+        int i1 = Fantazia.RANDOM.nextInt(40,120);
+        int i2 = Fantazia.RANDOM.nextInt(40,120);
+        int i3 = Fantazia.RANDOM.nextInt(165,240);
+
+        int r;
+        int g;
+        int b;
+
+        int j = Fantazia.RANDOM.nextInt(1,4);
+        if (j == 1) {
+            r = i1;
+            g = i2;
+            b = i3;
+        } else if (j == 2) {
+            r = i3;
+            g = i1;
+            b = i2;
+        } else {
+            r = i2;
+            g = i3;
+            b = i1;
+        }
+        renderer.getModel().renderToBuffer(poseStack, consumer, packedLight, packedOverlay, FastColor.ARGB32.color(150, r, g, b));
 
         poseStack.popPose();
     }
@@ -149,14 +191,15 @@ public class VisualHelper {
             Minecraft.getInstance().level.addParticle(particle, d0 + Math.cos(d12) * 5.0D, d7 - 0.4D, d9 + Math.sin(d12) * 5.0D, Math.cos(d12) * -7.0D, 0.0D, Math.sin(d12) * -7.0D);
         }
     }
+
     public enum ParticleMovement {
         REGULAR(new Vec3(0,0,0)),
         CHASE((pos, delta) -> new Vec3(delta.x() * 1.5, delta.y() * 0.2 + 0.1, delta.z() * 1.5)),
         FALL(new Vec3(0,-0.15,0)),
         ASCEND(new Vec3(0,0.15,0)),
         CHASE_AND_FALL((pos, delta) -> new Vec3(delta.x() * 1.5, 0.15, delta.z() * 1.5)),
-        AWAY((pos, delta) -> new Vec3(delta.x() - 1.5, delta.y() * -0.2 - 0.1, delta.z() - 1.5)),
-        AWAY_AND_FALL((pos, delta) -> new Vec3(delta.x() - 1.5, -0.15, delta.z() - 1.5));
+        AWAY((pos, delta) -> new Vec3(delta.x() *(-1.5), delta.y() * -0.2 - 0.1, delta.z() *(-1.5))),
+        AWAY_AND_FALL((pos, delta) -> new Vec3(delta.x() *(-1.5), -0.15, delta.z() *(-1.5)));
         private final BiFunction<Vec3, Vec3, Vec3> modifier;
         ParticleMovement(BinaryOperator<Vec3> modifier) {
             this.modifier = modifier;

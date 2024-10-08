@@ -6,48 +6,28 @@ import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
 import net.arkadiyhimself.fantazia.advanced.spell.AbstractSpell;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
+import net.minecraft.world.entity.Entity;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import org.apache.commons.compress.utils.Lists;
-
 import java.util.List;
-import java.util.function.Supplier;
 
 public class FantazicRegistry {
-    static { init(); }
-    private static final List<DeferredRegister<?>> REGISTRIES = Lists.newArrayList();
-    private static <T> DeferredRegister<T> createRegister(ResourceKey<Registry<T>> resourceKey) {
-        DeferredRegister<T> register = DeferredRegister.create(resourceKey, Fantazia.MODID);
-        REGISTRIES.add(register);
-        return register;
+
+    public static final Registry<AbstractSpell> SPELLS = (new RegistryBuilder<>(Keys.SPELL).sync(true).create());
+    public static final Registry<BasicAura<? extends Entity>> AURAS = (new RegistryBuilder<>(Keys.AURA).sync(true).create());
+
+    private static <T> RegistryBuilder<T> taggedRegistryBuilder(ResourceKey<Registry<T>> key) {
+        return new RegistryBuilder<>(key);
     }
-    public static final DeferredRegister<AbstractSpell> SPELLS = createRegister(Keys.SPELL);
-    public static final DeferredRegister<BasicAura<?>> AURAS = createRegister(Keys.AURA);
-    public static void register(IEventBus bus) {
-        BakedRegistries.init();
-        REGISTRIES.forEach(deferredRegister -> deferredRegister.register(bus));
-    }
-    private static <T> RegistryBuilder<T> taggedRegistryBuilder() {
-        return new RegistryBuilder<T>().hasTags();
-    }
+
     public static final class Keys {
         private Keys() {
         }
-
         public static final ResourceKey<Registry<AbstractSpell>> SPELL = Fantazia.resKey("spell");
-        public static final ResourceKey<Registry<BasicAura<?>>> AURA = Fantazia.resKey("aura");
+        public static final ResourceKey<Registry<BasicAura<? extends Entity>>> AURA = Fantazia.resKey("aura");
         public static final ResourceKey<Registry<HealingType>> HEALING_TYPE = Fantazia.resKey("healing_type");
-        private static void init() {}
-    }
-    public static final class BakedRegistries {
-        public static Supplier<IForgeRegistry<AbstractSpell>> SPELL = SPELLS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
-        public static Supplier<IForgeRegistry<BasicAura<?>>> AURA = AURAS.makeRegistry(FantazicRegistry::taggedRegistryBuilder);
-        private static void init() {}
-    }
-    private static void init()
-    {
-        Keys.init();
     }
 }

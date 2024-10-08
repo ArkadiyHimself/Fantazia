@@ -1,0 +1,21 @@
+{
+  "parent" : "fantazia:main/root",
+  "criteria" : {
+    "talent_obtain": {
+      "trigger": "fantazia:talent_obtain"
+    }
+  },
+  "display" : {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.fantazia.talent_obtain.desc"
+    },
+    "icon": {
+      "id": "fantazia:obscure_substance"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.talent_obtain"
+    }
+  }
+}

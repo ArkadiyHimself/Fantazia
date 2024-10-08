@@ -21,7 +21,7 @@ public class SphereBox {
     private final double centerY;
     private final double centerZ;
     public SphereBox(double radius, double x, double y, double z) {
-        this.RADIUS = java.lang.Math.abs(radius);
+        this.RADIUS = Math.abs(radius);
         this.centerX = x;
         this.centerY = y;
         this.centerZ = z;
@@ -71,10 +71,10 @@ public class SphereBox {
         return place.scale(range).add(getCenter());
     }
     public double area() {
-        return 4f * java.lang.Math.PI * RADIUS * RADIUS;
+        return 4f * Math.PI * RADIUS * RADIUS;
     }
     public double volume() {
-        return 4f / 3 * java.lang.Math.PI * RADIUS * RADIUS * RADIUS;
+        return 4f / 3 * Math.PI * RADIUS * RADIUS * RADIUS;
     }
     public SphereBox inflate(float multiplier) {
         return new SphereBox(RADIUS * multiplier, getCenter());
@@ -139,7 +139,7 @@ public class SphereBox {
     }
     public boolean intersects(SphereBox spherebox) {
         double dist = spherebox.getCenter().distanceTo(this.getCenter());
-        return dist <= java.lang.Math.abs(spherebox.radius() + this.radius());
+        return dist <= Math.abs(spherebox.radius() + this.radius());
     }
     public double actualDistance(Vec3 position) {
         double dist = position.distanceTo(getCenter());

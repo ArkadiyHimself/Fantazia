@@ -1,44 +1,40 @@
 package net.arkadiyhimself.fantazia.api.fantazicevents;
 
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.Cancelable;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 /**
  * Children of {@link DashEvent} are fired when an event involving dashing occurs <br>
- * All the events here are fired in {@link Dash} <br>
+ * All the events here are fired in {@link DashHolder} <br>
  * <br>
- * {@link DashEvent#dash} contains the Dash capability involved in the dashing action
+ * {@link DashEvent#dashHolder} contains the Dash capability involved in the dashing action
  * <br>
  * <br>
- * The events are fired on the {@link MinecraftForge#EVENT_BUS}.
+ * The events are fired on the {@link net.neoforged.neoforge.common.NeoForge#EVENT_BUS}.
  */
-public class DashEvent extends PlayerEvent {
-    private final Dash dash;
-    public DashEvent(Player player, Dash dash) {
+public abstract class DashEvent extends PlayerEvent {
+    private final DashHolder dashHolder;
+    public DashEvent(Player player, DashHolder dashHolder) {
         super(player);
-        this.dash = dash;
+        this.dashHolder = dashHolder;
     }
-    public Dash getDash() { return this.dash; }
+    public DashHolder getDash() { return this.dashHolder; }
 
     /**
      * {@link Start} is fired when a player attempts to start dashing. <br>
      * <br>
-     * This event is {@link Cancelable}.<br>
+     * This event is {@link net.neoforged.bus.api.ICancellableEvent}.<br>
      * If it is canceled, the player does not start dashing.<br>
      * <br>
      * {@link Start#duration} contains the duration or the dash in ticks and can be changed
-     * <br>
-     * <br>
-     * This event does not have a result. {@link HasResult}<br>
      */
-    @Cancelable
-    public static class Start extends DashEvent {
+
+    public static class Start extends DashEvent implements ICancellableEvent {
         private int duration;
-        public Start(Player player, Dash dash, int duration) {
-            super(player, dash);
+        public Start(Player player, DashHolder dashHolder, int duration) {
+            super(player, dashHolder);
             this.duration = duration;
         }
         public int getDuration() { return duration; }
@@ -46,29 +42,24 @@ public class DashEvent extends PlayerEvent {
     }
 
     /**
-     * {@link Expired} is fired when player's {@link Dash#getDur()} reaches 0 after the player started dashing.<br>
+     * {@link Expired} is fired when player's {@link DashHolder#getDur()} reaches 0 after the player started dashing.<br>
      * <br>
-     * This event is not {@link Cancelable}.<br>
-     * <br>
-     * This event does not have a result. {@link HasResult}<br>
+     * This event is not {@link ICancellableEvent}
      */
     public static class Expired extends DashEvent {
-        public Expired(Player player, Dash dash) {
-            super(player, dash);
+        public Expired(Player player, DashHolder dashHolder) {
+            super(player, dashHolder);
         }
     }
 
     /**
-     * {@link Stopped} is fired when player's {@link Dash#stopDash()} is used.<br>
+     * {@link Stopped} is fired when player's {@link DashHolder#stopDash()} is used.<br>
      * <br>
-     * This event is {@link Cancelable}.<br>
-     * <br>
-     * This event does not have a result. {@link HasResult}<br>
+     * This event is {@link ICancellableEvent}
      */
-    @Cancelable
-    public static class Stopped extends DashEvent {
-        public Stopped(Player player, Dash dash) {
-            super(player, dash);
+    public static class Stopped extends DashEvent implements ICancellableEvent {
+        public Stopped(Player player, DashHolder dashHolder) {
+            super(player, dashHolder);
         }
     }
 }

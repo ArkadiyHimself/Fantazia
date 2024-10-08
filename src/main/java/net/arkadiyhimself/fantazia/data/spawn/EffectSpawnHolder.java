@@ -2,6 +2,8 @@ package net.arkadiyhimself.fantazia.data.spawn;
 
 import com.google.common.collect.ImmutableList;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -10,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
@@ -34,8 +35,8 @@ public class EffectSpawnHolder {
 
         ListTag entityTypesTag = new ListTag();
         for (EntityType<?> entityType : entityTypes) {
-            ResourceLocation entityID = ForgeRegistries.ENTITY_TYPES.getKey(entityType);
-            if (entityID != null) entityTypesTag.add(StringTag.valueOf(entityID.toString()));
+            ResourceLocation entityID = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+            entityTypesTag.add(StringTag.valueOf(entityID.toString()));
         }
         tag.put("entity_types", entityTypesTag);
 
@@ -49,8 +50,8 @@ public class EffectSpawnHolder {
         List<EntityType<?>> entities = Lists.newArrayList();
         ListTag entityTypes = tag.getList("entity_types", Tag.TAG_STRING);
         for (int i = 0; i < entityTypes.size(); i++) {
-            EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(new ResourceLocation(entityTypes.getString(i)));
-            if (entityType != null) entities.add(entityType);
+            EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.get(ResourceLocation.parse(entityTypes.getString(i)));
+            entities.add(entityType);
         }
 
         List<EffectSpawnInstance> instances = Lists.newArrayList();
@@ -63,10 +64,10 @@ public class EffectSpawnHolder {
         private final List<EntityType<?>> entityTypes = Lists.newArrayList();
         private final ChaoticHierarchy<EffectSpawnInstance.Builder> effectSpawnInstances = new ChaoticHierarchy<>();
         public void addEntityType(ResourceLocation location) {
-            EntityType<?> entityType = ForgeRegistries.ENTITY_TYPES.getValue(location);
-            if (entityType != null) entityTypes.add(entityType);
+            EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.get(location);
+            entityTypes.add(entityType);
         }
-        public void addEffectInstance(MobEffect effect, double chance, int level, boolean hidden) {
+        public void addEffectInstance(Holder<MobEffect> effect, double chance, int level, boolean hidden) {
             effectSpawnInstances.addElement(new EffectSpawnInstance.Builder(effect, chance, level, hidden));
         }
         public EffectSpawnHolder build() {

@@ -116,9 +116,9 @@
 
   "effect.fantazia.microstun": "Шок",
 
-  "effect.fantazia.corrosive": "§cРжавение",
-  "effect.fantazia.corrosive.lines": "1",
-  "effect.fantazia.corrosive.tooltip.1": "Разъедает броню",
+  "effect.fantazia.corrosion": "§cРжавение",
+  "effect.fantazia.corrosion.lines": "1",
+  "effect.fantazia.corrosion.tooltip.1": "Разъедает броню",
 
   "effect.fantazia.mana_boost": "§3Прирост Маны",
   "effect.fantazia.mana_boost.lines": "1",
@@ -431,15 +431,15 @@
   "aura.fantazia.despair.stats.2": "§c * Вплость до -80% скорости передвижения",
 
   "item.fantazia.acid_bottle": "§dБутыль Кислоты",
-  "aura.fantazia.corrosive.desc.lines": "1",
-  "aura.fantazia.corrosive.desc.1": "§cОчень едкая!",
-  "aura.fantazia.corrosive.name": "Ржавение",
-  "aura.fantazia.corrosive.lines": "2",
-  "aura.fantazia.corrosive.1": "Разъедает защиту монстров, что",
-  "aura.fantazia.corrosive.2": "делает их более уязвимым к атакам",
-  "aura.fantazia.corrosive.stats.lines": "2",
-  "aura.fantazia.corrosive.stats.1": "§c * -3 брони",
-  "aura.fantazia.corrosive.stats.2": "§c * -20% устойчивости",
+  "aura.fantazia.corrosion.desc.lines": "1",
+  "aura.fantazia.corrosion.desc.1": "§cОчень едкая!",
+  "aura.fantazia.corrosion.name": "Ржавение",
+  "aura.fantazia.corrosion.lines": "2",
+  "aura.fantazia.corrosion.1": "Разъедает защиту монстров, что",
+  "aura.fantazia.corrosion.2": "делает их более уязвимым к атакам",
+  "aura.fantazia.corrosion.stats.lines": "2",
+  "aura.fantazia.corrosion.stats.1": "§c * -3 брони",
+  "aura.fantazia.corrosion.stats.2": "§c * -20% устойчивости",
 
   "item.fantazia.obscure_substance": "§5Непонятная Субстанция",
   "item.fantazia.unfinished_wings": "§cНезавершенные Крылья",
@@ -534,10 +534,16 @@
   "advancements.fantazia.the_worldliness.desc": "Приобретите Обмирщенность",
 
   "advancements.fantazia.caster.desc": "Приобретите артефакт",
-  "advancements.fantazia.caster": "Магия приняла форму",
+  "advancements.fantazia.caster": "Магия обрела форму",
 
   "advancements.fantazia.spiral_nemesis": "§4Абсолютное отчаяние",
   "advancements.fantazia.spiral_nemesis.desc": "Найдите Спиральную Немезиду",
+
+  "advancements.fantazia.caught_thunder" : "§oНадо ж выдумать такое...",
+  "advancements.fantazia.caught_thunder.desc": "Найдите Схваченную Грозу",
+
+  "advancements.fantazia.doomed": "§c§lОй-ой!..",
+  "advancements.fantazia.doomed.desc": "Попадите под воздействие эффекта Обреченности",
 
   "book.fantazia.landing_text": "С самого рождения человечества люди пытались понять то, что нельзя было объяснить, осознать то, что нельзя было постичь, обрести знания, коими нельзя было завладеть, используя науку и здравый смысл, вещи которые человеческий разум способен признать. Однако, человечеству не суждено познать абсолютно все о мире вокруг них; есть секреты, что останутся скрыты, есть тайны, что останутся необъяснены, есть истина, что остается нерассказанной...",
 

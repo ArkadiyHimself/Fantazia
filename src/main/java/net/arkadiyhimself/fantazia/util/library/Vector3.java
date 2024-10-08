@@ -5,8 +5,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -51,7 +51,7 @@ public class Vector3 {
     }
 
     public static Vector3 fromEntityCenter(Entity e) {
-        return new Vector3(e.getX(), e.getY() - e.getMyRidingOffset() + e.getBbHeight() / 2, e.getZ());
+        return new Vector3(e.getX(), e.getY() + e.getBbHeight() / 2, e.getZ());
     }
 
     public static Vector3 fromTileEntity(BlockEntity e) {
@@ -143,27 +143,20 @@ public class Vector3 {
     }
 
     public Vector3 perpendicular() {
-        if (this.z == 0)
-            return this.zCrossProduct();
+        if (this.z == 0) return this.zCrossProduct();
         return this.xCrossProduct();
     }
 
     public Vector3 xCrossProduct() {
-        double d = this.z;
-        double d1 = -this.y;
-        return new Vector3(0, d, d1);
+        return new Vector3(0, this.z, -this.y);
     }
 
     public Vector3 zCrossProduct() {
-        double d = this.y;
-        double d1 = -this.x;
-        return new Vector3(d, d1, 0);
+        return new Vector3(this.y, -this.x, 0);
     }
 
     public Vector3 yCrossProduct() {
-        double d = -this.z;
-        double d1 = this.x;
-        return new Vector3(d, 0, d1);
+        return new Vector3(-this.z, 0, this.x);
     }
 
     public Vec3 toVec3D() {

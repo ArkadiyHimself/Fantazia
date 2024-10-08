@@ -1,12 +1,12 @@
 package net.arkadiyhimself.fantazia.data.loot;
 
 import com.google.gson.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,21 +31,20 @@ public class LootInstanceManager extends SimpleJsonResourceReloadListener {
         LootModifierHolder.Builder builder = new LootModifierHolder.Builder();
 
         JsonArray lootTables = object.getAsJsonArray("loot_tables");
-        for (JsonElement lootTable : lootTables.asList()) builder.addLootTable(new ResourceLocation(lootTable.getAsString()));
+        for (JsonElement lootTable : lootTables.asList()) builder.addLootTable(ResourceLocation.parse(lootTable.getAsString()));
 
         for (Map.Entry<String, JsonElement> entry : object.getAsJsonObject("loot_instances").entrySet()) {
             JsonObject lootInstance = entry.getValue().getAsJsonObject();
 
-            ResourceLocation itemID = new ResourceLocation(entry.getKey());
-            Item item = ForgeRegistries.ITEMS.getValue(itemID);
-            if (item == null) continue;
+            ResourceLocation itemID = ResourceLocation.parse(entry.getKey());
+            Item item = BuiltInRegistries.ITEM.get(itemID);
 
             double chance = lootInstance.get("chance").getAsDouble();
 
             Item replaced = null;
             if (lootInstance.has("replaced")) {
-                ResourceLocation replacedID = new ResourceLocation(lootInstance.get("replaced").getAsString());
-                replaced = ForgeRegistries.ITEMS.getValue(replacedID);
+                ResourceLocation replacedID = ResourceLocation.parse(lootInstance.get("replaced").getAsString());
+                replaced = BuiltInRegistries.ITEM.get(replacedID);
             }
 
             boolean firstTime = lootInstance.has("first_time") && lootInstance.get("first_time").getAsBoolean();

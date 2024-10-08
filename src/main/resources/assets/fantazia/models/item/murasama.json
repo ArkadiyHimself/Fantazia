@@ -1,6 +1,6 @@
 {
-    "parent" : "minecraft:item/handheld",
-    "loader" : "forge:separate_transforms",
+    "parent" : "minecraft:builtin/entity",
+    "loader" : "neoforge:separate_transforms",
     "base" : {
         "parent" : "fantazia:item/murasama/murasama_model"
     },

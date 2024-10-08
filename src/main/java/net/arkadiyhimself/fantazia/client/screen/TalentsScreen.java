@@ -2,13 +2,12 @@ package net.arkadiyhimself.fantazia.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
 import net.arkadiyhimself.fantazia.data.talents.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talents.reload.TalentTabManager;
-import net.arkadiyhimself.fantazia.networking.NetworkHandler;
-import net.arkadiyhimself.fantazia.networking.packets.capabilityupdate.TalentBuyingC2S;
+import net.arkadiyhimself.fantazia.networking.packets.attachment_modify.TalentBuyingC2S;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.GameNarrator;
@@ -20,6 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,16 +31,17 @@ public class TalentsScreen extends Screen {
     private static final ResourceLocation BACKGROUND = Fantazia.res("textures/gui/talent/background.png");
     private static final ResourceLocation FRAME = Fantazia.res("textures/gui/talent/frame.png");
     private static final ResourceLocation WISDOM_WIDGET = Fantazia.res("textures/gui/talent/wisdom_widget.png");
+    private static final int minX = 0;
+    private static final int minY = 0;
+    private static final int maxX = 512;
+    private static final int maxY = 512;
     public static final int frame = 176;
     public static final int background = 160;
     private final List<TalentTab> TABS = Lists.newArrayList();
     private final TalentsHolder talentsHolder;
     private double scrollX = 0;
     private double scrollY = 0;
-    private final int minX = 0;
-    private final int minY = 0;
-    private final int maxX = 512;
-    private final int maxY = 512;
+
     private int bgX;
     private int bgY;
     private int frX;
@@ -51,9 +52,7 @@ public class TalentsScreen extends Screen {
     public TalentsScreen(TalentsHolder talentsHolder) {
         super(GameNarrator.NO_TITLE);
         this.talentsHolder = talentsHolder;
-     //   TalentTab ABILITIES = new TalentTab(Fantazia.res("textures/gui/talent/tab/abilities.png"), Component.translatable("fantazia.talent_tabs.abilities"));
 
-     //   TalentTab STATS_WISDOM = new TalentTab(Fantazia.res("textures/gui/talent/tab/stats_wisdom.png"), Component.translatable("fantazia.talent_tabs.stats_wisdom"));
         for (Map.Entry<ResourceLocation, TalentTab> entry : TalentTabManager.getTabs().entrySet()) {
             ResourceLocation tabID = entry.getKey();
             List<IHierarchy<BasicTalent>> iHierarchyList = TalentTreeData.getTabHierarchies().get(tabID);
@@ -63,7 +62,7 @@ public class TalentsScreen extends Screen {
     }
     @Override
     protected void init() {
-        if (this.selectedTab == null && !TABS.isEmpty()) this.selectedTab = TABS.get(0);
+        if (this.selectedTab == null && !TABS.isEmpty()) this.selectedTab = TABS.getFirst();
     }
 
     @Override
@@ -73,15 +72,13 @@ public class TalentsScreen extends Screen {
         this.frX = (this.width - frame) / 2;
         this.frY = (this.height - frame) / 2;
 
-        this.renderBackground(pGuiGraphics);
+        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
 
         this.renderTabs(pGuiGraphics, pMouseX, pMouseY);
         this.renderBG(pGuiGraphics);
         this.renderTalents(pGuiGraphics, pMouseX, pMouseY);
         this.renderFrame(pGuiGraphics);
         this.renderWisdom(pGuiGraphics);
-
-        super.render(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 
     @Override
@@ -103,7 +100,7 @@ public class TalentsScreen extends Screen {
                 if (talentTab == selectedTab) continue;
                 if (talentTab.isMouseOver(frX, frY, pMouseX, pMouseY, false, i)) {
                     selectedTab = talentTab;
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.get(), 1f,1f));
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), 1f,1f));
                     scrollX = 0;
                     scrollY = 0;
                     return super.mouseClicked(pMouseX, pMouseY, pButton);
@@ -111,7 +108,7 @@ public class TalentsScreen extends Screen {
             }
             if (selectedTab != null) {
                 BasicTalent basicTalent = selectedTab.selectedTalent();
-                if (basicTalent != null) NetworkHandler.sendToServer(new TalentBuyingC2S(basicTalent));
+                if (basicTalent != null) PacketDistributor.sendToServer(new TalentBuyingC2S(basicTalent.getID()));
             }
 
         }
@@ -168,7 +165,7 @@ public class TalentsScreen extends Screen {
 
     }
     private void scroll(double pX, double pY) {
-        this.scrollX = Mth.clamp(this.scrollX + pX, -this.maxX + background, this.minX);
-        this.scrollY = Mth.clamp(this.scrollY + pY, -this.maxY + background, this.minY);
+        this.scrollX = Mth.clamp(this.scrollX + pX, -maxX + background, minX);
+        this.scrollY = Mth.clamp(this.scrollY + pY, -maxY + background, minY);
     }
 }

@@ -1,0 +1,27 @@
+{
+  "parent" : "fantazia:main/root",
+  "criteria" : {
+    "effect": {
+      "conditions": {
+        "effects": {
+          "fantazia:doomed": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display" : {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.fantazia.doomed.desc"
+    },
+    "icon": {
+      "id": "minecraft:magma_cream"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.doomed"
+    },
+    "hidden" : true
+  }
+}

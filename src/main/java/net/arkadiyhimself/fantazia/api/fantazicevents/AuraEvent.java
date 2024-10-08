@@ -3,9 +3,7 @@ package net.arkadiyhimself.fantazia.api.fantazicevents;
 
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
 
 /**
  * Children of {@link AuraEvent} are fired when an event involving an aura occurs
@@ -16,9 +14,9 @@ import net.minecraftforge.eventbus.api.Event;
  * {@link AuraEvent#aura} contains the AuraInstance involved in the event
  * <br>
  * <br>
- * The events are fired on the {@link MinecraftForge#EVENT_BUS}.
+ * The events are fired on the {@link net.neoforged.neoforge.common.NeoForge#EVENT_BUS}.
  */
-public class AuraEvent<T extends Entity> extends Event {
+public abstract class AuraEvent<T extends Entity> extends Event {
     private final AuraInstance<T> aura;
     public AuraEvent(AuraInstance<T> aura) {
         this.aura = aura;
@@ -31,10 +29,7 @@ public class AuraEvent<T extends Entity> extends Event {
      * {@link Tick} is fired anytime an instance of aura is ticked if {@link AuraInstance#tick()}
      * <br>
      * <br>
-     *  This event is not {@link Cancelable}.
-     * <br>
-     * <br>
-     * This event does not have a {@link HasResult result}
+     *  This event is not {@link net.neoforged.bus.api.ICancellableEvent}
      */
     public static class Tick<T extends Entity> extends AuraEvent<T> {
         public Tick(AuraInstance<T> aura) {
@@ -48,10 +43,7 @@ public class AuraEvent<T extends Entity> extends Event {
      * {@link Enter#entity} contains the entity that entered the aura
      * <br>
      * <br>
-     *  This event is not {@link Cancelable}.
-     * <br>
-     * <br>
-     * This event does not have a {@link HasResult result}
+     *  This event is not {@link net.neoforged.bus.api.ICancellableEvent}
      */
     public static class Enter<T extends Entity> extends AuraEvent<T> {
         private final T entity;
@@ -71,10 +63,7 @@ public class AuraEvent<T extends Entity> extends Event {
      * {@link Exit#entity} contains the entity that exited the aura
      * <br>
      * <br>
-     *  This event is not {@link Cancelable}.
-     * <br>
-     * <br>
-     * This event does not have a {@link HasResult result}
+     *  This event is not {@link net.neoforged.bus.api.ICancellableEvent}
      */
     public static class Exit<T extends Entity> extends AuraEvent<T> {
         private final T entity;

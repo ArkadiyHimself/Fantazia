@@ -1,15 +1,15 @@
 package net.arkadiyhimself.fantazia.entities;
 
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.items.casters.DashStone;
+import net.arkadiyhimself.fantazia.items.casters.DashStoneItem;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -17,20 +17,18 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.EnderEyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.phys.AABB;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -56,16 +54,16 @@ public class DashStoneEntity extends Entity {
         this.level = 0;
     }
     @Override
-    protected void defineSynchedData() {
-        entityData.define(DASHSTONE, ItemStack.EMPTY);
-        entityData.define(VISUAL_ROT0, 0f);
-        entityData.define(VISUAL_ROT1, 0f);
-        entityData.define(OWNER, Optional.empty());
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder pBuilder) {
+        pBuilder.define(DASHSTONE, ItemStack.EMPTY);
+        pBuilder.define(VISUAL_ROT0, 0f);
+        pBuilder.define(VISUAL_ROT1, 0f);
+        pBuilder.define(OWNER, Optional.empty());
     }
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag pCompound) {
         if (pCompound.contains("owner")) this.ownerUUID = pCompound.getUUID("owner");
-        if (pCompound.contains("dashstone")) this.entityData.set(DASHSTONE, ItemStack.of(pCompound.getCompound("dashstone")));
+        if (pCompound.contains("dashstone")) this.entityData.set(DASHSTONE, ItemStack.parse(this.registryAccess(), pCompound.getCompound("dashstone")).orElse(ItemStack.EMPTY));
         if (pCompound.contains("level")) this.level = pCompound.getInt("level");
         entityData.set(OWNER, Optional.ofNullable(ownerUUID));
 
@@ -74,23 +72,27 @@ public class DashStoneEntity extends Entity {
     @Override
     protected void addAdditionalSaveData(@NotNull CompoundTag pCompound) {
         if (ownerUUID != null) pCompound.putUUID("owner", ownerUUID);
-        pCompound.put("dashstone", entityData.get(DASHSTONE).save(new CompoundTag()));
+
+        ItemStack stack = entityData.get(DASHSTONE);
+        if (stack.getItem() instanceof DashStoneItem) pCompound.put("dashstone", stack.save(this.registryAccess()));
+
         pCompound.putInt("level", level);
     }
 
     @Override
     public void playerTouch(@NotNull Player pPlayer) {
-        TalentsHolder holder = AbilityGetter.takeAbilityHolder(pPlayer, TalentsHolder.class);
+        TalentsHolder holder = PlayerAbilityGetter.takeHolder(pPlayer, TalentsHolder.class);
         if (this.level().isClientSide() || !pPlayer.getUUID().equals(ownerUUID) || holder == null) return;
 
         ICuriosItemHandler curiosItemHandler = CuriosApi.getCuriosInventory(pPlayer).orElse(null);
+        if (curiosItemHandler == null) return;
 
         Optional<SlotResult> slotResult = curiosItemHandler.findCurio("dashstone", 0);
         if (slotResult.isEmpty()) return;
         Item item = slotResult.get().stack().getItem();
-        if (!(item instanceof DashStone dashStone)) return;
+        if (!(item instanceof DashStoneItem dashStoneItem)) return;
 
-        if (this.level < dashStone.level) return;
+        if (this.level < dashStoneItem.level) return;
 
         curiosItemHandler.setEquippedCurio("dashstone", 0, entityData.get(DASHSTONE));
         VisualHelper.circleOfParticles(ParticleTypes.PORTAL, this.position());
@@ -110,8 +112,8 @@ public class DashStoneEntity extends Entity {
         if (entityData.get(OWNER).isEmpty()) return;
         if (soundRech <= 0) {
             soundRech = 270;
-            Minecraft.getInstance().levelRenderer.playStreamingMusic(FTZSoundEvents.WIND.get(), this.blockPosition(), null);
-        }
+            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(FTZSoundEvents.WIND.get(), SoundSource.AMBIENT, 1f, 1f, RandomSource.create(), this.blockPosition()));
+            }
         soundRech--;
     }
     public ItemStack getDashstone() {
@@ -128,41 +130,43 @@ public class DashStoneEntity extends Entity {
         this.soundRech = 0;
         entityData.set(DASHSTONE, ItemStack.EMPTY);
         entityData.set(OWNER, Optional.empty());
-        Minecraft.getInstance().levelRenderer.playStreamingMusic(null, this.blockPosition(), null);
+        Minecraft.getInstance().getSoundManager().stop(FTZSoundEvents.WIND.getId(), SoundSource.AMBIENT);
         cooldown = 10;
     }
     private void tryAdaptToPlayer(ServerLevel serverLevel) {
         List<? extends Player> players = serverLevel.getEntitiesOfClass(Player.class, AABB.ofSize(this.position(), 16,16,16));
         for (Player player : players) {
-            Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
-            if (dash != null && dash.getLevel() == 1 && dash.getDashstoneEntity() == null) {
+            DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+            if (dashHolder != null && dashHolder.getLevel() == 1 && dashHolder.getDashstoneEntity(level()) == null) {
                 serverLevel.sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 2, 0.1,0,0.1,0);
                 this.playSound(SoundEvents.WITHER_SPAWN);
-                dash.setDashstoneEntity(this);
+                dashHolder.setDashstoneEntity(this);
                 this.ownerUUID = player.getUUID();
                 this.level = 2;
                 this.soundRech = 0;
                 entityData.set(DASHSTONE, new ItemStack(FTZItems.DASHSTONE2.get()));
                 entityData.set(OWNER, Optional.of(ownerUUID));
 
+
+                summonProtector(-2.5, -2.5);
+                summonProtector(-2.5, +2.5);
+                summonProtector(+2.5, +2.5);
+                summonProtector(+2.5, -2.5);
+
                 LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(serverLevel);
                 if (lightningBolt != null) {
                     lightningBolt.setPos(this.getX(), this.getY() - 3, this.getZ());
                     serverLevel.addFreshEntity(lightningBolt);
                 }
-                summonProtector(-2.5, -1, -2.5);
-                summonProtector(-2.5, -1, +2.5);
-                summonProtector(+2.5, -1, +2.5);
-                summonProtector(+2.5, -1, -2.5);
                 return;
             }
         }
     }
-    private void summonProtector(double xOff, double yOff, double zOff) {
+    private void summonProtector(double xOff, double zOff) {
         WitherSkeleton protector = EntityType.WITHER_SKELETON.create(this.level());
         if (protector == null) return;
-        protector.setPos(this.getX() + xOff, this.getY() + yOff, this.getZ() + zOff);
-        protector.addEffect(new MobEffectInstance(FTZMobEffects.BARRIER.get(), -1, 25, true, true));
+        protector.setPos(this.getX() + xOff, this.getY() + (double) -1, this.getZ() + zOff);
+        protector.addEffect(new MobEffectInstance(FTZMobEffects.BARRIER, -1, 35, true, true));
         this.level().addFreshEntity(protector);
     }
 }

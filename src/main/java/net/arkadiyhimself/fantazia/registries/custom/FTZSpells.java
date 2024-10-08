@@ -1,23 +1,27 @@
 package net.arkadiyhimself.fantazia.registries.custom;
 
-import net.arkadiyhimself.fantazia.advanced.spell.AbstractSpell;
-import net.arkadiyhimself.fantazia.advanced.spell.Spells;
+import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.spell.*;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
-import net.minecraftforge.registries.RegistryObject;
-
-import java.util.function.Supplier;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class FTZSpells {
     private FTZSpells() {}
+    public static final DeferredRegister<AbstractSpell> REGISTER = DeferredRegister.create(FantazicRegistry.Keys.SPELL, Fantazia.MODID);
     // self
-    public static final RegistryObject<AbstractSpell> ENTANGLE = FantazicRegistry.SPELLS.register("entangle", () -> Spells.Self.ENTANGLE);
-    public static final RegistryObject<AbstractSpell> REWIND = FantazicRegistry.SPELLS.register("rewind", () -> Spells.Self.REWIND);
+    public static final DeferredHolder<AbstractSpell, SelfSpell> ENTANGLE = REGISTER.register("entangle", () -> Spells.Self.ENTANGLE);
+    public static final DeferredHolder<AbstractSpell, SelfSpell> REWIND = REGISTER.register("rewind", () -> Spells.Self.REWIND);
     // targeted
-    public static final RegistryObject<AbstractSpell> DEVOUR = FantazicRegistry.SPELLS.register("devour", () -> Spells.Targeted.DEVOUR);
-    public static final RegistryObject<AbstractSpell> SONIC_BOOM = FantazicRegistry.SPELLS.register("sonic_boom", () -> Spells.Targeted.SONIC_BOOM);
-    public static final RegistryObject<AbstractSpell> BOUNCE = FantazicRegistry.SPELLS.register("bounce", () -> Spells.Targeted.BOUNCE);
-    public static final RegistryObject<AbstractSpell> LIGHTNING_STRIKE = FantazicRegistry.SPELLS.register("lightning_strike", () -> Spells.Targeted.LIGHTNING_STRIKE);
+    public static final DeferredHolder<AbstractSpell, TargetedSpell<?>> DEVOUR = REGISTER.register("devour", () -> Spells.Targeted.DEVOUR);
+    public static final DeferredHolder<AbstractSpell, TargetedSpell<?>> SONIC_BOOM = REGISTER.register("sonic_boom", () -> Spells.Targeted.SONIC_BOOM);
+    public static final DeferredHolder<AbstractSpell, TargetedSpell<?>> BOUNCE = REGISTER.register("bounce", () -> Spells.Targeted.BOUNCE);
+    public static final DeferredHolder<AbstractSpell, TargetedSpell<?>> LIGHTNING_STRIKE = REGISTER.register("lightning_strike", () -> Spells.Targeted.LIGHTNING_STRIKE);
     // passive
-    public static final RegistryObject<AbstractSpell> REFLECT = FantazicRegistry.SPELLS.register("reflect", () -> Spells.Passive.REFLECT);
-    public static final RegistryObject<AbstractSpell> DAMNED_WRATH = FantazicRegistry.SPELLS.register("damned_wrath", () -> Spells.Passive.DAMNED_WRATH);
+    public static final DeferredHolder<AbstractSpell, PassiveSpell> REFLECT = REGISTER.register("reflect", () -> Spells.Passive.REFLECT);
+    public static final DeferredHolder<AbstractSpell, PassiveSpell> DAMNED_WRATH = REGISTER.register("damned_wrath", () -> Spells.Passive.DAMNED_WRATH);
+    public static void register(IEventBus eventBus) {
+        REGISTER.register(eventBus);
+    }
 }

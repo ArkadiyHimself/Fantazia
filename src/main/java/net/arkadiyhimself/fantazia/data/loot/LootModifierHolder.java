@@ -45,7 +45,7 @@ public class LootModifierHolder {
     public static LootModifierHolder deserialize(CompoundTag tag) {
         List<ResourceLocation> locations = Lists.newArrayList();
         ListTag lootTables = tag.getList("lootTables", Tag.TAG_STRING);
-        for (int i = 0; i < lootTables.size(); i++) locations.add(new ResourceLocation(lootTables.getString(i)));
+        for (int i = 0; i < lootTables.size(); i++) locations.add(ResourceLocation.parse(lootTables.getString(i)));
 
         List<LootInstance> instances = Lists.newArrayList();
         ListTag lootInstances = tag.getList("lootInstances", Tag.TAG_COMPOUND);

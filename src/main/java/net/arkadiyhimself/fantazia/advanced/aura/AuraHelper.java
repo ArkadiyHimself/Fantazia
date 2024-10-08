@@ -2,9 +2,10 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCap;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
@@ -19,14 +20,14 @@ import java.util.Map;
 
 public class AuraHelper {
     private AuraHelper() {}
-    // sorts a list of aura instances with a complicated algorithm, removing an aura instance if entity doesn't Primary Conditions and then prioritising instances where entity matches Secondary Conditions
+    // sorts a list of aura instances with a complicated algorithm, removing an aura instance if entity doesn't match Primary Conditions and then prioritising instances where entity matches Secondary Conditions
     public static <T extends Entity> List<AuraInstance<T>> sortUniqueAura(List<AuraInstance<T>> instances, @NotNull T entity) {
         instances.removeIf(auraInstance -> auraInstance.notInside(entity));
         instances.removeIf(auraInstance -> !auraInstance.getAura().affectedClass().isInstance(entity) && !Fantazia.DEVELOPER_MODE);
         instances.removeIf(auraInstance -> !auraInstance.getAura().couldAffect(entity, auraInstance.getOwner()) && !Fantazia.DEVELOPER_MODE);
         List<AuraInstance<T>> unique = Lists.newArrayList();
         while (!instances.isEmpty()) {
-            AuraInstance<T> instance = instances.get(0);
+            AuraInstance<T> instance = instances.getFirst();
             AuraInstance<T> busyInstance = null;
             boolean sameAura = false;
             for (AuraInstance<T> tmAuraInstance : unique) {
@@ -51,10 +52,10 @@ public class AuraHelper {
     }
     @SuppressWarnings("unchecked")
     public static <T extends Entity> List<AuraInstance<T>> getAffectingAuras(@NotNull T entity) {
-        LevelCap levelCap = LevelCapGetter.getLevelCap(entity.level());
+        AurasInstancesHolder aurasInstancesHolder = LevelAttributesGetter.takeHolder(entity.level(), AurasInstancesHolder.class);
         List<AuraInstance<T>> auras = Lists.newArrayList();
-        if (levelCap == null) return auras;
-        for (AuraInstance<? extends Entity> auraInstance : levelCap.getAuraInstances()) if (auraInstance.getAura().affectedClass().isInstance(entity)) auras.add((AuraInstance<T>) auraInstance);
+        if (aurasInstancesHolder == null) return auras;
+        for (AuraInstance<? extends Entity> auraInstance : aurasInstancesHolder.getAuraInstances()) if (auraInstance.getAura().affectedClass().isInstance(entity)) auras.add((AuraInstance<T>) auraInstance);
         return sortUniqueAura(auras, entity);
     }
 
@@ -89,7 +90,7 @@ public class AuraHelper {
     public static <T extends Entity> void auraTick(T entity, AuraInstance<T> auraInstance) {
         BasicAura<T> basicAura = auraInstance.getAura();
         if (!basicAura.canAffect(entity, auraInstance.getOwner())) return;
-        if (entity instanceof LivingEntity livingEntity) for (Map.Entry<MobEffect, Integer> entry : basicAura.getMobEffects().entrySet()) EffectHelper.effectWithoutParticles(livingEntity, entry.getKey(), 2, entry.getValue());
+        if (entity instanceof LivingEntity livingEntity) for (Map.Entry<Holder<MobEffect>, Integer> entry : basicAura.getMobEffects().entrySet()) LivingEffectHelper.effectWithoutParticles(livingEntity, entry.getKey(), 2, entry.getValue());
     }
     public static <T extends Entity> void aurasTick(T entity) {
         List<AuraInstance<Entity>> affectingAuras = AuraHelper.getAffectingAuras(entity);

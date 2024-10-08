@@ -2,18 +2,18 @@ package net.arkadiyhimself.fantazia.advanced.spell;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
-import net.arkadiyhimself.fantazia.api.items.ITooltipBuilder;
+import net.arkadiyhimself.fantazia.api.type.item.ITooltipBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.registries.tags.ITagManager;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public abstract class AbstractSpell implements ITooltipBuilder {
@@ -32,19 +32,17 @@ public abstract class AbstractSpell implements ITooltipBuilder {
         hasCleanse = true;
         return this;
     }
-    public float getManacost() {
+    public final float getManacost() {
         return manacost;
     }
-    public int getRecharge() {
+    public final int getRecharge() {
         return recharge;
     }
     @Nullable
-    public ResourceLocation getID() {
-        List<RegistryObject<AbstractSpell>> registryObjects = FantazicRegistry.SPELLS.getEntries().stream().toList();
-        for (RegistryObject<AbstractSpell> basicAuraRegistryObject : registryObjects) if (basicAuraRegistryObject.get() == this) return basicAuraRegistryObject.getId();
-        return null;
+    public final ResourceLocation getID() {
+        return FantazicRegistry.SPELLS.getKey(this);
     }
-    public Component getName() {
+    public final Component getName() {
         if (getID() == null) return null;
         return Component.translatable("spell." + getID().getNamespace() + "." + getID().getPath() + ".name");
     }
@@ -62,8 +60,9 @@ public abstract class AbstractSpell implements ITooltipBuilder {
     public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         return Lists.newArrayList();
     }
-    public boolean is(TagKey<AbstractSpell> tagKey) {
-        ITagManager<AbstractSpell> tagManager = FantazicRegistry.BakedRegistries.SPELL.get().tags();
-        return tagManager != null && tagManager.getTag(tagKey).contains(this);
+    public final boolean is(TagKey<AbstractSpell> tagKey) {
+        if (getID() == null) return false;
+        Optional<Holder.Reference<AbstractSpell>> holder = FantazicRegistry.SPELLS.getHolder(getID());
+        return holder.map(abstractSpellReference -> abstractSpellReference.is(tagKey)).orElse(false);
     }
 }

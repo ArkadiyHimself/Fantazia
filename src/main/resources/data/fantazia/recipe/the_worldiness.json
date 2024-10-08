@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:book"
+    },
+    {
+      "item": "fantazia:obscure_substance"
+    }
+  ],
+  "result": {
+    "components": {
+      "patchouli:book": "fantazia:the_worldliness"
+    },
+    "count": 1,
+    "id": "patchouli:guide_book"
+  }
+}

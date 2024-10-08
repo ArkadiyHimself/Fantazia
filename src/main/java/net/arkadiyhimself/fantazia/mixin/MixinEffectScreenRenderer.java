@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,9 +25,10 @@ import java.util.List;
 
 @Mixin(EffectRenderingInventoryScreen.class)
 public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
-    private static List<Component> buildTooltip(MobEffect effect) {
+    @Unique
+    private static List<Component> buildTooltip(Holder<MobEffect> effect) {
         List<Component> components = Lists.newArrayList();
-        String lines = Component.translatable(effect.getDescriptionId() + ".lines").getString();
+        String lines = Component.translatable(effect.value().getDescriptionId() + ".lines").getString();
         int amo;
         try {
             amo = Integer.parseInt(lines);
@@ -34,15 +36,15 @@ public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu>
             return components;
         }
         for (int i = 1; i <= amo; i++) {
-            String line = effect.getDescriptionId() + ".tooltip." + i;
+            String line = effect.value().getDescriptionId() + ".tooltip." + i;
             ChatFormatting color;
             if (i == 1) {
-                color = switch (effect.getCategory()) {
+                color = switch (effect.value().getCategory()) {
                     case HARMFUL -> ChatFormatting.DARK_RED;
                     case NEUTRAL -> ChatFormatting.DARK_GRAY;
                     case BENEFICIAL -> ChatFormatting.BLUE;
                 };
-            } else color = switch (effect.getCategory()) {
+            } else color = switch (effect.value().getCategory()) {
                 case HARMFUL -> ChatFormatting.RED;
                 case NEUTRAL -> ChatFormatting.GRAY;
                 case BENEFICIAL -> ChatFormatting.AQUA;
@@ -52,7 +54,8 @@ public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu>
         }
         return components;
     }
-    private static void renderEffectTooltip(GuiGraphics guiGraphics, MobEffect effect, int mouseX, int mouseY) {
+    @Unique
+    private static void renderEffectTooltip(GuiGraphics guiGraphics, Holder<MobEffect> effect, int mouseX, int mouseY) {
         Cleanse cleanse = Cleanse.requiredCleanse(effect);
         Component clns = cleanse.getName();
         List<Component> components = Lists.newArrayList();

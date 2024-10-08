@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
-import net.arkadiyhimself.fantazia.items.casters.DashStone;
+import net.arkadiyhimself.fantazia.items.casters.DashStoneItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -15,11 +15,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
+@OnlyIn(Dist.CLIENT)
 public class DashStoneRenderer extends EntityRenderer<DashStoneEntity> {
-    public static final ModelResourceLocation DASHSTONE2 = Fantazia.itemModelRes("dashstone2");
-    public static final ModelResourceLocation DASHSTONE3 = Fantazia.itemModelRes("dashstone3");
+    public static final ModelResourceLocation DASHSTONE2 = Fantazia.modelRes("item/dashstone2");
+    public static final ModelResourceLocation DASHSTONE3 = Fantazia.modelRes("item/dashstone3");
     public DashStoneRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
@@ -41,10 +44,11 @@ public class DashStoneRenderer extends EntityRenderer<DashStoneEntity> {
     public @NotNull ResourceLocation getTextureLocation(@NotNull DashStoneEntity pEntity) {
         return Fantazia.res("");
     }
+
     private static ModelResourceLocation getModel(DashStoneEntity entity) {
         Item item = entity.getDashstone().getItem();
-        if (!(item instanceof DashStone dashStone)) return DASHSTONE2;
-        int level = dashStone.level;
+        if (!(item instanceof DashStoneItem dashStoneItem)) return DASHSTONE2;
+        int level = dashStoneItem.level;
         if (level <= 2) return DASHSTONE2;
         else return DASHSTONE3;
     }

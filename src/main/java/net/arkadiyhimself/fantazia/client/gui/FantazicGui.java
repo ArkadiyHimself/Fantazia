@@ -5,23 +5,21 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.DoubleJump;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.ManaData;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.StaminaData;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.BarrierEffect;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.LayeredBarrierEffect;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.StunEffect;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCap;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.BarrierEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DoubleJumpHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ManaHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -34,9 +32,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class FantazicGui {
+    // auras stuff
     private static final ResourceLocation AURA_POSITIVE_COMPONENT = Fantazia.res("textures/gui/aura_icon/positive_component.png");
     private static final ResourceLocation AURA_NEGATIVE_COMPONENT = Fantazia.res("textures/gui/aura_icon/negative_component.png");
     private static final ResourceLocation AURA_MIXED_COMPONENT = Fantazia.res("textures/gui/aura_icon/mixed_component.png");
+    // bars
     public static final ResourceLocation BARS = Fantazia.res("textures/gui/bars.png");
     // mana bar stuff
     public static final ResourceLocation MANA_FRAME = Fantazia.res("textures/gui/ftz_gui/mana/mana_frame.png");
@@ -69,7 +69,7 @@ public class FantazicGui {
     public static boolean renderStunBar(@Nullable StunEffect stunEffect, GuiGraphics guiGraphics, int x, int y) {
         if (stunEffect == null || !stunEffect.renderBar()) return false;
         if (stunEffect.stunned()) {
-            int filling = (int) ((float) stunEffect.getDur() / (float) stunEffect.getInitDur() * 182);
+            int filling = (int) ((float) stunEffect.duration() / (float) stunEffect.initialDuration() * 182);
             guiGraphics.blit(FantazicGui.BARS, x, y, 0, 10f, 182, 5, 182, 182);
             guiGraphics.blit(FantazicGui.BARS, x, y, 0, 0, 15F, filling, 5, 182, 182);
         } else if (stunEffect.hasPoints()) {
@@ -89,9 +89,7 @@ public class FantazicGui {
     public static void renderAurasInventory(GuiGraphics guiGraphics) {
         Font font = Minecraft.getInstance().font;
         LocalPlayer player = Minecraft.getInstance().player;
-        ClientLevel level = Minecraft.getInstance().level;
-        LevelCap levelCap = LevelCapGetter.getLevelCap(level);
-        if (player == null || levelCap == null) return;
+        if (player == null) return;
         Screen screen = Minecraft.getInstance().screen;
 
         int imgWDT;
@@ -140,8 +138,10 @@ public class FantazicGui {
             }
         }
     }
-    public static int renderMana(@NotNull ManaData manaData, GuiGraphics guiGraphics, int x0, int y0) {
-        int maxMana = Mth.ceil(manaData.getMaxMana() / 2);
+    public static int renderMana(@NotNull ManaHolder manaHolder, GuiGraphics guiGraphics, int x0, int y0) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return y0;
+        int maxMana = Mth.ceil(manaHolder.getMaxMana() / 2);
 
         int fullMaxRows = (int) ((float) maxMana / 10);
         boolean flag1 = maxMana % 10 > 0;
@@ -169,15 +169,17 @@ public class FantazicGui {
 
             int j2 = i * 2;
 
-            if (j2 < manaData.getMana()) {
-                ResourceLocation location = j2 + 1 == Mth.ceil(manaData.getMana()) ? MANA_ICON_HALF : MANA_ICON;
+            if (j2 < manaHolder.getMana()) {
+                ResourceLocation location = j2 + 1 == Mth.ceil(manaHolder.getMana()) ? MANA_ICON_HALF : MANA_ICON;
                 guiGraphics.blit(location, l1, i2, 0,0,9,9,9,9);
             }
         }
         return y0 - 35 - frHGT;
     }
-    public static int renderStamina(@NotNull StaminaData staminaData, GuiGraphics guiGraphics, int x0, int y0) {
-        int maxStamina = Mth.ceil(staminaData.getMaxStamina() / 2);
+    public static int renderStamina(@NotNull StaminaHolder staminaHolder, GuiGraphics guiGraphics, int x0, int y0) {
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return y0;
+        int maxStamina = Mth.ceil(staminaHolder.getMaxStamina() / 2);
 
         int fullMaxRows = (int) ((float) maxStamina / 10);
         boolean flag1 = maxStamina % 10 > 0;
@@ -205,46 +207,46 @@ public class FantazicGui {
 
             int j2 = i * 2;
 
-            if (j2 < staminaData.getStamina()) {
-                ResourceLocation location = j2 + 1 == Mth.ceil(staminaData.getStamina()) ? STAMINA_ICON_HALF : STAMINA_ICON;
+            if (j2 < staminaHolder.getStamina()) {
+                ResourceLocation location = j2 + 1 == Mth.ceil(staminaHolder.getStamina()) ? STAMINA_ICON_HALF : STAMINA_ICON;
                 guiGraphics.blit(location, l1, i2, 0,0,9,9,9,9);
             }
         }
         return y0 - frHGT - 35;
     }
-    public static int renderDashIcon(@NotNull Dash dash, GuiGraphics guiGraphics, int x0, int y0) {
+    public static int renderDashIcon(@NotNull DashHolder dashHolder, GuiGraphics guiGraphics, int x0, int y0) {
         final int dashIconSize = 20;
-        ResourceLocation emptyIcon = switch (dash.getLevel()) {
-            default -> null;
+        ResourceLocation emptyIcon = switch (dashHolder.getLevel()) {
             case 1 -> DASH1_EMPTY;
             case 2 -> DASH2_EMPTY;
             case 3 -> DASH3_EMPTY;
-        };
-        ResourceLocation dashIcon = switch (dash.getLevel()) {
             default -> null;
+        };
+        ResourceLocation dashIcon = switch (dashHolder.getLevel()) {
             case 1 -> DASH1;
             case 2 -> DASH2;
             case 3 -> DASH3;
+            default -> null;
         };
         if (dashIcon == null || emptyIcon == null) return x0;
 
         int filling;
-        if (dash.isDashing()) filling = 20 - (int) ((float) dash.getDur() / (float) dash.getInitDur() * 20);
-        else filling = (int) ((float) dash.getRecharge() / (float) dash.getInitRecharge() * 20);
+        if (dashHolder.isDashing()) filling = 20 - (int) ((float) dashHolder.getDur() / (float) dashHolder.getInitDur() * 20);
+        else filling = (int) ((float) dashHolder.getRecharge() / (float) dashHolder.getInitRecharge() * 20);
 
         guiGraphics.blit(emptyIcon, x0, y0, 0, 0, dashIconSize, dashIconSize, dashIconSize, dashIconSize);
         guiGraphics.blit(dashIcon, x0, y0, 0, 0, dashIconSize - filling, dashIconSize, dashIconSize, dashIconSize);
         return x0 + 23;
     }
-    public static void renderDoubleJumpIcon(@NotNull DoubleJump doubleJump, GuiGraphics guiGraphics, int x0, int y0) {
-        int recharge = doubleJump.getRecharge();
+    public static void renderDoubleJumpIcon(@NotNull DoubleJumpHolder doubleJumpHolder, GuiGraphics guiGraphics, int x0, int y0) {
+        int recharge = doubleJumpHolder.getRecharge();
         if (recharge > 0) {
-            int filling = (int) ((float) recharge / (float) DoubleJump.ELYTRA_RECHARGE * 20);
+            int filling = (int) ((float) recharge / (float) DoubleJumpHolder.ELYTRA_RECHARGE * 20);
             guiGraphics.blit(DOUBLE_JUMP_EMPTY, x0, y0, 0,0,20,20,20,20);
             guiGraphics.blit(DOUBLE_JUMP, x0, y0, 0,0,20 - filling, 20,20,20);
             return;
         }
-        ResourceLocation icon = doubleJump.canJump() ? DOUBLE_JUMP : DOUBLE_JUMP_EMPTY;
+        ResourceLocation icon = doubleJumpHolder.canJump() ? DOUBLE_JUMP : DOUBLE_JUMP_EMPTY;
         guiGraphics.blit(icon, x0, y0, 0,0,20,20,20,20);
     }
     public static void renderBarrierLayers(@NotNull LayeredBarrierEffect layeredBarrierEffect, GuiGraphics guiGraphics, int x0, int y0) {

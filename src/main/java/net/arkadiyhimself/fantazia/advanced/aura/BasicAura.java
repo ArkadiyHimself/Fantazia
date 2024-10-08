@@ -4,11 +4,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
-import net.arkadiyhimself.fantazia.api.items.ITooltipBuilder;
+import net.arkadiyhimself.fantazia.api.type.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -43,7 +44,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * applied to all suitable entities within aura
      */
-    private final Map<Attribute, AttributeModifier> attributeModifiers = Maps.newHashMap();
+    private final Map<Holder<Attribute>, AttributeModifier> attributeModifiers = Maps.newHashMap();
     /**
      * Contains DAMs which will be applied to all suitable entities within aura.
      * <br>
@@ -53,7 +54,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * the aura to 1.0F when it is closest to the owner
      */
-    private final Map<Attribute, AttributeModifier> dynamicAttributeModifiers = Maps.newHashMap();
+    private final Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers = Maps.newHashMap();
     /**
      * Contains the mob effects which will be applied to suitable entities
      * <br>
@@ -61,7 +62,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * of respective applied effect
      */
-    private final Map<MobEffect, Integer> mobEffects = Maps.newHashMap();
+    private final Map<Holder<MobEffect>, Integer> mobEffects = Maps.newHashMap();
     /**
      * Primary Filter is supposed to check entity's «permanent» fields which
      * <br>
@@ -132,15 +133,15 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         this.type = type;
         this.tClass = affectedType;
     }
-    public BasicAura<T> addAttributeModifier(Attribute attribute, AttributeModifier attributeModifier) {
+    public BasicAura<T> addAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
         this.attributeModifiers.put(attribute, attributeModifier);
         return this;
     }
-    public BasicAura<T> addDynamicAttributeModifier(Attribute attribute, AttributeModifier modifier) {
+    public BasicAura<T> addDynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier modifier) {
         this.dynamicAttributeModifiers.put(attribute, modifier);
         return this;
     }
-    public BasicAura<T> addMobEffect(MobEffect mobEffect, int level) {
+    public BasicAura<T> addMobEffect(Holder<MobEffect> mobEffect, int level) {
         this.mobEffects.put(mobEffect, level);
         return this;
     }
@@ -205,7 +206,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         String basicPath = "aura." + this.getID().getNamespace() + "." + this.getID().getPath();
         int amo = 0;
         if (!Screen.hasShiftDown()) {
-            components.add(Component.translatable(" "));
+            components.add(Component.literal(" "));
             String desc = Component.translatable(basicPath + ".desc.lines").getString();
             try {
                 amo = Integer.parseInt(desc);
@@ -214,14 +215,13 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
             if (amo > 0) for (int i = 1; i <= amo; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
             return components;
         }
-        components.add(Component.translatable(" "));
+        components.add(Component.literal(" "));
 
         ChatFormatting[] text = switch (this.type) {
             case MIXED -> new ChatFormatting[]{ChatFormatting.GOLD};
             case NEGATIVE -> new ChatFormatting[]{ChatFormatting.DARK_PURPLE};
             case POSITIVE -> new ChatFormatting[]{ChatFormatting.AQUA};
         };
-
         ChatFormatting[] ability = switch (this.type) {
             case MIXED -> new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD};
             case NEGATIVE -> new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD};
@@ -240,7 +240,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         String manacost = String.format("%.1f", this.getRadius());
 
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.aura_range", head, ability, manacost));
-        components.add(Component.translatable(" "));
+        components.add(Component.literal(" "));
 
         String desc = Component.translatable(basicPath + ".lines").getString();
         try {
@@ -256,7 +256,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         } catch (NumberFormatException ignored){}
 
         if (amo > 0) {
-            components.add(Component.translatable(" "));
+            components.add(Component.literal(" "));
             for (int i = 1; i <= amo; i++) components.add(GuiHelper.bakeComponent(basicPath + ".stats." + i, null, null));
         }
 
@@ -266,8 +266,8 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return tClass;
     }
     public ResourceLocation getID() {
-        if (!FantazicRegistry.BakedRegistries.AURA.get().containsValue(this)) throw new IllegalStateException("Aura is not registered!");
-        return FantazicRegistry.BakedRegistries.AURA.get().getKey(this);
+        if (!FantazicRegistry.AURAS.containsValue(this)) throw new IllegalStateException("Aura is not registered!");
+        return FantazicRegistry.AURAS.getKey(this);
     }
     public Component getAuraComponent() {
         if (getID() == null) return null;
@@ -291,13 +291,13 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     public boolean canAffect(T entity, Entity owner) {
         return primaryFilter.test(entity, owner) && secondaryFilter.test(entity, owner) && entity != owner;
     }
-    public Map<MobEffect, Integer> getMobEffects() {
+    public Map<Holder<MobEffect>, Integer> getMobEffects() {
         return mobEffects;
     }
-    public Map<Attribute, AttributeModifier> getAttributeModifiers() {
+    public Map<Holder<Attribute>, AttributeModifier> getAttributeModifiers() {
         return attributeModifiers;
     }
-    public Map<Attribute, AttributeModifier> getDynamicAttributeModifiers() {
+    public Map<Holder<Attribute>, AttributeModifier> getDynamicAttributeModifiers() {
         return dynamicAttributeModifiers;
     }
     public boolean primary(T entity, Entity owner) {

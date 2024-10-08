@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;

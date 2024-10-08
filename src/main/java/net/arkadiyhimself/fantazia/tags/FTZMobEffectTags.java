@@ -1,11 +1,12 @@
 package net.arkadiyhimself.fantazia.tags;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITagManager;
 
 public interface FTZMobEffectTags {
     TagKey<MobEffect> BARRIER = create("barrier");
@@ -13,10 +14,9 @@ public interface FTZMobEffectTags {
     private static TagKey<MobEffect> create(String pName) {
         return TagKey.create(Registries.MOB_EFFECT, Fantazia.res(pName));
     }
-    static boolean hasTag(MobEffect mobEffect, TagKey<MobEffect> tagKey) {
-        ITagManager<MobEffect> tagManager = ForgeRegistries.MOB_EFFECTS.tags();
-        if (tagManager == null || !tagManager.getTagNames().toList().contains(tagKey)) return false;
-        return tagManager.getTag(tagKey).contains(mobEffect);
+    static boolean hasTag(Holder<MobEffect> mobEffect, TagKey<MobEffect> tagKey) {
+        HolderSet.Named<MobEffect> tagManager = BuiltInRegistries.MOB_EFFECT.getOrCreateTag(tagKey);
+        return tagManager.stream().toList().contains(mobEffect);
     }
     final class CleanseTags {
         public static final TagKey<MobEffect> MEDIUM = cleanseTag("medium");

@@ -2,11 +2,11 @@ package net.arkadiyhimself.fantazia.data.loot;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.arkadiyhimself.fantazia.util.library.pseudorandom.PSERANInstance;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,15 +39,13 @@ public class LootInstance {
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
 
-        ResourceLocation addedID = ForgeRegistries.ITEMS.getKey(added);
-        if (addedID == null) throw new IllegalStateException("Item's id has not been found");
+        ResourceLocation addedID = BuiltInRegistries.ITEM.getKey(added);
         tag.putString("added", addedID.toString());
 
         tag.put("random", instance.serialize());
 
         if (replaced != null) {
-            ResourceLocation replacedID = ForgeRegistries.ITEMS.getKey(replaced);
-            if (replacedID == null) throw new IllegalStateException("Item's id has not been found");
+            ResourceLocation replacedID = BuiltInRegistries.ITEM.getKey(replaced);
             tag.putString("replaced", replacedID.toString());
         }
 
@@ -56,16 +54,15 @@ public class LootInstance {
         return tag;
     }
     public static LootInstance deserialize(CompoundTag tag) {
-        ResourceLocation addedID = new ResourceLocation(tag.getString("added"));
-        Item added = ForgeRegistries.ITEMS.getValue(addedID);
-        if (added == null) throw new IllegalStateException("Item has not been found: " + addedID);
+        ResourceLocation addedID = ResourceLocation.parse(tag.getString("added"));
+        Item added = BuiltInRegistries.ITEM.get(addedID);
 
         PSERANInstance pseranInstance = PSERANInstance.deserialize(tag.getCompound("random"));
 
         Item replaced = null;
         if (tag.contains("replaced")) {
-            ResourceLocation replacedID = new ResourceLocation(tag.getString("replaced"));
-            replaced = ForgeRegistries.ITEMS.getValue(replacedID);
+            ResourceLocation replacedID = ResourceLocation.parse(tag.getString("replaced"));
+            replaced = BuiltInRegistries.ITEM.get(replacedID);
         }
 
         boolean firstTime = tag.getBoolean("firstTime");

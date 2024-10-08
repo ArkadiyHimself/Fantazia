@@ -116,9 +116,9 @@
 
   "effect.fantazia.microstun" : "Micro-stun",
 
-  "effect.fantazia.corrosive" : "§cCorrosion",
-  "effect.fantazia.corrosive.lines" : "1",
-  "effect.fantazia.corrosive.tooltip.1" : "Reduces the armor",
+  "effect.fantazia.corrosion" : "§cCorrosion",
+  "effect.fantazia.corrosion.lines" : "1",
+  "effect.fantazia.corrosion.tooltip.1" : "Reduces the armor",
 
   "effect.fantazia.mana_boost" : "§3Mana Boost",
   "effect.fantazia.mana_boost.lines" : "1",
@@ -128,7 +128,7 @@
   "effect.fantazia.stamina_boost.lines" : "1",
   "effect.fantazia.stamina_boost.tooltip.1" : "Increases maximum stamina",
 
-  "effect.fantazia.cursed_mark" : "§4 Mark of Curse",
+  "effect.fantazia.cursed_mark" : "§4Mark of Curse",
   "effect.fantazia.cursed_mark.lines" : "2",
   "effect.fantazia.cursed_mark.tooltip.1" : "You are marked with misfortune...",
   "effect.fantazia.cursed_mark.tooltip.2" : "If you are slayed, the killed will be doomed.",
@@ -431,15 +431,15 @@
   "aura.fantazia.despair.stats.2" : "§c * Up to -80% movement speed",
 
   "item.fantazia.acid_bottle" : "§dAcid Bottle",
-  "aura.fantazia.corrosive.desc.lines" : "1",
-  "aura.fantazia.corrosive.desc.1" : "§cExtremely caustic!",
-  "aura.fantazia.corrosive.name": "Corrosive",
-  "aura.fantazia.corrosive.lines" : "2",
-  "aura.fantazia.corrosive.1" : "Corrodes the protection of monsters,",
-  "aura.fantazia.corrosive.2" : "making them more vulnerable to attacks",
-  "aura.fantazia.corrosive.stats.lines" : "2",
-  "aura.fantazia.corrosive.stats.1" : "§c * -3 armor",
-  "aura.fantazia.corrosive.stats.2" : "§c * -20% durability",
+  "aura.fantazia.corrosion.desc.lines" : "1",
+  "aura.fantazia.corrosion.desc.1" : "§cExtremely caustic!",
+  "aura.fantazia.corrosion.name": "Corrosive",
+  "aura.fantazia.corrosion.lines" : "2",
+  "aura.fantazia.corrosion.1" : "Corrodes the protection of monsters,",
+  "aura.fantazia.corrosion.2" : "making them more vulnerable to attacks",
+  "aura.fantazia.corrosion.stats.lines" : "2",
+  "aura.fantazia.corrosion.stats.1" : "§c * -3 armor",
+  "aura.fantazia.corrosion.stats.2" : "§c * -20% durability",
 
   "item.fantazia.obscure_substance" : "§5Obscure Substance",
   "item.fantazia.unfinished_wings" : "§cUnfinished Wings",
@@ -538,6 +538,12 @@
 
   "advancements.fantazia.spiral_nemesis" : "Absolute despair",
   "advancements.fantazia.spiral_nemesis.desc" : "Obtain the Spiral Nemesis",
+
+  "advancements.fantazia.caught_thunder" : "§oThe cycle ends here...",
+  "advancements.fantazia.caught_thunder.desc": "Obtain the Caught Thunder",
+
+  "advancements.fantazia.doomed" : "§c§lUh oh!..",
+  "advancements.fantazia.doomed.desc" : "Get afflicted with Doomed effect",
 
   "book.fantazia.landing_text" : "Since the beginning of humanity people tried to understand what they could not explain, grasp what they could not comprehend, obtain the knowledge they could not possess, using the science and common sense, something that the human's mind can acknowledge. However humanity will never understand everything about the world around themselves; some secrets will remain hidden, some mysteries will remain unexplained, some truths will remain untold...",
 

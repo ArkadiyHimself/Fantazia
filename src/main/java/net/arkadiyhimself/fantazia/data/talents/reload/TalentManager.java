@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -42,9 +42,9 @@ public class TalentManager extends SimpleJsonResourceReloadListener {
     public static void addAttributeTalent(ResourceLocation id, BasicTalent talent) {
         TALENTS.put(id, talent);
     }
-    public static @Nullable Advancement getAdvancement(BasicTalent talent, MinecraftServer server) {
+    public static @Nullable AdvancementHolder getAdvancement(BasicTalent talent, MinecraftServer server) {
         ResourceLocation advID = talent.getAdvancement();
         if (advID == null) return null;
-        return server.getAdvancements().getAdvancement(advID);
+        return server.getAdvancements().get(advID);
     }
 }

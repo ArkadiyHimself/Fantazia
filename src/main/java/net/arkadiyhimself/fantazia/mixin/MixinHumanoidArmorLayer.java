@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.EvasionData;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -18,13 +18,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HumanoidArmorLayer.class)
 public class MixinHumanoidArmorLayer {
-    @Inject(method = "renderArmorPiece", at = @At("HEAD"), cancellable = true)
-    private void melding(PoseStack poseStack, MultiBufferSource bufferSource, LivingEntity livingEntity, EquipmentSlot equipmentSlot, int flag1, HumanoidModel<LivingEntity> model, CallbackInfo ci) {
-        EvasionData evasionData = DataGetter.takeDataHolder(livingEntity, EvasionData.class);
-        if (evasionData != null && evasionData.getIFrames() > 0) ci.cancel();
+    @Inject(method = "renderArmorPiece*", at = @At("HEAD"), cancellable = true)
+    private void melding(PoseStack poseStack, MultiBufferSource bufferSource, LivingEntity livingEntity, EquipmentSlot slot, int packedLight, HumanoidModel<LivingEntity> p_model, float limbSwing, float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
+        EvasionHolder evasionHolder = LivingDataGetter.takeHolder(livingEntity, EvasionHolder.class);
+        if (evasionHolder != null && evasionHolder.getIFrames() > 0) ci.cancel();
 
         if (!(livingEntity instanceof Player player)) return;
-        Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
-        if (dash != null && dash.isDashing() && dash.getLevel() >= 3) ci.cancel();
+        DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+        if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() >= 3) ci.cancel();
     }
 }

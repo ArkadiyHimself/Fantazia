@@ -13,43 +13,27 @@ public class LootTablesHelper {
         return String.valueOf(context.getQueriedLootTableId()).startsWith("minecraft:chests/");
     }
     public static boolean isSlayed(LootContext context) {
-        return String.valueOf(context.getQueriedLootTableId().getPath()).startsWith("entities");
+        return context.getQueriedLootTableId().getPath().startsWith("entities");
     }
-    public static boolean isNether(ResourceLocation resLoc) {
-        List<ResourceLocation> lootChestList = Lists.newArrayList();
-        lootChestList.add(BuiltInLootTables.BASTION_BRIDGE);
-        lootChestList.add(BuiltInLootTables.BASTION_TREASURE);
-        lootChestList.add(BuiltInLootTables.BASTION_HOGLIN_STABLE);
-        lootChestList.add(BuiltInLootTables.BASTION_OTHER);
-        lootChestList.add(BuiltInLootTables.NETHER_BRIDGE);
-        lootChestList.add(BuiltInLootTables.RUINED_PORTAL);
-        return lootChestList.contains(resLoc);
-    }
-    public static boolean isStronghold(ResourceLocation resLoc) {
-        List<ResourceLocation> lootChestList = Lists.newArrayList();
-        lootChestList.add(BuiltInLootTables.STRONGHOLD_CORRIDOR);
-        lootChestList.add(BuiltInLootTables.STRONGHOLD_CROSSING);
-        lootChestList.add(BuiltInLootTables.STRONGHOLD_LIBRARY);
-        return lootChestList.contains(resLoc);
-    }
+
     public static boolean isVillage(ResourceLocation resLoc) {
         List<ResourceLocation> lootChestList = Lists.newArrayList();
-        lootChestList.add(BuiltInLootTables.VILLAGE_WEAPONSMITH);
-        lootChestList.add(BuiltInLootTables.VILLAGE_TOOLSMITH);
-        lootChestList.add(BuiltInLootTables.VILLAGE_ARMORER);
-        lootChestList.add(BuiltInLootTables.VILLAGE_CARTOGRAPHER);
-        lootChestList.add(BuiltInLootTables.VILLAGE_SHEPHERD);
-        lootChestList.add(BuiltInLootTables.VILLAGE_MASON);
-        lootChestList.add(BuiltInLootTables.VILLAGE_BUTCHER);
-        lootChestList.add(BuiltInLootTables.VILLAGE_FLETCHER);
-        lootChestList.add(BuiltInLootTables.VILLAGE_FISHER);
-        lootChestList.add(BuiltInLootTables.VILLAGE_TANNERY);
-        lootChestList.add(BuiltInLootTables.VILLAGE_TEMPLE);
-        lootChestList.add(BuiltInLootTables.VILLAGE_DESERT_HOUSE);
-        lootChestList.add(BuiltInLootTables.VILLAGE_PLAINS_HOUSE);
-        lootChestList.add(BuiltInLootTables.VILLAGE_TAIGA_HOUSE);
-        lootChestList.add(BuiltInLootTables.VILLAGE_SNOWY_HOUSE);
-        lootChestList.add(BuiltInLootTables.VILLAGE_SAVANNA_HOUSE);
+        lootChestList.add(BuiltInLootTables.VILLAGE_WEAPONSMITH.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_TOOLSMITH.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_ARMORER.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_CARTOGRAPHER.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_SHEPHERD.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_MASON.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_BUTCHER.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_FLETCHER.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_FISHER.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_TANNERY.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_TEMPLE.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_DESERT_HOUSE.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_PLAINS_HOUSE.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_TAIGA_HOUSE.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_SNOWY_HOUSE.location());
+        lootChestList.add(BuiltInLootTables.VILLAGE_SAVANNA_HOUSE.location());
         return lootChestList.contains(resLoc);
     }
 }

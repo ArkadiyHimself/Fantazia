@@ -9,24 +9,23 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
-import net.minecraftforge.eventbus.api.Cancelable;
-import net.minecraftforge.eventbus.api.Event;
+import net.neoforged.bus.api.Event;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 
 public class VanillaEventsExtension {
-    @Cancelable
-    public static class ParticleTickEvent extends Event {
+
+    public static class ParticleTickEvent extends Event implements ICancellableEvent {
         public final Vec3 position;
         public final Vec3 deltaMovement;
         public final Particle particleType;
         public final float red;
         public final float green;
         public final float blue;
-        public int age;
-        public boolean hasPhysics;
-        public boolean onGround;
+        public final int age;
+        public final boolean hasPhysics;
+        public final boolean onGround;
         public ParticleTickEvent(Particle particle, Vec3 position, Vec3 deltaMovement, float red, float green, float blue, int age, boolean hasPhysics, boolean onGround) {
             this.particleType = particle;
             this.position = position;
@@ -39,8 +38,8 @@ public class VanillaEventsExtension {
             this.onGround = onGround;
         }
     }
-    @Cancelable
-    public static class MobAttackEvent extends LivingEvent {
+
+    public static class MobAttackEvent extends LivingEvent implements ICancellableEvent {
         private final Entity target;
         public MobAttackEvent(Mob entity, Entity target) {
             super(entity);
@@ -51,10 +50,11 @@ public class VanillaEventsExtension {
             return target;
         }
     }
-    @Cancelable
-    public static class DeathPreventionEvent extends LivingEvent {
+
+    // honestly, I am not sure if I should even keep this one
+    public static class FantazicDeathPrevention extends LivingEvent implements ICancellableEvent {
         private final Object cause;
-        public DeathPreventionEvent(LivingEntity entity, Object cause) {
+        public FantazicDeathPrevention(LivingEntity entity, Object cause) {
             super(entity);
             this.cause = cause;
         }
@@ -63,8 +63,8 @@ public class VanillaEventsExtension {
             return cause;
         }
     }
-    @Cancelable
-    public static class LivingPickUpItemEvent extends LivingEvent {
+
+    public static class LivingPickUpItemEvent extends LivingEvent implements ICancellableEvent {
         private final ItemEntity itemEntity;
         public LivingPickUpItemEvent(LivingEntity entity, ItemEntity itemEntity) {
             super(entity);
@@ -74,8 +74,8 @@ public class VanillaEventsExtension {
             return itemEntity;
         }
     }
-    @Cancelable
-    public static class AdvancedHealEvent extends LivingEvent {
+
+    public static class AdvancedHealEvent extends LivingEvent implements ICancellableEvent {
         private final HealingSource source;
         private float amount;
         public AdvancedHealEvent(LivingEntity entity, HealingSource source, float amount) {
@@ -93,8 +93,8 @@ public class VanillaEventsExtension {
             this.amount = amount;
         }
     }
-    @Cancelable
-    public static class CleanseEffectEvent extends MobEffectEvent {
+
+    public static class CleanseEffectEvent extends MobEffectEvent implements ICancellableEvent {
         private final Cleanse cleanse;
         public CleanseEffectEvent(LivingEntity living, MobEffectInstance effectInstance, Cleanse cleanse) {
             super(living, effectInstance);
@@ -102,12 +102,6 @@ public class VanillaEventsExtension {
         }
         public Cleanse getStrength() {
             return cleanse;
-        }
-    }
-    @Cancelable
-    public static class EntityTickEvent extends EntityEvent {
-        public EntityTickEvent(Entity entity) {
-            super(entity);
         }
     }
 }

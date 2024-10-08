@@ -3,15 +3,18 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.dynamicattributemodifying.DynamicAttributeModifier;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.DAMHolder;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
 import net.arkadiyhimself.fantazia.events.FTZEvents;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -41,9 +44,10 @@ public class AuraInstance<T extends Entity> {
         this.owner = owner;
         this.aura = aura;
         this.center = owner.getPosition(0f);
-        if (!owner.level().isClientSide()) LevelCapGetter.get(owner.level()).ifPresent(levelCap -> levelCap.addAuraInstance(this));
 
-        for (Map.Entry<Attribute, AttributeModifier> entry : this.aura.getDynamicAttributeModifiers().entrySet()) {
+        if (level instanceof ServerLevel) LevelAttributesGetter.acceptConsumer(level, AurasInstancesHolder.class, aurasInstancesHolder -> aurasInstancesHolder.addAuraInstance(this));
+
+        for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : this.aura.getDynamicAttributeModifiers().entrySet()) {
             Function<LivingEntity, Float> percent = (entity -> {
                 double distance = entity.distanceTo(getOwner());
                 double rad = aura.getRadius();
@@ -70,9 +74,10 @@ public class AuraInstance<T extends Entity> {
         supposedlyInside.forEach(entity -> {
             if (aura.canAffect(entity, owner)) {
                 aura.entityTick(entity, owner);
-                if (entity instanceof LivingEntity livingEntity) removeModifiers(livingEntity);
-            } else if (entity instanceof LivingEntity livingEntity) applyModifiers(livingEntity);
+                if (entity instanceof LivingEntity livingEntity) applyModifiers(livingEntity);
+            } else if (entity instanceof LivingEntity livingEntity) removeModifiers(livingEntity);
         });
+
         if (aura.ownerCond(owner)) aura.ownerTick(owner);
         if (!level.isClientSide()) blocksInside().forEach(blockPos -> aura.blockTick(blockPos, this));
     }
@@ -94,44 +99,44 @@ public class AuraInstance<T extends Entity> {
     }
     public void enterAura(T entity) {
         FTZEvents.onAuraEnter(this, entity);
-        if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.translatable("entered"));
+        if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.literal("entered"));
         supposedlyInside.add(entity);
         if (!aura.canAffect(entity, getOwner())) return;
         if (!(entity instanceof LivingEntity livingEntity)) return;
-        removeModifiers(livingEntity);
+        applyModifiers(livingEntity);
     }
     public void exitAura(T entity) {
         FTZEvents.onAuraExit(this, entity);
-        if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.translatable("left"));
+        if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.literal("left"));
         if (!(entity instanceof LivingEntity livingEntity)) return;
-        applyModifiers(livingEntity);
+        removeModifiers(livingEntity);
     }
     public boolean notInside(Entity entity) {
         if (!aura.affectedClass().isInstance(entity) && !Fantazia.DEVELOPER_MODE) return true;
         return !supposedlyInside.contains(aura.affectedClass().cast(entity));
     }
     public void discard() {
-        if (!level.isClientSide()) LevelCapGetter.get(level).ifPresent(levelCap -> levelCap.removeAuraInstance(this));
+        LevelAttributesGetter.acceptConsumer(level, AurasInstancesHolder.class, aurasInstancesHolder -> aurasInstancesHolder.removeAuraInstance(this));
         this.removed = true;
         entitiesInside().forEach(this::exitAura);
     }
-    public void applyModifiers(LivingEntity livingEntity) {
-        for (Map.Entry<Attribute, AttributeModifier> entry : aura.getAttributeModifiers().entrySet()) {
+    public void removeModifiers(LivingEntity livingEntity) {
+        for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : aura.getAttributeModifiers().entrySet()) {
             AttributeInstance instance = livingEntity.getAttribute(entry.getKey());
-            if (instance != null && instance.hasModifier(entry.getValue())) instance.removeModifier(entry.getValue());
+            if (instance != null && instance.hasModifier(entry.getValue().id())) instance.removeModifier(entry.getValue());
         }
 
-        DAMHolder damHolder = DataGetter.takeDataHolder(livingEntity, DAMHolder.class);
+        DAMHolder damHolder = LivingDataGetter.takeHolder(livingEntity, DAMHolder.class);
         if (damHolder == null) return;
         dynamicAttributeModifiers.forEach(damHolder::removeDAM);
     }
-    public void removeModifiers(LivingEntity livingEntity) {
-        for (Map.Entry<Attribute, AttributeModifier> entry : aura.getAttributeModifiers().entrySet()) {
+    public void applyModifiers(LivingEntity livingEntity) {
+        for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : aura.getAttributeModifiers().entrySet()) {
             AttributeInstance instance = livingEntity.getAttribute(entry.getKey());
-            if (instance != null && !instance.hasModifier(entry.getValue())) instance.addTransientModifier(entry.getValue());
+            if (instance != null && !instance.hasModifier(entry.getValue().id())) instance.addTransientModifier(entry.getValue());
         }
 
-        DAMHolder damHolder = DataGetter.takeDataHolder(livingEntity, DAMHolder.class);
+        DAMHolder damHolder = LivingDataGetter.takeHolder(livingEntity, DAMHolder.class);
         if (damHolder == null) return;
         dynamicAttributeModifiers.forEach(damHolder::addDAM);
     }
@@ -141,11 +146,11 @@ public class AuraInstance<T extends Entity> {
         tag.putInt("owner", this.owner.getId());
         return tag;
     }
-    public static AuraInstance<?> deserialize(CompoundTag tag, Level level) {
-        ResourceLocation auraID = new ResourceLocation(tag.getString("aura"));
+    public static AuraInstance<? extends Entity> deserialize(CompoundTag tag, Level level) {
+        ResourceLocation auraID = ResourceLocation.parse(tag.getString("aura"));
         int ownerID = tag.getInt("owner");
 
-        BasicAura<?> aura = FantazicRegistry.BakedRegistries.AURA.get().getValue(auraID);
+        BasicAura<?> aura = FantazicRegistry.AURAS.get(auraID);
         Entity owner = level.getEntity(ownerID);
 
         if (aura == null) throw new IllegalStateException("Could not resolve aura: " + auraID);

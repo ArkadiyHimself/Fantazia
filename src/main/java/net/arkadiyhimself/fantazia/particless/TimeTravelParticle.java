@@ -4,8 +4,8 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class TimeTravelParticle extends TextureSheetParticle {
@@ -17,7 +17,7 @@ public class TimeTravelParticle extends TextureSheetParticle {
         this.xd = pXSpeed;
         this.yd = pYSpeed;
         this.zd = pZSpeed;
-        this.quadSize *= 1.1;
+        this.quadSize *= 1.1f;
         this.lifetime = 15;
         this.spriteSet = spriteSet;
 

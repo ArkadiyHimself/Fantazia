@@ -1,11 +1,12 @@
 package net.arkadiyhimself.fantazia.tags;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITagManager;
 
 public interface FTZItemTags {
     TagKey<Item> NO_DISINTEGRATION = create("no_disintegration");
@@ -14,8 +15,8 @@ public interface FTZItemTags {
         return TagKey.create(Registries.ITEM, Fantazia.res(pName));
     }
     static boolean hasTag(Item item, TagKey<Item> tagKey) {
-        ITagManager<Item> tagManager = ForgeRegistries.ITEMS.tags();
-        return tagManager != null && tagManager.getTag(tagKey).contains(item);
+        Holder.Reference<Item> itemReference = BuiltInRegistries.ITEM.createIntrusiveHolder(item);
+        return itemReference.is(tagKey);
     }
 
 }

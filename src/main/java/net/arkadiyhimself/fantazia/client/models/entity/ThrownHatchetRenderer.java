@@ -16,18 +16,23 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
+@OnlyIn(Dist.CLIENT)
 public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
-    public static final ModelResourceLocation WOODEN = Fantazia.itemModelRes("wooden_hatchet");
-    public static final ModelResourceLocation STONE = Fantazia.itemModelRes("stone_hatchet");
-    public static final ModelResourceLocation GOLDEN = Fantazia.itemModelRes("golden_hatchet");
-    public static final ModelResourceLocation IRON = Fantazia.itemModelRes("iron_hatchet");
-    public static final ModelResourceLocation DIAMOND = Fantazia.itemModelRes("diamond_hatchet");
-    public static final ModelResourceLocation NETHERITE = Fantazia.itemModelRes("netherite_hatchet");
+    public static final ModelResourceLocation WOODEN = Fantazia.modelRes("item/wooden_hatchet");
+    public static final ModelResourceLocation STONE = Fantazia.modelRes("item/stone_hatchet");
+    public static final ModelResourceLocation GOLDEN = Fantazia.modelRes("item/golden_hatchet");
+    public static final ModelResourceLocation IRON = Fantazia.modelRes("item/iron_hatchet");
+    public static final ModelResourceLocation DIAMOND = Fantazia.modelRes("item/diamond_hatchet");
+    public static final ModelResourceLocation NETHERITE = Fantazia.modelRes("item/netherite_hatchet");
+
     public ThrownHatchetRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
+
     @Override
     public void render(ThrownHatchet pEntity, float pEntityYaw, float pPartialTicks, PoseStack poseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight) {
         poseStack.pushPose();
@@ -43,7 +48,7 @@ public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull ThrownHatchet pEntity) {
-        return Fantazia.res("");
+        return Fantazia.res("textures/item/weapons/wooden_hatchet");
     }
 
     private static ModelResourceLocation hatchetModel(ThrownHatchet hatchet) {

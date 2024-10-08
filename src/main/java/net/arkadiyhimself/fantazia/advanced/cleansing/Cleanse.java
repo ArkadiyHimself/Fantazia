@@ -1,11 +1,12 @@
 package net.arkadiyhimself.fantazia.advanced.cleansing;
 
 import net.arkadiyhimself.fantazia.tags.FTZMobEffectTags;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITagManager;
 
 import javax.annotation.Nullable;
 
@@ -25,13 +26,11 @@ public enum Cleanse {
     public Component getName() {
         return name;
     }
-    public boolean strongEnough(MobEffect effect) {
+    public boolean strongEnough(Holder<MobEffect> effect) {
         return this.strength >= requiredCleanse(effect).strength;
     }
-    public static Cleanse requiredCleanse(MobEffect mobEffect) {
-        ITagManager<MobEffect> tagManager = ForgeRegistries.MOB_EFFECTS.tags();
-        if (tagManager == null) return BASIC;
-        for (Cleanse cleanse : Cleanse.values()) if (cleanse.tagKey != null && tagManager.getTag(cleanse.tagKey).contains(mobEffect)) return cleanse;
+    public static Cleanse requiredCleanse(Holder<MobEffect> mobEffect) {
+        for (Cleanse cleanse : Cleanse.values()) if (cleanse.tagKey != null && mobEffect.is(cleanse.tagKey)) return cleanse;
         return BASIC;
     }
 }

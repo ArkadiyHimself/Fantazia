@@ -1,18 +1,23 @@
 package net.arkadiyhimself.fantazia.entities;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.HatchetStuck;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.EffectHelper;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCapHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.StuckHatchetHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
-import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.registries.FTZEntityTypes;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
+import net.minecraft.client.renderer.entity.ThrownTridentRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
@@ -22,13 +27,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.GlassBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -36,35 +43,46 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class ThrownHatchet extends AbstractArrow {
-    private enum Direction {
+    private enum FancyDirection {
         ONLY$X, ONLY$Y, ONLY$Z, X$Y, X$Z, Y$Z, XYZ
     }
+
     public static final EntityDataAccessor<Byte> ID_PHASING = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BYTE);
+
     public static final EntityDataAccessor<Byte> ID_RICOCHET = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BYTE);
+
     public static final EntityDataAccessor<Byte> ID_HEADSHOT = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BYTE);
+
     public static final EntityDataAccessor<Boolean> ID_FOIL = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BOOLEAN);
+
     public static final EntityDataAccessor<ItemStack> STACK = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.ITEM_STACK);
+
     public static final EntityDataAccessor<Float> VISUAL_ROT0 = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.FLOAT);
+
     public static final EntityDataAccessor<Float> VISUAL_ROT1 = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.FLOAT);
+
     private float rotSpeed;
     private int ricochets;
     private int phasingTicks;
     private boolean isPhasing = false;
     private boolean retrieving = false;
     private boolean ricocheted;
+
     public ThrownHatchet(EntityType<? extends AbstractArrow> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
-    @SuppressWarnings("ConstantConditions")
+
     public ThrownHatchet(Level pLevel, LivingEntity shooter, ItemStack hatchetItem, float charge) {
-        super(FTZEntityTypes.HATCHET.get(), shooter, pLevel);
+        super(FTZEntityTypes.HATCHET.get(), shooter, pLevel, hatchetItem, null);
         shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, charge * 2F, 1.0F);
         rotSpeed();
 
@@ -73,12 +91,12 @@ public class ThrownHatchet extends AbstractArrow {
 
         throwingData(hatchetItem);
     }
-    @SuppressWarnings("ConstantConditions")
+
     public ThrownHatchet(Level level, Vec3 vec3, ItemStack stack) {
         super(FTZEntityTypes.HATCHET.get(), level);
         setPos(vec3);
         droppingData(stack);
-        entityData.set(STACK, stack);
+
         pickup = Pickup.ALLOWED;
     }
 
@@ -111,34 +129,43 @@ public class ThrownHatchet extends AbstractArrow {
     public @NotNull ItemStack getPickupItem() {
         return this.entityData.get(STACK).copy();
     }
+
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        entityData.define(ID_PHASING, (byte)0);
-        entityData.define(ID_RICOCHET, (byte)0);
-        entityData.define(ID_HEADSHOT, (byte)0);
-        entityData.define(ID_FOIL, false);
-        entityData.define(STACK, ItemStack.EMPTY);
-        entityData.define(VISUAL_ROT0, 0f);
-        entityData.define(VISUAL_ROT1, 0f);
+    protected @NotNull ItemStack getDefaultPickupItem() {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    protected void defineSynchedData(SynchedEntityData.@NotNull Builder pBuilder) {
+        super.defineSynchedData(pBuilder);
+        pBuilder.define(ID_PHASING, (byte)0);
+        pBuilder.define(ID_RICOCHET, (byte)0);
+        pBuilder.define(ID_HEADSHOT, (byte)0);
+        pBuilder.define(ID_FOIL, false);
+        pBuilder.define(STACK, ItemStack.EMPTY);
+        pBuilder.define(VISUAL_ROT0, 0f);
+        pBuilder.define(VISUAL_ROT1, 0f);
     }
 
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        if (pCompound.contains("hatchet", 10)) this.entityData.set(STACK, ItemStack.of(pCompound.getCompound("hatchet")));
+        if (pCompound.contains("hatchet", 10)) this.entityData.set(STACK, ItemStack.parse(this.registryAccess(), pCompound.getCompound("hatchet")).orElse(getDefaultPickupItem()));
 
-        this.rotSpeed = pCompound.contains("rotSpeed") ? pCompound.getFloat("rotSpeed") : 0;
-        this.ricochets = pCompound.contains("ricochets") ? pCompound.getInt("ricochets") : 0;
-        this.phasingTicks = pCompound.contains("phasingTicks") ? pCompound.getInt("phasingTicks") : 0;
-        this.isPhasing = pCompound.contains("isPhasing") && pCompound.getBoolean("isPhasing");
-        this.retrieving = pCompound.contains("retrieving") && pCompound.getBoolean("retrieving");
-        this.ricocheted = pCompound.contains("ricocheted") && pCompound.getBoolean("ricocheted");
+        this.rotSpeed = pCompound.getFloat("rotSpeed");
+        this.ricochets = pCompound.getInt("ricochets");
+        this.phasingTicks = pCompound.getInt("phasingTicks");
+        this.isPhasing = pCompound.getBoolean("isPhasing");
+        this.retrieving = pCompound.getBoolean("retrieving");
+        this.ricocheted = pCompound.getBoolean("ricocheted");
     }
+
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.put("hatchet", this.getPickupItem().save(new CompoundTag()));
+
+        ItemStack stack = this.getPickupItem();
+        if (stack.getItem() instanceof HatchetItem) pCompound.put("hatchet", stack.save(this.registryAccess()));
 
         pCompound.putFloat("rotSpeed", this.rotSpeed);
         pCompound.putInt("ricochets", this.ricochets);
@@ -172,8 +199,8 @@ public class ThrownHatchet extends AbstractArrow {
             ricochets--;
             boolean flag = ricochetTarget((entity) -> true);
             if (!flag) {
-                Direction dir = direction(pResult.getBlockPos());
-                if (dir != Direction.ONLY$Y || !ricocheted) ricochetIntoNowhere(dir, 0.45f);
+                FancyDirection dir = direction(pResult.getBlockPos());
+                if (dir != FancyDirection.ONLY$Y || !ricocheted) ricochetIntoNowhere(dir, 0.45f);
                 else actuallyHitBlock(pResult);
             }
         } else actuallyHitBlock(pResult);
@@ -194,33 +221,46 @@ public class ThrownHatchet extends AbstractArrow {
     }
 
     public void attackEntity(LivingEntity livingEntity) {
+        Registry<Enchantment> enchantmentRegistry = this.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
         float dmg = 1.5f;
         if (getPickupItem().getItem() instanceof HatchetItem hatchetItem) dmg += hatchetItem.getTier().getAttackDamageBonus();
         double headDist = Math.abs(this.getY() - livingEntity.getEyeY());
         if (headDist <= 0.3) dmg += entityData.get(ID_HEADSHOT);
 
-        FTZDamageTypes.DamageSources sources = LevelCapHelper.getDamageSources(level());
+        DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(level());
         if (sources != null) livingEntity.hurt(sources.hatchet(this, getOwner() == null ? null : getOwner()), dmg);
 
-        int projProtect = EnchantmentHelper.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, livingEntity);
-        if (projProtect < 4) EffectHelper.makeStunned(livingEntity, 15 * (4 - projProtect));
+        Optional<Holder.Reference<Enchantment>> projProt = enchantmentRegistry.getHolder(Enchantments.PROJECTILE_PROTECTION);
+        int projProtect = projProt.map(enchantmentReference -> EnchantmentHelper.getEnchantmentLevel(enchantmentReference, livingEntity)).orElse(0);
+
+        if (projProtect < 4) LivingEffectHelper.makeStunned(livingEntity, 15 * (4 - projProtect));
     }
+
     private void throwingData(ItemStack stack) {
-        entityData.set(ID_PHASING, (byte) stack.getEnchantmentLevel(FTZEnchantments.PHASING.get()));
-        entityData.set(ID_RICOCHET, (byte) stack.getEnchantmentLevel(FTZEnchantments.RICOCHET.get()));
-        entityData.set(ID_HEADSHOT, (byte) stack.getEnchantmentLevel(FTZEnchantments.HEADSHOT.get()));
+        Registry<Enchantment> enchantmentRegistry = this.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+
+        Optional<Holder.Reference<Enchantment>> phasing = enchantmentRegistry.getHolder(FTZEnchantments.PHASING);
+        entityData.set(ID_PHASING, phasing.isEmpty() ? 0 : (byte) stack.getEnchantmentLevel(phasing.get()));
+
+        Optional<Holder.Reference<Enchantment>> ricochet = enchantmentRegistry.getHolder(FTZEnchantments.RICOCHET);
+        entityData.set(ID_RICOCHET, ricochet.isEmpty() ? 0 : (byte) stack.getEnchantmentLevel(ricochet.get()));
+
+        Optional<Holder.Reference<Enchantment>> headshot = enchantmentRegistry.getHolder(FTZEnchantments.HEADSHOT);
+        entityData.set(ID_HEADSHOT, headshot.isEmpty() ? 0 : (byte) stack.getEnchantmentLevel(headshot.get()));
+
         entityData.set(ID_FOIL, stack.hasFoil());
         entityData.set(STACK, stack);
-        ricochets = stack.getEnchantmentLevel(FTZEnchantments.RICOCHET.get());
-        int phasing = stack.getEnchantmentLevel(FTZEnchantments.PHASING.get());
-        if (phasing > 0) {
-            phasingTicks = phasing * 5 + 5;
+
+        ricochets = entityData.get(ID_RICOCHET);
+        int phasTicks = entityData.get(ID_PHASING);
+
+        if (phasTicks > 0) {
+            phasingTicks = phasTicks * 5 + 5;
             isPhasing = true;
             if (pickup != Pickup.CREATIVE_ONLY) pickup = Pickup.DISALLOWED;
         }
-
-
     }
+
     private void droppingData(ItemStack stack) {
         entityData.set(ID_PHASING, (byte) 0);
         entityData.set(ID_RICOCHET, (byte) 0);
@@ -231,6 +271,7 @@ public class ThrownHatchet extends AbstractArrow {
         phasingTicks = 0;
         isPhasing = false;
     }
+
     public void actuallyHitBlock(BlockHitResult pResult) {
         super.onHitBlock(pResult);
         ricochets = 0;
@@ -265,14 +306,14 @@ public class ThrownHatchet extends AbstractArrow {
         return delta.normalize().scale(multiplier);
     }
     public boolean tryStuck(LivingEntity entity) {
-        HatchetStuck hatchetStuck = DataGetter.takeDataHolder(entity, HatchetStuck.class);
-        if (hatchetStuck == null) return false;
-        return hatchetStuck.stuck(this);
+        StuckHatchetHolder stuckHatchetHolder = LivingDataGetter.takeHolder(entity, StuckHatchetHolder.class);
+        if (stuckHatchetHolder == null) return false;
+        return stuckHatchetHolder.stuck(this);
     }
-    public void ricochetIntoNowhere(Direction direction, float multip) {
+    public void ricochetIntoNowhere(FancyDirection fancyDirection, float multip) {
         ricocheted = true;
         Vec3 vec3 = this.getDeltaMovement();
-        Vec3 newV3 = switch (direction) {
+        Vec3 newV3 = switch (fancyDirection) {
             case ONLY$X -> vec3.subtract(vec3.x() * 2,0,0).scale(multip);
             case ONLY$Y -> vec3.subtract(0,vec3.y() * 2,0).scale(multip);
             case ONLY$Z -> vec3.subtract(0,0,vec3.z() * 2).scale(multip);
@@ -306,13 +347,13 @@ public class ThrownHatchet extends AbstractArrow {
             else return this.level().clip(new ClipContext(vec3, vec31, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this)).getType() != HitResult.Type.MISS;
         }
     }
-    public void ricochetIntoNowhere(float mult) {
-        this.setDeltaMovement(this.getDeltaMovement().scale(mult));
+    public void ricochetIntoNowhere(float multiplier) {
+        this.setDeltaMovement(this.getDeltaMovement().scale(multiplier));
     }
     public boolean isBlockDestroyable(BlockState state) {
-        return (state.getBlock() instanceof GlassBlock || state.getBlock() instanceof StainedGlassPaneBlock || state.getBlock() == Blocks.GLASS_PANE || state.getBlock() instanceof LeavesBlock);
+        return (state.getBlock() instanceof StainedGlassPaneBlock || state.getBlock() == Blocks.GLASS_PANE || state.getBlock() instanceof LeavesBlock);
     }
-    public Direction direction(BlockPos pos) {
+    public FancyDirection direction(BlockPos pos) {
         BlockPos blockPos = blockPosition().subtract(pos);
         // reminder: x is for West and East, z is for North and South
         int x = blockPos.getX();
@@ -321,27 +362,27 @@ public class ThrownHatchet extends AbstractArrow {
         int modX = Math.abs(x);
         int modY = Math.abs(y);
         int modZ = Math.abs(z);
-        if (modX == modY && modY == modZ) return Direction.XYZ;
+        if (modX == modY && modY == modZ) return FancyDirection.XYZ;
         else {
-            if (modX > modY && modX > modZ) return Direction.ONLY$X;
-            else if (modY > modZ && modY > modX) return Direction.ONLY$Y;
-            else if (modZ > modY && modZ > modX) return Direction.ONLY$Z;
+            if (modX > modY && modX > modZ) return FancyDirection.ONLY$X;
+            else if (modY > modZ && modY > modX) return FancyDirection.ONLY$Y;
+            else if (modZ > modY && modZ > modX) return FancyDirection.ONLY$Z;
             else {
                 BlockState blockStateX = level().getBlockState(blockPosition().subtract(new BlockPos(x,0,0)));
                 BlockState blockStateY = level().getBlockState(blockPosition().subtract(new BlockPos(0, y,0)));
                 BlockState blockStateZ = level().getBlockState(blockPosition().subtract(new BlockPos(0,0, z)));
                 if (modX == modY) {
-                    if (blockStateX.isAir() && !blockStateY.isAir()) return Direction.ONLY$Y;
-                    else if (!blockStateX.isAir() && blockStateY.isAir()) return Direction.ONLY$X;
-                    else return Direction.X$Y;
+                    if (blockStateX.isAir() && !blockStateY.isAir()) return FancyDirection.ONLY$Y;
+                    else if (!blockStateX.isAir() && blockStateY.isAir()) return FancyDirection.ONLY$X;
+                    else return FancyDirection.X$Y;
                 } else if (modY == modZ) {
-                    if (blockStateY.isAir() && !blockStateZ.isAir()) return Direction.ONLY$Z;
-                    else if (!blockStateY.isAir() && blockStateZ.isAir()) return Direction.ONLY$Y;
-                    else return Direction.Y$Z;
+                    if (blockStateY.isAir() && !blockStateZ.isAir()) return FancyDirection.ONLY$Z;
+                    else if (!blockStateY.isAir() && blockStateZ.isAir()) return FancyDirection.ONLY$Y;
+                    else return FancyDirection.Y$Z;
                 } else {
-                    if (blockStateX.isAir() && !blockStateZ.isAir()) return Direction.ONLY$Z;
-                    else if (!blockStateX.isAir() && blockStateZ.isAir()) return Direction.ONLY$X;
-                    else return Direction.X$Z;
+                    if (blockStateX.isAir() && !blockStateZ.isAir()) return FancyDirection.ONLY$Z;
+                    else if (!blockStateX.isAir() && blockStateZ.isAir()) return FancyDirection.ONLY$X;
+                    else return FancyDirection.X$Z;
                 }
             }
         }

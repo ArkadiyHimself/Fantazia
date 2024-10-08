@@ -1,115 +1,23 @@
 plugins {
-    id 'eclipse'
+    id 'java-library'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id 'org.spongepowered.mixin' version '0.7.+'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'net.neoforged.moddev' version '2.0.34-beta'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.spongepowered.mixin'
-apply plugin: 'net.minecraftforge.gradle'
-
-version = "${mod_version}-${minecraft_version}"
-group = mod_base_package
-archivesBaseName = mod_id
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-mixin {
-    add sourceSets.main, "fantazia.refmap.json"
-    config "fantazia.mixins.json"
-}
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-minecraft {
-    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
-    runs {
-        client {
-            arg '-mixin.config=fantazia.mixins.json'
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'fantazia'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            mods {
-                fantazia {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-            arg '-mixin.config=fantazia.mixins.json'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'fantazia'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            mods {
-                fantazia {
-                    source sourceSets.main
-                }
-            }
-        }
-        gameTestServer {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'fantazia'
-
-            mods {
-                fantazia {
-                    source sourceSets.main
-                }
-            }
-        }
-        data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'fantazia', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            mods {
-                fantazia {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+tasks.named('wrapper', Wrapper).configure {
+     distributionType = Wrapper.DistributionType.BIN
 }
 
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
-def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version,
-                         mod_authors: mod_authors, mod_description: mod_description,
-                         minecraft_version_range: minecraft_version_range, forge_version_range: forge_version_range,
-                         loader_version_range: loader_version_range]
+version = mod_version
+group = mod_group_id
 
 repositories {
+    mavenLocal()
     maven {
         url "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
-    }
-    maven {
-        name = '100Media'
-        url = 'https://maven.100media.dev/'
     }
     maven {
         name = 'GeckoLib'
@@ -120,70 +28,122 @@ repositories {
         url 'https://maven.kosmx.dev/'
     }
     maven {
-        url = "https://maven.theillusivec4.top/"
-    }
-    maven {
         url 'https://maven.blamejared.com'
     }
 }
-configurations {
-    shade
-    implementation.extendsFrom shade
+
+base {
+    archivesName = mod_id
 }
 
-dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
-    shade fg.deobf("dev._100media.capabilitysyncer:capabilitysyncer:${capabilitysyncer_version}")
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${gecko_lib_version}")
-    implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${player_anim}")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
-    runtimeOnly fg.deobf("io.github.kosmx.bendy-lib:bendy-lib-forge:${bendy_lib_version}")
-    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouly_version}:api")
-    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouly_version}")
-}
-jar {
-    manifest {
-        archiveClassifier = 'slim'
-        attributes([
-                "Specification-Title"     : mod_id,
-                "Specification-Vendor"    : mod_authors,
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : mod_version,
-                "Implementation-Vendor"   : mod_authors,
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                'MixinConfigs'          : 'fantazia.mixins.json',
-        ])
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    runs {
+        client {
+            client()
+
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
     }
 }
 
-shadowJar {
-    archiveClassifier = ''
-    configurations = [project.configurations.shade]
-    relocate 'dev._100media.capabilitysyncer', "${project.group}.relocated.capabilitysyncer"
-    finalizedBy 'reobfShadowJar'
+
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+configurations {
+    runtimeClasspath.extendsFrom localRuntime
 }
 
-reobf {
-    shadowJar {}
+dependencies {
+ //   implementation "software.bernie.geckolib:geckolib-forge-${minecraft_version}:${gecko_lib_version}"
+    implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_anim}"
+ //   runtimeOnly "io.github.kosmx.bendy-lib:bendy-lib-forge:${bendy_lib_version}"
+    compileOnly "vazkii.patchouli:Patchouli:${patchouly_version}:api"
+    runtimeOnly "vazkii.patchouli:Patchouli:${patchouly_version}"
+    runtimeOnly "curse.maven:adorned-1036809:${adorned_version}"
+    compileOnly "curse.maven:adorned-1036809:${adorned_version}"
 }
-jar.finalizedBy('reobfJar')
+
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            artifact jar
+        register('mavenJava', MavenPublication) {
+            from components.java
         }
     }
     repositories {
         maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+            url "file://${project.projectDir}/repo"
         }
     }
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }

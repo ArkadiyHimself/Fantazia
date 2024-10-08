@@ -49,7 +49,7 @@ public class TalentHierarchyManager extends SimpleJsonResourceReloadListener {
                 ChainHierarchy<ResourceLocation> chainHierarchy = attributeChain(hierarchyID, object.get("chains").getAsInt());
                 JsonObject element = object.getAsJsonObject("element");
                 for (ResourceLocation resourceLocation : chainHierarchy.getElements()) TalentManager.addAttributeTalent(resourceLocation, GSON.fromJson(element, AttributeTalent.Builder.class).build());
-                ResourceLocation tab = new ResourceLocation(object.get("tab").getAsString());
+                ResourceLocation tab = ResourceLocation.parse(object.get("tab").getAsString());
                 getOrCreateTabHierarchies(tab).add(hierarchyID);
                 ALL_HIERARCHIES.put(hierarchyID, chainHierarchy);
                 continue;
@@ -64,7 +64,7 @@ public class TalentHierarchyManager extends SimpleJsonResourceReloadListener {
                 case COMPLEX -> null;
             };
 
-            ResourceLocation tab = new ResourceLocation(object.get("tab").getAsString());
+            ResourceLocation tab = ResourceLocation.parse(object.get("tab").getAsString());
             getOrCreateTabHierarchies(tab).add(hierarchyID);
 
             ALL_HIERARCHIES.put(hierarchyID, talentHierarchy);
@@ -76,19 +76,19 @@ public class TalentHierarchyManager extends SimpleJsonResourceReloadListener {
     }
     private MonoHierarchy<ResourceLocation> createMonoHierarchy(JsonObject jsonObject) {
         String id = jsonObject.get("value").getAsString();
-        ResourceLocation resourceLocation = new ResourceLocation(id);
+        ResourceLocation resourceLocation = ResourceLocation.parse(id);
         return MonoHierarchy.of(resourceLocation);
     }
     private ChainHierarchy<ResourceLocation> createChainHierarchy(JsonObject jsonObject) {
         List<JsonElement> values = jsonObject.get("values").getAsJsonArray().asList();
         List<ResourceLocation> resourceLocations = Lists.newArrayList();
-        for (JsonElement element : values) resourceLocations.add(new ResourceLocation(element.getAsString()));
+        for (JsonElement element : values) resourceLocations.add(ResourceLocation.parse(element.getAsString()));
         return ChainHierarchy.of(resourceLocations);
     }
     private ChaoticHierarchy<ResourceLocation> createChaoticHierarchy(JsonObject jsonObject) {
         List<JsonElement> values = jsonObject.get("values").getAsJsonArray().asList();
         List<ResourceLocation> resourceLocations = Lists.newArrayList();
-        for (JsonElement element : values) resourceLocations.add(new ResourceLocation(element.getAsString()));
+        for (JsonElement element : values) resourceLocations.add(ResourceLocation.parse(element.getAsString()));
         return ChaoticHierarchy.of(resourceLocations);
     }
     private ChainHierarchy<ResourceLocation> attributeChain(ResourceLocation basic, int amount) {

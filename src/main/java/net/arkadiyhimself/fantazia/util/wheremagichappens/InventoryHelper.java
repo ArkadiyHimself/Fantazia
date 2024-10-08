@@ -76,7 +76,6 @@ public class InventoryHelper {
         });
         return present.get();
     }
-    @SuppressWarnings("ConstantConditions")
     public static List<SlotResult> findAllCurios(LivingEntity entity, String ident) {
         List<SlotResult> result = new ArrayList<>();
         ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
@@ -98,14 +97,12 @@ public class InventoryHelper {
         }
         return result;
     }
-    @SuppressWarnings("ConstantConditions")
     public static List<SlotResult> findCurios(LivingEntity entity, String... ident) {
         List<SlotResult> result = new ArrayList<>();
         ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
         if (handler == null) return result;
         return handler.findCurios(ident);
     }
-    @SuppressWarnings("ConstantConditions")
     public static Optional<SlotResult> findCurio(LivingEntity entity, String ident, int id) {
         ICuriosItemHandler curiosItemHandler = CuriosApi.getCuriosInventory(entity).orElse(null);
         if (curiosItemHandler == null) return Optional.empty();

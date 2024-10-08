@@ -1,19 +1,16 @@
 package net.arkadiyhimself.fantazia.api.fantazicevents;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.Cancelable;
+import net.neoforged.bus.api.ICancellableEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 /**
  * Start is fired when a player attempts to perform a double jump. <br>
  * <br>
- * This event is {@link Cancelable}.<br>
- * If it is canceled, the player does not start dashing.<br>
- * <br>
- * This event does not have a {@link HasResult result}
+ * This event is {@link net.neoforged.bus.api.ICancellableEvent}.<br>
+ * If it is canceled, the player does not start dashing
  */
-@Cancelable
-public class DoubleJumpEvent extends PlayerEvent {
+public class DoubleJumpEvent extends PlayerEvent implements ICancellableEvent {
     public DoubleJumpEvent(Player player) {
         super(player);
     }

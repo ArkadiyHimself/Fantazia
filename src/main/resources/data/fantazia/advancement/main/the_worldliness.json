@@ -1,0 +1,25 @@
+{
+  "parent" : "fantazia:main/root",
+  "criteria" : {
+    "open_worldliness": {
+      "trigger": "patchouli:open_book",
+      "conditions": {
+        "book" : "fantazia:the_worldliness"
+      }
+    }
+  },
+  "display" : {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.fantazia.the_worldliness.desc"
+    },
+    "icon": {
+      "id": "fantazia:the_worldliness"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.the_worldliness"
+    },
+    "hidden" : true
+  }
+}

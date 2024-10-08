@@ -1,17 +1,19 @@
 package net.arkadiyhimself.fantazia.data.spawn;
 
 import com.google.gson.*;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MobEffectsOnSpawnManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder()
@@ -31,20 +33,20 @@ public class MobEffectsOnSpawnManager extends SimpleJsonResourceReloadListener {
         EffectSpawnHolder.Builder builder = new EffectSpawnHolder.Builder();
 
         JsonArray entityTypes = object.getAsJsonArray("entity_types");
-        for (JsonElement entityType : entityTypes.asList()) builder.addEntityType(new ResourceLocation(entityType.getAsString()));
+        for (JsonElement entityType : entityTypes.asList()) builder.addEntityType(ResourceLocation.parse(entityType.getAsString()));
 
         for (Map.Entry<String, JsonElement> entry : object.getAsJsonObject("effect_instances").entrySet()) {
             JsonObject effectInstance = entry.getValue().getAsJsonObject();
 
-            ResourceLocation effectID = new ResourceLocation(entry.getKey());
-            MobEffect mobEffect = ForgeRegistries.MOB_EFFECTS.getValue(effectID);
-            if (mobEffect == null) continue;
+            ResourceLocation effectID = ResourceLocation.parse(entry.getKey());
+            Optional<Holder.Reference<MobEffect>> mobEffect = BuiltInRegistries.MOB_EFFECT.getHolder(effectID);
+            if (mobEffect.isEmpty()) continue;
 
             double chance = effectInstance.get("chance").getAsDouble();
             int level = effectInstance.get("level").getAsInt();
             boolean hidden = effectInstance.get("hidden").getAsBoolean();
 
-            builder.addEffectInstance(mobEffect, chance, level, hidden);
+            builder.addEffectInstance(mobEffect.get(), chance, level, hidden);
         }
         effectSpawnHolders.add(builder);
     }

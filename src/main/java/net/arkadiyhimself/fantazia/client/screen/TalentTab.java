@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.capability.entity.effect.effects.FrozenEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FrozenEffect;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class SnowCrystalType extends RenderStateShard {
-    public static final ResourceLocation SNOW_CRYSTAL = new ResourceLocation(Fantazia.MODID, "textures/render_above/snow_crystal.png");
+    public static final ResourceLocation SNOW_CRYSTAL = Fantazia.res("textures/render_above/snow_crystal.png");
     public static final RenderType SNOW_CRYSTAL_TYPE = snowCrystalType();
     public SnowCrystalType(String pName, Runnable pSetupState, Runnable pClearState) {super(pName, pSetupState, pClearState);}
     private static RenderType snowCrystalType() {
@@ -27,21 +27,24 @@ public class SnowCrystalType extends RenderStateShard {
     private static RenderType createSnowCrystal(RenderType.CompositeState glState) {
         return RenderType.create("snow_crystal", com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, true, glState);
     }
-    public static void render(@NotNull FrozenEffect frozenEffect, PoseStack poseStack, MultiBufferSource buffers, int iconHeight) {
+    public static void render(@NotNull FrozenEffect frozenEffect, PoseStack poseStack, MultiBufferSource buffers, float iconHeight) {
         VertexConsumer freezeType = buffers.getBuffer(SnowCrystalType.SNOW_CRYSTAL_TYPE);
+        poseStack.pushPose();
+        poseStack.translate(0,iconHeight,0);
         final int light = 0xF000F0;
         if (frozenEffect.effectPercent() > 0) {
             int effectPercent = (int) Math.ceil(frozenEffect.effectPercent() * 255);
-            freezeType.vertex(poseStack.last().pose(), -8, iconHeight, 0).color(255, 255, 255, effectPercent).uv(0.0F, 0.0F).uv2(light).endVertex();
-            freezeType.vertex(poseStack.last().pose(), -8, 16 + iconHeight, 0).color(255, 255, 255, effectPercent).uv(0.0F, 1.0F).uv2(light).endVertex();
-            freezeType.vertex(poseStack.last().pose(), 8, 16 + iconHeight, 0).color(255, 255, 255, effectPercent).uv(1.0F, 1.0F).uv2(light).endVertex();
-            freezeType.vertex(poseStack.last().pose(), 8, iconHeight, 0).color(255, 255, 255, effectPercent).uv(1.0F, 0.0F).uv2(light).endVertex();
+            freezeType.addVertex(poseStack.last().pose(), -0.8f, -0.8f, 0).setColor(255, 255, 255, effectPercent).setUv(0.0F, 0.0F).setLight(light);
+            freezeType.addVertex(poseStack.last().pose(), -0.8f, 0.8f, 0).setColor(255, 255, 255, effectPercent).setUv(0.0F, 1.0F).setLight(light);
+            freezeType.addVertex(poseStack.last().pose(), 0.8f, 0.8f, 0).setColor(255, 255, 255, effectPercent).setUv(1.0F, 1.0F).setLight(light);
+            freezeType.addVertex(poseStack.last().pose(), 0.8f, -0.8f, 0).setColor(255, 255, 255, effectPercent).setUv(1.0F, 0.0F).setLight(light);
         } else {
             int freezePercent = (int) (frozenEffect.freezePercent() * 235);
-            freezeType.vertex(poseStack.last().pose(), -8, iconHeight, 0).color(255, 255, 255, 20 + freezePercent).uv(0.0F, 0.0F).uv2(light).endVertex();
-            freezeType.vertex(poseStack.last().pose(), -8, 16 + iconHeight, 0).color(255, 255, 255, 20 + freezePercent).uv(0.0F, 1.0F).uv2(light).endVertex();
-            freezeType.vertex(poseStack.last().pose(), 8, 16 + iconHeight, 0).color(255, 255, 255, 20 + freezePercent).uv(1.0F, 1.0F).uv2(light).endVertex();
-            freezeType.vertex(poseStack.last().pose(), 8, iconHeight, 0).color(255, 255, 255, 20 + freezePercent).uv(1.0F, 0.0F).uv2(light).endVertex();
+            freezeType.addVertex(poseStack.last().pose(), -0.8f, -0.8f, 0).setColor(255, 255, 255, 20 + freezePercent).setUv(0.0F, 0.0F).setLight(light);
+            freezeType.addVertex(poseStack.last().pose(), -0.8f, 0.8f, 0).setColor(255, 255, 255, 20 + freezePercent).setUv(0.0F, 1.0F).setLight(light);
+            freezeType.addVertex(poseStack.last().pose(), 0.8f, 0.8f, 0).setColor(255, 255, 255, 20 + freezePercent).setUv(1.0F, 1.0F).setLight(light);
+            freezeType.addVertex(poseStack.last().pose(), 0.8f, -0.8f, 0).setColor(255, 255, 255, 20 + freezePercent).setUv(1.0F, 0.0F).setLight(light);
         }
+        poseStack.popPose();
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class DisarmedSwordType extends RenderStateShard {
-    public static final ResourceLocation BROKEN_SWORD = new ResourceLocation(Fantazia.MODID, "textures/render_above/broken_sword.png");
+    public static final ResourceLocation BROKEN_SWORD = Fantazia.res("textures/render_above/broken_sword.png");
     public static final RenderType BROKEN_SWORD_TYPE = brokenSwordType();
     public DisarmedSwordType(String pName, Runnable pSetupState, Runnable pClearState) {super(pName, pSetupState, pClearState);}
     private static RenderType brokenSwordType() {
@@ -25,12 +25,15 @@ public class DisarmedSwordType extends RenderStateShard {
     private static RenderType createBrokenSword(RenderType.CompositeState glState) {
         return RenderType.create("broken_sword", com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, true, glState);
     }
-    public static void render(PoseStack poseStack, MultiBufferSource buffers, int iconHeight) {
+    public static void render(PoseStack poseStack, MultiBufferSource buffers, float iconHeight) {
         VertexConsumer disarmType = buffers.getBuffer(DisarmedSwordType.BROKEN_SWORD_TYPE);
         final int light = 0xF000F0;
-        disarmType.vertex(poseStack.last().pose(), -10.0F, iconHeight, 0).color(255, 255, 255, 255).uv(0.0F, 0.0F).uv2(light).endVertex();
-        disarmType.vertex(poseStack.last().pose(), -10.0F, 20 + (float) iconHeight, 0).color(255, 255, 255, 255).uv(0.0F, 1.0F).uv2(light).endVertex();
-        disarmType.vertex(poseStack.last().pose(), 10.0F, 20 + (float) iconHeight, 0).color(255, 255, 255, 255).uv(1.0F, 1.0F).uv2(light).endVertex();
-        disarmType.vertex(poseStack.last().pose(), 10.0F, iconHeight, 0).color(255, 255, 255, 255).uv(1.0F, 0.0F).uv2(light).endVertex();
+        poseStack.pushPose();
+        poseStack.translate(0,iconHeight,0);
+        disarmType.addVertex(poseStack.last().pose(), -0.8F, -0.8f, 0).setColor(255, 255, 255, 255).setUv(0.0F, 0.0F).setLight(light);
+        disarmType.addVertex(poseStack.last().pose(), -0.8F, 0.8f, 0).setColor(255, 255, 255, 255).setUv(0.0F, 1.0F).setLight(light);
+        disarmType.addVertex(poseStack.last().pose(), 0.8F, 0.8f, 0).setColor(255, 255, 255, 255).setUv(1.0F, 1.0F).setLight(light);
+        disarmType.addVertex(poseStack.last().pose(), 0.8F, -0.8f, 0).setColor(255, 255, 255, 255).setUv(1.0F, 0.0F).setLight(light);
+        poseStack.popPose();
     }
 }

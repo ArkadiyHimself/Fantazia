@@ -17,9 +17,6 @@ public class PassiveSpell extends AbstractSpell {
     public PassiveSpell(float manacost, int recharge, Supplier<SoundEvent> castSound) {
         super(manacost, recharge, castSound);
     }
-    public PassiveSpell(float manacost, int recharge) {
-        super(manacost, recharge, null);
-    }
 
     @Override
     public PassiveSpell cleanse(Cleanse cleanse) {
@@ -39,12 +36,12 @@ public class PassiveSpell extends AbstractSpell {
                 lines = Integer.parseInt(desc);
             } catch (NumberFormatException ignored){}
             if (lines > 0) {
-                components.add(Component.translatable(" "));
+                components.add(Component.literal(" "));
                 for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
             }
             return components;
         }
-        components.add(Component.translatable(" "));
+        components.add(Component.literal(" "));
         ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.GOLD};
 
         ChatFormatting[] ability = new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD};
@@ -61,7 +58,7 @@ public class PassiveSpell extends AbstractSpell {
         // spell cleanse
         if (this.hasCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", head, ability, this.getStrength().getName()));
 
-        components.add(Component.translatable(" "));
+        components.add(Component.literal(" "));
 
 
         String desc = Component.translatable(basicPath + ".lines").getString();
@@ -78,7 +75,7 @@ public class PassiveSpell extends AbstractSpell {
         } catch (NumberFormatException ignored){}
 
         if (lines > 0) {
-            components.add(Component.translatable(" "));
+            components.add(Component.literal(" "));
             components.add(GuiHelper.bakeComponent(basicPath + ".tweaks", head, null));
             for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".tweaks." + i, null, null));
         }

@@ -1,0 +1,30 @@
+{
+  "parent" : "fantazia:main/caster",
+  "criteria": {
+    "caught_thunder": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "fantazia:caught_thunder"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.fantazia.caught_thunder.desc"
+    },
+    "hidden": true,
+    "icon": {
+      "id": "fantazia:caught_thunder"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.caught_thunder"
+    }
+  }
+}

@@ -30,7 +30,7 @@ public class WisdomRewardManager extends SimpleJsonResourceReloadListener {
     }
     private static void readRewards(String name, JsonObject jsonObject) {
         Map<ResourceLocation, Integer> rewardMap = getOrCreate(name);
-        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) rewardMap.put(new ResourceLocation(entry.getKey()), entry.getValue().getAsInt());
+        for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) rewardMap.put(ResourceLocation.parse(entry.getKey()), entry.getValue().getAsInt());
     }
     private static Map<ResourceLocation, Integer> getOrCreate(String name) {
         REWARD_MAPS.computeIfAbsent(name, location -> Maps.newHashMap());

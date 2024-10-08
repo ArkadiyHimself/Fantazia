@@ -1,0 +1,14 @@
+{
+  "criteria": {
+    "melee_weapon": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "#fantazia:melee_block"
+          }
+        ]
+      }
+    }
+  }
+}

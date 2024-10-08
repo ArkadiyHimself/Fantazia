@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.data.talents;
 
-import net.arkadiyhimself.fantazia.api.items.ITooltipBuilder;
+import net.arkadiyhimself.fantazia.api.type.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.data.talents.reload.TalentManager;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ComplexHierarchy;
@@ -24,7 +24,7 @@ public class BasicTalent implements ITooltipBuilder {
     private IHierarchy<BasicTalent> hierarchy = null;
     @Nullable
     private final ResourceLocation advancement;
-    public BasicTalent(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement) {
+    public BasicTalent(ResourceLocation iconTexture, String title, int wisdom, @Nullable ResourceLocation advancement) {
         this.iconTexture = iconTexture;
         this.title = title;
         this.wisdom = wisdom;

@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.items.weapons.Range;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.models.PlayerAnimations;
+import net.arkadiyhimself.fantazia.client.models.entity.ThrownHatchetRenderer;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.client.player.LocalPlayer;
@@ -12,30 +12,28 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
 public class HatchetItem extends TieredItem {
-    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
-    public HatchetItem(Tier pTier, float pAttackSpeedModifier, Item.Properties pProperties) {
+    private final float attackSpeedModifier;
+    public HatchetItem(Tier pTier, float pAttackSpeedModifier, Properties pProperties) {
         super(pTier, pProperties);
-        float attackDamage = 2.5f + pTier.getAttackDamageBonus();
-        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", attackDamage, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", pAttackSpeedModifier, AttributeModifier.Operation.ADDITION));
-        this.defaultModifiers = builder.build();
+        this.attackSpeedModifier = pAttackSpeedModifier;
     }
     @Override
     public boolean hurtEnemy(ItemStack pStack, @NotNull LivingEntity pTarget, @NotNull LivingEntity pAttacker) {
-        pStack.hurtAndBreak(2, pAttacker, (p_43296_) -> p_43296_.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+        pStack.hurtAndBreak(2, pAttacker, EquipmentSlot.MAINHAND);
         return true;
     }
 
@@ -43,14 +41,14 @@ public class HatchetItem extends TieredItem {
     public void onUseTick(@NotNull Level pLevel, @NotNull LivingEntity pLivingEntity, @NotNull ItemStack pStack, int pRemainingUseDuration) {
         super.onUseTick(pLevel, pLivingEntity, pStack, pRemainingUseDuration);
         if (pLivingEntity instanceof LocalPlayer player) {
-            int i = getUseDuration(pStack) - pRemainingUseDuration;
+            int i = getUseDuration(pStack, pLivingEntity) - pRemainingUseDuration;
             if (i == 0) PlayerAnimations.animatePlayer(player, PlayerAnimations.WINDUP_START());
             else if (i == 14) PlayerAnimations.animatePlayer(player, PlayerAnimations.WINDUP_CONTINUE);
         }
     }
 
     @Override
-    public int getUseDuration(@NotNull ItemStack pStack) {
+    public int getUseDuration(@NotNull ItemStack pStack, @NotNull LivingEntity livingEntity) {
         return 72000;
     }
 
@@ -58,7 +56,8 @@ public class HatchetItem extends TieredItem {
     public void releaseUsing(@NotNull ItemStack pStack, @NotNull Level pLevel, @NotNull LivingEntity pLivingEntity, int pTimeCharged) {
         super.releaseUsing(pStack, pLevel, pLivingEntity, pTimeCharged);
         if (pLivingEntity instanceof Player player) {
-            int dur = getUseDuration(pStack) - pTimeCharged;
+
+            int dur = getUseDuration(pStack, pLivingEntity) - pTimeCharged;
             float charge = getPowerForTime(dur);
             if (player instanceof LocalPlayer localPlayer) {
                 IAnimation animation = PlayerAnimations.getAnimation(localPlayer);
@@ -67,8 +66,9 @@ public class HatchetItem extends TieredItem {
                     PlayerAnimations.animatePlayer(localPlayer, (String) null);
                 }
             }
+
             if (!pLevel.isClientSide() && charge > 0.2) {
-                pStack.hurtAndBreak(1, player, (player1) -> player1.broadcastBreakEvent(player.getUsedItemHand()));
+                pStack.hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
                 ThrownHatchet hatchetEnt = new ThrownHatchet(pLevel, player, pStack.copy(), charge);
 
                 pLevel.addFreshEntity(hatchetEnt);
@@ -104,9 +104,12 @@ public class HatchetItem extends TieredItem {
         }
         return f;
     }
-    @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        return slot == EquipmentSlot.MAINHAND ? this.defaultModifiers : super.getAttributeModifiers(slot, stack);
-    }
 
+    @Override
+    public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers(@NotNull ItemStack stack) {
+        ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+        builder.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Fantazia.res("item.hatchet"), getTier().getAttackDamageBonus() + 2.5f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        builder.add(Attributes.ATTACK_SPEED, new AttributeModifier(Fantazia.res("item.hatchet"), attackSpeedModifier, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        return builder.build();
+    }
 }

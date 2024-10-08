@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.AbilityGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.ability.abilities.Dash;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.DataGetter;
-import net.arkadiyhimself.fantazia.api.capability.entity.data.newdata.EvasionData;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
@@ -18,16 +18,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ElytraLayer.class)
 public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T,M> {
+
     public MixinElytraLayer(RenderLayerParent<T, M> pRenderer) {
         super(pRenderer);
     }
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true, remap = false)
     private void melding(ItemStack stack, T entity, CallbackInfoReturnable<Boolean> cir) {
-        EvasionData evasionData = DataGetter.takeDataHolder(entity, EvasionData.class);
-        if (evasionData != null && evasionData.getIFrames() > 0) cir.setReturnValue(false);
+        EvasionHolder evasionHolder = LivingDataGetter.takeHolder(entity, EvasionHolder.class);
+        if (evasionHolder != null && evasionHolder.getIFrames() > 0) cir.setReturnValue(false);
 
         if (!(entity instanceof Player player)) return;
-        Dash dash = AbilityGetter.takeAbilityHolder(player, Dash.class);
-        if (dash != null && dash.isDashing() && dash.getLevel() >= 3) cir.setReturnValue(false);
+        DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+        if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() >= 3) cir.setReturnValue(false);
     }
+
 }

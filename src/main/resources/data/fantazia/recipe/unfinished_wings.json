@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category" : "misc",
+  "pattern": [
+    "XXX",
+    "#YX",
+    "Y#X"
+  ],
+  "key": {
+    "X" : {
+      "item": "minecraft:feather"
+    },
+    "#" : {
+      "item": "minecraft:phantom_membrane"
+    },
+    "Y" : {
+      "item": "fantazia:obscure_substance"
+    }
+  },
+  "result": {
+    "id": "fantazia:unfinished_wings"
+  },
+  "show_notification": true
+}

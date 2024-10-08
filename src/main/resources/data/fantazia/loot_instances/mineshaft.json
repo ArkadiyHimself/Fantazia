@@ -4,7 +4,7 @@
   ],
   "loot_instances" : {
     "fantazia:tranquil_herb" : {
-      "chance" : 0.2
+      "chance" : 0.25
     }
   }
 }

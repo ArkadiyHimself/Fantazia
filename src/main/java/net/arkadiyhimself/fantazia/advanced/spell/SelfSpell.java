@@ -54,12 +54,12 @@ public class SelfSpell extends AbstractSpell {
                 lines = Integer.parseInt(desc);
             } catch (NumberFormatException ignored) {}
             if (lines > 0) {
-                components.add(Component.translatable(" "));
+                components.add(Component.literal(" "));
                 for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
             }
             return components;
         }
-        components.add(Component.translatable(" "));
+        components.add(Component.literal(" "));
         ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.GOLD};
 
         ChatFormatting[] ability = new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD};
@@ -76,7 +76,7 @@ public class SelfSpell extends AbstractSpell {
         // spell cleanse
         if (this.hasCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", head, ability, this.getStrength().getName()));
 
-        components.add(Component.translatable(" "));
+        components.add(Component.literal(" "));
 
 
         String desc = Component.translatable(basicPath + ".lines").getString();
@@ -93,7 +93,7 @@ public class SelfSpell extends AbstractSpell {
         } catch (NumberFormatException ignored) {}
 
         if (lines > 0) {
-            components.add(Component.translatable(" "));
+            components.add(Component.literal(" "));
             components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active.passive", head, null));
             for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".passive." + i, null, null));
         }

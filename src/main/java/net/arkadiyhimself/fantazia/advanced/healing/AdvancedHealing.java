@@ -46,7 +46,7 @@ public class AdvancedHealing {
         return !(entity instanceof ArmorStand) && entity.getHealth() < entity.getMaxHealth() && (!cancelHeal(entity) || source.is(FTZHealingTypeTags.NOT_CANCELLABLE)) && (!FantazicCombat.isInvulnerable(entity) || source.is(FTZHealingTypeTags.BYPASSES_INVULNERABILITY));
     }
     private static boolean cancelHeal(LivingEntity entity) {
-        if (entity.hasEffect(FTZMobEffects.FROZEN.get()) || entity.hasEffect(FTZMobEffects.DOOMED.get())) return true;
+        if (entity.hasEffect(FTZMobEffects.FROZEN) || entity.hasEffect(FTZMobEffects.DOOMED)) return true;
         return SpellHelper.hasSpell(entity, FTZSpells.ENTANGLE.get());
     }
 }

@@ -1,10 +1,12 @@
 package net.arkadiyhimself.fantazia.data.talents;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCap;
-import net.arkadiyhimself.fantazia.api.capability.level.LevelCapGetter;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.TalentAttributeModifiersHolder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -12,22 +14,20 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AttributeTalent extends BasicTalent {
-    private final String name;
     private final double amount;
     private final AttributeModifier.Operation operation;
-    private final Attribute attribute;
-    public AttributeTalent(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement, Attribute attribute, String name, double amount, AttributeModifier.Operation operation) {
+    private final Holder<Attribute> attribute;
+    public AttributeTalent(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement, Holder<Attribute> attribute, double amount, AttributeModifier.Operation operation) {
         super(iconTexture, title, wisdom, advancement);
         this.attribute = attribute;
-        this.name = name;
         this.amount = amount;
         this.operation = operation;
     }
@@ -41,34 +41,31 @@ public class AttributeTalent extends BasicTalent {
     }
     // use it purely for render purposes
     private AttributeModifier insecureModifier() {
-        return new AttributeModifier(name, amount, operation);
+        return new AttributeModifier(getID(), amount, operation);
     }
     @Nullable
     public AttributeModifier getAttributeModifier(Level level) {
-        LevelCap levelCap = LevelCapGetter.getLevelCap(level);
-        if (levelCap == null) return null;
-        return levelCap.getOrCreateModifier(this);
+        TalentAttributeModifiersHolder holder = LevelAttributesGetter.takeHolder(level, TalentAttributeModifiersHolder.class);
+        if (holder == null) return null;
+        return holder.getOrCreateModifier(this);
     }
-    public Attribute getAttribute() {
+    public Holder<Attribute> getAttribute() {
         return attribute;
     }
 
     public void applyModifier(@NotNull Player player) {
         AttributeInstance instance = player.getAttribute(attribute);
         AttributeModifier modifier = getAttributeModifier(player.level());
-        if (instance == null || modifier == null || instance.hasModifier(modifier)) return;
+        if (instance == null || modifier == null || instance.hasModifier(getID())) return;
         instance.addPermanentModifier(modifier);
         if (Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.translatable(String.valueOf(instance.getValue())));
     }
     public void removeModifier(@NotNull Player player) {
         AttributeInstance instance = player.getAttribute(attribute);
         AttributeModifier modifier = getAttributeModifier(player.level());
-        if (instance == null || modifier == null || !instance.hasModifier(modifier)) return;
+        if (instance == null || modifier == null || !instance.hasModifier(getID())) return;
         instance.removeModifier(modifier);
         if (Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.translatable(String.valueOf(instance.getValue())));
-    }
-    public String getName() {
-        return name;
     }
     public double getAmount() {
         return amount;
@@ -82,29 +79,27 @@ public class AttributeTalent extends BasicTalent {
         private final int wisdom;
         private final ResourceLocation advancement;
         private final ResourceLocation attribute;
-        private final String name;
         private final double amount;
         private final String operation;
-        public Builder(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement, ResourceLocation attribute, String name, double amount, String operation) {
+        public Builder(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement, ResourceLocation attribute, double amount, String operation) {
             this.iconTexture = iconTexture;
             this.title = title;
             this.wisdom = wisdom;
             this.advancement = advancement;
             this.attribute = attribute;
-            this.name = name;
             this.amount = amount;
             this.operation = operation;
         }
         public AttributeTalent build() throws TalentDataException {
-            Attribute attr = ForgeRegistries.ATTRIBUTES.getValue(attribute);
-            if (attr == null) throw new TalentDataException("Could not resolve attribute: " + attribute.toString());
+            Optional<Holder.Reference<Attribute>> attr = BuiltInRegistries.ATTRIBUTE.getHolder(attribute);
+            if (attr.isEmpty()) throw new TalentDataException("Could not resolve attribute: " + attribute);
             AttributeModifier.Operation operation1 = switch (operation) {
-                case "addition" -> AttributeModifier.Operation.ADDITION;
-                case "multiply_base" -> AttributeModifier.Operation.MULTIPLY_BASE;
-                case "multiply_total" -> AttributeModifier.Operation.MULTIPLY_TOTAL;
+                case "addition" -> AttributeModifier.Operation.ADD_VALUE;
+                case "multiply_base" -> AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
+                case "multiply_total" -> AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL;
                 default -> throw new TalentDataException("Could not resolve operation: " + operation);
             };
-            return new AttributeTalent(iconTexture, title, wisdom, advancement, attr, name, amount, operation1);
+            return new AttributeTalent(iconTexture, title, wisdom, advancement, attr.get(), amount, operation1);
         }
     }
 }

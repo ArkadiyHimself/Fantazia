@@ -1,33 +1,29 @@
 package net.arkadiyhimself.fantazia.registries;
 
+
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.enchantments.*;
-import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 
-public class FTZEnchantments {
-    private static final DeferredRegister<Enchantment> REGISTER = DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, Fantazia.MODID);
-    public static final RegistryObject<Enchantment> DISINTEGRATION = REGISTER.register("disintegration", DisintegrationEnchantment::new);
-    public static final RegistryObject<Enchantment> ICE_ASPECT = REGISTER.register("ice_aspect", IceAspectEnchantment::new);
-    public static final RegistryObject<Enchantment> FREEZE = REGISTER.register("freeze", FreezeEnchantment::new);
-    public static final RegistryObject<Enchantment> DECISIVE_STRIKE = REGISTER.register("decisive_strike", DecisiveStrikeEnchantment::new);
-    public static final RegistryObject<Enchantment> BULLY = REGISTER.register("bully", BullyEnchantment::new);
-    public static final RegistryObject<Enchantment> DUELIST = REGISTER.register("duelist", CrossbowDamageEnchantment::new);
-    public static final RegistryObject<Enchantment> BALLISTA = REGISTER.register("ballista", CrossbowDamageEnchantment::new);
+public interface FTZEnchantments {
 
-    //  hatchet enchantments
-    public static final RegistryObject<Enchantment> PHASING = REGISTER.register("phasing", PhasingEnchantment::new);
-    public static final RegistryObject<Enchantment> RICOCHET = REGISTER.register("ricochet", RicochetEnchantment::new);
-    public static final RegistryObject<Enchantment> HEADSHOT = REGISTER.register("headshot", HeadshotEnchantment::new);
-    public static void register() {
-        REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-    }
-    public static class Categories {
-        public static final EnchantmentCategory HATCHET = EnchantmentCategory.create("hatchet", item -> item instanceof HatchetItem);
+    ResourceKey<Enchantment> DISINTEGRATION = key("disintegration");
+    ResourceKey<Enchantment> ICE_ASPECT = key("ice_aspect");
+    ResourceKey<Enchantment> FREEZE = key("freeze");
+    ResourceKey<Enchantment> DECISIVE_STRIKE = key("decisive_strike");
+    ResourceKey<Enchantment> BULLY = key("bully");
+    // crossbows
+    ResourceKey<Enchantment> DUELIST = key("duelist");
+    ResourceKey<Enchantment> BALLISTA = key("ballista");
+    // hatchets
+    ResourceKey<Enchantment> PHASING = key("phasing");
+    ResourceKey<Enchantment> RICOCHET = key("ricochet");
+    ResourceKey<Enchantment> HEADSHOT = key("headshot");
+
+    private static ResourceKey<Enchantment> key(String pName) {
+        return ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.fromNamespaceAndPath(Fantazia.MODID, pName));
     }
 }

@@ -17,9 +17,8 @@ public class StandStillGoal extends Goal {
     public boolean canUse() {
         return this.isBleeding();
     }
-    @SuppressWarnings("ConstantConditions")
     public boolean isBleeding() {
-        return mob.hasEffect(FTZMobEffects.HAEMORRHAGE.get());
+        return mob.hasEffect(FTZMobEffects.HAEMORRHAGE);
     }
     @Override
     public void start() {
