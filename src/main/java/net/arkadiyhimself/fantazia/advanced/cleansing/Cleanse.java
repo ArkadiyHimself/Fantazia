@@ -2,9 +2,7 @@ package net.arkadiyhimself.fantazia.advanced.cleansing;
 
 import net.arkadiyhimself.fantazia.tags.FTZMobEffectTags;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 

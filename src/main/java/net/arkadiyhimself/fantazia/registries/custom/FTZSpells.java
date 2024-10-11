@@ -1,7 +1,11 @@
 package net.arkadiyhimself.fantazia.registries.custom;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.spell.*;
+import net.arkadiyhimself.fantazia.advanced.spell.Spells;
+import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
+import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
+import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -9,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class FTZSpells {
     private FTZSpells() {}
+
     public static final DeferredRegister<AbstractSpell> REGISTER = DeferredRegister.create(FantazicRegistry.Keys.SPELL, Fantazia.MODID);
     // self
     public static final DeferredHolder<AbstractSpell, SelfSpell> ENTANGLE = REGISTER.register("entangle", () -> Spells.Self.ENTANGLE);
@@ -21,6 +26,7 @@ public class FTZSpells {
     // passive
     public static final DeferredHolder<AbstractSpell, PassiveSpell> REFLECT = REGISTER.register("reflect", () -> Spells.Passive.REFLECT);
     public static final DeferredHolder<AbstractSpell, PassiveSpell> DAMNED_WRATH = REGISTER.register("damned_wrath", () -> Spells.Passive.DAMNED_WRATH);
+
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);
     }

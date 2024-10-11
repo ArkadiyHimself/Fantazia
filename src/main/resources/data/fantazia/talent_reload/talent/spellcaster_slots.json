@@ -1,0 +1,9 @@
+{
+  "type" : "curios_modifier",
+  "iconTexture" : "fantazia:textures/gui/talents/spellcaster_slots.png",
+  "title" : "fantazia.talent.spellcaster_slots",
+  "wisdom": 0,
+  "advancement" : "fantazia:ftz_talents/spellcaster_slots",
+  "ident" : "spellcaster",
+  "amount" : 1
+}

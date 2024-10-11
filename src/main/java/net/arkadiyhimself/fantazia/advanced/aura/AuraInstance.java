@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataG
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
-import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -64,7 +64,7 @@ public class AuraInstance<T extends Entity> {
     }
     public void tick() {
         if (removed) return;
-        FTZEvents.onAuraTick(this);
+        FTZHooks.onAuraTick(this);
         this.center = owner.position();
 
         for (T entity : entitiesInside()) if (!supposedlyInside.contains(entity)) enterAura(entity);
@@ -73,7 +73,7 @@ public class AuraInstance<T extends Entity> {
 
         supposedlyInside.forEach(entity -> {
             if (aura.canAffect(entity, owner)) {
-                aura.entityTick(entity, owner);
+                aura.affectedTick(entity, owner);
                 if (entity instanceof LivingEntity livingEntity) applyModifiers(livingEntity);
             } else if (entity instanceof LivingEntity livingEntity) removeModifiers(livingEntity);
         });
@@ -98,7 +98,7 @@ public class AuraInstance<T extends Entity> {
         return owner;
     }
     public void enterAura(T entity) {
-        FTZEvents.onAuraEnter(this, entity);
+        FTZHooks.onAuraEnter(this, entity);
         if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.literal("entered"));
         supposedlyInside.add(entity);
         if (!aura.canAffect(entity, getOwner())) return;
@@ -106,7 +106,7 @@ public class AuraInstance<T extends Entity> {
         applyModifiers(livingEntity);
     }
     public void exitAura(T entity) {
-        FTZEvents.onAuraExit(this, entity);
+        FTZHooks.onAuraExit(this, entity);
         if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.literal("left"));
         if (!(entity instanceof LivingEntity livingEntity)) return;
         removeModifiers(livingEntity);

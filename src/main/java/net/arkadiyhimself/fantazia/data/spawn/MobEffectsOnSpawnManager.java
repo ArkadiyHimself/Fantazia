@@ -21,7 +21,7 @@ public class MobEffectsOnSpawnManager extends SimpleJsonResourceReloadListener {
             .create();
     private static final List<EffectSpawnHolder.Builder> effectSpawnHolders = Lists.newArrayList();
     public MobEffectsOnSpawnManager() {
-        super(GSON, "effects_on_spawn");
+        super(GSON, "effect_on_spawn");
     }
     @Override
     protected void apply(@NotNull Map<ResourceLocation, JsonElement> pObject, @NotNull ResourceManager pResourceManager, @NotNull ProfilerFiller pProfiler) {

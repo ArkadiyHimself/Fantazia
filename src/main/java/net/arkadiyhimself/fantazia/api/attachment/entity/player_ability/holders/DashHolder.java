@@ -6,9 +6,9 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.type.entity.ITalentListener;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
 import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
-import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -95,7 +95,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
             if (recharge > 0) recharge--;
             if (wasDashing) {
                 wasDashing = false;
-                FTZEvents.onDashExpired(getPlayer(), this);
+                FTZHooks.onDashExpired(getPlayer(), this);
                 getPlayer().hurtMarked = true;
                 getPlayer().setDeltaMovement(0, 0, 0);
                 if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C(""));
@@ -163,9 +163,9 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
     }
     public SoundEvent getDashSound() {
         return switch (level) {
-            case 1 -> FTZSoundEvents.DASH_DEFAULT.get();
-            case 2 -> FTZSoundEvents.DASH_SECOND.get();
-            case 3 -> FTZSoundEvents.DASH_FINAL.get();
+            case 1 -> FTZSoundEvents.DASH1.get();
+            case 2 -> FTZSoundEvents.DASH2.get();
+            case 3 -> FTZSoundEvents.DASH3.get();
             default -> null;
         };
     }
@@ -184,7 +184,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
         return level < 3 ? DEFAULT_DUR : DEFAULT_DUR + 2;
     }
     public int getInitRecharge() {
-        return getPlayer().isCreative() ? 0 : DEFAULT_RECHARGE;
+        return getPlayer().hasInfiniteMaterials() ? 0 : DEFAULT_RECHARGE;
     }
     public int getRecharge() {
         return recharge;
@@ -197,7 +197,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
         StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(getPlayer(), StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(STAMINA, true, 65)) return;
 
-        int actualDur = FTZEvents.onDashStart(getPlayer(), this, getInitDur());
+        int actualDur = FTZHooks.onDashStart(getPlayer(), this, getInitDur());
         if (actualDur <= 0) return;
 
         velocity = vec3;
@@ -216,7 +216,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
         if (level < 3 && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C("dash.start"));
     }
     public void stopDash() {
-        if (!FTZEvents.onDashEnd(getPlayer(), this)) return;
+        if (!FTZHooks.onDashEnd(getPlayer(), this)) return;
         this.duration = 0;
         this.wasDashing = false;
         getPlayer().hurtMarked = true;

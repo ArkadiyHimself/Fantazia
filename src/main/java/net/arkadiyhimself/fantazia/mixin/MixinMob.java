@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -17,12 +17,12 @@ public class MixinMob {
     final Mob mob = (Mob) (Object) this;
     @Inject(at = @At(value = "HEAD"), method = "doHurtTarget", cancellable = true)
     protected void meleeAttack(Entity pTarget, CallbackInfoReturnable<Boolean> cir) {
-        boolean attack = FTZEvents.ForgeExtension.onMobAttack(mob, pTarget);
+        boolean attack = FTZHooks.ForgeExtension.onMobAttack(mob, pTarget);
         if (!attack) cir.setReturnValue(false);
     }
     @Inject(at = @At(value = "HEAD"), method = "pickUpItem", cancellable = true)
     protected void pickUp(ItemEntity pItemEntity, CallbackInfo ci) {
-        boolean pickup = FTZEvents.ForgeExtension.onLivingPickUpItem(mob, pItemEntity);
+        boolean pickup = FTZHooks.ForgeExtension.onLivingPickUpItem(mob, pItemEntity);
         if (!pickup) ci.cancel();
     }
 }

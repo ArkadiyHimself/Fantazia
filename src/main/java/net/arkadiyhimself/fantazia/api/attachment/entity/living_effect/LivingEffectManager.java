@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect;
 
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.*;
-import net.arkadiyhimself.fantazia.api.fantazicevents.VanillaEventsExtension;
+import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.api.type.entity.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -11,7 +11,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +20,6 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class LivingEffectManager implements IHolderManager<ILivingEffect, LivingEntity> {
     private final HashMap<Class<? extends ILivingEffect>, ILivingEffect> holders = Maps.newHashMap();
@@ -95,7 +93,7 @@ public class LivingEffectManager implements IHolderManager<ILivingEffect, Living
         for (ILivingEffect iLivingEffect : holders.values()) if (iLivingEffect.getEffect().value() == instance.getEffect().value()) iLivingEffect.added(instance);
     }
     public void effectEnded(Holder<MobEffect> effect) {
-        for (ILivingEffect iLivingEffect : holders.values()) if (iLivingEffect.getEffect() == effect) iLivingEffect.ended();
+        for (ILivingEffect iLivingEffect : holders.values()) if (iLivingEffect.getEffect().value() == effect.value()) iLivingEffect.ended();
     }
 
     public void onHit(LivingIncomingDamageEvent event) {
@@ -111,7 +109,7 @@ public class LivingEffectManager implements IHolderManager<ILivingEffect, Living
     }
 
     public void onHeal(VanillaEventsExtension.AdvancedHealEvent event) {
-        for (ILivingEffect iLivingEffect : holders.values()) if (iLivingEffect instanceof IHealListener listener) listener.onHeal(event);
+        for (ILivingEffect iLivingEffect : holders.values()) if (iLivingEffect instanceof IHealEventListener listener) listener.onHeal(event);
     }
 
     public void provide() {

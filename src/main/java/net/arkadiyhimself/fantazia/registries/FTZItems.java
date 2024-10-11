@@ -89,12 +89,15 @@ public class FTZItems {
     public static final DeferredHolder<Item, Item> VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(Foods.vitalityFruit))); // finished and implemented
     public static final DeferredHolder<Item, AncientSparkItem> ANCIENT_SPARK = expendableItem("ancient_spark", AncientSparkItem::new); // finished and implemented
     public static final DeferredHolder<Item, InsightBottleItem> INSIGHT_ESSENCE = expendableItem("insight_essence", InsightBottleItem::new); // finished and implemented
+
     public static void onRegistry(RegisterEvent event) {
         FTZBlocks.getBlockItems().forEach((block, item) -> event.register(Registries.ITEM, block, () -> item.apply(BuiltInRegistries.BLOCK.get(block))));
     }
+
     public static void register(IEventBus modEventBus) {
         REGISTER.register(modEventBus);
     }
+
     private static class Foods {
         static final FoodProperties arachnidEye = new FoodProperties.Builder().effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 100), 1f).effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 3), 1f).effect(() -> new MobEffectInstance(FTZMobEffects.DISARM, 100), 1f).alwaysEdible().nutrition(3).saturationModifier(2).build();
         static final FoodProperties vitalityFruit = new FoodProperties.Builder().effect(() -> new MobEffectInstance(MobEffects.REGENERATION, 100, 2), 1f).effect(() -> new MobEffectInstance(MobEffects.SATURATION, 100, 2), 1f).nutrition(5).saturationModifier(5f).alwaysEdible().build();

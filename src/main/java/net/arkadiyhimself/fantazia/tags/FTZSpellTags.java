@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.tags;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.spell.AbstractSpell;
+import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
 import net.minecraft.tags.TagKey;
 

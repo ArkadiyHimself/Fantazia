@@ -31,7 +31,6 @@ public class StaminaHolder extends PlayerAbilityHolder {
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         if (compoundTag.contains("stamina")) stamina = compoundTag.getFloat("stamina");
-
     }
 
     @Override
@@ -43,22 +42,26 @@ public class StaminaHolder extends PlayerAbilityHolder {
     @Override
     public void tick() {
         if (!getPlayer().isSprinting()) delay = Math.max(0, delay - 1);
-        else wasteStamina(0.025f, true, 10);
+        else wasteStamina(0.0125f, true, 10);
         if (delay <= 0) stamina = Math.min(getMaxStamina(), stamina + getStaminaRegen());
 
     }
+
     public float getMaxStamina() {
         return (float) getPlayer().getAttributeValue(FTZAttributes.MAX_STAMINA);
     }
+
     public float getStamina() {
         return stamina;
     }
+
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean wasteStamina(float cost, boolean addDelay) {
         return wasteStamina(cost, addDelay, DEFAULT_DELAY);
     }
+
     public boolean wasteStamina(float cost, boolean addDelay, float customDelay) {
-        if (getPlayer().isCreative()) return true;
+        if (getPlayer().hasInfiniteMaterials()) return true;
         if (getPlayer().hasEffect(FTZMobEffects.FURY)) cost *= 0.5f;
         float newST = stamina - cost;
         if (newST > 0) {
@@ -68,6 +71,7 @@ public class StaminaHolder extends PlayerAbilityHolder {
         }
         return false;
     }
+
     public float getStaminaRegen() {
         float stRegen = defaultRegen;
         FoodData data = getPlayer().getFoodData();
@@ -81,6 +85,7 @@ public class StaminaHolder extends PlayerAbilityHolder {
         stRegen *= (float) getPlayer().getAttributeValue(FTZAttributes.STAMINA_REGEN_MULTIPLIER);
         return stRegen;
     }
+
     public void restore() {
         stamina = getMaxStamina();
     }

@@ -6,11 +6,11 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
-import net.arkadiyhimself.fantazia.api.fantazicevents.BlockingEvent;
+import net.arkadiyhimself.fantazia.api.custom_events.BlockingEvent;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.type.entity.ITalentListener;
-import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
-import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
+import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.SwingHandS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -39,7 +39,7 @@ import org.jetbrains.annotations.UnknownNullability;
 public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentListener, IDamageEventListener {
     private static final int BLOCK_ANIM = 20;
     private static final int BLOCK_WINDOW = 13;
-    private static final int PARRY_WINDOW = 3;
+    private static final int PARRY_WINDOW = 4;
     private static final int PARRY_DELAY = 8;
     private static final int BLOCK_TIME = 12;
     private static final int BLOCK_CD = 25;
@@ -126,7 +126,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
             block_cd = 0;
         }
         if (expiring && block_ticks == 0) {
-            FTZEvents.onBlockingExpired(serverPlayer, serverPlayer.getMainHandItem());
+            FTZHooks.onBlockingExpired(serverPlayer, serverPlayer.getMainHandItem());
             expiring = false;
         }
     }
@@ -142,7 +142,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         lastAttacker = attacker;
         dmgTaken = event.getAmount();
 
-        BlockingEvent.ParryDecision decision = FTZEvents.onParryDecision(player, player.getMainHandItem(), event.getAmount(), attacker);
+        BlockingEvent.ParryDecision decision = FTZHooks.onParryDecision(player, player.getMainHandItem(), event.getAmount(), attacker);
         if (decision.getResult() == BlockingEvent.ParryDecision.Result.DO_PARRY || (parry_ticks > 0 && decision.getResult() != BlockingEvent.ParryDecision.Result.DO_NOT_PARRY)) {
             // parrying
             AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
@@ -170,7 +170,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         return (anim > 0 || parry_delay > 0 || blockedTime > 0);
     }
     public boolean parryAttack(float amount) {
-        BlockingEvent.Parry parryEvent = FTZEvents.onParry(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker, amount);
+        BlockingEvent.Parry parryEvent = FTZHooks.onParry(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker, amount);
         if (parryEvent.isCanceled()) return false;
 
         dmgParry = parryEvent.getParryDamage();
@@ -183,13 +183,13 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
 
         if (lastAttacker != null) LivingEffectHelper.makeDisarmed(lastAttacker, 160);
 
-        getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.BLOCKED.get(), SoundSource.PLAYERS);
+        getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.COMBAT_MELEE_BLOCK.get(), SoundSource.PLAYERS);
         if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C("parry"));
 
         return true;
     }
     public boolean blockAttack() {
-        if (!FTZEvents.onBlock(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker)) return false;
+        if (!FTZHooks.onBlock(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker)) return false;
 
         getPlayer().getMainHandItem().hurtAndBreak(2, getPlayer(), EquipmentSlot.MAINHAND);
         if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C("block"));
@@ -200,15 +200,15 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         expiring = false;
 
         if (lastAttacker != null) LivingEffectHelper.microStun(lastAttacker);
-        getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.BLOCKED.get(), SoundSource.PLAYERS);
+        getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.COMBAT_MELEE_BLOCK.get(), SoundSource.PLAYERS);
 
         return true;
     }
     public void startBlocking() {
-        if (!unlocked || block_cd > 0 || !FTZEvents.onBlockingStart(getPlayer(), getPlayer().getMainHandItem())) return;
+        if (!unlocked || block_cd > 0 || !FTZHooks.onBlockingStart(getPlayer(), getPlayer().getMainHandItem())) return;
         block_cd = BLOCK_CD;
         block_ticks = BLOCK_WINDOW;
-        parry_ticks = PARRY_WINDOW;
+        parry_ticks = getPlayer().level() instanceof ServerLevel serverLevel ? getParryWindow(serverLevel) : PARRY_WINDOW;
         anim = BLOCK_ANIM;
         expiring = true;
         if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C("blocking"));
@@ -221,5 +221,9 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         blockedTime = 0;
         parried = false;
         expiring = false;
+    }
+
+    public int getParryWindow(ServerLevel serverLevel) {
+        return 6 - serverLevel.getDifficulty().getId();
     }
 }

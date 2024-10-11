@@ -2,8 +2,6 @@ package net.arkadiyhimself.fantazia.networking.packets.attachment_syncing;
 
 import io.netty.buffer.ByteBuf;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributes;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.type.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.client.Minecraft;

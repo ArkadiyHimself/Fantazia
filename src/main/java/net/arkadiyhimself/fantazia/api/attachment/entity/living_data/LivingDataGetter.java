@@ -7,17 +7,12 @@ import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class LivingDataGetter {
+
     public static <T extends LivingDataHolder> @Nullable T takeHolder(LivingEntity livingEntity, Class<T> tClass) {
-        LivingDataManager livingDataManager = getUnwrap(livingEntity);
-        return livingDataManager.actualHolder(tClass);
+        return livingEntity.getData(FTZAttachmentTypes.DATA_MANAGER).actualHolder(tClass);
     }
+
     public static <T extends LivingDataHolder> void acceptConsumer(LivingEntity livingEntity, Class<T> tClass, Consumer<T> consumer) {
-        LivingDataManager livingDataManager = getUnwrap(livingEntity);
-        livingDataManager.optionalHolder(tClass).ifPresent(consumer);
+        livingEntity.getData(FTZAttachmentTypes.DATA_MANAGER).optionalHolder(tClass).ifPresent(consumer);
     }
-
-    public static LivingDataManager getUnwrap(LivingEntity entity) {
-        return entity.getData(FTZAttachmentTypes.DATA_MANAGER);
-    }
-
 }

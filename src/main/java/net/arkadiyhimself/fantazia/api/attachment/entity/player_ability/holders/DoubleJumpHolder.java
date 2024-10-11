@@ -4,7 +4,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.ITalentListener;
-import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.PlaySoundForUIS2C;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

@@ -12,11 +12,11 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.S
 import net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders.ArrowEnchantmentsHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.api.attachment.itemstack.HiddenPotentialHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsOnSpawnHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
+import net.arkadiyhimself.fantazia.api.data_component.HiddenPotentialHolder;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.*;

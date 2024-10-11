@@ -6,9 +6,9 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEff
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
-import net.arkadiyhimself.fantazia.api.fantazicevents.VanillaEventsExtension;
+import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.api.type.entity.IHealListener;
+import net.arkadiyhimself.fantazia.api.type.entity.IHealEventListener;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -21,9 +21,8 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-public class HaemorrhageEffect extends LivingEffectHolder implements IDamageEventListener, IHealListener {
+public class HaemorrhageEffect extends LivingEffectHolder implements IDamageEventListener, IHealEventListener {
     private float toHeal = 0;
-    private int soundCD = 0;
     public HaemorrhageEffect(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("haemorrhage_effect"), FTZMobEffects.HAEMORRHAGE);
     }
@@ -31,20 +30,14 @@ public class HaemorrhageEffect extends LivingEffectHolder implements IDamageEven
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = super.serializeNBT(provider);
-        tag.putInt("soundCD", soundCD);
+        tag.putFloat("toHeal", toHeal);
         return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         super.deserializeNBT(provider, compoundTag);
-        soundCD = compoundTag.contains("soundCD") ? compoundTag.getInt("soundCD") : 0;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (soundCD > 0) soundCD--;
+        toHeal = compoundTag.getFloat("toHeal");
     }
 
     @Override
@@ -61,22 +54,14 @@ public class HaemorrhageEffect extends LivingEffectHolder implements IDamageEven
     @Override
     public void added(MobEffectInstance instance) {
         super.added(instance);
-        getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.FLESH_RIPPING.get(), SoundSource.NEUTRAL,0.35f,1f);
+        getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_FLESH_RIPPING.get(), SoundSource.NEUTRAL,0.35f,1f);
         DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(getEntity().level());
         if (sources != null) getEntity().hurt(sources.bleeding(), getEntity().getHealth() * 0.1f);
         toHeal = 4 + 2 * instance.getAmplifier();
     }
 
-    private boolean shouldEmitSound() {
-        return soundCD < 0;
+    public void emitSound() {
+        getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
     }
 
-    private void emitSound() {
-        soundCD = 10;
-        getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.BLOODLOSS.get(), SoundSource.HOSTILE);
-    }
-
-    public void tryMakeSound() {
-        if (shouldEmitSound()) emitSound();
-    }
 }

@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.particless;
 
-import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -9,8 +8,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class BarrierParticle extends TextureSheetParticle {
-    public static final RandomList<SimpleParticleType> PIECES = RandomList.emptyRandomList();
-    public static final RandomList<SimpleParticleType> PIECES_FURY = RandomList.emptyRandomList();
+
     public BarrierParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet spriteSet)  {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
         this.friction = 0.8F;

@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia;
 
 import com.mojang.logging.LogUtils;
-import net.arkadiyhimself.fantazia.client.models.item.CustomItemRenderer;
+import net.arkadiyhimself.fantazia.client.renderers.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
@@ -10,19 +10,12 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.ServerAdvancementManager;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.levelgen.structure.pools.LegacySinglePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
-import top.theillusivec4.curios.common.util.EquipCurioTrigger;
 
 import java.util.Random;
-import java.util.function.Function;
 
 @Mod(Fantazia.MODID)
 public class Fantazia {
@@ -34,6 +27,7 @@ public class Fantazia {
 
     public Fantazia(IEventBus modEventBus, ModContainer modContainer) {
         FantazicConfig.setup(modContainer);
+
         // custom registries
         FTZSpells.register(modEventBus);
         FTZAuras.register(modEventBus);
@@ -68,9 +62,5 @@ public class Fantazia {
 
     public static <T> ResourceKey<Registry<T>> resKey(String name) {
         return ResourceKey.createRegistryKey(Fantazia.res(name));
-    }
-
-    public static Function<StructureTemplatePool.Projection, LegacySinglePoolElement> pool(String name) {
-        return StructurePoolElement.legacy(MODID + ":" + name);
     }
 }

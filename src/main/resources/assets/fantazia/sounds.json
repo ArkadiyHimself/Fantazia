@@ -1,51 +1,140 @@
 {
-  "ui.fury_heartbeat1": {
-    "subtitle" : "fantazia.subtitles.fury_heartbeat",
+  "ui.heartbeat1": {
+    "subtitle" : "fantazia.subtitles.ui.heartbeat",
     "sounds": [
       {
-        "name": "fantazia:fury_heartbeat1",
+        "name": "fantazia:ui/heartbeat1",
         "stream": false
       }
     ]
   },
-  "ui.fury_heartbeat2": {
-    "subtitle" : "fantazia.subtitles.fury_heartbeat",
+  "ui.heartbeat2": {
+    "subtitle" : "fantazia.subtitles.ui.heartbeat",
     "sounds": [
       {
-        "name": "fantazia:fury_heartbeat2",
+        "name": "fantazia:ui/heartbeat2",
         "stream": false
       }
     ]
   },
-  "dash.dash_default": {
-    "subtitle" : "fantazia.subtitles.dash_default",
+  "ui.ringing" : {
+    "subtitle": "fantazia.subtitles.ui.ringing",
     "sounds": [
       {
-        "name": "fantazia:dash/dash_default",
+        "name": "fantazia:ui/ringing",
         "stream": false
       }
     ]
   },
-  "dash.dash_second": {
-    "subtitle" : "fantazia.subtitles.dash_second",
+  "ui.doomed": {
+    "subtitle": "fantazia.subtitles.ui.doomed",
     "sounds": [
       {
-        "name": "fantazia:dash/dash_second",
+        "name": "fantazia:ui/doomed",
         "stream": false
       }
     ]
   },
-  "dash.dash_final": {
-    "subtitle" : "fantazia.subtitles.dash_second",
+  "ui.undoomed": {
+    "subtitle": "fantazia.subtitles.ui.undoomed",
     "sounds": [
       {
-        "name": "fantazia:dash/dash_final",
+        "name": "fantazia:ui/undoomed",
+        "stream": false
+      }
+    ]
+  },
+  "ui.whisper": {
+    "subtitle": "fantazia.subtitles.ui.whisper",
+    "sounds": [
+      {
+        "name": "fantazia:ui/whispers/whisper1",
+        "stream": false
+      },
+      {
+        "name": "fantazia:ui/whispers/whisper2",
+        "stream": false
+      },
+      {
+        "name": "fantazia:ui/whispers/whisper3",
+        "stream": false
+      },
+      {
+        "name": "fantazia:ui/whispers/whisper4",
+        "stream": false
+      },
+      {
+        "name": "fantazia:ui/whispers/whisper5",
+        "stream": false
+      }
+    ]
+  },
+  "ui.denied" : {
+    "subtitle" : "fantazia.subtitles.ui.denied",
+    "sounds": [
+      {
+        "name": "fantazia:ui/denied",
+        "stream": false
+      }
+    ]
+  },
+  "ui.fury_dispel" : {
+    "subtitle": "fantazia.subtitles.ui.fury_dispel",
+    "sounds": [
+      {
+        "name" : "fantazia:ui/fury_dispel",
+        "stream" : false
+      }
+    ]
+  },
+  "ui.fury_prolong" : {
+    "subtitle": "fantazia.subtitles.ui.fury_prolong",
+    "sounds": [
+      {
+        "name" : "fantazia:ui/fury_prolong",
+        "stream" : false
+      }
+    ]
+  },
+  "ui.damned_wrath" : {
+    "subtitle": "fantazia.subtitles.ui.damned_wrath",
+    "sounds": [
+      {
+        "name" : "fantazia:ui/damned_wrath",
+        "stream" : false
+      }
+    ]
+  },
+
+  "dash.dash1": {
+    "subtitle" : "fantazia.subtitles.dash.dash1",
+    "sounds": [
+      {
+        "name": "fantazia:dash/dash1",
+        "stream": false
+      }
+    ]
+  },
+  "dash.dash2": {
+    "subtitle" : "fantazia.subtitles.dash.dash2",
+    "sounds": [
+      {
+        "name": "fantazia:dash/dash2",
+        "stream": false
+      }
+    ]
+  },
+  "dash.dash3": {
+    "subtitle" : "fantazia.subtitles.dash.dash3",
+    "sounds": [
+      {
+        "name": "fantazia:dash/dash3",
         "stream": false
       }
     ]
   },
   "dash.dash1_recharge": {
-    "subtitle" : "fantazia.subtitles.dash_recharge",
+    "subtitle" : "fantazia.subtitles.dash.dash_recharge",
     "sounds": [
       {
         "name": "fantazia:dash/dash1_recharge",
@@ -54,7 +143,7 @@
     ]
   },
   "dash.dash2_recharge": {
-    "subtitle" : "fantazia.subtitles.dash_recharge",
+    "subtitle" : "fantazia.subtitles.dash.dash_recharge",
     "sounds": [
       {
         "name": "fantazia:dash/dash2_recharge",
@@ -63,7 +152,7 @@
     ]
   },
   "dash.dash3_recharge": {
-    "subtitle" : "fantazia.subtitles.dash_recharge",
+    "subtitle" : "fantazia.subtitles.dash.dash_recharge",
     "sounds": [
       {
         "name": "fantazia:dash/dash3_recharge",
@@ -71,6 +160,7 @@
       }
     ]
   },
+
   "fragile_sword.begin": {
     "subtitle" : "fantazia.subtitles.fragile_blade.begin",
     "sounds": [
@@ -125,192 +215,218 @@
       }
     ]
   },
+
   "combat.melee_block" : {
-    "subtitle": "fantazia.subtitles.attack_blocked",
+    "subtitle" : "fantazia.subtitles.combat.melee_block",
     "sounds": [
       {
-        "name" : "fantazia:blocked",
+        "name" : "fantazia:combat/melee_block",
         "stream" : false
       }
     ]
   },
   "combat.attack_stunned" : {
-    "subtitle": "fantazia.subtitles.attack_stun",
+    "subtitle": "fantazia.subtitles.combat.attack_stunned",
     "sounds": [
       {
-        "name" : "fantazia:attack_stunned",
+        "name" : "fantazia:combat/attack_stunned",
         "stream" : false
       }
     ]
   },
-  "barrier.hit" : {
-    "subtitle": "fantazia.subtitles.barrier_hit",
+
+  "effect.barrier.damage" : {
+    "subtitle": "fantazia.subtitles.effect.barrier.damage",
     "sounds": [
       {
-        "name" : "fantazia:barrier_damaging/barrier_hit1",
+        "name" : "fantazia:mob_effect/barrier/barrier_hit1",
         "stream" : false
       },
       {
-        "name" : "fantazia:barrier_damaging/barrier_hit2",
+        "name" : "fantazia:mob_effect/barrier/barrier_hit2",
         "stream" : false
       },
       {
-        "name" : "fantazia:barrier_damaging/barrier_hit3",
+        "name" : "fantazia:mob_effect/barrier/barrier_hit3",
         "stream" : false
       }
     ]
   },
-  "barrier.break" : {
-    "subtitle": "fantazia.subtitles.barrier_break",
+  "effect.barrier.break" : {
+    "subtitle": "fantazia.subtitles.effect.barrier.break",
     "sounds": [
       {
-        "name" : "fantazia:barrier_damaging/barrier_break",
+        "name" : "fantazia:mob_effect/barrier/barrier_break",
         "stream" : false
       }
     ]
   },
-  "ui.ringing" : {
-    "subtitle": "fantazia.subtitles.ringing",
+  "effect.haemorrhage.bloodloss" : {
+    "subtitles": "fantazia.subtitles.effect.haemorrhage.bloodloss",
     "sounds": [
       {
-        "name": "fantazia:ringing_long",
+        "name" : "fantazia:mob_effect/haemorrhage/bleeding1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:mob_effect/haemorrhage/bleeding2",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:mob_effect/haemorrhage/bleeding3",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:mob_effect/haemorrhage/bleeding4",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:mob_effect/haemorrhage/bleeding5",
+        "stream" : false
+      }
+    ]
+  },
+  "effect.haemorrhage.flesh_ripping" : {
+    "subtitle": "fantazia.subtitles.effect.haemorrhage.flesh_ripping",
+    "sounds": [
+      {
+        "name" : "fantazia:mob_effect/haemorrhage/flesh_ripping",
+        "stream" : false
+      }
+    ]
+  },
+  "effect.reflect" : {
+    "subtitle": "fantazia.subtitles.effect.reflect",
+    "sounds": [
+      {
+        "name" : "fantazia:mob_effect/reflect",
+        "stream" : false
+      }
+    ]
+  },
+  "effect.deflect" : {
+    "subtitle": "fantazia.subtitles.effect.deflect",
+    "sounds": [
+      {
+        "name" : "fantazia:mob_effect/deflect",
+        "stream" : false
+      }
+    ]
+  },
+
+  "spell.devour.cast" : {
+    "subtitle": "fantazia.subtitles.spell.devour.cast",
+    "sounds": [
+      {
+        "name" : "fantazia:spell/devour",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.entangle.cast" : {
+    "subtitle": "fantazia.subtitles.spell.entangle.cast",
+    "sounds": [
+      {
+        "name" : "fantazia:spell/entangler",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.reflect.cast" : {
+    "subtitle": "fantazia.subtitles.spell.reflect.cast",
+    "sounds": [
+      {
+        "name" : "fantazia:spell/mystic_mirror",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.rewind.cast" : {
+    "subtitle": "fantazia.subtitles.spell.rewind.cast",
+    "sounds": [
+      {
+        "name" : "fantazia:spell/rewind",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.bounce.cast" : {
+    "subtitle": "fantazia.subtitles.spell.bounce.cast",
+    "sounds": [
+      {
+        "name" : "fantazia:spell/bounce/cast",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.bounce.recharge" : {
+    "subtitle": "fantazia.subtitles.spell.bounce.recharge",
+    "sounds": [
+      {
+        "name" : "fantazia:spell/bounce/recharge",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.lightning_strike.tick" : {
+    "subtitle" : "fantazia.subtitles.spell.lightning_strike.tick",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/lightning_strike/electro1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:spell/lightning_strike/electro2",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:spell/lightning_strike/electro3",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:spell/lightning_strike/electro4",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:spell/lightning_strike/electro5",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:spell/lightning_strike/electro6",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.lightning_strike.recharge" : {
+    "subtitle" : "fantazia.subtitles.spell.lightning_strike.recharge",
+    "sounds" : [
+      {
+        "name": "fantazia:spell/lightning_strike/recharge",
         "stream": false
       }
     ]
   },
-  "spell.devour" : {
-    "subtitle": "fantazia.subtitles.devouring",
-    "sounds": [
-      {
-        "name" : "fantazia:spells/devour",
-        "stream" : false
-      }
-    ]
-  },
-  "spell.entangle" : {
-    "subtitle": "fantazia.subtitles.entangle",
-    "sounds": [
-      {
-        "name" : "fantazia:spells/entangler",
-        "stream" : false
-      }
-    ]
-  },
-  "ui.doomed": {
-  "subtitle": "fantazia.subtitles.doomed",
-  "sounds": [
-    {
-      "name": "fantazia:mobeffect/doomed/doomed",
-      "stream": false
-    }
-  ]
-  },
-  "ui.undoomed": {
-    "sounds": [
-      {
-        "name": "fantazia:mobeffect/doomed/undoomed",
-        "stream": false
-      }
-    ]
-  },
+
   "entity.fallen_breath" : {
-    "subtitle" : "fantazia.subtitles.fallen_breath",
+    "subtitle" : "fantazia.subtitles.entity.fallen_breath",
     "sounds": [
       {
-        "name": "fantazia:mobeffect/doomed/fallen_breath",
+        "name": "fantazia:entity/fallen_breath",
         "stream": false
       }
     ]
   },
-  "ui.denied" : {
+  "entity.evade" : {
+    "subtitle": "fantazia.subtitles.entity.evade",
     "sounds": [
       {
-        "name": "fantazia:denied",
-        "stream": false
-      }
-    ]
-  },
-  "ui.whisper": {
-    "subtitle": "fantazia.subtitles.whisper",
-    "sounds": [
-      {
-        "name": "fantazia:whispers/whisper1",
-        "stream": false
-      },
-      {
-        "name": "fantazia:whispers/whisper2",
-        "stream": false
-      },
-      {
-        "name": "fantazia:whispers/whisper3",
-        "stream": false
-      },
-      {
-        "name": "fantazia:whispers/whisper4",
-        "stream": false
-      },
-      {
-        "name": "fantazia:whispers/whisper5",
-        "stream": false
-      }
-    ]
-  },
-  "spell.mystic_mirror" : {
-    "subtitle": "fantazia.subtitles.mystic_mirror",
-    "sounds": [
-      {
-        "name" : "fantazia:spells/mystic_mirror",
+        "name" : "fantazia:entity/evade",
         "stream" : false
       }
     ]
   },
-  "spell.rewind" : {
-    "subtitle": "fantazia.subtitles.rewind",
-    "sounds": [
-      {
-        "name" : "fantazia:spells/rewind",
-        "stream" : false
-      }
-    ]
-  },
-  "spell.bounce" : {
-    "subtitle": "fantazia.subtitles.rewind",
-    "sounds": [
-      {
-        "name" : "fantazia:spells/bounce",
-        "stream" : false
-      }
-    ]
-  },
-  "targeted.reflect" : {
-    "subtitle": "fantazia.subtitles.reflect",
-    "sounds": [
-      {
-        "name" : "fantazia:mobeffect/reflect",
-        "stream" : false
-      }
-    ]
-  },
-  "targeted.deflect" : {
-    "subtitle": "fantazia.subtitles.deflect",
-    "sounds": [
-      {
-        "name" : "fantazia:mobeffect/deflect",
-        "stream" : false
-      }
-    ]
-  },
-  "item.hatchet.throw" : {
-    "subtitle": "fantazia.subtitles.hatchet_throw",
-    "sounds": [
-      {
-        "name": "fantazia:entity/hatchet/throw",
-        "stream": false
-      }
-    ]
-  },
-  "ambient.wind" : {
-    "subtitle": "fantazia.subtitles.wind",
+  "entity.dashstone.wind" : {
+    "subtitle": "fantazia.subtitles.entity.dashstone.wind",
     "sounds": [
       {
         "name" : "fantazia:entity/dashstone/wind",
@@ -318,89 +434,34 @@
       }
     ]
   },
-  "entity.bloodloss" : {
+
+  "item.hatchet.throw" : {
+    "subtitle": "fantazia.subtitles.item.hatchet_throw",
     "sounds": [
       {
-        "name" : "fantazia:mobeffect/haemorrhage/bleeding1",
-        "stream" : false
-      },
-      {
-        "name" : "fantazia:mobeffect/haemorrhage/bleeding2",
-        "stream" : false
-      },
-      {
-        "name" : "fantazia:mobeffect/haemorrhage/bleeding3",
-        "stream" : false
-      },
-      {
-        "name" : "fantazia:mobeffect/haemorrhage/bleeding4",
-        "stream" : false
-      },
-      {
-        "name" : "fantazia:mobeffect/haemorrhage/bleeding5",
-        "stream" : false
-      }
-    ]
-  },
-  "entity.flesh_ripping" : {
-    "subtitle": "fantazia.subtitles.flesh_ripping",
-    "sounds": [
-      {
-        "name" : "fantazia:mobeffect/haemorrhage/flesh_ripping",
-        "stream" : false
+        "name": "fantazia:item/throw_hatchet",
+        "stream": false
       }
     ]
   },
   "item.leaders_horn.sound" : {
-    "subtitle" : "fantazia.subtitles.leaders_horn",
+    "subtitle" : "fantazia.subtitles.item.leaders_horn",
     "sounds": [
       {
-        "name" : "fantazia:spells/leaders_horn",
-        "stream" : false
-      }
-    ]
-  },
-  "ui.fury_dispel" : {
-    "subtitle": "fantazia.subtitles.fury_dispel",
-    "sounds": [
-      {
-        "name" : "fantazia:mobeffect/fury_dispel",
-        "stream" : false
-      }
-    ]
-  },
-  "ui.fury_prolong" : {
-    "subtitle": "fantazia.subtitles.fury_prolong",
-    "sounds": [
-      {
-        "name" : "fantazia:mobeffect/fury_prolong",
-        "stream" : false
-      }
-    ]
-  },
-  "ui.bloodlust_amulet" : {
-    "subtitle": "fantazia.subtitles.bloodlust_amulet",
-    "sounds": [
-      {
-        "name" : "fantazia:spells/bloodlust_amulet",
-        "stream" : false
-      }
-    ]
-  },
-  "entity.evasion" : {
-    "subtitle": "fantazia.subtitles.evasion",
-    "sounds": [
-      {
-        "name" : "fantazia:evasion",
+        "name" : "fantazia:item/leaders_horn",
         "stream" : false
       }
     ]
   },
   "item.ancient_spark.use" : {
-    "subtitle": "fantazia.subtitles.ancient_spark",
+    "subtitle": "fantazia.subtitles.item.ancient_spark",
     "sounds": [
       {
-        "name" : "fantazia:ancient_spark/ancient_spark1",
+        "name" : "fantazia:item/ancient_spark1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:item/ancient_spark2",
         "stream" : false
       }
     ]

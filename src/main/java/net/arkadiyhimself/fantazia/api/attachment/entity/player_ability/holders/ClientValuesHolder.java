@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders;
 
-import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.minecraft.core.HolderLookup;

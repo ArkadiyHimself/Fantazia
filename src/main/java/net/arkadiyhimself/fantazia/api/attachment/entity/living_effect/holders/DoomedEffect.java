@@ -5,7 +5,6 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEff
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.PlaySoundForUIS2C;
-import net.arkadiyhimself.fantazia.particless.SoulParticle;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -35,7 +34,7 @@ public class DoomedEffect extends LivingEffectHolder implements IDamageEventList
 
         if (soulCD <= 0) {
             soulCD = Fantazia.RANDOM.nextInt(6,8);
-            VisualHelper.randomParticleOnModel(getEntity(), SoulParticle.DOOMED_SOULS.random(), VisualHelper.ParticleMovement.CHASE_AND_FALL);
+            VisualHelper.randomParticleOnModel(getEntity(), FTZParticleTypes.DOOMED_SOULS.random(), VisualHelper.ParticleMovement.CHASE_AND_FALL);
         }
 
         if (whisperCD <= 0) {
@@ -48,7 +47,7 @@ public class DoomedEffect extends LivingEffectHolder implements IDamageEventList
     public void onHit(LivingDamageEvent.Pre event) {
         if (duration() > 0 && event.getNewDamage() > 0 &&  !event.getSource().is(FTZDamageTypeTags.NON_LETHAL)) {
             event.setNewDamage(Float.MAX_VALUE);
-            getEntity().playSound(FTZSoundEvents.FALLEN_BREATH.get());
+            getEntity().playSound(FTZSoundEvents.ENTITY_FALLEN_BREATH.get());
             double x = getEntity().getX();
             double y = getEntity().getY();
             double z = getEntity().getZ();

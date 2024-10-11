@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.blocks.AncientFlameBlock;
 import net.arkadiyhimself.fantazia.blocks.RegularBlockItem;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.block.Block;

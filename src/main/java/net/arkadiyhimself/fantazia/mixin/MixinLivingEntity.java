@@ -8,8 +8,8 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.D
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.HaemorrhageEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.data.talents.TalentHelper;
-import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
+import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
@@ -47,13 +47,13 @@ public abstract class MixinLivingEntity extends Entity {
     protected void cancelSound(DamageSource pSource, CallbackInfo ci) {
         if (pSource == null) return;
         if (pSource.is(FTZDamageTypeTags.NO_HURT_SOUND)) ci.cancel();
-        if (pSource.is(FTZDamageTypes.BLEEDING)) LivingEffectGetter.acceptConsumer(neoForgeFantazia$entity, HaemorrhageEffect.class, HaemorrhageEffect::tryMakeSound);
+        if (pSource.is(FTZDamageTypes.BLEEDING) && (neoForgeFantazia$entity.tickCount & 10) == 0) LivingEffectGetter.acceptConsumer(neoForgeFantazia$entity, HaemorrhageEffect.class, HaemorrhageEffect::emitSound);
         Collection<MobEffectInstance> instanceCollection = neoForgeFantazia$entity.getActiveEffects();
         for (MobEffectInstance instance : instanceCollection) if (FTZMobEffectTags.hasTag(instance.getEffect(), FTZMobEffectTags.BARRIER)) ci.cancel();
     }
     @Inject(at = @At(value = "HEAD"), method = "onItemPickup", cancellable = true)
     protected void pickUp(ItemEntity pItemEntity, CallbackInfo ci) {
-        if (!FTZEvents.ForgeExtension.onLivingPickUpItem(neoForgeFantazia$entity, pItemEntity)) ci.cancel();
+        if (!FTZHooks.ForgeExtension.onLivingPickUpItem(neoForgeFantazia$entity, pItemEntity)) ci.cancel();
     }
     @Inject(at = @At(value = "HEAD"), method = "removeEffectsCuredBy", cancellable = true, remap = false)
     private void milkBucket(EffectCure cure, CallbackInfoReturnable<Boolean> cir) {

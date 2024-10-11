@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.fantazicevents.VanillaEventsExtension;
-import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
+import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,7 +39,7 @@ public class MixinParticle {
     @Inject(at = @At("HEAD"), method = "tick", cancellable = true)
     private void tick(CallbackInfo ci) {
         Particle particle = (Particle) (Object) this;
-        VanillaEventsExtension.ParticleTickEvent event = FTZEvents.ForgeExtension.onParticleTick(particle, new Vec3(x, y, z), new Vec3(xd, yd, zd), rCol, gCol, bCol, age, hasPhysics, onGround);
+        VanillaEventsExtension.ParticleTickEvent event = FTZHooks.ForgeExtension.onParticleTick(particle, new Vec3(x, y, z), new Vec3(xd, yd, zd), rCol, gCol, bCol, age, hasPhysics, onGround);
         if (event.isCanceled()) {
             ci.cancel();
             return;

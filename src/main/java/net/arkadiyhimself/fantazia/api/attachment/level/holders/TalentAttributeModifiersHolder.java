@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.level.holders;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributeHolder;
-import net.arkadiyhimself.fantazia.data.talents.AttributeTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.AttributeTalent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

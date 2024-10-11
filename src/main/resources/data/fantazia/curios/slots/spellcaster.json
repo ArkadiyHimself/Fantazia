@@ -1,8 +1,5 @@
 {
   "order": 20,
   "size": 2,
-  "icon": "fantazia:slot/spellcaster",
-  "values": [
-    "fantazia:entangler", "fantazia:soul_eater", "fantazia:heart_of_sculk"
-  ]
+  "icon": "fantazia:slot/spellcaster"
 }

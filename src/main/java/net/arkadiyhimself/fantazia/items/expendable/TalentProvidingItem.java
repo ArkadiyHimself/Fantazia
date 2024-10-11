@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.items.expendable;
 
-import net.arkadiyhimself.fantazia.data.talents.TalentHelper;
+import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;

@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.events;
 
-import com.google.common.collect.Lists;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
@@ -8,16 +7,14 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
 import net.arkadiyhimself.fantazia.api.KeyBinding;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.api.type.item.IChangingIcon;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.client.models.entity.DashStoneRenderer;
-import net.arkadiyhimself.fantazia.client.models.entity.ThrownHatchetRenderer;
-import net.arkadiyhimself.fantazia.client.models.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.client.render.layers.AbsoluteBarrier;
 import net.arkadiyhimself.fantazia.client.render.layers.BarrierLayer;
 import net.arkadiyhimself.fantazia.client.render.layers.LayeredBarrierLayer;
 import net.arkadiyhimself.fantazia.client.render.layers.MysticMirror;
+import net.arkadiyhimself.fantazia.client.renderers.entity.DashStoneRenderer;
+import net.arkadiyhimself.fantazia.client.renderers.entity.ThrownHatchetRenderer;
+import net.arkadiyhimself.fantazia.client.renderers.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.data.tags.HealingTypeTagsProvider;
 import net.arkadiyhimself.fantazia.data.tags.MobEffectTagsProvider;
 import net.arkadiyhimself.fantazia.data.tags.SpellTagProvider;
@@ -32,16 +29,17 @@ import net.arkadiyhimself.fantazia.networking.packets.stuff.*;
 import net.arkadiyhimself.fantazia.particless.*;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidArmorModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -54,6 +52,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -64,6 +64,7 @@ import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,17 @@ public class RegistryEvents {
 
     private static IAnimation registerPlayerAnimation(AbstractClientPlayer player) {
         return new ModifierLayer<>();
+    }
+
+    private static final IClientItemExtensions iClientItemExsentions = new IClientItemExtensions() {
+        @Override
+        public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
+            return Fantazia.getItemsRenderer();
+        }
+    };
+
+    private static void registerVariants() {
+        ItemProperties.register(FTZItems.LEADERS_HORN.get(), ResourceLocation.withDefaultNamespace("tooting"), ((itemStack, clientLevel, livingEntity, i) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getUseItem() == itemStack ? 1f : 0f));
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -165,6 +177,7 @@ public class RegistryEvents {
         event.register(KeyBinding.SWORD_ABILITY);
         event.register(KeyBinding.SPELLCAST1);
         event.register(KeyBinding.SPELLCAST2);
+        event.register(KeyBinding.SPELLCAST3);
         event.register(KeyBinding.TALENTS);
     }
 
@@ -206,16 +219,18 @@ public class RegistryEvents {
         event.registerSpriteSet(FTZParticleTypes.REGEN3.get(), GenericParticle.Provider::new);
 
         event.registerSpriteSet(FTZParticleTypes.TIME_TRAVEL.get(), TimeTravelParticle.Provider::new);
+
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO1.get(), ElectroParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO2.get(), ElectroParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO3.get(), ElectroParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO4.get(), ElectroParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO5.get(), ElectroParticle.Provider::new);
     }
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        List<DeferredHolder<Item, ? extends Item>> items = Lists.newArrayList();
-        items.addAll(ARTIFACTS);
-        items.addAll(WEAPONS);
-        items.addAll(EXPENDABLES);
-        for (DeferredHolder<Item, ? extends Item> item : items) if (item.get() instanceof IChangingIcon icon) icon.registerVariants();
+        registerVariants();
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(Fantazia.res("animation"), 42, RegistryEvents::registerPlayerAnimation);
     }
 
@@ -226,6 +241,12 @@ public class RegistryEvents {
         if (tab == FTZCreativeModeTabs.ARTIFACTS) for (DeferredHolder<Item, ? extends Item> item : ARTIFACTS) event.accept(new ItemStack(item));
         if (tab == FTZCreativeModeTabs.WEAPONS) for (DeferredHolder<Item, ? extends Item> item : WEAPONS) event.accept(new ItemStack(item));
         if (tab == FTZCreativeModeTabs.EXPENDABLES) for (DeferredHolder<Item, ? extends Item> item : EXPENDABLES) event.accept(new ItemStack(item));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
+        event.registerItem(iClientItemExsentions, FTZItems.FRAGILE_BLADE);
     }
 
     @SubscribeEvent

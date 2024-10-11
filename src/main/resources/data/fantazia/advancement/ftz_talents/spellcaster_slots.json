@@ -1,0 +1,15 @@
+{
+  "criteria": {
+    "automatic": {
+      "trigger": "fantazia:possess_item",
+      "conditions" : {
+        "possessed" : [
+          {
+            "tag" : "curios:spellcaster",
+            "amount" : 4
+          }
+        ]
+      }
+    }
+  }
+}

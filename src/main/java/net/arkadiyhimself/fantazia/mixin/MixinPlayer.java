@@ -1,7 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
@@ -49,8 +48,8 @@ public abstract class MixinPlayer extends LivingEntity {
 
     @Inject(at = @At(value = "HEAD"), method = "getHurtSound", cancellable = true)
     private void hurtSound(DamageSource pDamageSource, CallbackInfoReturnable<SoundEvent> cir) {
-        if (pDamageSource.is(FTZDamageTypes.BLEEDING)) cir.setReturnValue(FTZSoundEvents.BLOODLOSS.get());
         if (pDamageSource.is(FTZDamageTypeTags.NO_HURT_SOUND)) cir.setReturnValue(null);
+        if (pDamageSource.is(FTZDamageTypes.BLEEDING)) cir.setReturnValue((neoForgeFantazia$player.tickCount & 15) == 0 ? FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get() : null);
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;isSpectator()Z", shift = At.Shift.AFTER), method = "tick")

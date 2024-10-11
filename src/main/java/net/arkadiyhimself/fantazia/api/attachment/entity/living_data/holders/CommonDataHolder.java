@@ -16,13 +16,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class CommonDataHolder extends LivingDataHolder implements IDamageEventListener {
+
     private final SizedList<ParameterHolder> parameterHolders = new SizedList<>(101);
     private Vec3 rewindPosition = Vec3.ZERO;
     private int rewindTicks = 0;
     private int damageTicks = 0;
     private float prevHP;
+
     public CommonDataHolder(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("common_data"));
+        prevHP = livingEntity.getHealth();
     }
 
     @Override
@@ -68,20 +71,25 @@ public class CommonDataHolder extends LivingDataHolder implements IDamageEventLi
         if (damageTicks > 0) damageTicks--;
         if (rewindTicks > 0) rewindTicks--;
     }
+
     @Override
     public void onHit(LivingDamageEvent.Post event) {
         prevHP = event.getEntity().getHealth();
         if (!event.getSource().is(FTZDamageTypes.REMOVAL)) damageTicks = 100;
     }
+
     public int getDamageTicks() {
         return damageTicks;
     }
+
     public float getPrevHP() {
         return prevHP;
     }
+
     public boolean writtenParameters() {
         return parameterHolders.size() == parameterHolders.getMaxSize();
     }
+
     public boolean tryReadParameters(int index, LivingEntity livingEntity) {
         if (parameterHolders.size() <= index) return false;
         rewindPosition = livingEntity.position();
@@ -89,20 +97,26 @@ public class CommonDataHolder extends LivingDataHolder implements IDamageEventLi
         parameterHolders.get(index).read(livingEntity);
         return true;
     }
+
     public static class ParameterHolder {
+
         private final float health;
         private final Vec3 position;
+
         private ParameterHolder(float health, Vec3 position) {
             this.health = health;
             this.position = position;
         }
+
         public void read(LivingEntity livingEntity) {
             livingEntity.setHealth(health);
             livingEntity.teleportTo(position.x(), position.y(), position.z());
         }
+
         public static ParameterHolder write(LivingEntity entity) {
             return new ParameterHolder(entity.getHealth(), entity.position());
         }
+
         public CompoundTag serialize() {
             CompoundTag tag = new CompoundTag();
             tag.putFloat("health", health);
@@ -111,6 +125,7 @@ public class CommonDataHolder extends LivingDataHolder implements IDamageEventLi
             tag.putDouble("z", position.z());
             return tag;
         }
+
         public static ParameterHolder deserialize(CompoundTag tag) {
             float health = tag.getFloat("health");
             double x = tag.getDouble("x");

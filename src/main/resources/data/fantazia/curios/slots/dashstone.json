@@ -1,8 +1,5 @@
 {
   "order": 20,
   "size": 1,
-  "icon": "fantazia:slot/dashstone",
-  "values": [
-    "fantazia:dashstone1", "fantazia:dashstone2", "fantazia:dashstone3"
-  ]
+  "icon": "fantazia:slot/dashstone"
 }

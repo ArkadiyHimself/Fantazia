@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.registries;
 
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

@@ -66,7 +66,7 @@ public class EvasionHolder extends LivingDataHolder {
 
         iFrames = 5;
         cooldown = COOLDOWN;
-        getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.EVASION.get(), SoundSource.NEUTRAL);
+        getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.ENTITY_EVADE.get(), SoundSource.NEUTRAL);
 
         return true;
     }

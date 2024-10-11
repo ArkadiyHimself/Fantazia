@@ -1,6 +1,0 @@
-{
-  "iconTexture" : "fantazia:textures/gui/talents/dash/dash3.png",
-  "title" : "fantazia.talent.dash3",
-  "wisdom": 0,
-  "advancement" : "fantazia:ftz_talents/dash3"
-}

@@ -4,7 +4,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Player;
 public class AdvancedHealing {
     private AdvancedHealing() {}
     public static boolean tryHeal(LivingEntity entity, HealingSource source, float amount) {
-        float j = FTZEvents.ForgeExtension.onAdvancedHealing(entity, source, amount);
+        float j = FTZHooks.ForgeExtension.onAdvancedHealing(entity, source, amount);
         if (!canHeal(entity, source)) return false;
         if (AuraHelper.affected(entity, FTZAuras.DESPAIR.get()) && !source.is(FTZHealingTypeTags.UNHOLY)) j *= 0.5f;
         entity.setHealth(entity.getHealth() + j);
@@ -47,6 +47,6 @@ public class AdvancedHealing {
     }
     private static boolean cancelHeal(LivingEntity entity) {
         if (entity.hasEffect(FTZMobEffects.FROZEN) || entity.hasEffect(FTZMobEffects.DOOMED)) return true;
-        return SpellHelper.hasSpell(entity, FTZSpells.ENTANGLE.get());
+        return SpellHelper.hasSpell(entity, FTZSpells.ENTANGLE);
     }
 }

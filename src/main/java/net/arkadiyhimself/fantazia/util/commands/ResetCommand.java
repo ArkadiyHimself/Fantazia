@@ -2,10 +2,7 @@ package net.arkadiyhimself.fantazia.util.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.LootTableModifiersHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ManaHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,6 +30,12 @@ public class ResetCommand {
                     ServerPlayer serverPlayer = context.getSource().getPlayer();
                     if (serverPlayer == null) return 0;
                     PlayerAbilityGetter.acceptConsumer(serverPlayer, LootTableModifiersHolder.class, LootTableModifiersHolder::reset);
+                    return 1;
+                }))
+                .then(Commands.literal("custom_criteria").executes(context -> {
+                    ServerPlayer serverPlayer = context.getSource().getPlayer();
+                    if (serverPlayer == null) return 0;
+                    PlayerAbilityGetter.acceptConsumer(serverPlayer, CustomCriteriaHolder.class, CustomCriteriaHolder::reset);
                     return 1;
                 })));
     }

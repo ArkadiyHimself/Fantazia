@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.particless;
 
-import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -9,7 +8,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class BloodParticle extends TextureSheetParticle {
-    public static final RandomList<SimpleParticleType> BLOOD = RandomList.emptyRandomList();
     protected BloodParticle(ClientLevel pLevel, double pX, double pY, double pZ, SpriteSet spriteSet) {
         super(pLevel, pX, pY, pZ);
         this.friction = 0.8F;
@@ -41,6 +39,6 @@ public class BloodParticle extends TextureSheetParticle {
                 BloodParticle bloodParticle = new BloodParticle(level, x, y, z, spriteSet);
                 bloodParticle.pickSprite(spriteSet);
                 return bloodParticle;
-            }
+        }
     }
 }

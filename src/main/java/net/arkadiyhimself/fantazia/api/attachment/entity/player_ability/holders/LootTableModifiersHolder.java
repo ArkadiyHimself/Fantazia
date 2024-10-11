@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.data.loot.LootInstanceManager;
+import net.arkadiyhimself.fantazia.data.loot.LootInstancesManager;
 import net.arkadiyhimself.fantazia.data.loot.LootModifierHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.List;
 
 public class LootTableModifiersHolder extends PlayerAbilityHolder {
-    private final List<LootModifierHolder> lootModifierHolders = LootInstanceManager.createModifiers();
+    private final List<LootModifierHolder> lootModifierHolders = LootInstancesManager.createModifiers();
     public LootTableModifiersHolder(Player player) {
         super(player, Fantazia.res("loot_table_modifiers"));
     }
@@ -59,6 +59,6 @@ public class LootTableModifiersHolder extends PlayerAbilityHolder {
 
     public void reset() {
         lootModifierHolders.clear();
-        lootModifierHolders.addAll(LootInstanceManager.createModifiers());
+        lootModifierHolders.addAll(LootInstancesManager.createModifiers());
     }
 }

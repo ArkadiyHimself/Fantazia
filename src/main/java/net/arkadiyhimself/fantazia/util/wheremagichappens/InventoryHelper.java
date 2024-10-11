@@ -15,49 +15,15 @@ import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 
 public class InventoryHelper {
+
     public static List<ItemStack> fullInventory(Player player) {
         List<ItemStack> itemStacks = new ArrayList<>();
         itemStacks.addAll(player.getInventory().items);
         itemStacks.addAll(player.getInventory().offhand);
         itemStacks.addAll(player.getInventory().armor);
         return itemStacks;
-    }
-    public static<T extends Item> List<ItemStack> searchForItems(Player player, Class<T> tClass) {
-        List<ItemStack> itemStacks = new ArrayList<>();
-
-        for (ItemStack stack : player.getInventory().items) {
-            if (stack.getItem().getClass() == tClass) {
-                itemStacks.add(stack);
-            }
-        }
-        for (ItemStack stack : player.getInventory().offhand) {
-            if (stack.getItem().getClass() == tClass) {
-                itemStacks.add(stack);
-            }
-        }
-        return itemStacks;
-    }
-    @SuppressWarnings("unchecked")
-    public static List<ItemStack> searchForItems(Player player, Item... items) {
-        List<ItemStack> itemStacks = new ArrayList<>();
-
-        for (ItemStack stack : player.getInventory().items) {
-            if (Arrays.stream(items).anyMatch((Predicate<? super Item>) stack.getItem())) {
-                itemStacks.add(stack);
-            }
-        }
-        for (ItemStack stack : player.getInventory().offhand) {
-            if (Arrays.stream(items).anyMatch((Predicate<? super Item>) stack.getItem())) {
-                itemStacks.add(stack);
-            }
-        }
-        return itemStacks;
-    }
-    public static boolean hasActiveCurio(final Player player, final Item curio) {
-        return hasCurio(player, curio) && player.getCooldowns().isOnCooldown(curio);
     }
 
     public static boolean hasCurio(final LivingEntity entity, final Item curio) {
@@ -68,6 +34,7 @@ public class InventoryHelper {
         });
         return present.get();
     }
+
     public static int duplicatingCurio(final LivingEntity entity, final Item item) {
         AtomicInteger present = new AtomicInteger(0);
         CuriosApi.getCuriosInventory(entity).ifPresent(inventory -> {
@@ -76,6 +43,7 @@ public class InventoryHelper {
         });
         return present.get();
     }
+
     public static List<SlotResult> findAllCurios(LivingEntity entity, String ident) {
         List<SlotResult> result = new ArrayList<>();
         ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
@@ -97,15 +65,11 @@ public class InventoryHelper {
         }
         return result;
     }
-    public static List<SlotResult> findCurios(LivingEntity entity, String... ident) {
-        List<SlotResult> result = new ArrayList<>();
-        ICuriosItemHandler handler = CuriosApi.getCuriosInventory(entity).orElse(null);
-        if (handler == null) return result;
-        return handler.findCurios(ident);
-    }
+
     public static Optional<SlotResult> findCurio(LivingEntity entity, String ident, int id) {
         ICuriosItemHandler curiosItemHandler = CuriosApi.getCuriosInventory(entity).orElse(null);
         if (curiosItemHandler == null) return Optional.empty();
         return curiosItemHandler.findCurio(ident, id);
     }
+
 }

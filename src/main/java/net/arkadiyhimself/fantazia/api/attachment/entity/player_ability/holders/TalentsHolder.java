@@ -5,12 +5,11 @@ import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.data.criteritas.ObtainTalentTrigger;
-import net.arkadiyhimself.fantazia.data.talents.AttributeTalent;
-import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
-import net.arkadiyhimself.fantazia.data.talents.TalentHelper;
-import net.arkadiyhimself.fantazia.data.talents.reload.TalentManager;
-import net.arkadiyhimself.fantazia.data.talents.reload.WisdomRewardManager;
+import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
+import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
+import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
+import net.arkadiyhimself.fantazia.data.talent.reload.WisdomRewardManager;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -73,7 +72,7 @@ public class TalentsHolder extends PlayerAbilityHolder {
             TALENTS.add(talent);
         }
 
-        for (BasicTalent talent : getTalents()) if (talent instanceof AttributeTalent attributeTalent) attributeTalent.applyModifier(getPlayer());
+        for (BasicTalent talent : getTalents()) talent.applyModifiers(getPlayer());
     }
 
     public ImmutableList<BasicTalent> getTalents() {

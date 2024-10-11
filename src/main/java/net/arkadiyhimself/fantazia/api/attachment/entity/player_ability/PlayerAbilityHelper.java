@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.VibrationListenerHolder;
-import net.arkadiyhimself.fantazia.events.FTZEvents;
+import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,7 +45,7 @@ public class PlayerAbilityHelper {
         StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(1.75f, true)) return false;
 
-        if (FTZEvents.onDoubleJump(player)) return false;
+        if (FTZHooks.onDoubleJump(player)) return false;
         player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS);
         Vec3 vec3 = player.getDeltaMovement();
         player.setDeltaMovement(vec3.x, 0.64 + player.getJumpBoostPower(), vec3.z);
@@ -57,7 +57,7 @@ public class PlayerAbilityHelper {
         StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(3f, true)) return false;
 
-        if (FTZEvents.onDoubleJump(player)) return false;
+        if (FTZHooks.onDoubleJump(player)) return false;
         player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS);
 
         Vec3 vec31 = player.getLookAngle();

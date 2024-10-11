@@ -1,11 +1,8 @@
 package net.arkadiyhimself.fantazia;
 
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import vazkii.patchouli.api.PatchouliAPI;
-import vazkii.patchouli.api.PatchouliConfigAccess;
 
 public class FantazicConfig {
     private static final ModConfigSpec SPEC;
@@ -16,23 +13,36 @@ public class FantazicConfig {
     public static final ModConfigSpec.ConfigValue<Integer> manaBarXoff;
     public static final ModConfigSpec.ConfigValue<Integer> manaBarYoff;
 
+    public static final ModConfigSpec.ConfigValue<Integer> curioSlotsXoff;
+    public static final ModConfigSpec.ConfigValue<Integer> curioSlotsYoff;
+
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
+        builder.comment("The offsets of custom GUIs from Fantazia").push("offsets");
         staminaBarXoff = builder.
-                comment("The Y offset of stamina bar. Keep in mind that positive direction in X axis in gui is right")
+                comment("The X offset of stamina bar")
                 .define("staminaBarXoff", 0);
         staminaBarYoff = builder.
-                comment("The Y offset of stamina bar. Keep in mind that positive direction in Y axis in gui is down")
+                comment("The Y offset of stamina bar")
                 .define("staminaBarYoff", 0);
 
         manaBarXoff = builder.
-                comment("The Y offset of mana bar. Keep in mind that positive direction in X axis in gui is right")
+                comment("The X offset of mana bar")
                 .define("manaBarXoff", 0);
 
         manaBarYoff = builder.
-                comment("The Y offset of mana bar. Keep in mind that positive direction in Y axis in gui is down")
+                comment("The Y offset of mana bar")
                 .define("manaBarYoff", 0);
+        curioSlotsXoff = builder
+                .comment("The X offset of curio slots for Spell Casters and Aura Casters")
+                .define("curioSlotsXoff", 0);
+        curioSlotsYoff = builder
+                .comment("The Y offset of curio slots for Spell Casters and Aura Casters")
+                .define("curioSlotsYoff", 0);
+        builder.pop();
+
+
 
         SPEC = builder.build();
     }

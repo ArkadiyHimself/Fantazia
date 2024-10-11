@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.advanced.aura;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
@@ -24,7 +25,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -32,19 +32,33 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+
+/**
+ * An Aura is an abstract object that has an owner and affects entities around its owner one way or another.
+ * <br>
+ * Aura can be one of three {@link TYPE types}: {@link TYPE#POSITIVE positive}, {@link TYPE#NEGATIVE negative} and {@link TYPE#MIXED mixed}.
+ * <br>
+ * Aura can have {@link #primaryFilter conditions} for an entity which have to be met in order to apply its effects to the entity
+ * <br>
+ * The effects of auras vary from {@link #attributeModifiers changing attributes} to {@link #affectedTick(Entity, Entity)}   influencing} an entity in certain ways while it is inside the aura
+ *
+ * @param <T> the class of affected entities
+ */
 public class BasicAura<T extends Entity> implements ITooltipBuilder {
+
     public enum TYPE {
         POSITIVE, NEGATIVE, MIXED
     }
-    private final TYPE type;
+
     private final Class<T> tClass;
+    private final TYPE type;
     private final float range;
     /**
      * Contains attributes and respective attribute modifiers that are
      * <br>
      * applied to all suitable entities within aura
      */
-    private final Map<Holder<Attribute>, AttributeModifier> attributeModifiers = Maps.newHashMap();
+    private final ImmutableMap<Holder<Attribute>, AttributeModifier> attributeModifiers;
     /**
      * Contains DAMs which will be applied to all suitable entities within aura.
      * <br>
@@ -54,7 +68,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * the aura to 1.0F when it is closest to the owner
      */
-    private final Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers = Maps.newHashMap();
+    private final ImmutableMap<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers;
     /**
      * Contains the mob effects which will be applied to suitable entities
      * <br>
@@ -62,7 +76,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * of respective applied effect
      */
-    private final Map<Holder<MobEffect>, Integer> mobEffects = Maps.newHashMap();
+    private final ImmutableMap<Holder<MobEffect>, Integer> mobEffects;
     /**
      * Primary Filter is supposed to check entity's «permanent» fields which
      * <br>
@@ -70,7 +84,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * {@linkplain Entity#getType() type}, {@link TamableAnimal#getOwner() owner}, {@link LivingEntity#fireImmune() built-in fire resistance}. etc.,
      */
-    private BiPredicate<T, Entity> primaryFilter = (entity, owner) -> true;
+    private final BiPredicate<T, Entity> primaryFilter;
     /**
      * Secondary Filter is supposed to check entity's «transient» fields which
      * <br>
@@ -78,13 +92,13 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * {@link LivingEntity#getHealth() health}, {@link LivingEntity#getAttributes() attributes}, {@link LivingEntity#getTicksFrozen() freezing ticks}, {@link Player#getFoodData() food data} for players, etc.,
      */
-    private BiPredicate<T, Entity> secondaryFilter = (entity, owner) -> true;
+    private final BiPredicate<T, Entity> secondaryFilter;
     /**
      * ownerConditions is supposed to check aura instance's owner's fields
      * <br>
      * to determine whether {@link BasicAura#onTickOwner} should be performed or not
      */
-    private Predicate<Entity> ownerConditions = owner -> true;
+    private final Predicate<Entity> ownerConditions;
     /**
      * OnTick is performed every tick on every entity inside the aura.
      * <br>
@@ -100,21 +114,21 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * the effects on owner will also be multiplied by the amount of entities inside if there are more than one
      */
-    private BiConsumer<T, Entity> onTick = (entity, owner) -> {};
+    private final BiConsumer<T, Entity> onTickAffected;
     /**
      * OnTickOwner is performed every tick on the owner of the aura
      */
-    private Consumer<Entity> onTickOwner = owner -> {};
+    private final Consumer<Entity> onTickOwner;
     /**
      * OnTickBlock is performed every tick on all blocks within aura
      */
-    private BiConsumer<BlockPos, AuraInstance<T>> onTickBlock = ((blockPos, tmAuraInstance) -> {});
+    private final BiConsumer<BlockPos, AuraInstance<T>> onTickBlock;
     /**
      * Contains all {@link DamageType types of damage} which suitable entities should
      * <br>
      * be immune to while within aura
      */
-    private final List<ResourceKey<DamageType>> immunities = Lists.newArrayList();
+    private final ImmutableList<ResourceKey<DamageType>> damageImmunities;
     /**
      * Whenever a suitable entity inside aura takes damage from a {@link net.minecraft.world.damagesource.DamageSource source},
      * <br>
@@ -122,62 +136,41 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * by respective float value inside this map
      */
-    private final Map<ResourceKey<DamageType>, Float> multipliers = Maps.newHashMap();
-    public BasicAura(float range, Class<T> affectedType) {
-        this.range = range;
-        this.type = TYPE.MIXED;
-        this.tClass = affectedType;
-    }
-    public BasicAura(float range, TYPE type, Class<T> affectedType) {
+    private final ImmutableMap<ResourceKey<DamageType>, Float> damageMultipliers;
+
+    protected BasicAura(Class<T> affectedType, TYPE type, float range,
+                     Map<Holder<Attribute>, AttributeModifier> attributeModifiers,
+                     Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers,
+                     Map<Holder<MobEffect>, Integer> mobEffects,
+                     BiPredicate<T, Entity> primaryFilter,
+                     BiPredicate<T, Entity> secondaryFilter,
+                     Predicate<Entity> ownerConditions,
+                     BiConsumer<T, Entity> onTickAffected,
+                     Consumer<Entity> onTickOwner,
+                     BiConsumer<BlockPos, AuraInstance<T>> onTickBlock,
+                     List<ResourceKey<DamageType>> damageImmunities,
+                     Map<ResourceKey<DamageType>, Float> damageMultipliers
+                     ) {
         this.range = range;
         this.type = type;
         this.tClass = affectedType;
+
+        this.attributeModifiers = ImmutableMap.copyOf(attributeModifiers);
+        this.dynamicAttributeModifiers = ImmutableMap.copyOf(dynamicAttributeModifiers);
+        this.mobEffects = ImmutableMap.copyOf(mobEffects);
+
+        this.primaryFilter = primaryFilter;
+        this.secondaryFilter = secondaryFilter;
+        this.ownerConditions = ownerConditions;
+
+        this.onTickAffected = onTickAffected;
+        this.onTickOwner = onTickOwner;
+        this.onTickBlock = onTickBlock;
+
+        this.damageImmunities = ImmutableList.copyOf(damageImmunities);
+        this.damageMultipliers = ImmutableMap.copyOf(damageMultipliers);
     }
-    public BasicAura<T> addAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
-        this.attributeModifiers.put(attribute, attributeModifier);
-        return this;
-    }
-    public BasicAura<T> addDynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier modifier) {
-        this.dynamicAttributeModifiers.put(attribute, modifier);
-        return this;
-    }
-    public BasicAura<T> addMobEffect(Holder<MobEffect> mobEffect, int level) {
-        this.mobEffects.put(mobEffect, level);
-        return this;
-    }
-    public BasicAura<T> addPrimaryFilter(BiPredicate<T, Entity> filter) {
-        this.primaryFilter = filter;
-        return this;
-    }
-    public BasicAura<T> addSecondaryFilter(BiPredicate<T, Entity> filter) {
-        this.secondaryFilter = filter;
-        return this;
-    }
-    public BasicAura<T> addOwnerConditions(Predicate<Entity> filter) {
-        this.ownerConditions = filter;
-        return this;
-    }
-    public BasicAura<T> tickingOnEntities(BiConsumer<T, Entity> onTick) {
-        this.onTick = onTick;
-        return this;
-    }
-    public BasicAura<T> tickingOnOwner(Consumer<Entity> onTick) {
-        this.onTickOwner = onTick;
-        return this;
-    }
-    public BasicAura<T> addDamageImmunities(ResourceKey<DamageType> immunity) {
-        this.immunities.add(immunity);
-        return this;
-    }
-    public BasicAura<T> addDamageMultipliers(Map.Entry<ResourceKey<DamageType>, Float> damageMultiplier) throws IllegalArgumentException {
-        if (damageMultiplier.getValue() <= 0) throw new IllegalArgumentException("Use damage immunities list instead");
-        this.multipliers.put(damageMultiplier.getKey(), damageMultiplier.getValue());
-        return this;
-    }
-    public BasicAura<T> tickingOnBlocks(BiConsumer<BlockPos, AuraInstance<T>> onTick) {
-        this.onTickBlock = onTick;
-        return this;
-    }
+
     @Override
     public List<Component> buildIconTooltip() {
         List<Component> components = Lists.newArrayList();
@@ -199,6 +192,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         }
         return components;
     }
+
     @Override
     public List<Component> itemTooltip(@Nullable ItemStack stack) {
         List<Component> components = Lists.newArrayList();
@@ -262,22 +256,26 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
 
         return components;
     }
+
     public Class<T> affectedClass() {
         return tClass;
     }
+
     public ResourceLocation getID() {
-        if (!FantazicRegistry.AURAS.containsValue(this)) throw new IllegalStateException("Aura is not registered!");
         return FantazicRegistry.AURAS.getKey(this);
     }
+
     public Component getAuraComponent() {
         if (getID() == null) return null;
         String s = "aura." + getID().getNamespace() + "." + getID().getPath();
         return Component.translatable(s);
     }
+
     public ResourceLocation getIcon() {
         if (getID() == null) return getID();
         return getID().withPrefix("textures/aura/").withSuffix(".png");
     }
+
     public TYPE getType() {
         return type;
     }
@@ -285,43 +283,143 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     public float getRadius() {
         return range;
     }
+
     public boolean couldAffect(T entity, Entity owner) {
         return primaryFilter.test(entity, owner) && entity != owner;
     }
+
     public boolean canAffect(T entity, Entity owner) {
         return primaryFilter.test(entity, owner) && secondaryFilter.test(entity, owner) && entity != owner;
     }
+
     public Map<Holder<MobEffect>, Integer> getMobEffects() {
         return mobEffects;
     }
+
     public Map<Holder<Attribute>, AttributeModifier> getAttributeModifiers() {
         return attributeModifiers;
     }
+
     public Map<Holder<Attribute>, AttributeModifier> getDynamicAttributeModifiers() {
         return dynamicAttributeModifiers;
     }
+
     public boolean primary(T entity, Entity owner) {
         return primaryFilter.test(entity, owner);
     }
+
     public boolean secondary(T entity, Entity owner) {
         return secondaryFilter.test(entity, owner);
     }
+
     public boolean ownerCond(Entity owner) {
         return ownerConditions.test(owner);
     }
-    public void entityTick(T entity, Entity owner) {
-        onTick.accept(entity, owner);
+
+    public void affectedTick(T entity, Entity owner) {
+        onTickAffected.accept(entity, owner);
     }
+
     public void ownerTick(Entity owner) {
         onTickOwner.accept(owner);
     }
+
     public void blockTick(BlockPos blockPos, AuraInstance<T> auraInstance) {
         onTickBlock.accept(blockPos, auraInstance);
     }
+
     public ImmutableList<ResourceKey<DamageType>> immunities() {
-        return ImmutableList.copyOf(immunities);
+        return damageImmunities;
     }
+
     public Map<ResourceKey<DamageType>, Float> multipliers() {
-        return Collections.unmodifiableMap(multipliers);
+        return damageMultipliers;
+    }
+
+    public static class Builder<T extends Entity> {
+
+        private final Class<T> affectedClass;
+        private final TYPE type;
+        private final float range;
+
+        private final Map<Holder<Attribute>, AttributeModifier> attributeModifiers = Maps.newHashMap();
+        private final Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers = Maps.newHashMap();
+        private final Map<Holder<MobEffect>, Integer> mobEffects = Maps.newHashMap();
+
+        private BiPredicate<T, Entity> primaryFilter = (entity, owner) -> true;
+        private BiPredicate<T, Entity> secondaryFilter = (entity, owner) -> true;
+        private Predicate<Entity> ownerConditions = owner -> true;
+
+        private BiConsumer<T, Entity> onTickAffected = (entity, owner) -> {};
+        private Consumer<Entity> onTickOwner = owner -> {};
+        private BiConsumer<BlockPos, AuraInstance<T>> onTickBlock = ((blockPos, tmAuraInstance) -> {});
+
+        private final List<ResourceKey<DamageType>> damageImmunities = Lists.newArrayList();
+        private final Map<ResourceKey<DamageType>, Float> damageMultipliers = Maps.newHashMap();
+
+        public Builder(Class<T> affectedClass, TYPE type, float range) {
+            this.affectedClass = affectedClass;
+            this.type = type;
+            this.range = range;
+        }
+
+        public Builder<T> addAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
+            this.attributeModifiers.put(attribute, attributeModifier);
+            return this;
+        }
+
+        public Builder<T> addDynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
+            this.dynamicAttributeModifiers.put(attribute, attributeModifier);
+            return this;
+        }
+
+        public Builder<T> addMobEffect(Holder<MobEffect> mobEffect, int amplifier) {
+            this.mobEffects.put(mobEffect, amplifier);
+            return this;
+        }
+
+        public Builder<T> primaryFilter(BiPredicate<T, Entity> value) {
+            this.primaryFilter = value;
+            return this;
+        }
+
+        public Builder<T> secondaryFilter(BiPredicate<T, Entity> value) {
+            this.secondaryFilter = value;
+            return this;
+        }
+
+        public Builder<T> ownerConditions(Predicate<Entity> value) {
+            this.ownerConditions = value;
+            return this;
+        }
+
+        public Builder<T> onTickAffected(BiConsumer<T, Entity> value) {
+            this.onTickAffected = value;
+            return this;
+        }
+
+        public Builder<T> onTickOwner(Consumer<Entity> value) {
+            this.onTickOwner = value;
+            return this;
+        }
+
+        public Builder<T> onTickBlock(BiConsumer<BlockPos, AuraInstance<T>> value) {
+            this.onTickBlock = value;
+            return this;
+        }
+
+        public Builder<T> addDamageImmunity(ResourceKey<DamageType> damageType) {
+            this.damageImmunities.add(damageType);
+            return this;
+        }
+
+        public Builder<T> putDamageMultiplier(ResourceKey<DamageType> damageType, float multiplier) {
+            this.damageMultipliers.put(damageType, multiplier);
+            return this;
+        }
+
+        public BasicAura<T> build() {
+            return new BasicAura<>(affectedClass, type, range, attributeModifiers, dynamicAttributeModifiers, mobEffects, primaryFilter, secondaryFilter, ownerConditions, onTickAffected, onTickOwner, onTickBlock, damageImmunities, damageMultipliers);
+        }
     }
 }

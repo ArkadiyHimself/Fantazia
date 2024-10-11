@@ -9,6 +9,7 @@
     "MixinEntity",
     "MixinFoodData",
     "MixinHealOrHarmMobEffect",
+    "MixinInventoryChangeTrigger",
     "MixinIronGolem",
     "MixinKeyMapping",
     "MixinLivingEntity",

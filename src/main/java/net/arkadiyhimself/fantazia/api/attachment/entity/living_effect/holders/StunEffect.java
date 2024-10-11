@@ -15,15 +15,16 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.monster.Husk;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -35,12 +36,14 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.Optional;
 
 public class StunEffect extends LivingEffectHolder implements IDamageEventListener {
+
     private static final int DURATION = 80;
     private static final int DELAY = 40;
     private int points = 0;
     private int delay = 0;
     private int color = 0;
     private boolean shift = false;
+
     public StunEffect(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("stun_effect"), FTZMobEffects.STUN);
     }
@@ -50,9 +53,6 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
         CompoundTag tag = super.serializeNBT(provider);
         tag.putInt("points", points);
         tag.putInt("color", color);
-        if (this.getEntity() instanceof Husk) {
-            int i = 0;
-        }
         return tag;
     }
 
@@ -61,17 +61,17 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
         super.deserializeNBT(provider, compoundTag);
         points = compoundTag.getInt("points");
         color = compoundTag.getInt("color");
-        if (this.getEntity() instanceof Husk) {
-            int i = 0;
-        }
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (delay > 0) delay--;
-        else if (points > 0) points--;
         colorTick();
+
+        boolean furious = getEntity().hasEffect(FTZMobEffects.FURY);
+
+        delay = Math.max(0, delay - (furious ? 2 : 1));
+        if (delay == 0) points = Math.max(0, points - (furious ? 2 : 1));
     }
 
     @Override
@@ -135,34 +135,43 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
             basicPoints = (int) (amount * 15.75);
             finalPoints = (int) Math.max(basicPoints, maxPoint * 0.25f);
         }
+        if (getEntity().level() instanceof ServerLevel serverLevel) finalPoints = (int) ((float) finalPoints * pointMultiplier(serverLevel));
+
         points += finalPoints;
         if (points < getMaxPoints()) return true;
 
         attackStunned(DURATION);
-        getEntity().playSound(FTZSoundEvents.ATTACK_STUNNED.get());
+        getEntity().playSound(FTZSoundEvents.COMBAT_ATTACK_STUNNED.get());
 
         return true;
     }
+
     public boolean stunned() {
         return duration() > 0;
     }
+
     public int getPoints() {
         return points;
     }
+
     public boolean hasPoints() {
         return getPoints() > 0;
     }
+
     public boolean renderBar() {
         return stunned() || hasPoints();
     }
+
     public int getMaxPoints() {
         return (int) getEntity().getAttributeValue(FTZAttributes.MAX_STUN_POINTS);
     }
+
     private void attackStunned(int dur) {
         points = 0;
         delay = 0;
         LivingEffectHelper.makeStunned(getEntity(), dur);
     }
+
     public int getColor() {
         return color;
     }
@@ -172,5 +181,10 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
         else color -= 15;
         if (color <= 160)  shift = true;
         if (color >= 255)  shift = false;
+    }
+
+    private float pointMultiplier(ServerLevel serverLevel) {
+        Difficulty difficulty = serverLevel.getDifficulty();
+        return 0.3f + (float) difficulty.getId() * 0.3f;
     }
 }

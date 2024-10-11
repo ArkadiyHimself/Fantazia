@@ -76,6 +76,12 @@ public record KeyInputC2S(Optional<INPUT> input, int action) implements IPacket 
             if (result.isEmpty()) return;
             Item spellCaster = result.get().stack().getItem();
             if (spellCaster instanceof SpellCasterItem selfCaster && !selfCaster.tryCast(serverPlayer)) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(FTZSoundEvents.DENIED.get()));
+        }), // finished
+        SPELLCAST3((serverPlayer, integer) -> {
+            Optional<SlotResult> result = InventoryHelper.findCurio(serverPlayer, "spellcaster", 2);
+            if (result.isEmpty()) return;
+            Item spellCaster = result.get().stack().getItem();
+            if (spellCaster instanceof SpellCasterItem selfCaster && !selfCaster.tryCast(serverPlayer)) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(FTZSoundEvents.DENIED.get()));
         }); // finished
         private final BiConsumer<ServerPlayer, Integer> consumer;
         INPUT(BiConsumer<ServerPlayer, Integer> consumer) {

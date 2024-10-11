@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class FuryEffect extends LivingEffectHolder implements IDamageEventListener {
+
     private int soundDelay = 20;
     private int veinTR = 0;
     private int backTR = 20;
@@ -30,6 +31,7 @@ public class FuryEffect extends LivingEffectHolder implements IDamageEventListen
     private boolean secondBeat = false;
     private int beat1 = 0;
     private int beat2 = 9;
+
     public FuryEffect(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("fury_effect"), FTZMobEffects.FURY);
     }
@@ -85,17 +87,18 @@ public class FuryEffect extends LivingEffectHolder implements IDamageEventListen
         beat1 = 0;
         beat2 = 0;
     }
+
     @Override
     public void onHit(LivingIncomingDamageEvent event) {
         Entity attacker = event.getSource().getEntity();
         if (attacker instanceof LivingEntity livAtt && livAtt.hasEffect(FTZMobEffects.FURY)) {
             event.setAmount(event.getAmount() * 2);
             HealingSourcesHolder healingSources = LevelAttributesHelper.getHealingSources(getEntity().level());
-            if (SpellHelper.hasSpell(livAtt, FTZSpells.DAMNED_WRATH.get()) && healingSources != null) AdvancedHealing.tryHeal(livAtt, healingSources.lifesteal(getEntity()), 0.15f * event.getAmount());
+            if (SpellHelper.hasSpell(livAtt, FTZSpells.DAMNED_WRATH) && healingSources != null) AdvancedHealing.tryHeal(livAtt, healingSources.lifesteal(getEntity()), 0.15f * event.getAmount());
         }
 
         if (duration() <= 0) return;
-        float multiplier = SpellHelper.hasSpell(getEntity(), FTZSpells.DAMNED_WRATH.get()) ? 1.5f : 2f;
+        float multiplier = SpellHelper.hasSpell(getEntity(), FTZSpells.DAMNED_WRATH) ? 1.5f : 2f;
         if (getEntity().hasEffect(FTZMobEffects.FURY)) event.setAmount(event.getAmount() * multiplier);
     }
 

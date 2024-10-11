@@ -5,8 +5,8 @@ import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.particless.BarrierParticle;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.client.Minecraft;
@@ -88,7 +88,7 @@ public class BarrierEffect extends LivingEffectHolder implements IDamageEventLis
             health -= dmg;
 
             if (hitCD <= 0) {
-                getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.BARRIER_HIT.get(), SoundSource.AMBIENT);
+                getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.EFFECT_BARRIER_DAMAGE.get(), SoundSource.AMBIENT);
                 hitCD = 10;
                 int num = switch (Minecraft.getInstance().options.particles().get()) {
                     case ALL -> 30;
@@ -96,15 +96,15 @@ public class BarrierEffect extends LivingEffectHolder implements IDamageEventLis
                     case MINIMAL -> 20;
                 };
 
-                for (int i = 1; i <= num; i++) VisualHelper.randomParticleOnModel(getEntity(), furious ? BarrierParticle.PIECES_FURY.random() : BarrierParticle.PIECES.random(), VisualHelper.ParticleMovement.FALL);
+                for (int i = 1; i <= num; i++) VisualHelper.randomParticleOnModel(getEntity(), furious ? FTZParticleTypes.PIECES_FURY.random() : FTZParticleTypes.PIECES.random(), VisualHelper.ParticleMovement.FALL);
             }
         } else {
             event.setAmount(-newHP);
             remove();
-            getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.BARRIER_BREAK.get(), SoundSource.AMBIENT);
+            getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.EFFECT_BARRIER_BREAK.get(), SoundSource.AMBIENT);
             if (event.getEntity().hasEffect(FTZMobEffects.BARRIER)) EffectCleansing.forceCleanse(event.getEntity(), FTZMobEffects.BARRIER);
 
-            for (int i = 1; i <= 20 + 5 * Minecraft.getInstance().options.particles().get().getId(); i++) VisualHelper.randomParticleOnModel(getEntity(), furious ? BarrierParticle.PIECES_FURY.random() : BarrierParticle.PIECES.random(), VisualHelper.ParticleMovement.FALL);
+            for (int i = 1; i <= 20 + 5 * Minecraft.getInstance().options.particles().get().getId(); i++) VisualHelper.randomParticleOnModel(getEntity(), furious ? FTZParticleTypes.PIECES_FURY.random() : FTZParticleTypes.PIECES.random(), VisualHelper.ParticleMovement.FALL);
         }
     }
 

@@ -9,7 +9,6 @@ import net.arkadiyhimself.fantazia.networking.packets.stuff.AddParticleS2C;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
@@ -23,7 +22,6 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -35,13 +33,18 @@ import java.util.function.BinaryOperator;
 
 @OnlyIn(Dist.CLIENT)
 public class VisualHelper {
+
     public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type) {
+        randomParticleOnModel(entity, particle, type, 1f);
+    }
+    public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type, float range) {
         if (particle == null) return;
+
         // getting entity's height and width
         float radius = entity.getBbWidth() * (float) 0.7;
         float height = entity.getBbHeight();
 
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius);
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(radius);
         double x = vec3.x();
         double z = vec3.z();
         double y = Fantazia.RANDOM.nextDouble(0, height * 0.8);

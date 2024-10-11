@@ -2,7 +2,10 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_data;
 
 
 import com.google.common.collect.Maps;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.*;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.StuckHatchetHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.IBasicHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.type.entity.IHolderManager;
@@ -10,7 +13,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +22,6 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class LivingDataManager implements IHolderManager<IBasicHolder, LivingEntity> {
 
@@ -105,9 +106,7 @@ public class LivingDataManager implements IHolderManager<IBasicHolder, LivingEnt
     private void provide() {
         putHolder(AncientFlameTicksHolder::new);
         putHolder(CommonDataHolder::new);
-        putHolder(OwnedAurasHolder::new);
         putHolder(StuckHatchetHolder::new);
         putHolder(DAMHolder::new);
     }
-
 }

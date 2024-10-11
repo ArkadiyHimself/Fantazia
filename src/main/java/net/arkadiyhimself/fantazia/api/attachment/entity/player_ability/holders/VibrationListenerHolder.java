@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
@@ -89,7 +88,7 @@ public class VibrationListenerHolder extends PlayerAbilityHolder {
     }
     public boolean listen() {
         if (delay > 0) return false;
-        return SpellHelper.hasSpell(getPlayer(), FTZSpells.SONIC_BOOM.get());
+        return SpellHelper.hasSpell(getPlayer(), FTZSpells.SONIC_BOOM);
     }
     public void soundExpired(LivingEntity entity) {
         REVEAL.remove(entity);

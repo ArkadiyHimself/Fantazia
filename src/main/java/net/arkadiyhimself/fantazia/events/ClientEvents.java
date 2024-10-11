@@ -81,7 +81,7 @@ public class ClientEvents {
             if (effPer > frePer && overlay.equals(VanillaGuiLayers.FOOD_LEVEL)) event.setCanceled(true);
         }
 
-        if (overlay.equals(VanillaGuiLayers.SUBTITLE_OVERLAY) && !player.shouldShowDeathScreen()) poseStack.translate(0,-32,0);
+        if (overlay.equals(VanillaGuiLayers.SUBTITLE_OVERLAY) && !player.shouldShowDeathScreen()) poseStack.translate(0,-48,0);
         if (overlay.equals(VanillaGuiLayers.EXPERIENCE_BAR)) {
             int x = event.getGuiGraphics().guiWidth() / 2 - 91;
             int y = event.getGuiGraphics().guiHeight() - 29;
@@ -104,7 +104,7 @@ public class ClientEvents {
         GuiGraphics guiGraphics = event.getGuiGraphics();
         PoseStack poseStack = event.getGuiGraphics().pose();
         ResourceLocation overlay = event.getName();
-        if (overlay.equals(VanillaGuiLayers.SUBTITLE_OVERLAY) && !player.shouldShowDeathScreen()) poseStack.translate(0,32,0);
+        if (overlay.equals(VanillaGuiLayers.SUBTITLE_OVERLAY) && !player.shouldShowDeathScreen()) poseStack.translate(0,48,0);
     }
 
     @SubscribeEvent
@@ -227,7 +227,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void mouseScrolling(InputEvent.MouseScrollingEvent event) {
-        if (Minecraft.getInstance().level != null) {
+        if (Minecraft.getInstance().level != null && Minecraft.getInstance().player != null) {
             LocalPlayer player = Minecraft.getInstance().player;
             StunEffect stunEffect = LivingEffectGetter.takeHolder(player, StunEffect.class);
             if (stunEffect != null && stunEffect.stunned()) event.setCanceled(true);
@@ -256,6 +256,7 @@ public class ClientEvents {
         if (KeyBinding.SWORD_ABILITY.consumeClick()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.WEAPON_ABILITY, 1));
         if (KeyBinding.SPELLCAST1.consumeClick()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.SPELLCAST1, 1));
         if (KeyBinding.SPELLCAST2.consumeClick()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.SPELLCAST2, 1));
+        if (KeyBinding.SPELLCAST3.consumeClick()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.SPELLCAST2, 1));
 
         TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
         if (KeyBinding.TALENTS.consumeClick() && talentsHolder != null) Minecraft.getInstance().setScreen(new TalentsScreen(talentsHolder));

@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
@@ -116,8 +116,7 @@ public class TalentTab {
             X += 48;
         }
         guiGraphics.disableScissor();
-        if (selectedTalent != null) guiGraphics.renderComponentTooltip(font, selectedTalent.buildIconTooltip(), (int) mouseX, (int) mouseY);
-
+        tryRenderTalentTooltip(talentsHolder, guiGraphics, font, (int) mouseX, (int) mouseY);
     }
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, Font font) {
         guiGraphics.renderTooltip(font, title, mouseX, mouseY);
@@ -132,6 +131,14 @@ public class TalentTab {
     @Nullable
     public BasicTalent selectedTalent() {
         return selectedTalent;
+    }
+
+    private void tryRenderTalentTooltip(TalentsHolder holder, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
+        if (this.selectedTalent == null) return;
+        List<Component> components = selectedTalent.buildIconTooltip();
+        boolean obtained = holder.hasTalent(selectedTalent);
+        if (obtained) components.add(Component.translatable("fantazia.gui.talent.obtained"));
+        guiGraphics.renderComponentTooltip(font, components, mouseX, mouseY);
     }
     public static class Builder {
         private final ResourceLocation icon;

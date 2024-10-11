@@ -1,0 +1,8 @@
+{
+  "hierarchy": "chaotic",
+  "tab": "fantazia:abilities",
+  "values" : [
+    "fantazia:spellcaster_slots",
+    "fantazia:passivecaster_slots"
+  ]
+}

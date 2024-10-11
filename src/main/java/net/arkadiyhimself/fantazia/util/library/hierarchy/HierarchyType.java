@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.util.library.hierarchy;
 
-import net.arkadiyhimself.fantazia.data.talents.TalentDataException;
+import net.arkadiyhimself.fantazia.data.talent.TalentDataException;
 import org.jetbrains.annotations.NotNull;
 
 public enum HierarchyType {

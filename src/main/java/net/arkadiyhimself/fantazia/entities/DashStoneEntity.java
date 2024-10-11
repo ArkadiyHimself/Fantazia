@@ -112,7 +112,7 @@ public class DashStoneEntity extends Entity {
         if (entityData.get(OWNER).isEmpty()) return;
         if (soundRech <= 0) {
             soundRech = 270;
-            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(FTZSoundEvents.WIND.get(), SoundSource.AMBIENT, 1f, 1f, RandomSource.create(), this.blockPosition()));
+            Minecraft.getInstance().getSoundManager().play(new SimpleSoundInstance(FTZSoundEvents.DASHSTONE_WIND.get(), SoundSource.AMBIENT, 1f, 1f, RandomSource.create(), this.blockPosition()));
             }
         soundRech--;
     }
@@ -130,7 +130,7 @@ public class DashStoneEntity extends Entity {
         this.soundRech = 0;
         entityData.set(DASHSTONE, ItemStack.EMPTY);
         entityData.set(OWNER, Optional.empty());
-        Minecraft.getInstance().getSoundManager().stop(FTZSoundEvents.WIND.getId(), SoundSource.AMBIENT);
+        Minecraft.getInstance().getSoundManager().stop(FTZSoundEvents.DASHSTONE_WIND.getId(), SoundSource.AMBIENT);
         cooldown = 10;
     }
     private void tryAdaptToPlayer(ServerLevel serverLevel) {

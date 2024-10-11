@@ -1,17 +1,14 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability;
 
 import com.google.common.collect.Maps;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataManager;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectManager;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributes;
 import net.arkadiyhimself.fantazia.api.type.entity.*;
-import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.jetbrains.annotations.NotNull;
@@ -21,7 +18,6 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Player> {
 
@@ -104,6 +100,14 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
         for (IPlayerAbility iPlayerAbility : holders.values()) if (iPlayerAbility instanceof IDamageEventListener listener) listener.onHit(event);
     }
 
+    public void onCurioEquip(ItemStack stack) {
+        for (IPlayerAbility iPlayerAbility : holders.values()) if (iPlayerAbility instanceof ICurioListener listener) listener.onCurioEquip(stack);
+    }
+
+    public void onCurioUnEquip(ItemStack stack) {
+        for (IPlayerAbility iPlayerAbility : holders.values()) if (iPlayerAbility instanceof ICurioListener listener) listener.onCurioUnEquip(stack);
+    }
+
     public void respawn() {
         holders.values().forEach(IPlayerAbility::respawn);
     }
@@ -116,7 +120,7 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
         for (IPlayerAbility iPlayerAbility : holders.values()) if (iPlayerAbility instanceof ITalentListener listener) listener.onTalentRevoke(talent);
     }
 
-    public void provide() {
+    private void provide() {
         putHolder(DashHolder::new);
         putHolder(DoubleJumpHolder::new);
         putHolder(MeleeBlockHolder::new);
@@ -126,5 +130,8 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
         putHolder(VibrationListenerHolder::new);
         putHolder(LootTableModifiersHolder::new);
         putHolder(TalentsHolder::new);
+        putHolder(SpellInstancesHolder::new);
+        putHolder(OwnedAurasHolder::new);
+        putHolder(CustomCriteriaHolder::new);
     }
 }

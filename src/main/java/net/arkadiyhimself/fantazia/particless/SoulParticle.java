@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.particless;
 
-import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -9,8 +8,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class SoulParticle extends RisingParticle {
-    public static final RandomList<SimpleParticleType> DOOMED_SOULS = RandomList.emptyRandomList();
     private final SpriteSet spriteSet;
+
     public SoulParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet spriteSet)  {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
 

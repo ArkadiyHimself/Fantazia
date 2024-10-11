@@ -5,45 +5,42 @@ import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
-import net.arkadiyhimself.fantazia.advanced.spell.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
+import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.api.attachment.entity.AttachmentHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataManager;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.OwnedAurasHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.StuckHatchetHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityManager;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DoubleJumpHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.OwnedAurasHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.api.attachment.itemstack.HiddenPotentialHolder;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
-import net.arkadiyhimself.fantazia.api.fantazicevents.VanillaEventsExtension;
+import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
+import net.arkadiyhimself.fantazia.api.data_component.HiddenPotentialHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.data.loot.LootInstanceManager;
+import net.arkadiyhimself.fantazia.data.loot.LootInstancesManager;
 import net.arkadiyhimself.fantazia.data.spawn.MobEffectsOnSpawnManager;
-import net.arkadiyhimself.fantazia.data.talents.AttributeTalent;
-import net.arkadiyhimself.fantazia.data.talents.BasicTalent;
-import net.arkadiyhimself.fantazia.data.talents.TalentHelper;
-import net.arkadiyhimself.fantazia.data.talents.TalentTreeData;
-import net.arkadiyhimself.fantazia.data.talents.reload.TalentHierarchyManager;
-import net.arkadiyhimself.fantazia.data.talents.reload.TalentManager;
-import net.arkadiyhimself.fantazia.data.talents.reload.TalentTabManager;
-import net.arkadiyhimself.fantazia.data.talents.reload.WisdomRewardManager;
+import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
+import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
+import net.arkadiyhimself.fantazia.data.talent.reload.TalentHierarchyManager;
+import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
+import net.arkadiyhimself.fantazia.data.talent.reload.TalentTabManager;
+import net.arkadiyhimself.fantazia.data.talent.reload.WisdomRewardManager;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.entities.goals.StandStillGoal;
+import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.PlayerAbilityUpdateS2C;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.PlaySoundForUIS2C;
-import net.arkadiyhimself.fantazia.particless.BloodParticle;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
@@ -58,7 +55,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.tags.DamageTypeTagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -71,7 +67,6 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.animal.Animal;
@@ -100,13 +95,13 @@ import net.neoforged.neoforge.event.brewing.PlayerBrewedPotionEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.item.ItemEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -133,9 +128,9 @@ public class CommonEvents {
         }
 
         CommonDataHolder commonDataHolder = LivingDataGetter.takeHolder(livingTarget, CommonDataHolder.class);
-        AbstractSpell entangle = FTZSpells.ENTANGLE.get();
-        if (SpellHelper.hasSpell(livingTarget, entangle) && commonDataHolder != null && commonDataHolder.getPrevHP() > livingTarget.getMaxHealth() * 0.1f && FTZEvents.ForgeExtension.onDeathPrevention(event.getEntity(),entangle)) {
-            EffectCleansing.tryCleanseAll(livingTarget, entangle.hasCleanse() ? entangle.getStrength() : Cleanse.POWERFUL, MobEffectCategory.HARMFUL);
+        Holder<AbstractSpell> entangle = FTZSpells.ENTANGLE;
+        if (SpellHelper.hasSpell(livingTarget, entangle) && commonDataHolder != null && commonDataHolder.getPrevHP() > livingTarget.getMaxHealth() * 0.1f && FTZHooks.ForgeExtension.onDeathPrevention(event.getEntity(),entangle)) {
+            EffectCleansing.tryCleanseAll(livingTarget, Cleanse.POWERFUL, MobEffectCategory.HARMFUL);
             event.setCanceled(true);
             livingTarget.setHealth(livingTarget.getMaxHealth() * 0.1f);
         }
@@ -143,7 +138,7 @@ public class CommonEvents {
         if (source.getEntity() instanceof LivingEntity attacker) {
             MobEffectInstance instance;
             if ((instance = attacker.getEffect(FTZMobEffects.FURY)) != null) {
-                boolean amulet = SpellHelper.hasSpell(attacker, FTZSpells.DAMNED_WRATH.get());
+                boolean amulet = SpellHelper.hasSpell(attacker, FTZSpells.DAMNED_WRATH);
                 if (amulet) LivingEffectHelper.effectWithoutParticles(attacker, instance.getEffect(), instance.getDuration() + 100, instance.getAmplifier());
                 else EffectCleansing.forceCleanse(attacker, FTZMobEffects.FURY);
 
@@ -164,7 +159,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void entityLeaveLevel(EntityLeaveLevelEvent event) {
-        if (event.getEntity() instanceof LivingEntity livingEntity) LivingDataGetter.acceptConsumer(livingEntity, OwnedAurasHolder.class, OwnedAurasHolder::clearAll);
+        if (event.getEntity() instanceof Player player) PlayerAbilityGetter.acceptConsumer(player, OwnedAurasHolder.class, OwnedAurasHolder::clearAll);
         event.getEntity().getData(FTZAttachmentTypes.ARMOR_STAND_COMMAND_AURA).onDeath();
     }
 
@@ -193,6 +188,7 @@ public class CommonEvents {
             for (ItemEntity itemEntity : toRemove) event.getDrops().remove(itemEntity);
         }
 
+
         LivingDataGetter.acceptConsumer(killed, StuckHatchetHolder.class, StuckHatchetHolder::dropHatchet);
     }
 
@@ -219,7 +215,7 @@ public class CommonEvents {
         if (healingSources == null) return;
         boolean flag = AdvancedHealing.tryHeal(event.getEntity(), healingSources.generic(), event.getAmount());
         if (flag) event.setCanceled(true);
-        if (SpellHelper.hasSpell(event.getEntity(), FTZSpells.ENTANGLE.get()) || event.getEntity().hasEffect(FTZMobEffects.FROZEN)) event.setCanceled(true);
+        if (SpellHelper.hasSpell(event.getEntity(), FTZSpells.ENTANGLE) || event.getEntity().hasEffect(FTZMobEffects.FROZEN)) event.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -228,13 +224,13 @@ public class CommonEvents {
         float amount = event.getNewDamage();
         LivingEntity target = event.getEntity();
         if (event.getEntity().level().isClientSide()) return;
-        if (source.is(FTZDamageTypes.BLEEDING)) VisualHelper.randomParticleOnModel(target, BloodParticle.BLOOD.random(), VisualHelper.ParticleMovement.FALL);
+        if (source.is(FTZDamageTypes.BLEEDING)) VisualHelper.randomParticleOnModel(target, FTZParticleTypes.BLOOD.random(), VisualHelper.ParticleMovement.FALL);
 
         FantazicCombat.meleeAttack(event);
 
-        if (target instanceof Player player) PlayerAbilityGetter.getUnwrap(player).onHit(event);
-        LivingDataGetter.getUnwrap(target).onHit(event);
-        LivingEffectGetter.getUnwrap(target).onHit(event);
+        if (target instanceof Player player) player.getData(FTZAttachmentTypes.ABILITY_MANAGER).onHit(event);
+        target.getData(FTZAttachmentTypes.DATA_MANAGER).onHit(event);
+        target.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHit(event);
 
         for (Map.Entry<ResourceKey<DamageType>, Float> entry : AuraHelper.damageMultipliers(target).entrySet()) if (source.is(entry.getKey())) event.setNewDamage(amount * entry.getValue());
 
@@ -248,23 +244,23 @@ public class CommonEvents {
         Entity attacker = source.getEntity();
 
         if (target instanceof Player player) {
-            PlayerAbilityGetter.getUnwrap(player).onHit(event);
+            player.getData(FTZAttachmentTypes.ABILITY_MANAGER).onHit(event);
             for (ItemStack itemStack : InventoryHelper.fullInventory(player)) if (itemStack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) itemStack.update(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialHolder.DEFAULT, holder -> holder.onHit(event));
         }
 
-        LivingDataGetter.getUnwrap(target).onHit(event);
-        LivingEffectGetter.getUnwrap(target).onHit(event);
+        target.getData(FTZAttachmentTypes.DATA_MANAGER).onHit(event);
+        target.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHit(event);
 
         float pre = target.getHealth();
         float post = target.getHealth() - event.getNewDamage();
         if (target.level().isClientSide()) return;
-        AbstractSpell damned = FTZSpells.DAMNED_WRATH.get();
+        Holder<AbstractSpell> damned = FTZSpells.DAMNED_WRATH;
         if (post < 0.3f * target.getMaxHealth() && !source.is(FTZDamageTypes.REMOVAL)) {
             if (SpellHelper.hasActiveSpell(target, damned)) {
-                EffectCleansing.tryCleanseAll(target, damned.hasCleanse() ? damned.getStrength() : Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
+                EffectCleansing.tryCleanseAll(target, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
                 LivingEffectHelper.makeFurious(target, 200);
                 LivingEffectHelper.giveBarrier(target, 20);
-                if (target instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(FTZSoundEvents.BLOODLUST_AMULET.get()));
+                if (target instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(FTZSoundEvents.DAMNED_WRATH.get()));
             }
         }
     }
@@ -280,9 +276,9 @@ public class CommonEvents {
 
         for (ResourceKey<DamageType> resourceKey : AuraHelper.damageImmunities(target)) if (source.is(resourceKey)) event.setCanceled(true);
 
-        if (target instanceof Player player) PlayerAbilityGetter.getUnwrap(player).onHit(event);
-        LivingDataGetter.getUnwrap(target).onHit(event);
-        LivingEffectGetter.getUnwrap(target).onHit(event);
+        if (target instanceof Player player) player.getData(FTZAttachmentTypes.ABILITY_MANAGER).onHit(event);
+        target.getData(FTZAttachmentTypes.DATA_MANAGER).onHit(event);
+        target.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHit(event);
         Entity attacker = event.getSource().getEntity();
 
         if (FantazicCombat.attemptEvasion(event) || SpellHelper.wardenSonicBoom(event)) return;
@@ -304,7 +300,7 @@ public class CommonEvents {
         if (instance == null) return;
         Holder<MobEffect> effect = instance.getEffect();
         LivingEntity livingEntity = event.getEntity();
-        LivingEffectGetter.getUnwrap(livingEntity).effectAdded(event.getEffectInstance());
+        livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).effectAdded(event.getEffectInstance());
         if (FTZMobEffectTags.hasTag(effect, FTZMobEffectTags.INTERRUPT)) ActionsHelper.interrupt(livingEntity);
     }
 
@@ -315,8 +311,7 @@ public class CommonEvents {
         if (entity instanceof LivingEntity livingEntity) {
             AttributeInstance lifesteal = livingEntity.getAttribute(FTZAttributes.LIFESTEAL);
             if (lifesteal != null && livingEntity.isInvertedHealAndHarm()) lifesteal.setBaseValue(0.2);
-            LivingDataManager livingDataManager = LivingDataGetter.getUnwrap(livingEntity);
-            if (livingEntity.getAttribute(FTZAttributes.EVASION) != null) livingDataManager.putHolder(EvasionHolder::new);
+            if (livingEntity.getAttribute(FTZAttributes.EVASION) != null) livingEntity.getData(FTZAttachmentTypes.DATA_MANAGER).putHolder(EvasionHolder::new);
 
             AttributeInstance evasion = livingEntity.getAttribute(FTZAttributes.EVASION);
             if (evasion != null && livingEntity.getType() == EntityType.ENDERMAN) evasion.setBaseValue(30);
@@ -335,14 +330,14 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void levelTick(LevelTickEvent.Pre event) {
-        LevelAttributesGetter.getUnwrap(event.getLevel()).tick();
+        event.getLevel().getData(FTZAttachmentTypes.LEVEL_ATTRIBUTES).tick();
     }
 
     @SubscribeEvent
     public static void effectRemoved(MobEffectEvent.Remove event) {
         Holder<MobEffect> effect = event.getEffect();
         LivingEntity livingEntity = event.getEntity();
-        LivingEffectGetter.getUnwrap(livingEntity).effectEnded(event.getEffect());
+        livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).effectEnded(event.getEffect());
 
         if (livingEntity instanceof ServerPlayer player) if (effect == FTZMobEffects.STUN) PacketDistributor.sendToPlayer(player, new PlayAnimationS2C(""));
     }
@@ -353,7 +348,7 @@ public class CommonEvents {
         if (effectInstance == null) return;
         Holder<MobEffect> effect = effectInstance.getEffect();
         LivingEntity livingEntity = event.getEntity();
-        LivingEffectGetter.getUnwrap(livingEntity).effectEnded(effect);
+        livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).effectEnded(effect);
     }
 
     @SubscribeEvent
@@ -364,16 +359,12 @@ public class CommonEvents {
     @SubscribeEvent
     public static void livingTick(EntityTickEvent.Pre event) {
         Entity entity = event.getEntity();
+        AuraHelper.aurasTick(entity);
 
         if (!entity.level().isClientSide()) AttachmentHelper.tickAttachments(entity);
 
         if (!(entity instanceof LivingEntity livingEntity) || livingEntity.level().isClientSide() || livingEntity.isDeadOrDying()) return;
-        AuraHelper.aurasTick(livingEntity);
 
-        if (SpellHelper.hasSpell(livingEntity, FTZSpells.DEVOUR.get())) {
-            LivingEffectHelper.effectWithoutParticles(livingEntity, MobEffects.HUNGER, 2);
-            if (livingEntity instanceof Player player) player.causeFoodExhaustion(player.getFoodData().getSaturationLevel() > 0 ? 0.1f : 0.01f);
-        }
 
         if (livingEntity.getHealth() > livingEntity.getMaxHealth()) {
             float amo = livingEntity.getHealth() - livingEntity.getMaxHealth();
@@ -407,14 +398,17 @@ public class CommonEvents {
     @SubscribeEvent
     public static void curioChange(CurioChangeEvent event) {
         LivingEntity livingEntity = event.getEntity();
-        LivingDataGetter.acceptConsumer(livingEntity, OwnedAurasHolder.class, auraOwning -> auraOwning.onCurioEquip(event.getTo()));
-        LivingDataGetter.acceptConsumer(livingEntity, OwnedAurasHolder.class, auraOwning -> auraOwning.onCurioUnEquip(event.getFrom()));
+        if (livingEntity instanceof Player player) {
+            PlayerAbilityManager playerAbilityManager = player.getData(FTZAttachmentTypes.ABILITY_MANAGER);
+            playerAbilityManager.onCurioEquip(event.getTo());
+            playerAbilityManager.onCurioUnEquip(event.getFrom());
+        }
     }
 
     @SubscribeEvent
     public static void curioUnEquip(CurioCanUnequipEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            if (player.getCooldowns().isOnCooldown(event.getStack().getItem()) && !player.getAbilities().instabuild) event.setUnequipResult(TriState.FALSE);
+            if (!player.hasInfiniteMaterials() && event.getStack().getItem() instanceof SpellCasterItem spellCasterItem && SpellHelper.onCooldown(player, spellCasterItem.getSpell())) event.setUnequipResult(TriState.FALSE);
             if (event.getUnequipResult() == TriState.FALSE) PacketDistributor.sendToPlayer(player, new PlaySoundForUIS2C(FTZSoundEvents.DENIED.get()));
         }
     }
@@ -443,7 +437,7 @@ public class CommonEvents {
         Player player = event.getEntity();
         if (!event.getEntity().hasEffect(FTZMobEffects.STUN)) LivingEffectGetter.acceptConsumer(player, StunEffect.class, StunEffect::ended);
 
-        if (player instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayerAbilityUpdateS2C(PlayerAbilityGetter.getUnwrap(serverPlayer).serializeNBT(serverPlayer.registryAccess()), serverPlayer.getId()));
+        if (player instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayerAbilityUpdateS2C(serverPlayer.getData(FTZAttachmentTypes.ABILITY_MANAGER).serializeNBT(serverPlayer.registryAccess()), serverPlayer.getId()));
     }
 
     @SubscribeEvent
@@ -476,7 +470,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void playerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getEntity();
-        PlayerAbilityGetter.getUnwrap(player).respawn();
+        player.getData(FTZAttachmentTypes.ABILITY_MANAGER).respawn();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -510,7 +504,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void onAdvancedHeal(VanillaEventsExtension.AdvancedHealEvent event) {
         LivingEntity livingEntity = event.getEntity();
-        LivingEffectGetter.getUnwrap(livingEntity).onHeal(event);
+        livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHeal(event);
     }
 
     @SubscribeEvent
@@ -519,7 +513,7 @@ public class CommonEvents {
         event.addListener(new TalentHierarchyManager());
         event.addListener(new WisdomRewardManager());
         event.addListener(new TalentTabManager());
-        event.addListener(new LootInstanceManager());
+        event.addListener(new LootInstancesManager());
         event.addListener(new MobEffectsOnSpawnManager());
     }
 

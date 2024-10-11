@@ -1,11 +1,9 @@
 package net.arkadiyhimself.fantazia.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.simpleobjects.SimpleMobEffect;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
