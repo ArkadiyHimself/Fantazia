@@ -3,7 +3,7 @@
   "attribute_chain": true,
   "chains": 5,
   "element": {
-    "iconTexture": "fantazia:textures/gui/talents/health_boost.png",
+    "iconTexture": "fantazia:textures/talents/health_boost.png",
     "title": "fantazia.talent.health_boost",
     "wisdom": 0,
     "advancement" : "fantazia:ftz_talents/health_boost",

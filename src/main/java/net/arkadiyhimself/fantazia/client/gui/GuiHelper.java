@@ -65,18 +65,19 @@ public class GuiHelper {
     }
 
     public static Component attributeModifierComponent(@NotNull Holder<Attribute> attribute, @NotNull AttributeModifier modifier) {
-        double value = modifier.amount();
-        if (attribute.value() instanceof PercentageAttribute percentageAttribute) {
-            if (value >= 0) return Component.translatable("fantazia.percentage_attribute." + modifier.operation().id(), PERCENTAGE_ATTRIBUTE_MODIFIER.format(value), Component.translatable(percentageAttribute.getDescriptionId())).withStyle(ChatFormatting.DARK_GREEN);
-            else return Component.translatable("fantazia.percentage_attribute." + modifier.operation().id(), PERCENTAGE_ATTRIBUTE_MODIFIER.format(value), Component.translatable(percentageAttribute.getDescriptionId())).withStyle(ChatFormatting.DARK_RED);
-        }
-        if (modifier.operation() == AttributeModifier.Operation.ADD_VALUE) return Component.translatable("attribute.modifier.plus." + modifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value), Component.translatable(attribute.value().getDescriptionId())).withStyle(ChatFormatting.DARK_PURPLE);
-        else return Component.translatable("attribute.modifier.plus." + modifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(value), Component.translatable(attribute.value().getDescriptionId())).withStyle(ChatFormatting.RED);
+        double amount = modifier.amount();
+        boolean pos = amount >= 0;
+        double delta = Math.abs(amount);
+        String str = pos ? ".plus." : ".take.";
+
+        if (attribute.value() instanceof PercentageAttribute percentageAttribute) return Component.translatable("fantazia.percentage_attribute" + str + modifier.operation().id(), PERCENTAGE_ATTRIBUTE_MODIFIER.format(delta), Component.translatable(percentageAttribute.getDescriptionId())).withStyle(pos ? ChatFormatting.DARK_GREEN : ChatFormatting.DARK_RED);
+
+        if (modifier.operation() == AttributeModifier.Operation.ADD_VALUE) return Component.translatable("attribute.modifier" + str + modifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(delta), Component.translatable(attribute.value().getDescriptionId())).withStyle(ChatFormatting.DARK_PURPLE);
+        else return Component.translatable("attribute.modifier" + str + modifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(delta), Component.translatable(attribute.value().getDescriptionId())).withStyle(ChatFormatting.RED);
     }
 
     public static Component attributeModifierComponent(@NotNull Holder<Attribute> attribute, @NotNull DynamicAttributeModifier modifier) {
         return attributeModifierComponent(attribute, modifier.maximumModifier());
     }
-
 
 }

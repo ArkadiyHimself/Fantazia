@@ -60,7 +60,7 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
                 continue;
             }
 
-            SpellInstance spellInstance = new SpellInstance(abstractSpellHolder);
+            SpellInstance spellInstance = new SpellInstance(abstractSpellHolder, getPlayer());
             spellInstance.deserializeNBT(provider, instance);
             spellInstances.put(abstractSpellHolder, spellInstance);
         }
@@ -68,7 +68,7 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
 
     @Override
     public void tick() {
-        spellInstances.values().forEach(spellInstance -> spellInstance.tick(getPlayer()));
+        spellInstances.values().forEach(SpellInstance::tick);
     }
 
     @Override
@@ -95,11 +95,11 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
     }
 
     public SpellInstance getOrCreate(Holder<AbstractSpell> spell) {
-        return spellInstances.computeIfAbsent(spell, SpellInstance::new);
+        return spellInstances.computeIfAbsent(spell, abstractSpellHolder -> new SpellInstance(spell, getPlayer()));
     }
 
     public boolean tryToUse(Holder<AbstractSpell> spellHolder) {
-        return getOrCreate(spellHolder).attemptCast(getPlayer());
+        return getOrCreate(spellHolder).attemptCast();
     }
 
     public boolean hasSpell(Holder<AbstractSpell> spellHolder) {

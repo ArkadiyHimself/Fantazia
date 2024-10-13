@@ -1,0 +1,9 @@
+{
+  "hierarchy": "chain",
+  "tab": "fantazia:spellcasting",
+  "values" : [
+    "fantazia:mana_recycle1",
+    "fantazia:mana_recycle2",
+    "fantazia:mana_recycle3"
+  ]
+}

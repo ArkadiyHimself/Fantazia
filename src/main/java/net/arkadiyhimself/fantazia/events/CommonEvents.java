@@ -18,9 +18,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.S
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityManager;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DoubleJumpHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.OwnedAurasHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
@@ -77,6 +75,8 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.GameType;
@@ -92,16 +92,13 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.VanillaGameEvent;
 import net.neoforged.neoforge.event.brewing.PlayerBrewedPotionEvent;
+import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
-import net.neoforged.neoforge.event.entity.item.ItemEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.*;
-import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
-import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
-import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -140,7 +137,7 @@ public class CommonEvents {
             if ((instance = attacker.getEffect(FTZMobEffects.FURY)) != null) {
                 boolean amulet = SpellHelper.hasSpell(attacker, FTZSpells.DAMNED_WRATH);
                 if (amulet) LivingEffectHelper.effectWithoutParticles(attacker, instance.getEffect(), instance.getDuration() + 100, instance.getAmplifier());
-                else EffectCleansing.forceCleanse(attacker, FTZMobEffects.FURY);
+                else EffectCleansing.reduceDuration(attacker, FTZMobEffects.FURY, 100);
 
                 SoundEvent soundEvent = amulet ? FTZSoundEvents.FURY_PROLONG.get() : FTZSoundEvents.FURY_DISPEL.get();
                 if (attacker instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(soundEvent));
@@ -149,6 +146,9 @@ public class CommonEvents {
                 ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(livingTarget.getType());
                 TalentsHolder.ProgressHolder progressHolder = PlayerAbilityHelper.getProgressHolder(player);
                 if (progressHolder != null) progressHolder.award("slayed", id);
+
+                int manaRecycle = TalentHelper.getUnlockLevel(player, Fantazia.res("mana_recycle"));
+                if (manaRecycle > 0) LivingEffectHelper.effectWithoutParticles(player, FTZMobEffects.SURGE, 40, manaRecycle - 1);
             }
             if ((instance = livingTarget.getEffect(FTZMobEffects.CURSED_MARK)) != null) {
                 int dur = 600 + instance.getAmplifier() * 600;
@@ -216,6 +216,14 @@ public class CommonEvents {
         boolean flag = AdvancedHealing.tryHeal(event.getEntity(), healingSources.generic(), event.getAmount());
         if (flag) event.setCanceled(true);
         if (SpellHelper.hasSpell(event.getEntity(), FTZSpells.ENTANGLE) || event.getEntity().hasEffect(FTZMobEffects.FROZEN)) event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void sleep(PlayerWakeUpEvent event) {
+        if (event.wakeImmediately()) return;
+        Player player = event.getEntity();
+        PlayerAbilityGetter.acceptConsumer(player, StaminaHolder.class, StaminaHolder::restore);
+        PlayerAbilityGetter.acceptConsumer(player, ManaHolder.class, ManaHolder::restore);
     }
 
     @SubscribeEvent
@@ -553,5 +561,21 @@ public class CommonEvents {
         ResourceKey<Level> to = event.getTo();
         TalentsHolder.ProgressHolder progressHolder = PlayerAbilityHelper.getProgressHolder(event.getEntity());
         if (progressHolder != null && !to.equals(Level.OVERWORLD)) progressHolder.award("visited_" + to.location(), 50);
+    }
+
+    @SubscribeEvent
+    public static void registerBrewingRecipes(RegisterBrewingRecipesEvent event) {
+        PotionBrewing.Builder builder = event.getBuilder();
+
+        builder.addStartMix(FTZItems.OBSCURE_SUBSTANCE.value(), FTZPotions.SURGE);
+        builder.addMix(FTZPotions.SURGE, Items.REDSTONE, FTZPotions.LONG_SURGE);
+        builder.addMix(FTZPotions.SURGE, Items.GLOWSTONE_DUST, FTZPotions.STRONG_SURGE);
+
+        builder.addStartMix(Items.COCOA_BEANS, FTZPotions.RECOVERY);
+        builder.addMix(FTZPotions.RECOVERY, Items.REDSTONE, FTZPotions.LONG_RECOVERY);
+        builder.addMix(FTZPotions.RECOVERY, Items.GLOWSTONE_DUST, FTZPotions.STRONG_RECOVERY);
+
+        builder.addStartMix(Items.GOLD_INGOT, FTZPotions.FURY);
+        builder.addMix(FTZPotions.FURY, Items.REDSTONE, FTZPotions.LONG_FURY);
     }
 }

@@ -77,12 +77,15 @@ public class ManaHolder extends PlayerAbilityHolder  {
             basicRegen *= 0.675f;
             if (data.getFoodLevel() <= 3f) basicRegen *= 0.5f;
         }
-        basicRegen *= (float) getPlayer().getAttributeValue(FTZAttributes.MANA_REGEN_MULTIPLIER);
         return basicRegen;
     }
 
     public void restore() {
         mana = getMaxMana();
+    }
+
+    public void regenerate(float value) {
+        this.mana = org.joml.Math.min(getMaxMana(), mana + value);
     }
 
     public void philStone() {

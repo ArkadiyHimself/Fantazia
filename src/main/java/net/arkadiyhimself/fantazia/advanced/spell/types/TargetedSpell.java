@@ -3,13 +3,16 @@ package net.arkadiyhimself.fantazia.advanced.spell.types;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.compress.utils.Lists;
 
@@ -59,7 +62,7 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
     }
 
     @Override
-    public List<Component> itemTooltip(@javax.annotation.Nullable ItemStack itemStack) {
+    public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         List<Component> components = Lists.newArrayList();
         if (this.getID() == null) return components;
         String basicPath = "spell." + this.getID().getNamespace() + "." + this.getID().getPath();
@@ -79,21 +82,41 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.GOLD};
 
         ChatFormatting[] ability = new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD};
-        ChatFormatting[] head = new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
+        ChatFormatting[] heading = new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
+
         // spell name
         String namePath = basicPath + ".name";
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.targeted", head, ability, Component.translatable(namePath).getString()));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.targeted", heading, ability, Component.translatable(namePath).getString()));
+
         // spell recharge
+        Component deltaRechargeComponent = bakeRechargeComponent(heading, ability);
+
         String recharge = String.format("%.1f", ((float) this.getRecharge()) / 20);
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.recharge", head, ability, recharge));
+        Component basicRecharge = Component.literal(recharge).withStyle(ability);
+        Component rechargeComponent;
+        if (deltaRechargeComponent != null) rechargeComponent = Component.translatable("tooltip.fantazia.common.recharge_modified", basicRecharge, deltaRechargeComponent).withStyle(heading);
+        else rechargeComponent = GuiHelper.bakeComponent("tooltip.fantazia.common.recharge", heading, ability, basicRecharge);
+
+        components.add(bakeRechargeComponent(heading, ability));
+      //  components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.recharge", heading, ability, recharge));
+
         // spell manacost
         String manacost = String.format("%.1f", this.getManacost());
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.manacost", head, ability, manacost));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.manacost", heading, ability, manacost));
+
         // spell range
+        Component addRangeComponent = bakeRangeComponent();
+
         String range = String.format("%.1f", this.range());
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.range", head, ability, range));
+        Component basicRange = Component.literal(range).withStyle(ability);
+        Component rangeComponent;
+        if (addRangeComponent != null) rangeComponent = Component.translatable("tooltip.fantazia.common.range_modified", basicRange, addRangeComponent).withStyle(heading);
+        else rangeComponent = GuiHelper.bakeComponent("tooltip.fantazia.common.range", heading, ability, basicRange);
+
+        components.add(rangeComponent);
+
         // spell cleanse
-        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", head, ability, this.getCleanse().getName()));
+        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", heading, ability, this.getCleanse().getName()));
 
         components.add(Component.literal(" "));
 
@@ -112,12 +135,21 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
 
         if (lines > 0) {
             components.add(Component.literal(" "));
-            components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active.passive", head, null));
+            components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active.passive", heading, null));
             for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".passive." + i, null, null));
 
         }
 
         return components;
+    }
+
+    private @Nullable Component bakeRangeComponent() {
+        AttributeInstance instance = Minecraft.getInstance().player == null ? null : Minecraft.getInstance().player.getAttribute(FTZAttributes.CAST_RANGE_ADDITION);
+        if (instance == null) return null;
+        double value = instance.getValue();
+        if (value == 0) return null;
+        if (value > 0) return Component.literal("+ " + value).withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD, ChatFormatting.ITALIC);
+        else return Component.literal("- " + Math.min(this.range, Math.abs(value))).withStyle(ChatFormatting.RED, ChatFormatting.BOLD, ChatFormatting.ITALIC);
     }
 
     public static class Builder<T extends LivingEntity> {

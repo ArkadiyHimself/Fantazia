@@ -1,4 +1,4 @@
-package net.arkadiyhimself.fantazia.particless;
+package net.arkadiyhimself.fantazia.particless.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -7,10 +7,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-public class SoulParticle extends RisingParticle {
+public class GenericParticle extends RisingParticle {
     private final SpriteSet spriteSet;
-
-    public SoulParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet spriteSet)  {
+    public GenericParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet spriteSet)  {
         super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
 
         this.friction = 0.8F;
@@ -27,7 +26,6 @@ public class SoulParticle extends RisingParticle {
         this.bCol = 1F;
         this.gCol = 1F;
     }
-
     @Override
     public void tick() {
         this.setSpriteFromAge(this.spriteSet);
@@ -45,9 +43,9 @@ public class SoulParticle extends RisingParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
+        public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         public Particle createParticle(@NotNull SimpleParticleType particleType, @NotNull ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-            return new SoulParticle(level, x, y, z, dx, dy, dz, this.spriteSet);
+                return new GenericParticle(level, x, y, z, dx, dy, dz, this.spriteSet);
+            }
         }
-    }
 }

@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.advanced.spell;
 
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
@@ -13,12 +14,15 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEff
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.particless.options.ElectroParticleOption;
+import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +35,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class Spells {
     private Spells() {}
@@ -141,8 +146,8 @@ public class Spells {
                 })
                 .tickingConditions(AbstractSpell.TickingConditions.NOT_ON_COOLDOWN)
                 .ownerTick(livingEntity -> {
-                    if (livingEntity.tickCount % 2 == 0) VisualHelper.randomParticleOnModel(livingEntity, FTZParticleTypes.ELECTRO.random(), VisualHelper.ParticleMovement.REGULAR, 0.85f);
-                    if (livingEntity.tickCount % 18 == 0) livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.LIGHTNING_STRIKE_TICK.get(), SoundSource.PLAYERS, 0.115f,1.05f);
+                    if (livingEntity.tickCount % 3 == 0) for (int i = 0; i < 2; i++) VisualHelper.randomEntityChasingParticle(livingEntity, ((entity, vec3) -> new ElectroParticleOption(entity.getId(), vec3, FTZParticleTypes.ELECTRO.random())), 0.65f);
+                    if (livingEntity.tickCount % 16 == 0) livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.LIGHTNING_STRIKE_TICK.get(), SoundSource.PLAYERS, 0.115f,1.05f);
                 })
                 .build();
 

@@ -8,18 +8,23 @@
   "fantazia.cleanse.powerful": "§5§lМощное",
   "fantazia.cleanse.absolute": "§d§lАбсолютное",
 
-  "fantazia.percentage_attribute.0": "+%s%% %s",
-  "fantazia.percentage_attribute.1": "+%1$s% от начального %2$s",
-  "fantazia.percentage_attribute.2": "+%1$s% от всего %2$s",
+  "fantazia.percentage_attribute.plus.0": "+%s%% %s",
+  "fantazia.percentage_attribute.plus.1": "+%1$s% от начального %2$s",
+  "fantazia.percentage_attribute.plus.2": "+%1$s% от всего %2$s",
 
-  "fantazia.attribute.max_mana": "Максимальная Мана",
-  "fantazia.attribute.max_stamina": "Максимальная Выносливость",
+  "fantazia.percentage_attribute.take.0": "-%s%% %s",
+  "fantazia.percentage_attribute.take.1": "-%1$s% от начального %2$s",
+  "fantazia.percentage_attribute.take.2": "-%1$s% от всего %2$s",
+
+  "fantazia.attribute.max_mana": "Полная Мана",
+  "fantazia.attribute.max_stamina": "Полная Выносливость",
   "fantazia.attribute.max_stun_points": "Устойчивость",
   "fantazia.attribute.mana_regen_multiplier": "Восстановление Маны",
   "fantazia.attribute.stamina_regen_multiplier": "Восстановление Выносливости",
   "fantazia.attribute.cast_range_addition": "Дальность Спеллов",
   "fantazia.attribute.lifesteal": "Вампиризм",
   "fantazia.attribute.evasion": "Уклоенение",
+  "fantazia.attribute.recharge_multiplier" : "Перезарядка",
 
   "commands.cooldown.add.success": "Added %1$s second cooldown to %2$s for %3$s",
   "commands.cooldown.remove.success": "Removed cooldown of %1$s for %2$s",
@@ -133,6 +138,18 @@
   "effect.fantazia.cursed_mark.tooltip.1": "Вы помечены несчастьями...",
   "effect.fantazia.cursed_mark.tooltip.2": "В случае смерти, ваш убийца будет обречен.",
 
+  "effect.fantazia.recovery" : "§2Передышка",
+  "effect.fantazia.recovery.lines" : "1",
+  "effect.fantazia.recovery.tooltip.1" : "Восстанавливает вашу выносливость",
+
+  "effect.fantazia.surge" : "§3Всплеск",
+  "effect.fantazia.surge.lines" : "1",
+  "effect.fantazia.surge.tooltip.1" : "Восстанавливает вашу ману",
+
+  "item.minecraft.potion.effect.recovery" : "Зелье Передышки",
+  "item.minecraft.potion.effect.surge" : "Зелье Всплеска",
+  "item.minecraft.potion.effect.fury" : "Зелье Ярости",
+
   "item.fantazia.wooden_hatchet": "Деревянный Топорик",
   "item.fantazia.stone_hatchet": "Каменный Топорик",
   "item.fantazia.iron_hatchet": "Железный Топорик",
@@ -170,7 +187,7 @@
   "fantazia.subtitles.combat.melee_block" : "Блок удара",
   "fantazia.subtitles.combat.attack_stunned" : "Враг ошеломлен",
   "fantazia.subtitles.effect.barrier.damage" : "Повреждение барьера",
-  "fantazia.subtitles.effect.barrier.broken" : "Разрушение барьера",
+  "fantazia.subtitles.effect.barrier.break" : "Разрушение барьера",
   "fantazia.subtitles.effect.haemorrhage.bloodloss" : "Кровопотеря",
   "fantazia.subtitles.effect.haemorrhage.flesh_ripping" : "Ранение",
   "fantazia.subtitles.effect.reflect" : "Перенаправление Спелла",
@@ -225,8 +242,10 @@
   "tooltip.fantazia.common.targeted.desc": "Смотря на другое существо, используйте спелл",
   "tooltip.fantazia.common.passives": "При экипировке, владелец: ",
   "tooltip.fantazia.common.recharge": "Перезарядка (сек): %1$s",
+  "tooltip.fantazia.common.recharge_modified" : "Перезарядка (сек): %1$s %2$s",
   "tooltip.fantazia.common.manacost": "Требуемая мана: %1$s",
   "tooltip.fantazia.common.range": "Дальность: %1$s",
+  "tooltip.fantazia.common.range_modified" : "Дальность: %1$s %2$s",
   "tooltip.fantazia.common.cleanse_strength": "Сила очищения: %1$s",
   "tooltip.fantazia.common.cleanse": "Требуемое очищение: %1$s",
 
@@ -371,7 +390,7 @@
   "spell.fantazia.damned_wrath.tweaks.lines": "3",
   "spell.fantazia.damned_wrath.tweaks.1": "§9 * Множитель получаемого урона уменьшен с 2 до 1.5",
   "spell.fantazia.damned_wrath.tweaks.2": "§9 * Эффект дарует 15% вампиризма",
-  "spell.fantazia.damned_wrath.tweaks.3": "§9 * Убийства продлевают эффект, а не снимают",
+  "spell.fantazia.damned_wrath.tweaks.3": "§9 * Убийства продлевают эффект, а не укорачивают",
 
   "item.fantazia.enigmatic_clock": "§5Загадочные Часы",
   "spell.fantazia.rewind.desc.lines": "1",
@@ -502,27 +521,45 @@
 
   "fantazia.talent.health_boost.name": "§5Прирост Здоровья",
   "fantazia.talent.health_boost.desc.lines": "1",
-  "fantazia.talent.health_boost.desc.1": "Навсегда повышает максиальное здроровье",
+  "fantazia.talent.health_boost.desc.1": "Навсегда повышает запас здроровья",
   "fantazia.talent.health_boost.criteria.lines": "1",
   "fantazia.talent.health_boost.criteria.1": "Найдите и поглотите Фрукт Жизни",
 
   "fantazia.talent.mana_boost.name": "§4Прирост Маны",
   "fantazia.talent.mana_boost.desc.lines": "1",
-  "fantazia.talent.mana_boost.desc.1": "Навсегда повышает максимальную ману",
+  "fantazia.talent.mana_boost.desc.1": "Навсегда повышает запас маны",
   "fantazia.talent.mana_boost.criteria.lines": "1",
   "fantazia.talent.mana_boost.criteria.1": "Найдите и поглотите Эссенцию Проницательности",
 
   "fantazia.talent.spellcaster_slots.name" : "§5Чародей",
   "fantazia.talent.spellcaster_slots.desc.lines" : "1",
-  "fantazia.talent.spellcaster_slots.desc.1" : "Навсегда увеличивает количество слотов для Заклинателей с активной способностью",
+  "fantazia.talent.spellcaster_slots.desc.1" : "Навсегда увеличивает количество слотов",
+  "fantazia.talent.spellcaster_slots.desc.2" : "для Заклинателей с активной способностью",
   "fantazia.talent.spellcaster_slots.criteria.lines": "1",
   "fantazia.talent.spellcaster_slots.criteria.1": "Найдите хотя бы 4 подходящих Заклинателя",
 
-  "fantazia.talent.passivecaster_slots.name" : "§5Рассудительный",
+  "fantazia.talent.passivecaster_slots.name" : "§5Рассудитель",
   "fantazia.talent.passivecaster_slots.desc.lines" : "1",
-  "fantazia.talent.passivecaster_slots.desc.1" : "Навсегда увеличивает количество слотов для Пассивных Заклинателей и Ауротворцев",
+  "fantazia.talent.passivecaster_slots.desc.1" : "Навсегда увеличивает количество слотов",
+  "fantazia.talent.passivecaster_slots.desc.2" : "для Пассивных Заклинателей и Ауротворцев",
   "fantazia.talent.passivecaster_slots.criteria.lines": "1",
   "fantazia.talent.passivecaster_slots.criteria.1": "Приобретите хотя бы 4 подходящих Заклинателя",
+
+  "fantazia.talent.spell_recharge_reduce.name" : "§dРвение",
+  "fantazia.talent.spell_recharge_reduce.desc.lines" : "1",
+  "fantazia.talent.spell_recharge_reduce.desc.1" : "Уменьшает перезарядку активных спеллов",
+
+  "fantazia.talent.mana_recycle1.name" : "§bПреобразование I",
+  "fantazia.talent.mana_recycle1.desc.lines" : "1",
+  "fantazia.talent.mana_recycle1.desc.1" : "Добивание врага посполняет небольшой объем маны",
+
+  "fantazia.talent.mana_recycle2.name" : "§bПреобразование II",
+  "fantazia.talent.mana_recycle2.desc.lines" : "1",
+  "fantazia.talent.mana_recycle2.desc.1" : "Добивание врага посполняет умеренный объем маны",
+
+  "fantazia.talent.mana_recycle3.name" : "§bПреобразование III",
+  "fantazia.talent.mana_recycle3.desc.lines" : "1",
+  "fantazia.talent.mana_recycle3.desc.1" : "Добивание врага посполняет значительный объем маны",
 
   "fantazia.gui.talent.toast.info": "Новый Талант",
   "fantazia.gui.talent.requirement": "Требования:",
@@ -530,8 +567,10 @@
   "fantazia.gui.talent.wisdom_cost": "Требуемая мудрость: %s",
   "fantazia.gui.talent.wisdom_granted": "+%s мудрости",
   "fantazia.gui.talent.obtained" : "§2§l§oПРИОБРЕТЕН",
-  "fantazia.talent_tabs.abilities": "§5§lУникальные способности",
-  "fantazia.talent_tabs.stat_modifiers": "§9§lБонусы к атрибутам",
+
+  "fantazia.talent_tabs.abilities": "§5§lДарования",
+  "fantazia.talent_tabs.stat_modifiers": "§9§lСвойства",
+  "fantazia.talent_tabs.spell_casting" : "§9§lЧарования",
 
   "curios.identifier.dashstone": "Камень Стремительности",
   "curios.identifier.spellcaster": "Заклинатель",

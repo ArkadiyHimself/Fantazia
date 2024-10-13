@@ -46,6 +46,7 @@ public class Fantazia {
         FTZParticleTypes.register(modEventBus);
         FTZSoundEvents.register(modEventBus);
         FTZStructureTypes.register(modEventBus);
+        FTZPotions.register(modEventBus);
     }
 
     public static BlockEntityWithoutLevelRenderer getItemsRenderer() {

@@ -1,4 +1,4 @@
-package net.arkadiyhimself.fantazia.particless;
+package net.arkadiyhimself.fantazia.particless.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -40,11 +40,11 @@ public class BarrierParticle extends TextureSheetParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-        public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
+    public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         public Particle createParticle(@NotNull SimpleParticleType particleType, @NotNull ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-                BarrierParticle barrierParticle = new BarrierParticle(level, x, y, z, dx, dy, dz, spriteSet);
-                barrierParticle.pickSprite(spriteSet);
-                return barrierParticle;
-            }
+            BarrierParticle barrierParticle = new BarrierParticle(level, x, y, z, dx, dy, dz, spriteSet);
+            barrierParticle.pickSprite(spriteSet);
+            return barrierParticle;
         }
+    }
 }

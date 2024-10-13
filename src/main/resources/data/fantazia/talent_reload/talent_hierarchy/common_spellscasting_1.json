@@ -1,0 +1,9 @@
+{
+  "hierarchy": "chaotic",
+  "tab": "fantazia:spellcasting",
+  "values" : [
+    "fantazia:spellcaster_slots",
+    "fantazia:passivecaster_slots",
+    "fantazia:spell_recharge_reduce"
+  ]
+}

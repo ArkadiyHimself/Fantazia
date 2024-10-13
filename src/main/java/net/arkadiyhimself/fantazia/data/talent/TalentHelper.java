@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
-import net.arkadiyhimself.fantazia.data.talent.types.AttributeTalent;
 import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
@@ -71,5 +70,10 @@ public class TalentHelper {
             upgradedHierarchies.add(hierarchy);
             talentsHolder.obtainTalent(talent);
         }
+    }
+
+    public static int getUnlockLevel(@NotNull Player player, @NotNull ResourceLocation hierarchyLocation) {
+        TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
+        return talentsHolder == null ? 0 : talentsHolder.upgradeLevel(hierarchyLocation);
     }
 }

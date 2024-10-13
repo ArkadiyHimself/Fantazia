@@ -1,4 +1,4 @@
-package net.arkadiyhimself.fantazia.particless;
+package net.arkadiyhimself.fantazia.particless.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -7,45 +7,38 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-public class GenericParticle extends RisingParticle {
-    private final SpriteSet spriteSet;
-    public GenericParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet spriteSet)  {
-        super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
-
+public class BloodParticle extends TextureSheetParticle {
+    protected BloodParticle(ClientLevel pLevel, double pX, double pY, double pZ, SpriteSet spriteSet) {
+        super(pLevel, pX, pY, pZ);
         this.friction = 0.8F;
-        this.xd = pXSpeed;
-        this.yd = pYSpeed;
-        this.zd = pZSpeed;
-        this.quadSize *= 1.1;
-        this.lifetime = 15;
-        this.spriteSet = spriteSet;
-
+        this.lifetime = 100;
         this.setSpriteFromAge(spriteSet);
-
+        this.hasPhysics = true;
         this.rCol = 1F;
         this.bCol = 1F;
         this.gCol = 1F;
     }
+
     @Override
     public void tick() {
-        this.setSpriteFromAge(this.spriteSet);
-        this.fadeOut();
         super.tick();
+        gravity();
     }
-
-    public void fadeOut() {
-        this.alpha = (-(0.5F/(float)lifetime) * age + 1);
+    public void gravity() {
+        if (this.onGround) this.yd = 0D;
+        else this.yd -= 0.025D;
     }
-
     @Override
     public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @OnlyIn(Dist.CLIENT)
         public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
         public Particle createParticle(@NotNull SimpleParticleType particleType, @NotNull ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-                return new GenericParticle(level, x, y, z, dx, dy, dz, this.spriteSet);
-            }
+                BloodParticle bloodParticle = new BloodParticle(level, x, y, z, spriteSet);
+                bloodParticle.pickSprite(spriteSet);
+                return bloodParticle;
         }
+    }
 }

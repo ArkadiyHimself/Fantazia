@@ -6,13 +6,15 @@
       "conditions" : {
         "talents" : [
           {
-            "amount" : 10
+            "amount" : 20
           }
         ]
       }
     }
   },
   "display" : {
+    "hidden" : true,
+    "frame": "challenge",
     "announce_to_chat": true,
     "description": {
       "translate": "advancements.fantazia.obtain_20_talents.desc"

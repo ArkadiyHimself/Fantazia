@@ -15,11 +15,24 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+
 public class SimpleMobEffect extends MobEffect {
     private final boolean isTicking;
+
+    private final BiConsumer<LivingEntity, Integer> applyTicking;
+
     public SimpleMobEffect(MobEffectCategory pCategory, int pColor, boolean isTicking) {
         super(pCategory, pColor);
         this.isTicking = isTicking;
+        this.applyTicking = (livingEntity, integer) -> {};
+    }
+
+    public SimpleMobEffect(MobEffectCategory pCategory, int pColor, BiConsumer<LivingEntity, Integer> applyTicking) {
+        super(pCategory, pColor);
+        this.isTicking = true;
+        this.applyTicking = applyTicking;
     }
 
     @Override
@@ -29,6 +42,7 @@ public class SimpleMobEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+        this.applyTicking.accept(pLivingEntity, pAmplifier);
         if (this == FTZMobEffects.FROZEN.value()) freezeTick(pLivingEntity);
         return this.isTicking;
     }

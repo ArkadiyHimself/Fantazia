@@ -1,6 +1,11 @@
 package net.arkadiyhimself.fantazia.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ManaHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.simpleobjects.SimpleMobEffect;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -10,18 +15,40 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 public class FTZMobEffects {
     private FTZMobEffects() {}
+
+    private static final BiConsumer<LivingEntity, Integer> frozenTick = ((livingEntity, integer) -> {
+        DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(livingEntity.level());
+        if (sources == null) return;
+        if (livingEntity.fireImmune()) livingEntity.hurt(sources.frozen(), 2.25f + integer * 1.25f);
+        else if (livingEntity.hasEffect(MobEffects.FIRE_RESISTANCE)) livingEntity.hurt(sources.frozen(), 1f + integer);
+    });
+
+    private static final BiConsumer<LivingEntity, Integer> recoveryTick = ((livingEntity, integer) -> {
+        if (!(livingEntity instanceof Player player)) return;
+        PlayerAbilityGetter.acceptConsumer(player, StaminaHolder.class, staminaHolder -> staminaHolder.recover((float) integer * 0.05f));
+    });
+
+    private static final BiConsumer<LivingEntity, Integer> surgeTick = ((livingEntity, integer) -> {
+        if (!(livingEntity instanceof Player player)) return;
+        PlayerAbilityGetter.acceptConsumer(player, ManaHolder.class, manaHolder -> manaHolder.regenerate((float) integer * 0.05f + 0.05f));
+    });
+
     public static final DeferredRegister<MobEffect> REGISTER = DeferredRegister.create(Registries.MOB_EFFECT, Fantazia.MODID);
     public static final DeferredHolder<MobEffect, SimpleMobEffect> HAEMORRHAGE = REGISTER.register("haemorrhage", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 6553857, true)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> FURY = REGISTER.register("fury", () -> new SimpleMobEffect(MobEffectCategory.NEUTRAL, 16057348, true).addAttributeModifier(Attributes.MOVEMENT_SPEED, Fantazia.res("effect.fury"), 0.2F, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)); // finished and implemented
@@ -30,7 +57,7 @@ public class FTZMobEffects {
     public static final DeferredHolder<MobEffect, SimpleMobEffect> LAYERED_BARRIER = REGISTER.register("layered_barrier", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 126,true).addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, Fantazia.res("effect.layered_barrier"), 0.5, AttributeModifier.Operation.ADD_VALUE));
     public static final DeferredHolder<MobEffect, SimpleMobEffect> ABSOLUTE_BARRIER = REGISTER.register("absolute_barrier", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 7995643,true).addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, Fantazia.res("effect.absolute_barrier"), 0.5, AttributeModifier.Operation.ADD_VALUE)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> DEAFENED = REGISTER.register("deafened", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 4693243,true)); // finished and implemented
-    public static final DeferredHolder<MobEffect, SimpleMobEffect> FROZEN = REGISTER.register("frozen", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 8780799, true).addAttributeModifier(Attributes.MOVEMENT_SPEED, Fantazia.res("effect.frozen"), -0.25f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL).addAttributeModifier(Attributes.ATTACK_SPEED, Fantazia.res("effect.frozen"), -0.6f, AttributeModifier.Operation.ADD_VALUE)); // finished and implemented
+    public static final DeferredHolder<MobEffect, SimpleMobEffect> FROZEN = REGISTER.register("frozen", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 8780799, frozenTick).addAttributeModifier(Attributes.MOVEMENT_SPEED, Fantazia.res("effect.frozen"), -0.25f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL).addAttributeModifier(Attributes.ATTACK_SPEED, Fantazia.res("effect.frozen"), -0.6f, AttributeModifier.Operation.ADD_VALUE)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> MIGHT = REGISTER.register("might", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 16767061,true).addAttributeModifier(Attributes.ATTACK_DAMAGE, Fantazia.res("effect.might"), 1, AttributeModifier.Operation.ADD_VALUE)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> DOOMED = REGISTER.register("doomed", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 0, true)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> DISARM = REGISTER.register("disarm", () -> new  SimpleMobEffect(MobEffectCategory.HARMFUL, 16447222,true)); // finished and implemented
@@ -41,6 +68,8 @@ public class FTZMobEffects {
     public static final DeferredHolder<MobEffect, SimpleMobEffect> MANA_BOOST = REGISTER.register("mana_boost", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 4693243, true).addAttributeModifier(FTZAttributes.MAX_MANA, Fantazia.res("effect.mana_boost"), 4f, AttributeModifier.Operation.ADD_VALUE));
     public static final DeferredHolder<MobEffect, SimpleMobEffect> STAMINA_BOOST = REGISTER.register("stamina_boost", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 4693243, true).addAttributeModifier(FTZAttributes.MAX_STAMINA, Fantazia.res("effect.stamina_boost"), 4f, AttributeModifier.Operation.ADD_VALUE));
     public static final DeferredHolder<MobEffect, SimpleMobEffect> CURSED_MARK = REGISTER.register("cursed_mark", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 0, true)); // finished and implemented
+    public static final DeferredHolder<MobEffect, SimpleMobEffect> RECOVERY = REGISTER.register("recovery", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL,52224, recoveryTick));
+    public static final DeferredHolder<MobEffect, SimpleMobEffect> SURGE = REGISTER.register("surge", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL,3785983,surgeTick));
 
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);

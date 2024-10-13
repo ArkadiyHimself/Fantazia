@@ -3,7 +3,7 @@
   "attribute_chain": true,
   "chains": 5,
   "element": {
-    "iconTexture": "fantazia:textures/gui/talents/evasion_boost.png",
+    "iconTexture": "fantazia:textures/talents/evasion_boost.png",
     "title": "fantazia.talent.evasion_boost",
     "wisdom": 25,
     "attribute": "fantazia:evasion",

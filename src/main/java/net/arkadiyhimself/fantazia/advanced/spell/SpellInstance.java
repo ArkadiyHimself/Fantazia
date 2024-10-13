@@ -4,26 +4,29 @@ import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ManaHolder;
+import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class SpellInstance implements INBTSerializable<CompoundTag> {
+
+    private final LivingEntity livingEntity;
     private final Holder<AbstractSpell> spell;
     private int recharge = 0;
     private boolean available;
 
-    public SpellInstance(Holder<AbstractSpell> spell) {
+    public SpellInstance(Holder<AbstractSpell> spell, LivingEntity livingEntity) {
         this.spell = spell;
+        this.livingEntity = livingEntity;
     }
 
     @Override
@@ -43,16 +46,16 @@ public class SpellInstance implements INBTSerializable<CompoundTag> {
         this.available = tag.getBoolean("available");
     }
 
-    public void tick(LivingEntity entity) {
+    public void tick() {
         if (recharge > 0) {
             recharge--;
             if (recharge == 0) {
                 Holder<SoundEvent> holder = spell.value().getRechargeSound();
-                if (holder != null) entity.level().playSound(null, entity.blockPosition(), holder.value(), SoundSource.PLAYERS);
+                if (holder != null) livingEntity.level().playSound(null, livingEntity.blockPosition(), holder.value(), SoundSource.PLAYERS);
             }
         }
 
-        if (available) spell.value().tryToTick(entity,recharge > 0);
+        if (available) spell.value().tryToTick(livingEntity,recharge > 0);
     }
 
     public Holder<AbstractSpell> getSpell() {
@@ -76,20 +79,22 @@ public class SpellInstance implements INBTSerializable<CompoundTag> {
     }
 
     public void putOnRecharge() {
-        this.recharge = spell.value().getRecharge();
+        if (livingEntity instanceof Player player && player.hasInfiniteMaterials()) return;
+        AttributeInstance instance = livingEntity.getAttribute(FTZAttributes.RECHARGE_MULTIPLIER);
+        float multiplier = instance == null ? 0 : (float) instance.getValue() / 100;
+        this.recharge = (int) ((float) spell.value().getRecharge() * multiplier);
     }
 
-    public boolean attemptCast(Player player) {
-        boolean notInf = !player.hasInfiniteMaterials();
-        if (this.recharge > 0 && notInf) return false;
+    public boolean attemptCast() {
+        if (this.recharge > 0) return false;
 
         boolean flag = false;
 
-        if (this.getSpell().value() instanceof SelfSpell selfSpell) flag = SpellHelper.trySelfSpell(player, selfSpell, false);
-        else if (this.getSpell().value() instanceof TargetedSpell<?> targetedSpell) flag = SpellHelper.tryTargetedSpell(player, targetedSpell);
+        if (this.getSpell().value() instanceof SelfSpell selfSpell) flag = SpellHelper.trySelfSpell(livingEntity, selfSpell, false);
+        else if (this.getSpell().value() instanceof TargetedSpell<?> targetedSpell) flag = SpellHelper.tryTargetedSpell(livingEntity, targetedSpell);
         else if (this.getSpell().value() instanceof PassiveSpell) flag = true;
 
-        if (flag && notInf) putOnRecharge();
+        if (flag) putOnRecharge();
 
         return flag;
     }

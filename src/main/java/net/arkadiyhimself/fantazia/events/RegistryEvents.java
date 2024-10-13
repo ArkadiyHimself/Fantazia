@@ -26,7 +26,7 @@ import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.LivingD
 import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.LivingEffectUpdateS2C;
 import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.PlayerAbilityUpdateS2C;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.*;
-import net.arkadiyhimself.fantazia.particless.*;
+import net.arkadiyhimself.fantazia.particless.particles.*;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
@@ -115,11 +115,10 @@ public class RegistryEvents {
 
     @SubscribeEvent
     public static void attributeModification(final EntityAttributeModificationEvent event) {
-        event.add(EntityType.PLAYER, FTZAttributes.MANA_REGEN_MULTIPLIER);
-        event.add(EntityType.PLAYER, FTZAttributes.STAMINA_REGEN_MULTIPLIER);
         event.add(EntityType.PLAYER, FTZAttributes.MAX_MANA);
         event.add(EntityType.PLAYER, FTZAttributes.MAX_STAMINA);
         event.add(EntityType.PLAYER, FTZAttributes.CAST_RANGE_ADDITION);
+        event.add(EntityType.PLAYER, FTZAttributes.RECHARGE_MULTIPLIER);
         for (EntityType<? extends LivingEntity> entityType : event.getTypes()) {
             event.add(entityType, FTZAttributes.MAX_STUN_POINTS);
             event.add(entityType, FTZAttributes.LIFESTEAL);
@@ -225,6 +224,7 @@ public class RegistryEvents {
         event.registerSpriteSet(FTZParticleTypes.ELECTRO3.get(), ElectroParticle.Provider::new);
         event.registerSpriteSet(FTZParticleTypes.ELECTRO4.get(), ElectroParticle.Provider::new);
         event.registerSpriteSet(FTZParticleTypes.ELECTRO5.get(), ElectroParticle.Provider::new);
+
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -287,6 +287,7 @@ public class RegistryEvents {
 
         // stuff
         registrar.playToClient(AddParticleS2C.TYPE, AddParticleS2C.CODEC, AddParticleS2C::handle);
+        registrar.playToClient(ChasingParticleS2C.TYPE, ChasingParticleS2C.CODEC, ChasingParticleS2C::handle);
         registrar.playToClient(KickOutOfGuiS2C.TYPE, KickOutOfGuiS2C.CODEC, KickOutOfGuiS2C::handle);
         registrar.playToServer(KeyInputC2S.TYPE, KeyInputC2S.CODEC, KeyInputC2S::handle);
         registrar.playToClient(SwingHandS2C.TYPE, SwingHandS2C.CODEC, SwingHandS2C::handle);

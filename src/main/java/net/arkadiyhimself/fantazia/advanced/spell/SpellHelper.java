@@ -8,6 +8,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ClientValuesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
@@ -21,6 +22,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -185,16 +187,18 @@ public class SpellHelper {
         return spellInstancesHolder != null && spellInstancesHolder.getOrCreate(spell).recharge() > 0;
     }
 
-    public static List<LivingEntity> getTargets(@NotNull LivingEntity caster, float range, float maxDist, boolean seeThruWalls) {
+    public static List<LivingEntity> getTargets(@NotNull LivingEntity caster, float radius, float range, boolean ignoreObstacles) {
         Vector3 head = Vector3.fromEntityCenter(caster);
         List<LivingEntity> entities = new ArrayList<>();
 
-        for (int distance = 1; distance < maxDist; ++distance) {
+        AttributeInstance castRange = caster.getAttribute(FTZAttributes.CAST_RANGE_ADDITION);
+        float addRange = castRange == null ? 0 : (float) castRange.getValue();
+        float finalRange = range + addRange;
 
-
+        for (int distance = 1; distance < finalRange; ++distance) {
             head = head.add(new Vector3(caster.getLookAngle()).multiply(distance)).add(0.0, 0.5, 0.0);
-            List<LivingEntity> list = caster.level().getEntitiesOfClass(LivingEntity.class, new AABB(head.x - range, head.y - range, head.z - range, head.x + range, head.y + range, head.z + range));
-            list.removeIf(entity -> (entity == caster || (!caster.hasLineOfSight(entity) && !(seeThruWalls && Minecraft.getInstance().shouldEntityAppearGlowing(entity)))));
+            List<LivingEntity> list = caster.level().getEntitiesOfClass(LivingEntity.class, new AABB(head.x - radius, head.y - radius, head.z - radius, head.x + radius, head.y + radius, head.z + radius));
+            list.removeIf(entity -> (entity == caster || (!caster.hasLineOfSight(entity) && !(ignoreObstacles && Minecraft.getInstance().shouldEntityAppearGlowing(entity)))));
             entities.addAll(list);
         }
 

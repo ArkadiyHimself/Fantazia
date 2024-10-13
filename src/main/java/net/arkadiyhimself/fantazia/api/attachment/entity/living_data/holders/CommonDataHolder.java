@@ -73,7 +73,7 @@ public class CommonDataHolder extends LivingDataHolder implements IDamageEventLi
     }
 
     @Override
-    public void onHit(LivingDamageEvent.Post event) {
+    public void onHit(LivingDamageEvent.Pre event) {
         prevHP = event.getEntity().getHealth();
         if (!event.getSource().is(FTZDamageTypes.REMOVAL)) damageTicks = 100;
     }

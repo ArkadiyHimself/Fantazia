@@ -6,6 +6,8 @@ import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
 import net.arkadiyhimself.fantazia.networking.packets.stuff.AddParticleS2C;
+import net.arkadiyhimself.fantazia.networking.packets.stuff.ChasingParticleS2C;
+import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -34,20 +36,21 @@ import java.util.function.BinaryOperator;
 @OnlyIn(Dist.CLIENT)
 public class VisualHelper {
 
-    public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type) {
+    public static void randomParticleOnModel(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type) {
         randomParticleOnModel(entity, particle, type, 1f);
     }
-    public static void randomParticleOnModel(Entity entity, @Nullable SimpleParticleType particle, ParticleMovement type, float range) {
+
+    public static void randomParticleOnModel(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type, float range) {
         if (particle == null) return;
 
         // getting entity's height and width
         float radius = entity.getBbWidth() * (float) 0.7;
         float height = entity.getBbHeight();
 
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(radius);
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(range);
         double x = vec3.x();
         double z = vec3.z();
-        double y = Fantazia.RANDOM.nextDouble(0, height * 0.8);
+        double y = Fantazia.RANDOM.nextDouble(height * 0.1,height * 0.8);
 
         double x0 = entity.getX() + x;
         double y0 = entity.getY() + y;
@@ -57,6 +60,25 @@ public class VisualHelper {
 
         PacketDistributor.sendToAllPlayers(new AddParticleS2C(new Vec3(x0, y0, z0).toVector3f(), delta.toVector3f(), particle));
     }
+
+    public static void randomEntityChasingParticle(Entity entity, BiFunction<Entity, Vec3, EntityChasingParticleOption<?>> factory) {
+        randomEntityChasingParticle(entity, factory, 1f);
+    }
+
+    public static void randomEntityChasingParticle(Entity entity, BiFunction<Entity, Vec3, EntityChasingParticleOption<?>> factory, float width) {
+        // getting entity's height and width
+        float radius = entity.getBbWidth() * (float) 0.7;
+        float height = entity.getBbHeight();
+
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(width);
+        double x = vec3.x();
+        double z = vec3.z();
+        double y = Fantazia.RANDOM.nextDouble(height * 0.1, height * 0.8);
+
+        EntityChasingParticleOption<?> particleOption = factory.apply(entity, new Vec3(x, y, z));
+        PacketDistributor.sendToAllPlayers(new ChasingParticleS2C(particleOption));
+    }
+
     public static <T extends ParticleOptions> void rayOfParticles(LivingEntity caster, LivingEntity target, T type) {
         if (!(caster.level() instanceof ServerLevel serverLevel)) return;
         Vec3 vec3 = caster.position().add(0.0D, 1.2F, 0.0D);
@@ -197,19 +219,22 @@ public class VisualHelper {
 
     public enum ParticleMovement {
         REGULAR(new Vec3(0,0,0)),
-        CHASE((pos, delta) -> new Vec3(delta.x() * 1.5, delta.y() * 0.2 + 0.1, delta.z() * 1.5)),
         FALL(new Vec3(0,-0.15,0)),
         ASCEND(new Vec3(0,0.15,0)),
         CHASE_AND_FALL((pos, delta) -> new Vec3(delta.x() * 1.5, 0.15, delta.z() * 1.5)),
-        AWAY((pos, delta) -> new Vec3(delta.x() *(-1.5), delta.y() * -0.2 - 0.1, delta.z() *(-1.5))),
+        AWAY((pos, delta) -> new Vec3(delta.x() * (-1.5), delta.y() * -0.2 - 0.1, delta.z() * (-1.5))),
         AWAY_AND_FALL((pos, delta) -> new Vec3(delta.x() *(-1.5), -0.15, delta.z() *(-1.5)));
+
         private final BiFunction<Vec3, Vec3, Vec3> modifier;
+
         ParticleMovement(BinaryOperator<Vec3> modifier) {
             this.modifier = modifier;
         }
+
         ParticleMovement(Vec3 vec3) {
             this.modifier = (pos, delta) -> vec3;
         }
+
         public Vec3 modify(Vec3 position, Vec3 delta) {
             return modifier.apply(position, delta);
         }

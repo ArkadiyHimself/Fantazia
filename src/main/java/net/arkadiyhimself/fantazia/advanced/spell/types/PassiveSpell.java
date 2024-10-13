@@ -42,18 +42,18 @@ public class PassiveSpell extends AbstractSpell {
         ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.GOLD};
 
         ChatFormatting[] ability = new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD};
-        ChatFormatting[] head = new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
+        ChatFormatting[] heading = new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
         // spell name
         String namePath = basicPath + ".name";
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.passive", head, ability, Component.translatable(namePath).getString()));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.passive", heading, ability, Component.translatable(namePath).getString()));
         // spell recharge
         String recharge = String.format("%.1f", ((float) this.getRecharge()) / 20);
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.recharge", head, ability, recharge));
+        components.add(bakeRechargeComponent(heading, ability));
         // spell manacost
         String manacost = String.format("%.1f", this.getManacost());
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.manacost", head, ability, manacost));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.manacost", heading, ability, manacost));
         // spell cleanse
-        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", head, ability, this.getCleanse().getName()));
+        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", heading, ability, this.getCleanse().getName()));
 
         components.add(Component.literal(" "));
 
@@ -73,7 +73,7 @@ public class PassiveSpell extends AbstractSpell {
 
         if (lines > 0) {
             components.add(Component.literal(" "));
-            components.add(GuiHelper.bakeComponent(basicPath + ".tweaks", head, null));
+            components.add(GuiHelper.bakeComponent(basicPath + ".tweaks", heading, null));
             for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".tweaks." + i, null, null));
         }
 

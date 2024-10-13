@@ -29,6 +29,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -39,18 +40,21 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.Optional;
 
 public class FantazicCombat {
     private FantazicCombat() {}
+
     public static void dropExperience(LivingEntity entity, float multiplier, LivingEntity killer) {
         if (entity.level() instanceof ServerLevel serverLevel) {
             int reward = (int) (entity.getExperienceReward(serverLevel, killer) * multiplier);
             ExperienceOrb.award(serverLevel, entity.position(), reward);
         }
     }
+
     public static boolean blocksDamage(LivingEntity entity) {
         if (entity instanceof Player player) {
             DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
@@ -68,6 +72,7 @@ public class FantazicCombat {
 
         return false;
     }
+
     public static boolean isInvulnerable(LivingEntity entity) {
         if (entity instanceof Player player) {
             DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
@@ -75,6 +80,7 @@ public class FantazicCombat {
         }
         return entity.isInvulnerable() || entity.hurtTime > 0;
     }
+
     public static boolean isPhasing(LivingEntity entity) {
         if (entity instanceof Player player) {
             DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
@@ -109,14 +115,17 @@ public class FantazicCombat {
             if (itemStack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) itemStack.update(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialHolder.DEFAULT, holder -> holder.onAttack(parry, target));
         }
     }
+
     public static boolean isFlying(LivingEntity livingEntity) {
         return livingEntity.getType().is(FTZEntityTypeTags.AERIAL) || livingEntity.isFallFlying() || !livingEntity.onGround();
     }
+
     public static boolean isRanged(LivingEntity livingEntity) {
         if (livingEntity.getType().is(FTZEntityTypeTags.RANGED_ATTACK)) return true;
         Item item = livingEntity.getItemInHand(InteractionHand.MAIN_HAND).getItem();
         return item instanceof BowItem || item instanceof TridentItem || item instanceof CrossbowItem || item instanceof HatchetItem;
     }
+
     public static void arrowImpact(AbstractArrow arrow, LivingEntity entity) {
         ArrowEnchantmentsHolder arrowEnchantmentsHolder = arrow.getData(FTZAttachmentTypes.ARROW_ENCHANTMENTS);
         if (arrowEnchantmentsHolder.isFrozen()) LivingEffectHelper.makeFrozen(entity, 40);
@@ -127,6 +136,7 @@ public class FantazicCombat {
         int ball = arrowEnchantmentsHolder.getBallista();
         if (ball > 0 && isFlying(entity)) arrow.setBaseDamage(damage + ball * 0.75f + 0.5f);
     }
+
     public static boolean attemptEvasion(LivingIncomingDamageEvent event) {
         DamageSource source = event.getSource();
         boolean flag1 = source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.PLAYER_ATTACK);
@@ -138,6 +148,7 @@ public class FantazicCombat {
         if (evasionHolder.getIFrames() > 0 || evasionHolder.tryEvade()) event.setCanceled(true);
         return event.isCanceled();
     }
+
     public static boolean attemptEvasion(ProjectileImpactEvent event) {
         if (!(event.getRayTraceResult() instanceof EntityHitResult entityHitResult) || !(entityHitResult.getEntity() instanceof LivingEntity livingEntity)) return false;
         if (event.getProjectile() instanceof ThrownHatchet thrownHatchet && thrownHatchet.isPhasing()) return false;
@@ -146,8 +157,13 @@ public class FantazicCombat {
         if (evasionHolder.getIFrames() > 0 || evasionHolder.tryEvade()) event.setCanceled(true);
         return event.isCanceled();
     }
+
     public static void grantEffectsOnSpawn(LivingEntity livingEntity) {
         if (!(livingEntity.level() instanceof ServerLevel level)) return;
         LevelAttributesGetter.acceptConsumer(level, EffectsOnSpawnHolder.class, effectsOnSpawnHolder -> effectsOnSpawnHolder.tryApplyEffects(livingEntity));
+    }
+
+    public static void killedEntity(Entity killer, LivingEntity victim) {
+
     }
 }

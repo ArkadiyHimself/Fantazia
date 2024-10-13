@@ -83,7 +83,7 @@ public class FTZItems {
     public static final DeferredHolder<Item, AuraCasterItem> ACID_BOTTLE = magicItem("acid_bottle", () -> new AuraCasterItem(FTZAuras.CORROSIVE)); // finished and implemented
 
     // expendables
-    public static final DeferredHolder<Item, ExpendableItem> OBSCURE_ESSENCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON)); // finished and implemented
+    public static final DeferredHolder<Item, ExpendableItem> OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON)); // finished and implemented
     public static final DeferredHolder<Item, TalentProvidingItem> UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Fantazia.res("double_jump"))); // finished and implemented
     public static final DeferredHolder<Item, Item> ARACHNID_EYE = expendableItem("arachnid_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(64).food(Foods.arachnidEye))); // finished and implemented
     public static final DeferredHolder<Item, Item> VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(Foods.vitalityFruit))); // finished and implemented

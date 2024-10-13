@@ -8,9 +8,13 @@
   "fantazia.cleanse.powerful" : "§5§lPowerful",
   "fantazia.cleanse.absolute" : "§d§lAbsolute",
 
-  "fantazia.percentage_attribute.0": "+%s%% %s",
-  "fantazia.percentage_attribute.1": "+%1$s% of base %2$s",
-  "fantazia.percentage_attribute.2": "+%1$s% of total %2$s",
+  "fantazia.percentage_attribute.plus.0": "+%s%% %s",
+  "fantazia.percentage_attribute.plus.1": "+%1$s% of base %2$s",
+  "fantazia.percentage_attribute.plus.2": "+%1$s% of total %2$s",
+
+  "fantazia.percentage_attribute.take.0": "-%s%% %s",
+  "fantazia.percentage_attribute.take.1": "-%1$s% of base %2$s",
+  "fantazia.percentage_attribute.take.2": "-%1$s% of total %2$s",
 
   "fantazia.attribute.max_mana": "Max Mana",
   "fantazia.attribute.max_stamina": "Max Stamina",
@@ -20,6 +24,7 @@
   "fantazia.attribute.cast_range_addition": "Spell Cast Range",
   "fantazia.attribute.lifesteal": "Lifesteal",
   "fantazia.attribute.evasion" : "Evasion",
+  "fantazia.attribute.recharge_multiplier" : "Recharge",
 
   "commands.cooldown.add.success" : "Added %1$s second cooldown to %2$s for %3$s",
   "commands.cooldown.remove.success" : "Removed cooldown of %1$s for %2$s",
@@ -40,7 +45,6 @@
   "enchantment.fantazia.phasing" : "Phasing",
   "enchantment.fantazia.ricochet" : "Ricochet",
   "enchantment.fantazia.headshot" : "Headshot!",
-
 
   "effect.fantazia.fury": "§cFury",
   "effect.fantazia.fury.lines" : "3",
@@ -133,6 +137,18 @@
   "effect.fantazia.cursed_mark.tooltip.1" : "You are marked with misfortune...",
   "effect.fantazia.cursed_mark.tooltip.2" : "If you are slayed, the killed will be doomed.",
 
+  "effect.fantazia.recovery" : "§2Recovery",
+  "effect.fantazia.recovery.lines" : "1",
+  "effect.fantazia.recovery.tooltip.1" : "Restores your stamina",
+
+  "effect.fantazia.surge" : "§3Surge",
+  "effect.fantazia.surge.lines" : "1",
+  "effect.fantazia.surge.tooltip.1" : "Restores your mana",
+
+  "item.minecraft.potion.effect.recovery" : "Potion of Recovery",
+  "item.minecraft.potion.effect.surge" : "Potion of Surge",
+  "item.minecraft.potion.effect.fury" : "Potion of Fury",
+
   "item.fantazia.wooden_hatchet" : "Wooden Hatchet",
   "item.fantazia.stone_hatchet" : "Stone Hatchet",
   "item.fantazia.iron_hatchet" : "Iron Hatchet",
@@ -170,7 +186,7 @@
   "fantazia.subtitles.combat.melee_block" : "Attack blocked",
   "fantazia.subtitles.combat.attack_stunned" : "Stunned",
   "fantazia.subtitles.effect.barrier.damage" : "Barrier damaged",
-  "fantazia.subtitles.effect.barrier.broken" : "Barrier broken",
+  "fantazia.subtitles.effect.barrier.break" : "Barrier broken",
   "fantazia.subtitles.effect.haemorrhage.bloodloss" : "Bloodloss",
   "fantazia.subtitles.effect.haemorrhage.flesh_ripping" : "Wounds opening",
   "fantazia.subtitles.effect.reflect" : "Spell redirected",
@@ -225,8 +241,10 @@
   "tooltip.fantazia.common.targeted.desc" : "When looking at another creature, use spell",
   "tooltip.fantazia.common.passives" : "When equipped, its owner: ",
   "tooltip.fantazia.common.recharge" : "Recharge (in seconds): %1$s",
+  "tooltip.fantazia.common.recharge_modified" : "Recharge (in seconds): %1$s %2$s",
   "tooltip.fantazia.common.manacost" : "Mana required: %1$s",
   "tooltip.fantazia.common.range" : "Range: %1$s",
+  "tooltip.fantazia.common.range_modified" : "Range: %1$s %2$s",
   "tooltip.fantazia.common.cleanse_strength" : "Cleanse strength: %1$s",
   "tooltip.fantazia.common.cleanse" : "Cleanse required: %1$s",
 
@@ -371,7 +389,7 @@
   "spell.fantazia.damned_wrath.tweaks.lines" : "3",
   "spell.fantazia.damned_wrath.tweaks.1" : "§9 * Incoming damage multiplier reduced from 2 to 1.5",
   "spell.fantazia.damned_wrath.tweaks.2" : "§9 * Effect now grants 15% lifesteal",
-  "spell.fantazia.damned_wrath.tweaks.3" : "§9 * Killing now prolongs the effect instead of dispelling it",
+  "spell.fantazia.damned_wrath.tweaks.3" : "§9 * Killing now prolongs the effect instead of shortening it",
 
   "item.fantazia.enigmatic_clock": "§5Enigmatic Clock",
   "spell.fantazia.rewind.desc.lines": "1",
@@ -513,16 +531,34 @@
   "fantazia.talent.mana_boost.criteria.1": "Find and consume an insight essence",
 
   "fantazia.talent.spellcaster_slots.name" : "§5Sorcerer",
-  "fantazia.talent.spellcaster_slots.desc.lines" : "1",
-  "fantazia.talent.spellcaster_slots.desc.1" : "Permanently increases the amount of slots for Spell Casters with active abilities",
+  "fantazia.talent.spellcaster_slots.desc.lines" : "2",
+  "fantazia.talent.spellcaster_slots.desc.1" : "Permanently increases the amount of slots",
+  "fantazia.talent.spellcaster_slots.desc.2" : "for Spell Casters with active abilities",
   "fantazia.talent.spellcaster_slots.criteria.lines": "1",
-  "fantazia.talent.spellcaster_slots.criteria.1": "Obtain at least 4 suitable Spell Caster",
+  "fantazia.talent.spellcaster_slots.criteria.1": "Obtain at least 4 suitable Casters",
 
   "fantazia.talent.passivecaster_slots.name" : "§5Judicious",
-  "fantazia.talent.passivecaster_slots.desc.lines" : "1",
-  "fantazia.talent.passivecaster_slots.desc.1" : "Permanently increases the amount of slots for Passive Casters or Aura Casters",
+  "fantazia.talent.passivecaster_slots.desc.lines" : "2",
+  "fantazia.talent.passivecaster_slots.desc.1" : "Permanently increases the amount of slots",
+  "fantazia.talent.passivecaster_slots.desc.2" : "for Passive Casters or Aura Casters",
   "fantazia.talent.passivecaster_slots.criteria.lines": "1",
   "fantazia.talent.passivecaster_slots.criteria.1": "Obtain at least 4 suitable Casters",
+
+  "fantazia.talent.spell_recharge_reduce.name" : "§dAlacrity",
+  "fantazia.talent.spell_recharge_reduce.desc.lines" : "1",
+  "fantazia.talent.spell_recharge_reduce.desc.1" : "Reduces the cooldowns of active spells",
+
+  "fantazia.talent.mana_recycle1.name" : "§bConverting I",
+  "fantazia.talent.mana_recycle1.desc.lines" : "1",
+  "fantazia.talent.mana_recycle1.desc.1" : "Executing an enemy restores small amount of mana",
+
+  "fantazia.talent.mana_recycle2.name" : "§bConverting II",
+  "fantazia.talent.mana_recycle2.desc.lines" : "1",
+  "fantazia.talent.mana_recycle2.desc.1" : "Executing an enemy restores moderate amount of mana",
+
+  "fantazia.talent.mana_recycle3.name" : "§bConverting III",
+  "fantazia.talent.mana_recycle3.desc.lines" : "1",
+  "fantazia.talent.mana_recycle3.desc.1" : "Executing an enemy restores significant amount of mana",
 
   "fantazia.gui.talent.toast.info" : "New Talent",
   "fantazia.gui.talent.requirement" : "Requirement:",
@@ -530,8 +566,10 @@
   "fantazia.gui.talent.wisdom_cost" : "Wisdom required: %s",
   "fantazia.gui.talent.wisdom_granted" : "+%s wisdom",
   "fantazia.gui.talent.obtained" : "§2§l§oOBTAINED",
-  "fantazia.talent_tabs.abilities" : "§5§lUnique Abilities",
-  "fantazia.talent_tabs.stat_modifiers" : "§9§lStat Modifiers",
+
+  "fantazia.talent_tabs.abilities" : "§5§lAbilities",
+  "fantazia.talent_tabs.stat_modifiers" : "§9§lProperties",
+  "fantazia.talent_tabs.spell_casting" : "§9§lCharms",
 
   "curios.identifier.dashstone" : "Swiftness Stone",
   "curios.identifier.spellcaster" : "Spell Caster",

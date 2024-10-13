@@ -6,10 +6,14 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
+import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.WisdomRewardManager;
+import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
+import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
+import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -36,9 +40,11 @@ import java.util.List;
 import java.util.Map;
 
 public class TalentsHolder extends PlayerAbilityHolder {
+
     private final NonNullList<BasicTalent> TALENTS = NonNullList.create();
     private final ProgressHolder progressHolder = new ProgressHolder();
     private int wisdom = 0;
+
     public TalentsHolder(Player player) {
         super(player, Fantazia.res("talents"));
     }
@@ -78,13 +84,16 @@ public class TalentsHolder extends PlayerAbilityHolder {
     public ImmutableList<BasicTalent> getTalents() {
         return ImmutableList.copyOf(TALENTS);
     }
+
     public int getWisdom() {
         return wisdom;
     }
+
     public void grantWisdom(int amount) {
         this.wisdom += amount;
         PlayerAbilityGetter.acceptConsumer(getPlayer(), ClientValuesHolder.class, clientValues -> clientValues.obtainedWisdom(amount));
     }
+
     public ProgressHolder getProgressHolder() {
         return progressHolder;
     }
@@ -92,10 +101,12 @@ public class TalentsHolder extends PlayerAbilityHolder {
     public boolean talentUnlocked(@NotNull BasicTalent talent) {
         return TALENTS.contains(talent);
     }
+
     public boolean isUnlockAble(@NotNull BasicTalent talent) {
         BasicTalent parent = talent.getParent();
         return parent == null || TALENTS.contains(parent);
     }
+
     public boolean canBePurchased(@NotNull BasicTalent talent) {
         return isUnlockAble(talent) && talent.isPurchased() && talent.getWisdom() <= wisdom;
     }
@@ -108,10 +119,12 @@ public class TalentsHolder extends PlayerAbilityHolder {
         if (flag) wisdom -= cost;
         return flag;
     }
+
     public boolean buyTalent(ResourceLocation id) {
         BasicTalent talent = TalentManager.getTalents().get(id);
         return talent != null && buyTalent(talent);
     }
+
     public boolean obtainTalent(@NotNull BasicTalent talent) {
         if (TALENTS.contains(talent)) return false;
         if (!isUnlockAble(talent)) return false;
@@ -122,31 +135,49 @@ public class TalentsHolder extends PlayerAbilityHolder {
         sendTalentToast(talent);
         return true;
     }
+
     public boolean obtainTalent(ResourceLocation id) {
         BasicTalent talent = TalentManager.getTalents().get(id);
         return talent != null && obtainTalent(talent);
     }
+
     public boolean revokeTalent(@NotNull BasicTalent talent) {
         if (!TALENTS.contains(talent)) return false;
         TalentHelper.onTalentRevoke(getPlayer(), talent);
         return TALENTS.remove(talent);
     }
+
     public void revokeAll() {
         TALENTS.forEach(talent -> TalentHelper.onTalentRevoke(getPlayer(), talent));
         TALENTS.clear();
         progressHolder.clear();
     }
+
     public void sendTalentToast(BasicTalent talent) {
         ToastComponent gui = Minecraft.getInstance().getToasts();
         if (gui.getToast(TalentToast.class, talent) == null) gui.addToast(new TalentToast(talent));
 
     }
+
     public boolean hasTalent(@NotNull BasicTalent talent) {
         return TALENTS.contains(talent);
     }
+
     public void setWisdom(int amount) {
         this.wisdom = amount;
     }
+
+    public int upgradeLevel(ResourceLocation location) {
+        IHierarchy<BasicTalent> talentIHierarchy = TalentTreeData.getAllHierarchies().get(location);
+        if (!(talentIHierarchy instanceof ChainHierarchy<BasicTalent> chainHierarchy) || chainHierarchy instanceof ChaoticHierarchy<BasicTalent>) return 0;
+        int lvl = 0;
+        for (BasicTalent talent : chainHierarchy.getElements()) {
+            if (!hasTalent(talent)) break;
+            lvl++;
+        }
+        return lvl;
+    }
+
     private record TalentToast(BasicTalent talent) implements Toast {
         private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
 

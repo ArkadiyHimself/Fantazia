@@ -36,7 +36,7 @@ public class FantazicLootModifier extends LootModifier {
         boolean chest = LootTablesHelper.isVanillaChest(context);
         boolean slayed = LootTablesHelper.isSlayed(context);
 
-        if (chest && !LootTablesHelper.isVillage(context.getQueriedLootTableId())) addItem(generatedLoot, FTZItems.OBSCURE_ESSENCE.get(), -2, 3);
+        if (chest && !LootTablesHelper.isVillage(context.getQueriedLootTableId())) addItem(generatedLoot, FTZItems.OBSCURE_SUBSTANCE.get(), -2, 3);
         if (slayed && killer instanceof Player playerKiller) PlayerAbilityGetter.acceptConsumer(playerKiller, LootTableModifiersHolder.class, lootTableModifiersHolder -> lootTableModifiersHolder.attemptLoot(generatedLoot, id));
 
         if (!(entity instanceof Player player)) return generatedLoot;

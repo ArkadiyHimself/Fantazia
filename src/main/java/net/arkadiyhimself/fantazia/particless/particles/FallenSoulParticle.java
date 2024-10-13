@@ -1,4 +1,4 @@
-package net.arkadiyhimself.fantazia.particless;
+package net.arkadiyhimself.fantazia.particless.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;

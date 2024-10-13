@@ -8,6 +8,7 @@ import net.arkadiyhimself.fantazia.data.talent.ITalentBuilder;
 import net.arkadiyhimself.fantazia.data.talent.TalentDataException;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class AttributeTalent extends BasicTalent {
+
     private final double amount;
     private final AttributeModifier.Operation operation;
     private final Holder<Attribute> attribute;

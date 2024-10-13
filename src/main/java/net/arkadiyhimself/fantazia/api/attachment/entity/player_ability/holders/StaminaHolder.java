@@ -44,7 +44,6 @@ public class StaminaHolder extends PlayerAbilityHolder {
         if (!getPlayer().isSprinting()) delay = Math.max(0, delay - 1);
         else wasteStamina(0.0125f, true, 10);
         if (delay <= 0) stamina = Math.min(getMaxStamina(), stamina + getStaminaRegen());
-
     }
 
     public float getMaxStamina() {
@@ -82,8 +81,11 @@ public class StaminaHolder extends PlayerAbilityHolder {
             stRegen *= 0.675f;
             if (data.getFoodLevel() <= 3f) stRegen *= 0.5f;
         }
-        stRegen *= (float) getPlayer().getAttributeValue(FTZAttributes.STAMINA_REGEN_MULTIPLIER);
         return stRegen;
+    }
+
+    public void recover(float value) {
+        this.stamina = Math.min(getMaxStamina(), stamina + value);
     }
 
     public void restore() {
