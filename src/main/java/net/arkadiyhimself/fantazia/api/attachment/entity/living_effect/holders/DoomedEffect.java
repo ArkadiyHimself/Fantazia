@@ -4,7 +4,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.PlaySoundForUIS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;

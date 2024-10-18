@@ -6,11 +6,11 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.type.entity.ITalentListener;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
 import net.arkadiyhimself.fantazia.events.FTZHooks;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.PlayAnimationS2C;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.PlaySoundForUIS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.client.Minecraft;
@@ -106,23 +106,23 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
 
         if (recharged && recharge == 0) {
             recharged = false;
-            if (!getPlayer().getAbilities().instabuild && getRechargeSound() != null && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(getRechargeSound()));
+            if (!getPlayer().hasInfiniteMaterials() && getRechargeSound() != null && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(getRechargeSound()));
         }
     }
 
     @Override
-    public void onTalentUnlock(BasicTalent talent) {
+    public void onTalentUnlock(ITalent talent) {
         ResourceLocation resLoc = talent.getID();
-        if (Fantazia.res("dash1").equals(resLoc) && level < 1) upgrade(1);
-        else if (Fantazia.res("dash2").equals(resLoc) && level < 2) upgrade(2);
-        else if (Fantazia.res("dash3").equals(resLoc) && level < 3) upgrade(3);
+        if (Fantazia.res("dash/dash1").equals(resLoc) && level < 1) upgrade(1);
+        else if (Fantazia.res("dash/dash2").equals(resLoc) && level < 2) upgrade(2);
+        else if (Fantazia.res("dash/dash3").equals(resLoc) && level < 3) upgrade(3);
     }
     @Override
-    public void onTalentRevoke(BasicTalent talent) {
+    public void onTalentRevoke(ITalent talent) {
         ResourceLocation resLoc = talent.getID();
-        if (Fantazia.res("dash3").equals(resLoc) && level > 2) level = 2;
-        else if (Fantazia.res("dash2").equals(resLoc) && level > 1) level = 1;
-        else if (Fantazia.res("dash1").equals(resLoc) && level > 0) level = 0;
+        if (Fantazia.res("dash/dash3").equals(resLoc) && level > 2) level = 2;
+        else if (Fantazia.res("dash/dash2").equals(resLoc) && level > 1) level = 1;
+        else if (Fantazia.res("dash/dash1").equals(resLoc) && level > 0) level = 0;
         
         DashStoneEntity entity = getDashstoneEntity(getPlayer().level());
         if (level == 0 && entity != null) {

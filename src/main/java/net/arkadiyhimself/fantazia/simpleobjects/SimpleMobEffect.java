@@ -16,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 public class SimpleMobEffect extends MobEffect {
     private final boolean isTicking;

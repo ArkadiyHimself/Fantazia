@@ -2,14 +2,12 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.type.entity.IHealEventListener;
-import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.core.HolderLookup;
@@ -17,7 +15,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -44,11 +41,6 @@ public class HaemorrhageEffect extends LivingEffectHolder implements IDamageEven
     public void onHeal(VanillaEventsExtension.AdvancedHealEvent event) {
         toHeal -= event.getAmount();
         if (toHeal <= 0) EffectCleansing.forceCleanse(getEntity(), FTZMobEffects.HAEMORRHAGE);
-    }
-
-    @Override
-    public void onHit(LivingDamageEvent.Post event) {
-        if (event.getSource().is(FTZDamageTypes.PARRY)) LivingEffectHelper.giveHaemorrhage(getEntity(), 200);
     }
 
     @Override

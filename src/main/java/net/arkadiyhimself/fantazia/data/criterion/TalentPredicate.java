@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.data.criterion;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.compress.utils.Lists;
 
@@ -21,10 +21,10 @@ public record TalentPredicate(List<ResourceLocation> talents, int amount) {
         return locations.isEmpty();
     }
 
-    public boolean matches(List<BasicTalent> all) {
+    public boolean matches(List<ITalent> all) {
         boolean enough = all.size() >= amount;
         List<ResourceLocation> locations = Lists.newArrayList();
-        for (BasicTalent talent : all) locations.add(talent.getID());
+        for (ITalent talent : all) locations.add(talent.getID());
         return matchesLocations(locations) && enough;
     }
 }

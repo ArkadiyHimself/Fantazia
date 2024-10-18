@@ -6,7 +6,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ClientValuesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.MeleeBlockHolder;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.KickOutOfGuiS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.InterruptPlayerS2C;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,7 +33,7 @@ public class ActionsHelper {
 
     public static void interrupt(LivingEntity entity) {
         if (entity instanceof ServerPlayer player) {
-            PacketDistributor.sendToPlayer(player, new KickOutOfGuiS2C());
+            PacketDistributor.sendToPlayer(player, new InterruptPlayerS2C());
             player.stopUsingItem();
             player.stopSleeping();
             player.stopFallFlying();

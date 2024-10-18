@@ -7,7 +7,9 @@ import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
 import net.arkadiyhimself.fantazia.api.type.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -20,6 +22,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +43,7 @@ import java.util.function.Predicate;
  * <br>
  * Aura can have {@link #primaryFilter conditions} for an entity which have to be met in order to apply its effects to the entity
  * <br>
- * The effects of auras vary from {@link #attributeModifiers changing attributes} to {@link #affectedTick(Entity, Entity)}   influencing} an entity in certain ways while it is inside the aura
+ * The effects of auras vary from {@link #attributeModifiers changing attributes} to {@link #affectedTick(Entity, Entity) influencing} an entity in certain ways while it is inside the aura
  *
  * @param <T> the class of affected entities
  */
@@ -82,7 +85,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * can not be changed or can only be changed once like entity's
      * <br>
-     * {@linkplain Entity#getType() type}, {@link TamableAnimal#getOwner() owner}, {@link LivingEntity#fireImmune() built-in fire resistance}. etc.,
+     * {@link Entity#getType() type}, {@link TamableAnimal#getOwner() owner}, {@link LivingEntity#fireImmune() built-in fire resistance}. etc.,
      */
     private final BiPredicate<T, Entity> primaryFilter;
     /**
@@ -221,19 +224,25 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
             case NEGATIVE -> new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD};
             case POSITIVE -> new ChatFormatting[]{ChatFormatting.DARK_GREEN, ChatFormatting.BOLD};
         };
-        ChatFormatting[] head = switch (this.type) {
+        ChatFormatting[] heading = switch (this.type) {
             case MIXED -> new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
             case NEGATIVE -> new ChatFormatting[]{ChatFormatting.RED};
             case POSITIVE -> new ChatFormatting[]{ChatFormatting.GREEN};
         };
         // spell name
         String namePath = basicPath + ".name";
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.aura", head, ability, Component.translatable(namePath).getString()));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.aura", heading, ability, Component.translatable(namePath).getString()));
 
         // spell range
-        String manacost = String.format("%.1f", this.getRadius());
+        Component addRangeComponent = bakeRangeComponent();
+        String range = String.format("%.1f", this.getRadius());
+        Component basicRange = Component.literal(range).withStyle(ability);
 
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.aura_range", head, ability, manacost));
+        Component rangeComponent;
+        if (addRangeComponent != null) rangeComponent = Component.translatable("tooltip.fantazia.common.aura_range_modified", basicRange, addRangeComponent).withStyle(heading);
+        else rangeComponent = GuiHelper.bakeComponent("tooltip.fantazia.common.aura_range", heading, ability, basicRange);
+
+        components.add(rangeComponent);
         components.add(Component.literal(" "));
 
         String desc = Component.translatable(basicPath + ".lines").getString();
@@ -334,6 +343,15 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
 
     public Map<ResourceKey<DamageType>, Float> multipliers() {
         return damageMultipliers;
+    }
+
+    private @Nullable Component bakeRangeComponent() {
+        AttributeInstance instance = Minecraft.getInstance().player == null ? null : Minecraft.getInstance().player.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
+        if (instance == null) return null;
+        double value = instance.getValue();
+        if (value == 0) return null;
+        if (value > 0) return Component.literal("+ " + value).withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD, ChatFormatting.ITALIC);
+        else return Component.literal("- " + Math.min(this.getRadius(), Math.abs(value))).withStyle(ChatFormatting.RED, ChatFormatting.BOLD, ChatFormatting.ITALIC);
     }
 
     public static class Builder<T extends Entity> {

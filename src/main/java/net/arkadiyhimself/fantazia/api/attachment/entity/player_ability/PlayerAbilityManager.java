@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.api.type.entity.*;
-import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -112,11 +112,11 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
         holders.values().forEach(IPlayerAbility::respawn);
     }
 
-    public void talentUnlocked(BasicTalent talent) {
+    public void talentUnlocked(ITalent talent) {
         for (IPlayerAbility iPlayerAbility : holders.values()) if (iPlayerAbility instanceof ITalentListener listener) listener.onTalentUnlock(talent);
     }
 
-    public void talentRevoked(BasicTalent talent) {
+    public void talentRevoked(ITalent talent) {
         for (IPlayerAbility iPlayerAbility : holders.values()) if (iPlayerAbility instanceof ITalentListener listener) listener.onTalentRevoke(talent);
     }
 

@@ -5,12 +5,13 @@ import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
+import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
-import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
-import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
+import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.WisdomRewardManager;
+import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
@@ -20,6 +21,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -29,8 +31,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
@@ -39,9 +43,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TalentsHolder extends PlayerAbilityHolder {
+public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventListener {
 
-    private final NonNullList<BasicTalent> TALENTS = NonNullList.create();
+    private final NonNullList<ITalent> TALENTS = NonNullList.create();
     private final ProgressHolder progressHolder = new ProgressHolder();
     private int wisdom = 0;
 
@@ -73,15 +77,37 @@ public class TalentsHolder extends PlayerAbilityHolder {
 
         for (Tag talentTag : talentTags) {
             ResourceLocation talentID = ResourceLocation.parse(talentTag.getAsString());
-            BasicTalent talent = TalentManager.getTalents().get(talentID);
+            ITalent talent = TalentManager.getTalents().get(talentID);
             if (talent == null) continue;
             TALENTS.add(talent);
         }
 
-        for (BasicTalent talent : getTalents()) talent.applyModifiers(getPlayer());
+        for (ITalent talent : getTalents()) talent.applyModifiers(getPlayer());
     }
 
-    public ImmutableList<BasicTalent> getTalents() {
+    @Override
+    public void onHit(LivingIncomingDamageEvent event) {
+        Holder<DamageType> damageTypeHolder = event.getSource().typeHolder();
+
+        float damage = event.getAmount();
+        float finalMultiplier = 1f;
+
+        for (ITalent talent : TALENTS) {
+            if (talent.getProperties().containsImmunityTo(damageTypeHolder)) {
+                event.setCanceled(true);
+                return;
+            }
+
+            // The damage multipliers from talents are supposed to be additive;
+            // e.g. you have two talents that reduce fall damage by 10% each (so, the multiplier is 0.9)
+            // instead of getting 0.9 * 0.9 = 0.81 you are going to get 1 - 0.1 - 0.1 = 0.8
+            finalMultiplier += talent.getProperties().getDamageMultiplier(damageTypeHolder) - 1f;
+        }
+
+        event.setAmount(damage * finalMultiplier);
+    }
+
+    public ImmutableList<ITalent> getTalents() {
         return ImmutableList.copyOf(TALENTS);
     }
 
@@ -98,22 +124,22 @@ public class TalentsHolder extends PlayerAbilityHolder {
         return progressHolder;
     }
 
-    public boolean talentUnlocked(@NotNull BasicTalent talent) {
+    public boolean talentUnlocked(@NotNull ITalent talent) {
         return TALENTS.contains(talent);
     }
 
-    public boolean isUnlockAble(@NotNull BasicTalent talent) {
-        BasicTalent parent = talent.getParent();
+    public boolean isUnlockAble(@NotNull ITalent talent) {
+        ITalent parent = talent.getParent();
         return parent == null || TALENTS.contains(parent);
     }
 
-    public boolean canBePurchased(@NotNull BasicTalent talent) {
-        return isUnlockAble(talent) && talent.isPurchased() && talent.getWisdom() <= wisdom;
+    public boolean canBePurchased(@NotNull ITalent talent) {
+        return isUnlockAble(talent) && talent.toBePurchased() && talent.getProperties().wisdom() <= wisdom;
     }
 
-    public boolean buyTalent(@NotNull BasicTalent talent) {
-        if (!talent.isPurchased()) return false;
-        int cost = talent.getWisdom();
+    public boolean buyTalent(@NotNull ITalent talent) {
+        if (!talent.toBePurchased()) return false;
+        int cost = talent.getProperties().wisdom();
         if (cost > wisdom) return false;
         boolean flag = obtainTalent(talent);
         if (flag) wisdom -= cost;
@@ -121,11 +147,11 @@ public class TalentsHolder extends PlayerAbilityHolder {
     }
 
     public boolean buyTalent(ResourceLocation id) {
-        BasicTalent talent = TalentManager.getTalents().get(id);
+        ITalent talent = TalentManager.getTalents().get(id);
         return talent != null && buyTalent(talent);
     }
 
-    public boolean obtainTalent(@NotNull BasicTalent talent) {
+    public boolean obtainTalent(@NotNull ITalent talent) {
         if (TALENTS.contains(talent)) return false;
         if (!isUnlockAble(talent)) return false;
 
@@ -137,11 +163,11 @@ public class TalentsHolder extends PlayerAbilityHolder {
     }
 
     public boolean obtainTalent(ResourceLocation id) {
-        BasicTalent talent = TalentManager.getTalents().get(id);
+        ITalent talent = TalentManager.getTalents().get(id);
         return talent != null && obtainTalent(talent);
     }
 
-    public boolean revokeTalent(@NotNull BasicTalent talent) {
+    public boolean revokeTalent(@NotNull ITalent talent) {
         if (!TALENTS.contains(talent)) return false;
         TalentHelper.onTalentRevoke(getPlayer(), talent);
         return TALENTS.remove(talent);
@@ -153,13 +179,13 @@ public class TalentsHolder extends PlayerAbilityHolder {
         progressHolder.clear();
     }
 
-    public void sendTalentToast(BasicTalent talent) {
+    public void sendTalentToast(ITalent talent) {
         ToastComponent gui = Minecraft.getInstance().getToasts();
         if (gui.getToast(TalentToast.class, talent) == null) gui.addToast(new TalentToast(talent));
 
     }
 
-    public boolean hasTalent(@NotNull BasicTalent talent) {
+    public boolean hasTalent(@NotNull ITalent talent) {
         return TALENTS.contains(talent);
     }
 
@@ -168,22 +194,22 @@ public class TalentsHolder extends PlayerAbilityHolder {
     }
 
     public int upgradeLevel(ResourceLocation location) {
-        IHierarchy<BasicTalent> talentIHierarchy = TalentTreeData.getAllHierarchies().get(location);
-        if (!(talentIHierarchy instanceof ChainHierarchy<BasicTalent> chainHierarchy) || chainHierarchy instanceof ChaoticHierarchy<BasicTalent>) return 0;
+        IHierarchy<ITalent> talentIHierarchy = TalentTreeData.getLocationToHierarchy().get(location);
+        if (!(talentIHierarchy instanceof ChainHierarchy<ITalent> chainHierarchy) || chainHierarchy instanceof ChaoticHierarchy<ITalent>) return 0;
         int lvl = 0;
-        for (BasicTalent talent : chainHierarchy.getElements()) {
+        for (ITalent talent : chainHierarchy.getElements()) {
             if (!hasTalent(talent)) break;
             lvl++;
         }
         return lvl;
     }
 
-    private record TalentToast(BasicTalent talent) implements Toast {
+    private record TalentToast(ITalent talent) implements Toast {
         private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
 
         @NotNull
         @Override
-        public BasicTalent getToken() {
+        public ITalent getToken() {
                 return talent;
             }
 
@@ -192,9 +218,9 @@ public class TalentsHolder extends PlayerAbilityHolder {
         public Visibility render(GuiGraphics graphics, ToastComponent toastGui, long delta) {
             graphics.blitSprite(BACKGROUND_SPRITE, 0, 0, width(), height());
             Font font = toastGui.getMinecraft().font;
-            graphics.drawString(font, Component.translatable(talent.getTitle() + ".name"), 30, 7, 0xfff000f0, false);
+            graphics.drawString(font, Component.translatable(talent.getProperties().title() + ".name"), 30, 7, 0xfff000f0, false);
             graphics.drawString(font, Component.translatable("fantazia.gui.talent.toast.info"), 30, 17, 0xffffffff, false);
-            graphics.blit(talent.getIconTexture(), 6, 6, 0, 0, 20, 20, 20, 20);
+            graphics.blit(talent.getProperties().iconTexture(), 6, 6, 0, 0, 20, 20, 20, 20);
             return delta >= 5000L ? Visibility.HIDE : Visibility.SHOW;
         }
     }

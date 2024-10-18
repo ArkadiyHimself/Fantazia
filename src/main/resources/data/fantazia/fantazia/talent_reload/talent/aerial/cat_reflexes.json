@@ -1,0 +1,10 @@
+{
+  "type" : "basic",
+  "iconTexture" : "fantazia:textures/talents/aerial/cat_reflexes.png",
+  "title" : "fantazia.talent.aerial.cat_reflexes",
+  "wisdom": 50,
+
+  "damage_multipliers" : {
+    "minecraft:fall" : 0.5
+  }
+}

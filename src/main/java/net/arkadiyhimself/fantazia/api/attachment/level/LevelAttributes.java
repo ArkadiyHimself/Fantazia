@@ -1,10 +1,13 @@
 package net.arkadiyhimself.fantazia.api.attachment.level;
 
 import com.google.common.collect.Maps;
-import net.arkadiyhimself.fantazia.api.attachment.level.holders.*;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsOnSpawnHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.IHolderManager;
 import net.arkadiyhimself.fantazia.api.type.level.ILevelAttributeHolder;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.LevelAttributesUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.LevelAttributesUpdateS2C;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -95,7 +98,6 @@ public class LevelAttributes implements IHolderManager<ILevelAttributeHolder, Le
         putHolder(AurasInstancesHolder::new);
         putHolder(DamageSourcesHolder::new);
         putHolder(HealingSourcesHolder::new);
-        putHolder(TalentAttributeModifiersHolder::new);
         putHolder(EffectsOnSpawnHolder::new);
     }
 

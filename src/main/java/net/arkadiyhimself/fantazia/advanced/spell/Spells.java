@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.advanced.spell;
 
-import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
@@ -15,14 +14,12 @@ import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.particless.options.ElectroParticleOption;
-import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,7 +32,6 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 public class Spells {
     private Spells() {}

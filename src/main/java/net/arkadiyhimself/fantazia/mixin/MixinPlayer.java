@@ -3,18 +3,15 @@ package net.arkadiyhimself.fantazia.mixin;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
-import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -33,15 +30,8 @@ public abstract class MixinPlayer extends LivingEntity {
         super(pEntityType, pLevel);
     }
 
-    @Inject(at = @At(value = "HEAD"), method = "getDigSpeed(Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)F", cancellable = true, remap = false)
-    protected void slowMiningFreeze(BlockState pState, BlockPos pos, CallbackInfoReturnable<Float> cir) {
-        if (neoForgeFantazia$player.hasEffect(FTZMobEffects.FROZEN)) cir.setReturnValue(cir.getReturnValueF() * 0.85F);
-    }
-
     @Inject(at = @At(value = "HEAD"), method = "jumpFromGround", cancellable = true)
     protected void jumpFromGround(CallbackInfo ci) {
-        if (neoForgeFantazia$player.getAbilities().instabuild) return;
-
         StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(neoForgeFantazia$player, StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(0.35f, true)) ci.cancel();
     }

@@ -1,0 +1,9 @@
+{
+  "hierarchy": "chain",
+  "tab": "fantazia:abilities",
+  "values" : [
+    "fantazia:melee_block/melee_block",
+    "fantazia:melee_block/parry_haemorrhage",
+    "fantazia:melee_block/parry_disarm"
+  ]
+}

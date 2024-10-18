@@ -1,0 +1,6 @@
+{
+  "type" : "basic",
+  "iconTexture" : "fantazia:textures/talents/mana_recycle/mana_recycle2.png",
+  "title" : "fantazia.talent.mana_recycle.mana_recycle2",
+  "wisdom" : 20
+}

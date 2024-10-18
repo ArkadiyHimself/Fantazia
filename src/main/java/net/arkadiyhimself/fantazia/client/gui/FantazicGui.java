@@ -61,8 +61,8 @@ public class FantazicGui {
     private static final ResourceLocation DASH2 = Fantazia.res("textures/talents/dash/dash2.png");
     private static final ResourceLocation DASH3 = Fantazia.res("textures/talents/dash/dash3.png");
     // double jump stuff
-    private static final ResourceLocation DOUBLE_JUMP = Fantazia.res("textures/talents/double_jump/double_jump.png");
-    private static final ResourceLocation DOUBLE_JUMP_EMPTY = Fantazia.res("textures/talents/double_jump/double_jump_empty.png");
+    private static final ResourceLocation DOUBLE_JUMP = Fantazia.res("textures/talents/aerial/double_jump.png");
+    private static final ResourceLocation DOUBLE_JUMP_EMPTY = Fantazia.res("textures/talents/aerial/double_jump_empty.png");
     // layered barrier stuff
     private static final ResourceLocation LAYERS = Fantazia.res("textures/gui/ftz_gui/layers.png");
     public static boolean renderStunBar(@Nullable StunEffect stunEffect, GuiGraphics guiGraphics, int x, int y) {

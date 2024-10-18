@@ -21,7 +21,8 @@
     "MixinRegenerationMobEffect",
     "MixinSlime",
     "MixinVibrationUser",
-    "MixinWarden"
+    "MixinWarden",
+    "MixinWebBlock"
   ],
   "client": [
     "MixinEffectScreenRenderer",

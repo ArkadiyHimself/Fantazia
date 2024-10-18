@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEff
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.PlaySoundForUIS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;

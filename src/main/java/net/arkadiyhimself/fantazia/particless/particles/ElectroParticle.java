@@ -1,9 +1,13 @@
 package net.arkadiyhimself.fantazia.particless.particles;
 
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FuryEffect;
 import net.arkadiyhimself.fantazia.particless.options.ElectroParticleOption;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +31,7 @@ public class ElectroParticle extends TextureSheetParticle {
         this.entity = level.getEntity(id);
         this.relative = relative;
 
-        if (this.entity == null) {
+        if (this.entity == null || this.entity == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             this.remove();
             return;
         }
@@ -37,6 +41,15 @@ public class ElectroParticle extends TextureSheetParticle {
         this.xo = finalPos.x;
         this.yo = finalPos.y;
         this.zo = finalPos.z;
+
+        if (!(entity instanceof LivingEntity livingEntity)) return;
+        FuryEffect furyEffect = LivingEffectGetter.takeHolder(livingEntity, FuryEffect.class);
+        if (furyEffect != null && furyEffect.isFurious()) {
+            this.rCol = 1f;
+            this.gCol = 0.15f;
+            this.bCol = 0.15f;
+            this.quadSize += 1.5f;
+        }
     }
 
     @Override

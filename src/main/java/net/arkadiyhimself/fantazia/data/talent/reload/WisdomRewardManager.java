@@ -21,7 +21,7 @@ public class WisdomRewardManager extends SimpleJsonResourceReloadListener {
     private static final ResourceLocation DEFAULT_ENTRY = Fantazia.res("default");
     private static final Map<String, Map<ResourceLocation, Integer>> REWARD_MAPS = Maps.newHashMap();
     public WisdomRewardManager() {
-        super(GSON, "talent_reload/wisdom_reward");
+        super(GSON, Fantazia.MODID + "/talent_reload/wisdom_reward");
     }
     @Override
     protected void apply(@NotNull Map<ResourceLocation, JsonElement> jsonElementMap, @NotNull ResourceManager pResourceManager, @NotNull ProfilerFiller pProfiler) {

@@ -1,0 +1,9 @@
+{
+  "hierarchy": "chain",
+  "tab": "fantazia:abilities",
+  "values" : [
+    "fantazia:spider_powers/wall_climbing",
+    "fantazia:spider_powers/cobweb_climbing",
+    "fantazia:spider_powers/poison_attack"
+  ]
+}

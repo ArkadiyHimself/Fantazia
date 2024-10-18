@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.api.type.entity;
 
-import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 
 public interface ITalentListener {
-    void onTalentUnlock(BasicTalent talent);
-    void onTalentRevoke(BasicTalent talent);
+    void onTalentUnlock(ITalent talent);
+    void onTalentRevoke(ITalent talent);
 }

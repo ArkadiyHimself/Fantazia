@@ -89,7 +89,7 @@ public class AncientFlameBlock extends BaseFireBlock {
             if (livingEntity instanceof SnowGolem) dmg *= 2.5f;
             DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(pLevel);
             if (sources != null) pEntity.hurt(sources.ancientFlame(), dmg);
-            int flameTicks = livingEntity instanceof Player player && (player.getAbilities().instabuild) ? 3 : 100;
+            int flameTicks = livingEntity instanceof Player player && (player.getAbilities().invulnerable) ? 3 : 100;
             LivingDataGetter.acceptConsumer(livingEntity, AncientFlameTicksHolder.class, darkFlameTicks -> darkFlameTicks.setFlameTicks(flameTicks));
         }
     }

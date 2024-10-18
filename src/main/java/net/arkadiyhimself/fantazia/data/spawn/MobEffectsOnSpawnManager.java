@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.data.spawn;
 
 import com.google.gson.*;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +22,7 @@ public class MobEffectsOnSpawnManager extends SimpleJsonResourceReloadListener {
             .create();
     private static final List<EffectSpawnHolder.Builder> effectSpawnHolders = Lists.newArrayList();
     public MobEffectsOnSpawnManager() {
-        super(GSON, "effect_on_spawn");
+        super(GSON, Fantazia.MODID + "/effect_on_spawn");
     }
     @Override
     protected void apply(@NotNull Map<ResourceLocation, JsonElement> pObject, @NotNull ResourceManager pResourceManager, @NotNull ProfilerFiller pProfiler) {

@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.particless.particles;
 
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.ParticleType;
@@ -27,7 +28,7 @@ public class ChasingEntityParticle extends TextureSheetParticle {
         this.entity = level.getEntity(id);
         this.relative = relative;
 
-        if (this.entity == null) {
+        if (this.entity == null || this.entity == Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             this.remove();
             return;
         }

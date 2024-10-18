@@ -14,6 +14,7 @@ import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.tags.FTZMobEffectTags;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -24,6 +25,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.EffectCure;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,49 +43,63 @@ public abstract class MixinLivingEntity extends Entity {
     public MixinLivingEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
+
     @Unique
-    private final LivingEntity neoForgeFantazia$entity = (LivingEntity) (Object) this;
+    private final LivingEntity fantazia$entity = (LivingEntity) (Object) this;
 
     @Inject(at = @At(value = "HEAD"), method = "playHurtSound", cancellable = true)
     protected void cancelSound(DamageSource pSource, CallbackInfo ci) {
         if (pSource == null) return;
         if (pSource.is(FTZDamageTypeTags.NO_HURT_SOUND)) ci.cancel();
-        if (pSource.is(FTZDamageTypes.BLEEDING) && (neoForgeFantazia$entity.tickCount & 10) == 0) LivingEffectGetter.acceptConsumer(neoForgeFantazia$entity, HaemorrhageEffect.class, HaemorrhageEffect::emitSound);
-        Collection<MobEffectInstance> instanceCollection = neoForgeFantazia$entity.getActiveEffects();
+        if (pSource.is(FTZDamageTypes.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) LivingEffectGetter.acceptConsumer(fantazia$entity, HaemorrhageEffect.class, HaemorrhageEffect::emitSound);
+        Collection<MobEffectInstance> instanceCollection = fantazia$entity.getActiveEffects();
         for (MobEffectInstance instance : instanceCollection) if (FTZMobEffectTags.hasTag(instance.getEffect(), FTZMobEffectTags.BARRIER)) ci.cancel();
     }
+
     @Inject(at = @At(value = "HEAD"), method = "onItemPickup", cancellable = true)
     protected void pickUp(ItemEntity pItemEntity, CallbackInfo ci) {
-        if (!FTZHooks.ForgeExtension.onLivingPickUpItem(neoForgeFantazia$entity, pItemEntity)) ci.cancel();
+        if (!FTZHooks.ForgeExtension.onLivingPickUpItem(fantazia$entity, pItemEntity)) ci.cancel();
     }
+
     @Inject(at = @At(value = "HEAD"), method = "removeEffectsCuredBy", cancellable = true, remap = false)
     private void milkBucket(EffectCure cure, CallbackInfoReturnable<Boolean> cir) {
-        EffectCleansing.tryCleanseAll(neoForgeFantazia$entity, Cleanse.BASIC);
+        EffectCleansing.tryCleanseAll(fantazia$entity, Cleanse.BASIC);
         cir.setReturnValue(false);
     }
+
     @Inject(at = @At("HEAD"), method = "doHurtTarget", cancellable = true)
     private void cancelAttack(Entity pTarget, CallbackInfoReturnable<Boolean> cir) {
-        if (neoForgeFantazia$entity.hasEffect(FTZMobEffects.DISARM)) cir.setReturnValue(false);
+        if (fantazia$entity.hasEffect(FTZMobEffects.DISARM)) cir.setReturnValue(false);
     }
+
     @Inject(at = @At("HEAD"), method = "getAttackAnim", cancellable = true)
     private void attackAnim(float pPartialTick, CallbackInfoReturnable<Float> cir) {
-        DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(neoForgeFantazia$entity, DisarmEffect.class);
+        DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(fantazia$entity, DisarmEffect.class);
         if (disarmEffect != null && disarmEffect.renderDisarm()) cir.setReturnValue(0f);
     }
+
     @Inject(at = @At(value = "HEAD"), method = "onClimbable", cancellable = true)
     private void climbWall(CallbackInfoReturnable<Boolean> cir) {
-        if (!(neoForgeFantazia$entity instanceof Player player)) return;
+        if (!(fantazia$entity instanceof Player player)) return;
         DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
         if (dashHolder != null && dashHolder.isDashing()) return;
-        if (TalentHelper.hasTalent(player, Fantazia.res("wall_climbing")) && neoForgeFantazia$horizontalCollision()) cir.setReturnValue(true);
+        if (fantazia$shouldBeClimbing(player)) cir.setReturnValue(true);
     }
+
     @Unique
-    private boolean neoForgeFantazia$horizontalCollision() {
-        AABB bb = neoForgeFantazia$entity.getBoundingBox().inflate(0.2,0,0.2);
+    private boolean fantazia$shouldBeClimbing(Player player) {
+        AABB bb = fantazia$entity.getBoundingBox().inflate(0.2,0,0.2);
         int mX = Mth.floor(bb.minX);
-          int mY = Mth.floor(bb.minY);
+        int mY = Mth.floor(bb.minY);
         int mZ = Mth.floor(bb.minZ);
-        for (int y2 = mY; y2 < bb.maxY; y2++) for (int x2 = mX; x2 < bb.maxX; x2++) for (int z2 = mZ; z2 < bb.maxZ; z2++) if (level().getBlockState(new BlockPos(x2, y2, z2)).isSolid()) return true;
+        for (int y = mY; y < bb.maxY; y++) for (int x = mX; x < bb.maxX; x++) for (int z = mZ; z < bb.maxZ; z++) if (fantazia$fitForClimbing(level().getBlockState(new BlockPos(x, y, z)), player)) return true;
         return false;
+    }
+
+    @Unique
+    private boolean fantazia$fitForClimbing(BlockState state, Player player) {
+        if (FantazicCombat.isPhasing(player)) return false;
+        if (state.isSolid() && TalentHelper.hasTalent(player, Fantazia.res("spider_powers/wall_climbing"))) return true;
+        else return (state.is(Blocks.COBWEB) && TalentHelper.hasTalent(player, Fantazia.res("spider_powers/cobweb_climbing")));
     }
 }

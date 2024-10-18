@@ -13,6 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -24,14 +25,18 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomCriteriaHolder extends PlayerAbilityHolder {
 
     // a list of items that were in player's inventory at some point
     private final List<Item> obtainedItems = Lists.newArrayList();
 
-    // a list of items with a certain tag that were in player's inventory at one points
+    // each value a list of items with a certain tag that were in player's inventory at one points
     private final Map<TagKey<Item>, List<Item>> obtainedTaggedItems = Maps.newHashMap();
+
+    // string is an identifier of certain "action" performed by player, while integer value shows how many times the action was performed
+    private final Map<ResourceLocation, AtomicInteger> timesPerformed = Maps.newHashMap();
 
     public CustomCriteriaHolder(@NotNull Player player) {
         super(player, Fantazia.res("custom_criteria"));
@@ -57,6 +62,15 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
         }
         tag.put("obtainedTaggedItems", itemsByTag);
 
+        ListTag performedTag = new ListTag();
+        for (Map.Entry<ResourceLocation, AtomicInteger> entry : timesPerformed.entrySet()) {
+            CompoundTag actionTag = new CompoundTag();
+            actionTag.putString("action", entry.getKey().toString());
+            actionTag.putInt("amount", entry.getValue().intValue());
+            performedTag.add(actionTag);
+        }
+        tag.put("timesPerformed", performedTag);
+
         return tag;
     }
 
@@ -64,11 +78,12 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
         obtainedItems.clear();
         obtainedTaggedItems.clear();
+        timesPerformed.clear();
 
-        ListTag items = tag.getList("obtainedItems", ListTag.TAG_STRING);
+        ListTag items = tag.getList("obtainedItems", Tag.TAG_STRING);
         for (int i = 0; i < items.size(); i++) obtainedItems.add(BuiltInRegistries.ITEM.get(ResourceLocation.parse(items.getString(i))));
 
-        ListTag itemsByTag = tag.getList("obtainedTaggedItems", ListTag.TAG_COMPOUND);
+        ListTag itemsByTag = tag.getList("obtainedTaggedItems", Tag.TAG_COMPOUND);
         for (int i = 0; i < itemsByTag.size(); i++) {
             CompoundTag entryTag = itemsByTag.getCompound(i);
 
@@ -77,10 +92,16 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
             TagKey<Item> itemTagKey = TagKey.create(Registries.ITEM, tagLocation);
 
             List<Item> itemList = Lists.newArrayList();
-            ListTag itemsTag = entryTag.getList("items", ListTag.TAG_STRING);
+            ListTag itemsTag = entryTag.getList("items", Tag.TAG_STRING);
             for (int j = 0; j < itemsTag.size(); j++) itemList.add(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemsTag.getString(j))));
 
             getOrCreateTagList(itemTagKey).addAll(itemList);
+        }
+
+        ListTag performedTag = tag.getList("timesPerformed", Tag.TAG_COMPOUND);
+        for (int i = 0; i < performedTag.size(); i++) {
+            CompoundTag actionTag = performedTag.getCompound(i);
+            timesPerformed.put(ResourceLocation.parse(actionTag.getString("action")), new AtomicInteger(actionTag.getInt("amount")));
         }
     }
 
@@ -88,6 +109,7 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
     public CompoundTag syncSerialize() {
         return new CompoundTag();
     }
+
     @Override
     public void syncDeserialize(CompoundTag tag) {}
 
@@ -112,8 +134,17 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
         if (getPlayer() instanceof ServerPlayer serverPlayer) PossessItemTrigger.INSTANCE.trigger(serverPlayer,this);
     }
 
+    public AtomicInteger getActionAmount(ResourceLocation action) {
+        return timesPerformed.computeIfAbsent(action, location -> new AtomicInteger(0));
+    }
+
+    public int performAction(ResourceLocation action, int delta) {
+        return getActionAmount(action).addAndGet(delta);
+    }
+
     public void reset() {
         obtainedItems.clear();
         obtainedTaggedItems.clear();
+        timesPerformed.clear();
     }
 }

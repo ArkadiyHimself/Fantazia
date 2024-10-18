@@ -6,8 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.data.talent.TalentType;
-import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -24,9 +25,9 @@ public class TalentManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
 
     // talent's id || talent itself
-    private static final Map<ResourceLocation, BasicTalent> TALENTS = Maps.newHashMap();
+    private static final Map<ResourceLocation, ITalent> TALENTS = Maps.newHashMap();
     public TalentManager() {
-        super(GSON,"talent_reload/talent");
+        super(GSON, Fantazia.MODID + "/talent_reload/talent");
     }
 
     @Override
@@ -38,20 +39,20 @@ public class TalentManager extends SimpleJsonResourceReloadListener {
     private static void readTalent(ResourceLocation id, JsonElement jsonElement) {
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         String ident = jsonObject.get("type").getAsString();
-        BasicTalent talent = GSON.fromJson(jsonElement, TalentType.byId(ident).getBuilderClass()).build();
+        ITalent talent = GSON.fromJson(jsonElement, TalentType.byId(ident).getBuilderClass()).readExtra(jsonElement.getAsJsonObject()).build(id);
         TALENTS.put(id, talent);
     }
 
-    public static ImmutableMap<ResourceLocation, BasicTalent> getTalents() {
+    public static ImmutableMap<ResourceLocation, ITalent> getTalents() {
         return ImmutableMap.copyOf(TALENTS);
     }
 
-    public static void addAttributeTalent(ResourceLocation id, BasicTalent talent) {
+    public static void addAttributeTalent(ResourceLocation id, ITalent talent) {
         TALENTS.put(id, talent);
     }
 
-    public static @Nullable AdvancementHolder getAdvancement(BasicTalent talent, MinecraftServer server) {
-        ResourceLocation advID = talent.getAdvancement();
+    public static @Nullable AdvancementHolder getAdvancement(ITalent talent, MinecraftServer server) {
+        ResourceLocation advID = talent.getProperties().advancement();
         if (advID == null) return null;
         return server.getAdvancements().get(advID);
     }

@@ -25,6 +25,10 @@ public class FTZPotions {
     public static final DeferredHolder<Potion, Potion> FURY = register("fury","fury", FTZMobEffects.FURY, 900, 0);
     public static final DeferredHolder<Potion, Potion> LONG_FURY = register("long_fury","fury", FTZMobEffects.FURY, 1800, 0);
 
+    public static final DeferredHolder<Potion, Potion> CORROSION = register("corrosion", "corrosion", FTZMobEffects.CORROSION, 1200, 0);
+    public static final DeferredHolder<Potion, Potion> LONG_CORROSION = register("long_corrosion", "corrosion", FTZMobEffects.CORROSION, 3000, 0);
+    public static final DeferredHolder<Potion, Potion> STRONG_CORROSION = register("strong_corrosion", "corrosion", FTZMobEffects.CORROSION, 600, 1);
+
     private static DeferredHolder<Potion, Potion> register(String string, String name, Holder<MobEffect> effect, int duration, int amplifier) {
         return REGISTER.register(string, () -> new Potion(name, new MobEffectInstance(effect, duration, amplifier)));
     }

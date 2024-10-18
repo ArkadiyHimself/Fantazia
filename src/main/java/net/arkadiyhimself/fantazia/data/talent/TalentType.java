@@ -1,8 +1,6 @@
 package net.arkadiyhimself.fantazia.data.talent;
 
-import net.arkadiyhimself.fantazia.data.talent.types.AttributeTalent;
-import net.arkadiyhimself.fantazia.data.talent.types.BasicTalent;
-import net.arkadiyhimself.fantazia.data.talent.types.CurioTalent;
+import net.arkadiyhimself.fantazia.data.talent.types.*;
 
 public enum TalentType {
 
@@ -10,7 +8,7 @@ public enum TalentType {
     ATTRIBUTE(AttributeTalent.Builder.class,"attribute_modifier"),
     CURIOS(CurioTalent.Builder.class, "curios_modifier");
 
-    private final Class<?> builderClass;
+    private final Class<? extends ITalentBuilder<? extends ITalent>> builderClass;
     private final String ident;
 
     TalentType(Class<? extends ITalentBuilder<?>> builderClass, String ident) {
@@ -19,7 +17,7 @@ public enum TalentType {
     }
 
     public Class<? extends ITalentBuilder<?>> getBuilderClass() {
-        return (Class<? extends ITalentBuilder<?>>) this.builderClass;
+        return this.builderClass;
     }
 
     public static TalentType byId(String ident) {

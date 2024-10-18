@@ -15,62 +15,72 @@ import java.util.function.Function;
  * Each element can only have up to one parent and up to one child, like chains going one after another
  */
 public class ChainHierarchy<T> extends MonoHierarchy<T> {
+
     /**
      * An ordered collection of elements of hierarchy, where the first element is the main one
      * <br>
      * Each element is a «parent» of the next one and a «child» of the previous one
      */
     private final List<T> ELEMENTS = Lists.newArrayList();
+
     public ChainHierarchy(@NotNull T MAIN) {
         super(MAIN);
         if (this instanceof ChaoticHierarchy<T>) return;
         ELEMENTS.add(MAIN);
     }
+
     public static <M> ChainHierarchy<M> of(List<M> elements) throws HierarchyException {
         if (elements.isEmpty()) throw new HierarchyException("Hierarchy can not be empty!");
-        ChainHierarchy<M> hierarchy = new ChainHierarchy<>(elements.get(0));
+        ChainHierarchy<M> hierarchy = new ChainHierarchy<>(elements.getFirst());
         if (elements.size() <= 1) return hierarchy;
         for (int i = 1; i < elements.size(); i++) hierarchy.addElement(elements.get(i));
         return hierarchy;
     }
+
     public static <M> ChainHierarchy<M> of(M[] elements) {
         return of(Arrays.stream(elements).toList());
     }
     @Override
     public @Nullable T getParent(T element) throws HierarchyException {
-        if (!contains(element)) throw new HierarchyException("The hierarchy does not contain this element");
+        if (!contains(element)) throw new HierarchyException("The hierarchy does not contain this element: " + element);
         int i = ELEMENTS.indexOf(element);
         return i <= 0 ? null : ELEMENTS.get(i - 1);
     }
+
     @Override
     public @Nullable T getChild(T element) {
-        if (!contains(element)) throw new HierarchyException("The hierarchy does not contain this element");
+        if (!contains(element)) throw new HierarchyException("The hierarchy does not contain this element: " + element);
         int i = ELEMENTS.indexOf(element);
         return i >= getSize() ? null : ELEMENTS.get(i + 1);
     }
+
     @Override
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean contains(T t) {
         return ELEMENTS.contains(t);
     }
+
     @Override
     public <M> ChainHierarchy<M> transform(@NotNull Function<T, M> transformer) throws HierarchyException {
         List<M> newList = Lists.newArrayList();
         for (T element : ELEMENTS) {
             M newElement = transformer.apply(element);
             if (newElement == null) throw new HierarchyException("Hierarchy's element can not be null");
-            if (newList.contains(newElement)) throw new HierarchyException("The hierarchy does not contain this element");
+            if (newList.contains(newElement)) throw new HierarchyException("The hierarchy already contains this element: " + newElement);
             newList.add(newElement);
         }
         return of(newList);
     }
+
     @Override
     public ImmutableList<T> getElements() {
         return ImmutableList.copyOf(ELEMENTS);
     }
+
     public int getSize() {
         return ELEMENTS.size();
     }
+
     public void addElement(T t) {
         ELEMENTS.add(t);
     }

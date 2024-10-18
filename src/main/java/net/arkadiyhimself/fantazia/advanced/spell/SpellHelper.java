@@ -35,7 +35,7 @@ import java.util.function.Predicate;
 
 public class SpellHelper {
 
-    public enum TargetedResult {
+    public enum TargetedCastResult {
         DEFAULT, REFLECTED, BLOCKED
     }
 
@@ -58,9 +58,9 @@ public class SpellHelper {
 
         boolean blocked = false;
         if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
-            TargetedResult result = spellDeflecting(target);
-            blocked = result == TargetedResult.REFLECTED || result == TargetedResult.BLOCKED;
-            if (result == TargetedResult.REFLECTED && !spell.is(FTZSpellTags.NOT_REFLECTABLE) && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
+            TargetedCastResult result = getTargetedCastResult(target);
+            blocked = result == TargetedCastResult.REFLECTED || result == TargetedCastResult.BLOCKED;
+            if (result == TargetedCastResult.REFLECTED && !spell.is(FTZSpellTags.NOT_REFLECTABLE) && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
         }
 
         if (!blocked) spell.afterBlockCheck(caster, target);
@@ -86,9 +86,9 @@ public class SpellHelper {
         spell.beforeBlockCheck(caster, target);
         boolean blocked = false;
         if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
-            TargetedResult result = spellDeflecting(target);
-            blocked = result == TargetedResult.REFLECTED || result == TargetedResult.BLOCKED;
-            if (result == TargetedResult.REFLECTED && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
+            TargetedCastResult result = getTargetedCastResult(target);
+            blocked = result == TargetedCastResult.REFLECTED || result == TargetedCastResult.BLOCKED;
+            if (result == TargetedCastResult.REFLECTED && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
         }
         if (!blocked) spell.afterBlockCheck(caster, target);
         return target;
@@ -103,33 +103,33 @@ public class SpellHelper {
             spell.beforeBlockCheck(caster, target);
             boolean blocked = false;
             if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
-                TargetedResult result = spellDeflecting(target);
-                blocked = result == TargetedResult.REFLECTED || result == TargetedResult.BLOCKED;
-                if (result == TargetedResult.REFLECTED && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
+                TargetedCastResult result = getTargetedCastResult(target);
+                blocked = result == TargetedCastResult.REFLECTED || result == TargetedCastResult.BLOCKED;
+                if (result == TargetedCastResult.REFLECTED && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
             }
             if (!blocked) spell.afterBlockCheck(caster, target);
         }
         return newTargets;
     }
 
-    public static TargetedResult spellDeflecting(LivingEntity target) {
+    public static TargetedCastResult getTargetedCastResult(LivingEntity target) {
         if (target instanceof ServerPlayer serverPlayer && hasActiveSpell(serverPlayer, FTZSpells.REFLECT)) {
             PlayerAbilityGetter.acceptConsumer(serverPlayer, ClientValuesHolder.class, ClientValuesHolder::onMirrorActivation);
-            return TargetedResult.REFLECTED;
+            return TargetedCastResult.REFLECTED;
         }
 
         boolean reflect = target.hasEffect(FTZMobEffects.REFLECT);
         boolean deflect = target.hasEffect(FTZMobEffects.DEFLECT);
 
-        if (reflect) EffectCleansing.forceCleanse(target, FTZMobEffects.REFLECT);
-        else if (deflect) EffectCleansing.forceCleanse(target, FTZMobEffects.DEFLECT);
-        else return TargetedResult.DEFAULT;
+        if (reflect) EffectCleansing.reduceLevel(target, FTZMobEffects.REFLECT);
+        else if (deflect) EffectCleansing.reduceLevel(target, FTZMobEffects.DEFLECT);
+        else return TargetedCastResult.DEFAULT;
 
         for (int i = 0; i < 20 + Minecraft.getInstance().options.particles().get().getId() * 20; i++) VisualHelper.randomParticleOnModel(target, ParticleTypes.ENCHANT, VisualHelper.ParticleMovement.REGULAR);
 
         target.level().playSound(null, target.blockPosition(), reflect ? FTZSoundEvents.EFFECT_REFLECT.get() : FTZSoundEvents.EFFECT_DEFLECT.get(), SoundSource.PLAYERS);
 
-        return reflect ? TargetedResult.REFLECTED : TargetedResult.BLOCKED;
+        return reflect ? TargetedCastResult.REFLECTED : TargetedCastResult.BLOCKED;
     }
 
     public static boolean wardenSonicBoom(LivingIncomingDamageEvent event) {
@@ -149,8 +149,8 @@ public class SpellHelper {
         boolean reflect = target.hasEffect(FTZMobEffects.REFLECT);
         boolean deflect = target.hasEffect(FTZMobEffects.DEFLECT);
 
-        if (reflect) EffectCleansing.forceCleanse(target, FTZMobEffects.REFLECT);
-        else if (deflect) EffectCleansing.forceCleanse(target, FTZMobEffects.DEFLECT);
+        if (reflect) EffectCleansing.reduceLevel(target, FTZMobEffects.REFLECT);
+        else if (deflect) EffectCleansing.reduceLevel(target, FTZMobEffects.DEFLECT);
         else return false;
 
         event.setCanceled(true);
@@ -188,7 +188,9 @@ public class SpellHelper {
     }
 
     public static List<LivingEntity> getTargets(@NotNull LivingEntity caster, float radius, float range, boolean ignoreObstacles) {
-        Vector3 head = Vector3.fromEntityCenter(caster);
+        Vector3 casterCenter = Vector3.fromEntityCenter(caster);
+        Vector3 head;
+
         List<LivingEntity> entities = new ArrayList<>();
 
         AttributeInstance castRange = caster.getAttribute(FTZAttributes.CAST_RANGE_ADDITION);
@@ -196,7 +198,7 @@ public class SpellHelper {
         float finalRange = range + addRange;
 
         for (int distance = 1; distance < finalRange; ++distance) {
-            head = head.add(new Vector3(caster.getLookAngle()).multiply(distance)).add(0.0, 0.5, 0.0);
+            head = casterCenter.add(new Vector3(caster.getLookAngle().normalize()).multiply(distance)).add(0.0, 0.5, 0.0);
             List<LivingEntity> list = caster.level().getEntitiesOfClass(LivingEntity.class, new AABB(head.x - radius, head.y - radius, head.z - radius, head.x + radius, head.y + radius, head.z + radius));
             list.removeIf(entity -> (entity == caster || (!caster.hasLineOfSight(entity) && !(ignoreObstacles && Minecraft.getInstance().shouldEntityAppearGlowing(entity)))));
             entities.addAll(list);
@@ -204,8 +206,8 @@ public class SpellHelper {
 
         return entities;
     }
-    @Nullable
-    public static <T extends LivingEntity>  T getClosestEntity(List<T> entities, LivingEntity player) {
+
+    public static <T extends LivingEntity> @Nullable T getClosestEntity(List<T> entities, LivingEntity player) {
         if (entities.isEmpty()) return null;
         if (entities.size() == 1) return entities.getFirst();
         Map<Double, T> livingEntityMap = new HashMap<>();

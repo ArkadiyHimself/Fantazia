@@ -5,7 +5,7 @@
       "conditions" : {
         "talents" : [
           {
-            "talents" : ["fantazia:dash3"]
+            "talents" : ["fantazia:dash/dash3"]
           }
         ]
       }

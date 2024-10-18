@@ -1,0 +1,8 @@
+{
+  "hierarchy": "chaotic",
+  "tab": "fantazia:spellcasting",
+  "values" : [
+    "fantazia:spellcasting2/cast_range_add",
+    "fantazia:spellcasting2/aura_range_add"
+  ]
+}

@@ -113,10 +113,10 @@ public class LivingEffectManager implements IHolderManager<ILivingEffect, Living
     }
 
     public void provide() {
+        putHolder(AbsoluteBarrierEffect::new);
         putHolder(StunEffect::new);
         putHolder(BarrierEffect::new);
         putHolder(LayeredBarrierEffect::new);
-        putHolder(AbsoluteBarrierEffect::new);
         putHolder(FuryEffect::new);
         putHolder(FrozenEffect::new);
         putHolder(DisarmEffect::new);

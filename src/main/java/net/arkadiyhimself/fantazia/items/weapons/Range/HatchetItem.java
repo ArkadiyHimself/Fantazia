@@ -75,7 +75,7 @@ public class HatchetItem extends TieredItem {
                 pLevel.addFreshEntity(hatchetEnt);
                 pLevel.playSound(null, hatchetEnt, FTZSoundEvents.HATCHET_THROW.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 player.awardStat(Stats.ITEM_USED.get(pStack.getItem()));
-                if (!player.getAbilities().instabuild) player.getInventory().removeItem(pStack);
+                if (!player.hasInfiniteMaterials()) player.getInventory().removeItem(pStack);
             }
         }
     }

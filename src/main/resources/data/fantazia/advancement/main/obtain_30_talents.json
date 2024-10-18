@@ -1,0 +1,30 @@
+{
+  "parent" : "fantazia:main/obtain_15_talents",
+  "criteria" : {
+    "talent_obtain": {
+      "trigger": "fantazia:talent_obtain",
+      "conditions" : {
+        "talents" : [
+          {
+            "amount" : 30
+          }
+        ]
+      }
+    }
+  },
+  "display" : {
+    "hidden" : true,
+    "frame": "challenge",
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.fantazia.obtain_30_talents.desc"
+    },
+    "icon": {
+      "id": "minecraft:nether_star"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.obtain_30_talents"
+    }
+  }
+}

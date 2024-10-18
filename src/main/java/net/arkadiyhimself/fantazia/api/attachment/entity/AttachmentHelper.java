@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity;
 
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.LivingDataUpdateS2C;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.LivingEffectUpdateS2C;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.PlayerAbilityUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.LivingDataUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.LivingEffectUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.PlayerAbilityUpdateS2C;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;

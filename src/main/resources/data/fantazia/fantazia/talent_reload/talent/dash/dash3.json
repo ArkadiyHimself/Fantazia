@@ -1,0 +1,11 @@
+{
+  "type" : "basic",
+  "iconTexture" : "fantazia:textures/talents/dash/dash3.png",
+  "title" : "fantazia.talent.dash.dash3",
+  "wisdom": 0,
+  "advancement" : "fantazia:ftz_talents/dash/dash3",
+
+  "damage_immunities" : [
+    "minecraft:in_wall"
+  ]
+}

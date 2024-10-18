@@ -1,27 +1,20 @@
 package net.arkadiyhimself.fantazia.data.talent.types;
 
-import net.arkadiyhimself.fantazia.data.talent.ITalentBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
-import java.util.Map;
 import java.util.Optional;
 
-public class CurioTalent extends BasicTalent {
+public record CurioTalent(BasicProperties properties, String ident, int amount) implements ITalent {
 
-    private final String ident;
-    private final int amount;
-
-    public CurioTalent(ResourceLocation iconTexture, String title, int wisdom, @Nullable ResourceLocation advancement, String ident, int amount) {
-        super(iconTexture, title, wisdom, advancement);
-        this.ident = ident;
-        this.amount = amount;
+    @Override
+    public BasicProperties getProperties() {
+        return properties;
     }
 
     @Override
@@ -48,27 +41,26 @@ public class CurioTalent extends BasicTalent {
         handler.update();
     }
 
-    public static class Builder implements ITalentBuilder<CurioTalent> {
+    @Override
+    public String toString() {
+        return "CurioTalent{" + getID() + "}";
+    }
 
-        private final ResourceLocation iconTexture;
-        private final String title;
-        private final int wisdom;
-        private final ResourceLocation advancement;
+    public static class Builder extends ITalentBuilder.AbstractBuilder<CurioTalent> {
+
         private final String ident;
         private final int amount;
 
-        public Builder(ResourceLocation advancement, ResourceLocation iconTexture, String title, int wisdom, String ident, int amount) {
-            this.advancement = advancement;
-            this.iconTexture = iconTexture;
-            this.title = title;
-            this.wisdom = wisdom;
+        public Builder(ResourceLocation iconTexture, String title, int wisdom, ResourceLocation advancement, String ident, int amount) {
+            super(iconTexture, title, wisdom, advancement);
+
             this.ident = ident;
             this.amount = amount;
         }
 
         @Override
-        public CurioTalent build() {
-            return new CurioTalent(iconTexture, title, wisdom, advancement, ident, amount);
+        public CurioTalent build(ResourceLocation identifier) {
+            return new CurioTalent(buildProperties(identifier), ident, amount);
         }
     }
 }

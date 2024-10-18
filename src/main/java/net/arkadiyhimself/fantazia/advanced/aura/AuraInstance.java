@@ -2,13 +2,17 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.dynamicattributemodifying.DynamicAttributeModifier;
+import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.FantazicRegistry;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
 import net.arkadiyhimself.fantazia.events.FTZHooks;
+import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -26,11 +30,13 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 public class AuraInstance<T extends Entity> {
+
     private final List<T> supposedlyInside = Lists.newArrayList();
     private final List<DynamicAttributeModifier> dynamicAttributeModifiers = Lists.newArrayList();
     @NotNull
@@ -39,6 +45,7 @@ public class AuraInstance<T extends Entity> {
     private Vec3 center;
     private final BasicAura<T> aura;
     private boolean removed = false;
+
     public AuraInstance(@NotNull Entity owner, BasicAura<T> aura) {
         this.level = owner.level();
         this.owner = owner;
@@ -48,20 +55,19 @@ public class AuraInstance<T extends Entity> {
         if (level instanceof ServerLevel) LevelAttributesGetter.acceptConsumer(level, AurasInstancesHolder.class, aurasInstancesHolder -> aurasInstancesHolder.addAuraInstance(this));
 
         for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : this.aura.getDynamicAttributeModifiers().entrySet()) {
-            Function<LivingEntity, Float> percent = (entity -> {
-                double distance = entity.distanceTo(getOwner());
-                double rad = aura.getRadius();
-                return 1 - (float) ((float) distance / rad);
-            });
-            dynamicAttributeModifiers.add(new DynamicAttributeModifier(entry.getKey(), entry.getValue(), percent));
+            Function<LivingEntity, Float> floatFunction = (entity -> 1 - (entity.distanceTo(getOwner()) / getActualRange()));
+            dynamicAttributeModifiers.add(new DynamicAttributeModifier(entry.getKey(), entry.getValue(), floatFunction));
         }
     }
+
     public BasicAura<T> getAura() {
         return aura;
     }
+
     public Level getLevel() {
         return level;
     }
+
     public void tick() {
         if (removed) return;
         FTZHooks.onAuraTick(this);
@@ -81,9 +87,11 @@ public class AuraInstance<T extends Entity> {
         if (aura.ownerCond(owner)) aura.ownerTick(owner);
         if (!level.isClientSide()) blocksInside().forEach(blockPos -> aura.blockTick(blockPos, this));
     }
+
     public SphereBox getSphericalBox() {
-        return new SphereBox(aura.getRadius(), this.center);
+        return new SphereBox(getActualRange(), this.center);
     }
+
     public List<T> entitiesInside() {
         Class<T> type = aura.affectedClass();
         List<Entity> entities = getSphericalBox().entitiesInside(level);
@@ -91,12 +99,15 @@ public class AuraInstance<T extends Entity> {
         for (Entity entity : entities) if (type.isInstance(entity)) inside.add(type.cast(entity));
         return inside;
     }
+
     public List<BlockPos> blocksInside() {
         return getSphericalBox().blocksInside(level);
     }
+
     public @NotNull Entity getOwner() {
         return owner;
     }
+
     public void enterAura(T entity) {
         FTZHooks.onAuraEnter(this, entity);
         if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.literal("entered"));
@@ -105,21 +116,25 @@ public class AuraInstance<T extends Entity> {
         if (!(entity instanceof LivingEntity livingEntity)) return;
         applyModifiers(livingEntity);
     }
+
     public void exitAura(T entity) {
         FTZHooks.onAuraExit(this, entity);
         if (getOwner() instanceof Player player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.literal("left"));
         if (!(entity instanceof LivingEntity livingEntity)) return;
         removeModifiers(livingEntity);
     }
+
     public boolean notInside(Entity entity) {
         if (!aura.affectedClass().isInstance(entity) && !Fantazia.DEVELOPER_MODE) return true;
         return !supposedlyInside.contains(aura.affectedClass().cast(entity));
     }
+
     public void discard() {
         LevelAttributesGetter.acceptConsumer(level, AurasInstancesHolder.class, aurasInstancesHolder -> aurasInstancesHolder.removeAuraInstance(this));
         this.removed = true;
         entitiesInside().forEach(this::exitAura);
     }
+
     public void removeModifiers(LivingEntity livingEntity) {
         for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : aura.getAttributeModifiers().entrySet()) {
             AttributeInstance instance = livingEntity.getAttribute(entry.getKey());
@@ -130,6 +145,7 @@ public class AuraInstance<T extends Entity> {
         if (damHolder == null) return;
         dynamicAttributeModifiers.forEach(damHolder::removeDAM);
     }
+
     public void applyModifiers(LivingEntity livingEntity) {
         for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : aura.getAttributeModifiers().entrySet()) {
             AttributeInstance instance = livingEntity.getAttribute(entry.getKey());
@@ -140,12 +156,14 @@ public class AuraInstance<T extends Entity> {
         if (damHolder == null) return;
         dynamicAttributeModifiers.forEach(damHolder::addDAM);
     }
+
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
         tag.putString("aura", this.aura.getID().toString());
         tag.putInt("owner", this.owner.getId());
         return tag;
     }
+
     public static AuraInstance<? extends Entity> deserialize(CompoundTag tag, Level level) {
         ResourceLocation auraID = ResourceLocation.parse(tag.getString("aura"));
         int ownerID = tag.getInt("owner");
@@ -157,5 +175,13 @@ public class AuraInstance<T extends Entity> {
         else if (owner == null) throw new IllegalStateException("Could not resolve owner");
 
         return new AuraInstance<>(owner, aura);
+    }
+
+    private float getActualRange() {
+        float initial = aura.getRadius();
+        if (!(owner instanceof LivingEntity livingEntity)) return initial;
+
+        AttributeInstance addition = livingEntity.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
+        return addition == null ? initial : initial + (float) addition.getValue();
     }
 }

@@ -1,0 +1,28 @@
+{
+  "parent" : "fantazia:main/obtain_1_talent",
+  "criteria" : {
+    "talent_obtain": {
+      "trigger": "fantazia:talent_obtain",
+      "conditions" : {
+        "talents" : [
+          {
+            "amount" : 15
+          }
+        ]
+      }
+    }
+  },
+  "display" : {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.fantazia.obtain_15_talents.desc"
+    },
+    "icon": {
+      "id": "minecraft:diamond"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.obtain_15_talents"
+    }
+  }
+}

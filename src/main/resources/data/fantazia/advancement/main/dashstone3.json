@@ -15,7 +15,7 @@
         },
         "item": {
           "items": [
-            "id:dashstone3"
+            "fantazia:dashstone3"
           ]
         }
       }
@@ -29,7 +29,7 @@
     "frame": "goal",
     "hidden": true,
     "icon": {
-      "item": "fantazia:dashstone3"
+      "id": "fantazia:dashstone3"
     },
     "show_toast": true,
     "title": {

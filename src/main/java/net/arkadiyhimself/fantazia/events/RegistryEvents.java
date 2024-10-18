@@ -18,14 +18,14 @@ import net.arkadiyhimself.fantazia.client.renderers.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.data.tags.HealingTypeTagsProvider;
 import net.arkadiyhimself.fantazia.data.tags.MobEffectTagsProvider;
 import net.arkadiyhimself.fantazia.data.tags.SpellTagProvider;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_modify.EntityMadeSoundS2C;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_modify.SoundExpiredS2C;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_modify.TalentBuyingC2S;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.LevelAttributesUpdateS2C;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.LivingDataUpdateS2C;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.LivingEffectUpdateS2C;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.PlayerAbilityUpdateS2C;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.*;
+import net.arkadiyhimself.fantazia.packets.attachment_modify.EntityMadeSoundS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_modify.SoundExpiredS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_modify.TalentBuyingC2S;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.LevelAttributesUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.LivingDataUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.LivingEffectUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.PlayerAbilityUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.*;
 import net.arkadiyhimself.fantazia.particless.particles.*;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.minecraft.client.model.EntityModel;
@@ -119,6 +119,7 @@ public class RegistryEvents {
         event.add(EntityType.PLAYER, FTZAttributes.MAX_STAMINA);
         event.add(EntityType.PLAYER, FTZAttributes.CAST_RANGE_ADDITION);
         event.add(EntityType.PLAYER, FTZAttributes.RECHARGE_MULTIPLIER);
+        event.add(EntityType.PLAYER, FTZAttributes.AURA_RANGE_ADDITION);
         for (EntityType<? extends LivingEntity> entityType : event.getTypes()) {
             event.add(entityType, FTZAttributes.MAX_STUN_POINTS);
             event.add(entityType, FTZAttributes.LIFESTEAL);
@@ -158,7 +159,7 @@ public class RegistryEvents {
         event.registerAboveAll(Fantazia.res("auras"), FTZGuis.AURAS);
         event.registerAboveAll(Fantazia.res("developer_mode"), FTZGuis.DEVELOPER_MODE);
         event.registerBelowAll(Fantazia.res("frozen_effect"), FTZGuis.FROZEN_EFFECT);
-        event.registerBelowAll(Fantazia.res("fury_veins"), FTZGuis.FURY_VEINS);
+        event.registerAboveAll(Fantazia.res("fury_veins"), FTZGuis.FURY_VEINS);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -288,7 +289,7 @@ public class RegistryEvents {
         // stuff
         registrar.playToClient(AddParticleS2C.TYPE, AddParticleS2C.CODEC, AddParticleS2C::handle);
         registrar.playToClient(ChasingParticleS2C.TYPE, ChasingParticleS2C.CODEC, ChasingParticleS2C::handle);
-        registrar.playToClient(KickOutOfGuiS2C.TYPE, KickOutOfGuiS2C.CODEC, KickOutOfGuiS2C::handle);
+        registrar.playToClient(InterruptPlayerS2C.TYPE, InterruptPlayerS2C.CODEC, InterruptPlayerS2C::handle);
         registrar.playToServer(KeyInputC2S.TYPE, KeyInputC2S.CODEC, KeyInputC2S::handle);
         registrar.playToClient(SwingHandS2C.TYPE, SwingHandS2C.CODEC, SwingHandS2C::handle);
         registrar.playToClient(PlayAnimationS2C.TYPE, PlayAnimationS2C.CODEC, PlayAnimationS2C::handle);

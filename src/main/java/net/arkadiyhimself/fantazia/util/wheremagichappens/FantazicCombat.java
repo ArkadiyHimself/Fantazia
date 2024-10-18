@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
@@ -17,6 +18,7 @@ import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsOnSpawnHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.api.data_component.HiddenPotentialHolder;
+import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.*;
@@ -29,6 +31,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +44,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import java.util.Optional;
@@ -88,6 +91,7 @@ public class FantazicCombat {
         }
         return false;
     }
+
     public static void meleeAttack(LivingDamageEvent.Pre event) {
         boolean meleeAttack = event.getSource().is(DamageTypes.PLAYER_ATTACK) || event.getSource().is(DamageTypes.MOB_ATTACK);
         boolean parry = event.getSource().is(FTZDamageTypes.PARRY);
@@ -113,6 +117,8 @@ public class FantazicCombat {
         if (livingAtt instanceof ServerPlayer player) {
             ItemStack itemStack = player.getMainHandItem();
             if (itemStack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) itemStack.update(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialHolder.DEFAULT, holder -> holder.onAttack(parry, target));
+
+            if (TalentHelper.hasTalent(player, Fantazia.res("spider_powers/poison_attack"))) target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 2));
         }
     }
 
@@ -161,9 +167,5 @@ public class FantazicCombat {
     public static void grantEffectsOnSpawn(LivingEntity livingEntity) {
         if (!(livingEntity.level() instanceof ServerLevel level)) return;
         LevelAttributesGetter.acceptConsumer(level, EffectsOnSpawnHolder.class, effectsOnSpawnHolder -> effectsOnSpawnHolder.tryApplyEffects(livingEntity));
-    }
-
-    public static void killedEntity(Entity killer, LivingEntity victim) {
-
     }
 }

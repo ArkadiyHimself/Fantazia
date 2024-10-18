@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ClientValuesHolder;
 import net.arkadiyhimself.fantazia.api.type.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.PlayAnimationS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;

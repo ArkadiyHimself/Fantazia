@@ -7,7 +7,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.alchemy.Potions;
 
 import java.util.List;
 
@@ -45,5 +44,18 @@ public class EffectCleansing {
         int amplifier = instance.getAmplifier();
         livingEntity.removeEffect(effect);
         if (newDur > 0) livingEntity.addEffect(new MobEffectInstance(effect, newDur, amplifier));
+    }
+
+    public static void reduceLevel(LivingEntity livingEntity, Holder<MobEffect> effect, int level) {
+        MobEffectInstance instance = livingEntity.getEffect(effect);
+        if (instance == null) return;
+        int duration = instance.getDuration();
+        int newAmpl = instance.getAmplifier() - level;
+        livingEntity.removeEffect(effect);
+        if (newAmpl >= 0) livingEntity.addEffect(new MobEffectInstance(effect, duration, newAmpl));
+    }
+
+    public static void reduceLevel(LivingEntity livingEntity, Holder<MobEffect> effect) {
+        reduceLevel(livingEntity, effect, 1);
     }
 }

@@ -15,7 +15,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class LivingEffectHelper {
+
     private LivingEffectHelper() {}
+
     public static float bleedingDamage(LivingEntity entity, Vec3 vec3) {
         float movement = (float) vec3.horizontalDistance() / 1250f;
 
@@ -28,6 +30,7 @@ public class LivingEffectHelper {
         }
         return movement;
     }
+
     public static boolean hasBarrier(LivingEntity livingEntity) {
         BarrierEffect barrierEffect = LivingEffectGetter.takeHolder(livingEntity, BarrierEffect.class);
         if (barrierEffect != null && barrierEffect.hasBarrier()) return true;
@@ -40,14 +43,17 @@ public class LivingEffectHelper {
 
         return false;
     }
+
     public static boolean hurtRedColor(LivingEntity livingEntity) {
         if (hasBarrier(livingEntity)) return false;
         if (livingEntity.getLastDamageSource() != null && livingEntity.getLastDamageSource().is(FTZDamageTypeTags.NOT_TURNING_RED)) return false;
         return true;
     }
-    public static void infiniteEffect(LivingEntity entity, Holder<MobEffect> effect, int level) {
+
+    public static void infiniteEffectWithoutParticles(LivingEntity entity, Holder<MobEffect> effect, int level) {
         effectWithoutParticles(entity, effect, -1, level);
     }
+
     public static void effectWithoutParticles(LivingEntity entity, Holder<MobEffect> effect, int duration, int level) {
         entity.addEffect(new MobEffectInstance(effect, duration, level, true, false, true));
     }
@@ -55,36 +61,47 @@ public class LivingEffectHelper {
     public static void effectWithoutParticles(LivingEntity entity, Holder<MobEffect> effect, int duration) {
         effectWithoutParticles(entity, effect, duration, 0);
     }
+
     public static void makeFurious(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.FURY , duration);
     }
+
     public static void makeStunned(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.STUN , duration);
     }
+
     public static void makeDeaf(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.DEAFENED , duration);
     }
+
     public static void makeDoomed(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.DOOMED , duration);
     }
+
     public static void makeDisarmed(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.DISARM , duration);
     }
+
     public static void makeFrozen(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.FROZEN , duration);
     }
+
     public static void giveBarrier(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.ABSOLUTE_BARRIER , duration);
     }
+
     public static void giveReflect(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.REFLECT , duration);
     }
+
     public static void giveDeflect(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.DEFLECT , duration);
     }
+
     public static void giveHaemorrhage(LivingEntity entity, int duration) {
         effectWithoutParticles(entity, FTZMobEffects.HAEMORRHAGE , duration);
     }
+
     public static void microStun(LivingEntity entity) {
         effectWithoutParticles(entity, FTZMobEffects.MICROSTUN, 1);
     }

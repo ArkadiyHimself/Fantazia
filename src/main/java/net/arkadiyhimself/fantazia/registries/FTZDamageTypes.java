@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 
 public interface FTZDamageTypes {
+
     ResourceKey<DamageType> REMOVAL = register("removal"); // implemented
     ResourceKey<DamageType> BLEEDING = register("bleeding"); // implemented
     ResourceKey<DamageType> FROZEN = register("frozen"); // implemented
@@ -13,6 +14,8 @@ public interface FTZDamageTypes {
     ResourceKey<DamageType> ANCIENT_BURNING = register("ancient_burning"); // implemented
     ResourceKey<DamageType> PARRY = register("parry"); // implemented
     ResourceKey<DamageType> HATCHET = register("hatchet"); // implemented
+    ResourceKey<DamageType> ELECTRIC = register("electric"); // implemented
+
     private static ResourceKey<DamageType> register(String name) {
         return ResourceKey.create(Registries.DAMAGE_TYPE, Fantazia.res(name));
     }}

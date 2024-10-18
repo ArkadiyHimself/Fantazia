@@ -6,8 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.arkadiyhimself.fantazia.data.talent.types.AttributeTalent;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.data.talent.TalentDataException;
+import net.arkadiyhimself.fantazia.data.talent.types.AttributeTalent;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -30,7 +31,7 @@ public class TalentHierarchyManager extends SimpleJsonResourceReloadListener {
     // id of a hierarchy || hierarchy itself, contains ids of talents
     private static final Map<ResourceLocation, IHierarchy<ResourceLocation>> ALL_HIERARCHIES = Maps.newHashMap();
     public TalentHierarchyManager() {
-        super(GSON, "talent_reload/talent_hierarchy");
+        super(GSON, Fantazia.MODID + "/talent_reload/talent_hierarchy");
     }
     public static ImmutableMap<ResourceLocation, IHierarchy<ResourceLocation>> getAllHierarchies() {
         return ImmutableMap.copyOf(ALL_HIERARCHIES);
@@ -47,8 +48,9 @@ public class TalentHierarchyManager extends SimpleJsonResourceReloadListener {
             JsonObject object = entry.getValue().getAsJsonObject();
             if (object.has("attribute_chain") && object.get("attribute_chain").getAsBoolean()) {
                 ChainHierarchy<ResourceLocation> chainHierarchy = attributeChain(hierarchyID, object.get("chains").getAsInt());
-                JsonObject element = object.getAsJsonObject("element");
-                for (ResourceLocation resourceLocation : chainHierarchy.getElements()) TalentManager.addAttributeTalent(resourceLocation, GSON.fromJson(element, AttributeTalent.Builder.class).build());
+                JsonObject jsonObject = object.getAsJsonObject("element");
+                for (ResourceLocation resourceLocation : chainHierarchy.getElements()) TalentManager.addAttributeTalent(resourceLocation, GSON.fromJson(jsonObject, AttributeTalent.Builder.class).readExtra(jsonObject).build(resourceLocation));
+
                 ResourceLocation tab = ResourceLocation.parse(object.get("tab").getAsString());
                 getOrCreateTabHierarchies(tab).add(hierarchyID);
                 ALL_HIERARCHIES.put(hierarchyID, chainHierarchy);

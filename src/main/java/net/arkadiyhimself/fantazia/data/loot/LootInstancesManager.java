@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.data.loot;
 
 import com.google.gson.*;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -19,7 +20,7 @@ public class LootInstancesManager extends SimpleJsonResourceReloadListener {
             .setPrettyPrinting().create();
     private static final List<LootModifierHolder.Builder> lootModifierHolders = Lists.newArrayList();
     public LootInstancesManager() {
-        super(GSON, "loot_instance");
+        super(GSON, Fantazia.MODID + "/loot_instance");
     }
     @Override
     protected void apply(@NotNull Map<ResourceLocation, JsonElement> jsonElementMap, @NotNull ResourceManager pResourceManager, @NotNull ProfilerFiller pProfiler) {

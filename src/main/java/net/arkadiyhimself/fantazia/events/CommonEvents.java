@@ -36,9 +36,9 @@ import net.arkadiyhimself.fantazia.data.talent.reload.WisdomRewardManager;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.entities.goals.StandStillGoal;
 import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
-import net.arkadiyhimself.fantazia.networking.packets.attachment_syncing.PlayerAbilityUpdateS2C;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.PlayAnimationS2C;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.PlaySoundForUIS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.PlayerAbilityUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
@@ -148,7 +148,7 @@ public class CommonEvents {
                 if (progressHolder != null) progressHolder.award("slayed", id);
 
                 int manaRecycle = TalentHelper.getUnlockLevel(player, Fantazia.res("mana_recycle"));
-                if (manaRecycle > 0) LivingEffectHelper.effectWithoutParticles(player, FTZMobEffects.SURGE, 40, manaRecycle - 1);
+                if (manaRecycle > 0) player.addEffect(new MobEffectInstance(FTZMobEffects.SURGE, 40, manaRecycle - 1));
             }
             if ((instance = livingTarget.getEffect(FTZMobEffects.CURSED_MARK)) != null) {
                 int dur = 600 + instance.getAmplifier() * 600;
@@ -279,8 +279,14 @@ public class CommonEvents {
         if (event.getEntity().level().isClientSide()) return;
         LivingEntity target = event.getEntity();
         DamageSource source = event.getSource();
+        float damage = event.getAmount();
 
-        if (source.is(DamageTypes.FREEZE)) LivingEffectHelper.makeFrozen(target, 100);
+        if (source.is(DamageTypes.FREEZE) && !LivingEffectHelper.hasBarrier(target)) LivingEffectHelper.makeFrozen(target, 100);
+        if (source.is(DamageTypes.LIGHTNING_BOLT) && !LivingEffectHelper.hasBarrier(target)) LivingEffectHelper.effectWithoutParticles(target, FTZMobEffects.ELECTROCUTED, 100);
+        if (source.is(FTZDamageTypeTags.ELECTRIC)) {
+            if (!LivingEffectHelper.hasBarrier(target)) ActionsHelper.interrupt(target);
+            if (SpellHelper.hasSpell(target, FTZSpells.LIGHTNING_STRIKE)) event.setAmount(damage * 0.6f);
+        }
 
         for (ResourceKey<DamageType> resourceKey : AuraHelper.damageImmunities(target)) if (source.is(resourceKey)) event.setCanceled(true);
 
@@ -577,5 +583,10 @@ public class CommonEvents {
 
         builder.addStartMix(Items.GOLD_INGOT, FTZPotions.FURY);
         builder.addMix(FTZPotions.FURY, Items.REDSTONE, FTZPotions.LONG_FURY);
+
+        builder.addStartMix(Items.RAW_COPPER, FTZPotions.CORROSION);
+        builder.addStartMix(Items.COPPER_INGOT, FTZPotions.CORROSION);
+        builder.addMix(FTZPotions.CORROSION, Items.REDSTONE, FTZPotions.LONG_CORROSION);
+        builder.addMix(FTZPotions.CORROSION, Items.GLOWSTONE_DUST, FTZPotions.STRONG_CORROSION);
     }
 }

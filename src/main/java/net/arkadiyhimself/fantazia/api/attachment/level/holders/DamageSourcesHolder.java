@@ -20,12 +20,16 @@ import org.jetbrains.annotations.UnknownNullability;
 import javax.annotation.Nullable;
 
 public class DamageSourcesHolder extends LevelAttributeHolder {
+
     private final Registry<DamageType> damageTypes;
+
     private final DamageSource removal;
     private final DamageSource bleeding;
     private final DamageSource frozen;
     private final DamageSource ancientFlame;
     private final DamageSource ancientBurning;
+    private final DamageSource electric;
+
     public DamageSourcesHolder(Level level) {
         super(level, Fantazia.res("damage_sources"));
         this.damageTypes = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE);
@@ -35,6 +39,7 @@ public class DamageSourcesHolder extends LevelAttributeHolder {
         this.frozen = source(FTZDamageTypes.FROZEN);
         this.ancientFlame = source(FTZDamageTypes.ANCIENT_FLAME);
         this.ancientBurning = source(FTZDamageTypes.ANCIENT_BURNING);
+        this.electric = source(FTZDamageTypes.ELECTRIC);
     }
 
     private DamageSource source(ResourceKey<DamageType> pDamageTypeKey) {
@@ -61,6 +66,9 @@ public class DamageSourcesHolder extends LevelAttributeHolder {
     }
     public DamageSource ancientBurning() {
         return ancientBurning;
+    }
+    public DamageSource electric() {
+        return electric;
     }
 
     public DamageSource parry(Player player) {

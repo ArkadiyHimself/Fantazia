@@ -14,12 +14,12 @@ import net.arkadiyhimself.fantazia.client.gui.FantazicGui;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.client.render.bars.*;
-import net.arkadiyhimself.fantazia.client.screen.TalentsScreen;
+import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
 import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
 import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.FragileBladeItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.MurasamaItem;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.KeyInputC2S;
+import net.arkadiyhimself.fantazia.packets.stuff.KeyInputC2S;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.tags.FTZItemTags;
 import net.arkadiyhimself.fantazia.tags.FTZSoundEventTags;
@@ -259,7 +259,7 @@ public class ClientEvents {
         if (KeyBinding.SPELLCAST3.consumeClick()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.SPELLCAST3, 1));
 
         TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
-        if (KeyBinding.TALENTS.consumeClick() && talentsHolder != null) Minecraft.getInstance().setScreen(new TalentsScreen(talentsHolder));
+        if (KeyBinding.TALENTS.consumeClick() && talentsHolder != null) Minecraft.getInstance().setScreen(new TalentScreen(talentsHolder));
         if (event.getKey() == Minecraft.getInstance().options.keyJump.getKey().getValue()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.JUMP, event.getAction()));
     }
 

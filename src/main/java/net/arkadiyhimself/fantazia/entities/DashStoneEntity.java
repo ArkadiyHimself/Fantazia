@@ -1,5 +1,7 @@
 package net.arkadiyhimself.fantazia.entities;
 
+import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
@@ -40,19 +42,23 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class DashStoneEntity extends Entity {
+
     private static final EntityDataAccessor<ItemStack> DASHSTONE = SynchedEntityData.defineId(DashStoneEntity.class, EntityDataSerializers.ITEM_STACK);
     public static final EntityDataAccessor<Float> VISUAL_ROT0 = SynchedEntityData.defineId(DashStoneEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Float> VISUAL_ROT1 = SynchedEntityData.defineId(DashStoneEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Optional<UUID>> OWNER = SynchedEntityData.defineId(DashStoneEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+
     private @Nullable UUID ownerUUID;
     private int level;
     private int soundRech = 0;
     private int cooldown = 0;
+
     public DashStoneEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.ownerUUID = null;
         this.level = 0;
     }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder pBuilder) {
         pBuilder.define(DASHSTONE, ItemStack.EMPTY);
@@ -60,6 +66,7 @@ public class DashStoneEntity extends Entity {
         pBuilder.define(VISUAL_ROT1, 0f);
         pBuilder.define(OWNER, Optional.empty());
     }
+
     @Override
     protected void readAdditionalSaveData(@NotNull CompoundTag pCompound) {
         if (pCompound.contains("owner")) this.ownerUUID = pCompound.getUUID("owner");
@@ -116,14 +123,17 @@ public class DashStoneEntity extends Entity {
             }
         soundRech--;
     }
+
     public ItemStack getDashstone() {
         return entityData.get(DASHSTONE);
     }
+
     public void rotate() {
         float rot1 = this.entityData.get(VISUAL_ROT1);
         this.entityData.set(VISUAL_ROT0, rot1);
         this.entityData.set(VISUAL_ROT1, rot1 - 3f);
     }
+
     public void reset() {
         this.ownerUUID = null;
         this.level = 0;
@@ -133,6 +143,7 @@ public class DashStoneEntity extends Entity {
         Minecraft.getInstance().getSoundManager().stop(FTZSoundEvents.DASHSTONE_WIND.getId(), SoundSource.AMBIENT);
         cooldown = 10;
     }
+
     private void tryAdaptToPlayer(ServerLevel serverLevel) {
         List<? extends Player> players = serverLevel.getEntitiesOfClass(Player.class, AABB.ofSize(this.position(), 16,16,16));
         for (Player player : players) {
@@ -162,10 +173,12 @@ public class DashStoneEntity extends Entity {
             }
         }
     }
+
     private void summonProtector(double xOff, double zOff) {
         WitherSkeleton protector = EntityType.WITHER_SKELETON.create(this.level());
         if (protector == null) return;
         protector.setPos(this.getX() + xOff, this.getY() + (double) -1, this.getZ() + zOff);
+        LivingEffectHelper.giveBarrier(protector, 30);
         protector.addEffect(new MobEffectInstance(FTZMobEffects.BARRIER, -1, 35, true, true));
         this.level().addFreshEntity(protector);
     }

@@ -77,7 +77,7 @@ public class BarrierEffect extends LivingEffectHolder implements IDamageEventLis
 
     @Override
     public void onHit(LivingIncomingDamageEvent event) {
-        if (!hasBarrier() || event.getSource().is(FTZDamageTypeTags.PIERCES_BARRIER)) return;
+        if (!hasBarrier() || event.getSource().is(FTZDamageTypeTags.PIERCES_BARRIER) || event.isCanceled() || getEntity().hasEffect(FTZMobEffects.ABSOLUTE_BARRIER)) return;
 
         color = 1f;
         float dmg = event.getAmount();

@@ -25,7 +25,7 @@ public class TalentProvidingItem extends Item {
         if (pPlayer instanceof ServerPlayer serverPlayer) {
             if (TalentHelper.hasTalent(serverPlayer, talendID)) return InteractionResultHolder.fail(itemstack);
             CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, itemstack);
-            if (!serverPlayer.getAbilities().instabuild) itemstack.shrink(1);
+            if (!serverPlayer.hasInfiniteMaterials()) itemstack.shrink(1);
         }
         return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
     }

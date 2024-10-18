@@ -81,7 +81,7 @@ public class ThrownHatchet extends AbstractArrow {
         shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, charge * 2F, 1.0F);
         rotSpeed();
 
-        if (shooter instanceof Player player && player.getAbilities().instabuild) this.pickup = Pickup.CREATIVE_ONLY;
+        if (shooter instanceof Player player && player.hasInfiniteMaterials()) this.pickup = Pickup.CREATIVE_ONLY;
         else this.pickup = Pickup.ALLOWED;
 
         throwingData(hatchetItem);

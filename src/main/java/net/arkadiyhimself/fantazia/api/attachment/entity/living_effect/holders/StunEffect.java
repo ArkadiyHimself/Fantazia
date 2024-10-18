@@ -4,7 +4,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.networking.packets.stuff.PlayAnimationS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;

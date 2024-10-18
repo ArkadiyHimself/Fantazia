@@ -67,7 +67,7 @@ public class LayeredBarrierEffect extends LivingEffectHolder implements IDamageE
 
     @Override
     public void onHit(LivingIncomingDamageEvent event) {
-        if (!hasBarrier() || event.getSource().is(FTZDamageTypeTags.PIERCES_BARRIER)) return;
+        if (!hasBarrier() || event.getSource().is(FTZDamageTypeTags.PIERCES_BARRIER) || getEntity().hasEffect(FTZMobEffects.ABSOLUTE_BARRIER)) return;
 
         color = 1f;
         event.setCanceled(true);
