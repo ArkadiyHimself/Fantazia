@@ -13,21 +13,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 
-public class EffectSpawnInstance {
-    private final @NotNull Holder<MobEffect> mobEffect;
-    private final PSERANInstance pseranInstance;
-    private final int level;
-    private final boolean hidden;
-    public EffectSpawnInstance(@NotNull Holder<MobEffect> mobEffect, PSERANInstance pseranInstance, int level, boolean hidden) {
-        this.mobEffect = mobEffect;
-        this.pseranInstance = pseranInstance;
-        this.level = level;
-        this.hidden = hidden;
-    }
+public record MobEffectSpawnInstance(@NotNull Holder<MobEffect> mobEffect, PSERANInstance pseranInstance, int level, boolean hidden) {
+
     public void tryAddEffects(LivingEntity livingEntity) {
         if (!pseranInstance.performAttempt()) return;
         livingEntity.addEffect(new MobEffectInstance(mobEffect, -1, level, true, hidden, true));
     }
+
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
 
@@ -41,7 +33,8 @@ public class EffectSpawnInstance {
 
         return tag;
     }
-    public static EffectSpawnInstance deserialize(CompoundTag tag) {
+
+    public static MobEffectSpawnInstance deserialize(CompoundTag tag) {
         ResourceLocation effectID = ResourceLocation.parse(tag.getString("effect"));
         Optional<Holder.Reference<MobEffect>> mobEffect = BuiltInRegistries.MOB_EFFECT.getHolder(effectID);
         if (mobEffect.isEmpty()) throw new IllegalStateException("MobEffect has not been found: " + effectID);
@@ -50,8 +43,9 @@ public class EffectSpawnInstance {
         int level = tag.getInt("level");
         boolean hidden = tag.getBoolean("hidden");
 
-        return new EffectSpawnInstance(mobEffect.get(), pseranInstance, level, hidden);
+        return new MobEffectSpawnInstance(mobEffect.get(), pseranInstance, level, hidden);
     }
+
     public static class Builder {
         private final Holder<MobEffect> mobEffect;
         private final double chance;
@@ -63,8 +57,8 @@ public class EffectSpawnInstance {
             this.level = level;
             this.hidden = hidden;
         }
-        public EffectSpawnInstance build() {
-            return new EffectSpawnInstance(mobEffect, new PSERANInstance(chance), level, hidden);
+        public MobEffectSpawnInstance build() {
+            return new MobEffectSpawnInstance(mobEffect, new PSERANInstance(chance), level, hidden);
         }
     }
 }

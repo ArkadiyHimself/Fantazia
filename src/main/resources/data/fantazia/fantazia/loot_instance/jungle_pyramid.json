@@ -6,6 +6,9 @@
     "fantazia:vitality_fruit": {
       "chance": 1,
       "first_time": true
+    },
+    "fantazia:athame" : {
+      "chance" : 0.125
     }
   }
 }

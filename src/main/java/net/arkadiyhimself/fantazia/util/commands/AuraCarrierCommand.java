@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -20,11 +20,11 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 public class AuraCarrierCommand {
     private AuraCarrierCommand() {}
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
-        dispatcher.register(Commands.literal("auracarrier").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).then(Commands.argument("aura", ResourceArgument.resource(context, FantazicRegistry.Keys.AURA))
+        dispatcher.register(Commands.literal("auracarrier").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).then(Commands.argument("aura", ResourceArgument.resource(context, FantazicRegistries.Keys.AURA))
                 .executes((AuraCarrierCommand::createAura))));
     }
     private static int createAura(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
-        Holder.Reference<BasicAura<? extends Entity>> basicAuraReference = ResourceArgument.getResource(commandContext, "aura", FantazicRegistry.Keys.AURA);
+        Holder.Reference<BasicAura<? extends Entity>> basicAuraReference = ResourceArgument.getResource(commandContext, "aura", FantazicRegistries.Keys.AURA);
 
         BlockPos blockpos = BlockPos.containing(commandContext.getSource().getPosition());
         ServerLevel serverlevel = commandContext.getSource().getLevel();

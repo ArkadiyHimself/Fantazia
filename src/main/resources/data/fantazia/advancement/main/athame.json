@@ -1,0 +1,30 @@
+{
+  "parent" : "fantazia:main/caster",
+  "criteria": {
+    "athame": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "fantazia:athame"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.fantazia.athame.desc"
+    },
+    "hidden": true,
+    "icon": {
+      "id": "fantazia:athame"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.athame"
+    }
+  }
+}

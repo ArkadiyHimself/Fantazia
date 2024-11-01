@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
-public class FantazicRegistry {
+public class FantazicRegistries {
 
     public static final Registry<AbstractSpell> SPELLS = new RegistryBuilder<>(Keys.SPELL).sync(true).create();
     public static final Registry<BasicAura<? extends Entity>> AURAS = new RegistryBuilder<>(Keys.AURA).sync(true).create();

@@ -3,6 +3,10 @@
   "fantazia.creativetab.weapons": "Фантазийное оружие",
   "fantazia.creativetab.expendables": "Фантазийные расходники",
 
+  "entity.fantazia.shockwave" : "Волна",
+  "entity.fantazia.hatchet" : "Топорик",
+  "entity.fantazia.dashstone" : "Камень стремительности",
+
   "fantazia.cleanse.basic": "§b§lОбычное",
   "fantazia.cleanse.medium": "§3§lСреднее",
   "fantazia.cleanse.powerful": "§5§lМощное",
@@ -153,6 +157,10 @@
   "effect.fantazia.electrocuted.tooltip.2" : "Наносит урон и постоянно",
   "effect.fantazia.electrocuted.tooltip.3" : "прерывает ваши действия",
 
+  "effect.fantazia.rapid" : "§eРезвый",
+  "effect.fantazia.rapid.lines" : "1",
+  "effect.fantazia.rapid.tooltip.1" : "Увеличивает скорость атаки",
+
   "item.minecraft.lingering_potion.effect.recovery" : "Туманное зелье передышки",
   "item.minecraft.lingering_potion.effect.surge" : "Туманное зелье всплеска",
   "item.minecraft.lingering_potion.effect.fury" : "Туманное зелье ярости",
@@ -252,6 +260,11 @@
   "aura.icon.fantazia.despair.lines": "2",
   "aura.icon.fantazia.despair.1": "§cУменьшаетурон от атак, а также",
   "aura.icon.fantazia.despair.2": "§cзамедляет врагов владельца ауры",
+
+  "aura.fantazia.hellfire" : "§4Полымя",
+  "aura.icon.fantazia.hellfire.lines" : "2",
+  "aura.icon.fantazia.hellfire.1" : "§cПредотвращает угасание пламени",
+  "aura.icon.fantazia.hellfire.2" : "§cна задетых существах",
 
   "tooltip.fantazia.common.active": "Активный спелл: %s",
   "tooltip.fantazia.common.active.passive": "Изменения от спелла:",
@@ -383,9 +396,11 @@
   "spell.fantazia.sonic_boom.2": "чтобы высвободить звуковую волну, которая",
   "spell.fantazia.sonic_boom.3": "проходит сквозь препятствия и пронизывает",
   "spell.fantazia.sonic_boom.4": "большинство видов защиты",
-  "spell.fantazia.sonic_boom.passive.lines": "2",
-  "spell.fantazia.sonic_boom.passive.1": "§9 * Позволяет владельцу улавливать вибрации",
-  "spell.fantazia.sonic_boom.passive.2": "§9   от других существ",
+  "spell.fantazia.sonic_boom.passive.lines": "4",
+  "spell.fantazia.sonic_boom.passive.1" : "§9 * Позволяет владельцу улавливать вибрации",
+  "spell.fantazia.sonic_boom.passive.2" : "§9   от других существ",
+  "spell.fantazia.sonic_boom.passive.3" : "§9 * Каждая улавливаемая вибрация сокращает",
+  "spell.fantazia.sonic_boom.passive.4" : "§9   перезарядку спелла на 0.5 секунды",
 
   "item.fantazia.mystic_mirror": "§5Тайное зеркало",
   "spell.fantazia.reflect.name": "Отражение",
@@ -427,7 +442,7 @@
   "item.fantazia.nimble_dagger": "§cКлинок проворника",
   "spell.fantazia.bounce.desc.lines": "1",
   "spell.fantazia.bounce.desc.1": "§5Не моргай!",
-  "spell.fantazia.bounce.name": "§5Отскок",
+  "spell.fantazia.bounce.name": "§5§lОтскок",
   "spell.fantazia.bounce.lines": "3",
   "spell.fantazia.bounce.1": "Смотря на существо, используйте спелл",
   "spell.fantazia.bounce.2": "чтобы сократить с ним дистанцию.",
@@ -436,14 +451,40 @@
   "item.fantazia.caught_thunder": "§eСхваченная гроза",
   "spell.fantazia.lightning_strike.desc.lines": "1",
   "spell.fantazia.lightning_strike.desc.1": "§cНе шутите с силами природы!",
-  "spell.fantazia.lightning_strike.name": "§6Разряд молнии",
+  "spell.fantazia.lightning_strike.name": "§6§lРазряд молнии",
   "spell.fantazia.lightning_strike.lines": "3",
   "spell.fantazia.lightning_strike.1": "Смотря на существо, используйте спелл чтобы",
   "spell.fantazia.lightning_strike.2": "призвать на цель молнию, что поразит вашу цель",
   "spell.fantazia.lightning_strike.3": "и всех существ вокруг нее",
-  "spell.fantazia.lightning_strike.passive.lines" : "2",
+  "spell.fantazia.lightning_strike.passive.lines" : "3",
   "spell.fantazia.lightning_strike.passive.1" : "§9 * Увеличивает сопротивляемость урону",
   "spell.fantazia.lightning_strike.passive.2" : "§9   от молний и электричества",
+  "spell.fantazia.lightning_strike.passive.3" : "§9 * Перезарядка короче во время грозы",
+
+  "item.fantazia.athame" : "§4Атам",
+  "spell.fantazia.transfer.desc.lines" : "1",
+  "spell.fantazia.transfer.desc.1" : "§cУ всего есть цена",
+  "spell.fantazia.transfer.name" : "§2§lРазмен",
+  "spell.fantazia.transfer.lines" : "3",
+  "spell.fantazia.transfer.1" : "Пожертвуйте долей своего здоровья",
+  "spell.fantazia.transfer.2" : "взамен на временный прирост к",
+  "spell.fantazia.transfer.3" : "урону и скорости атаки",
+  "spell.fantazia.transfer.passive.lines" : "3",
+  "spell.fantazia.transfer.passive.1" : "§5 +1 урон от атак за единицу здоровья",
+  "spell.fantazia.transfer.passive.2" : "§5 +1 скорость атаки за единицу здоровья",
+  "spell.fantazia.transfer.passive.3" : "§4 * Забирает вплоть до 4 едиинц здоровья",
+
+  "item.fantazia.contained_sound" : "§9Заточенный грохот",
+  "spell.fantazia.shockwave.desc.lines" : "1",
+  "spell.fantazia.shockwave.desc.1" : "§dВнутренняя мощь",
+  "spell.fantazia.shockwave.name" : "Ударная волна",
+  "spell.fantazia.shockwave.lines" : "3",
+  "spell.fantazia.shockwave.1" : "Каждый успешный удар тратит часть маны",
+  "spell.fantazia.shockwave.2" : "чтобы создать звуковой луч что улетает",
+  "spell.fantazia.shockwave.3" : "дальше от владельца",
+  "spell.fantazia.shockwave.passive.lines" : "2",
+  "spell.fantazia.shockwave.passive.1" : "§5 * Урон луча зависит от сытости атакующего,",
+  "spell.fantazia.shockwave.passive.2" : "§5   достигая 50% при полном насыщении",
 
   "item.fantazia.leaders_horn": "§5Горн лидера",
   "aura.fantazia.leadership.desc.lines": "1",
@@ -493,6 +534,17 @@
   "aura.fantazia.corrosive.stats.lines": "2",
   "aura.fantazia.corrosive.stats.1": "§c * -3 брони",
   "aura.fantazia.corrosive.stats.2": "§c * -20% устойчивости",
+
+  "item.fantazia.nether_heart" : "§cСердце Незера",
+  "aura.fantazia.hellfire.desc.lines" : "1",
+  "aura.fantazia.hellfire.desc.1" : "§4Из глубин!..",
+  "aura.fantazia.hellfire.name" : "§4§lПолымя",
+  "aura.fantazia.hellfire.lines" : "2",
+  "aura.fantazia.hellfire.1" : "Все горящие существа внутри ауры",
+  "aura.fantazia.hellfire.2" : "никогда не перестанут гореть сами",
+  "aura.fantazia.hellfire.stats.lines" : "2",
+  "aura.fantazia.hellfire.stats.1" : "§c * Действует на огонь и древнее пламя",
+  "aura.fantazia.hellfire.stats.2" : "§c * Увеличивает урон от огня на задетых существах",
 
   "item.fantazia.obscure_substance": "§5Непонятная субстанция",
   "item.fantazia.unfinished_wings": "§cНезавершенные крылья",
@@ -592,14 +644,14 @@
   "fantazia.talent.mana_boost.criteria.1": "Найдите и поглотите эссенцию проницательности",
 
   "fantazia.talent.spellcasting1.spellcaster_slots.name" : "§5Чародей",
-  "fantazia.talent.spellcasting1.spellcaster_slots.desc.lines" : "1",
+  "fantazia.talent.spellcasting1.spellcaster_slots.desc.lines" : "2",
   "fantazia.talent.spellcasting1.spellcaster_slots.desc.1" : "Навсегда увеличивает количество слотов",
   "fantazia.talent.spellcasting1.spellcaster_slots.desc.2" : "для Заклинателей с активной способностью",
   "fantazia.talent.spellcasting1.spellcaster_slots.criteria.lines": "1",
   "fantazia.talent.spellcasting1.spellcaster_slots.criteria.1": "Найдите хотя бы 4 подходящих заклинателя",
 
   "fantazia.talent.spellcasting1.passivecaster_slots.name" : "§5Рассудитель",
-  "fantazia.talent.spellcasting1.passivecaster_slots.desc.lines" : "1",
+  "fantazia.talent.spellcasting1.passivecaster_slots.desc.lines" : "2",
   "fantazia.talent.spellcasting1.passivecaster_slots.desc.1" : "Навсегда увеличивает количество слотов",
   "fantazia.talent.spellcasting1.passivecaster_slots.desc.2" : "для пассивных заклинателей и ауротворцев",
   "fantazia.talent.spellcasting1.passivecaster_slots.criteria.lines": "1",
@@ -619,17 +671,17 @@
 
   "fantazia.talent.mana_recycle.mana_recycle1.name" : "§bПреобразование I",
   "fantazia.talent.mana_recycle.mana_recycle1.desc.lines" : "1",
-  "fantazia.talent.mana_recycle.mana_recycle1.desc.1" : "Добивание врага посполняет небольшой объем маны",
+  "fantazia.talent.mana_recycle.mana_recycle1.desc.1" : "Добивание врага восполняет небольшой объем маны",
 
   "fantazia.talent.mana_recycle.mana_recycle2.name" : "§bПреобразование II",
   "fantazia.talent.mana_recycle.mana_recycle2.desc.lines" : "1",
-  "fantazia.talent.mana_recycle.mana_recycle2.desc.1" : "Добивание врага посполняет умеренный объем маны",
+  "fantazia.talent.mana_recycle.mana_recycle2.desc.1" : "Добивание врага восполняет умеренный объем маны",
 
   "fantazia.talent.mana_recycle.mana_recycle3.name" : "§bПреобразование III",
   "fantazia.talent.mana_recycle.mana_recycle3.desc.lines" : "1",
-  "fantazia.talent.mana_recycle.mana_recycle3.desc.1" : "Добивание врага посполняет значительный объем маны",
+  "fantazia.talent.mana_recycle.mana_recycle3.desc.1" : "Добивание врага восполняет значительный объем маны",
 
-  "fantazia.gui.talent.toast.info": "Новый Талант",
+  "fantazia.gui.talent.toast.info": "Новый талант",
   "fantazia.gui.talent.requirement": "Требования:",
   "fantazia.gui.talent.wisdom": "§dМудрость: %s",
   "fantazia.gui.talent.wisdom_cost": "Требуемая мудрость: %s",
@@ -668,6 +720,9 @@
   "advancements.fantazia.double_jump" : "§oЯ хочу крылья",
   "advancements.fantazia.double_jump.desc" : "Получите двойной прыжок",
 
+  "advancements.fantazia.spell_recharge_reduce" : "§oРай все ближе...",
+  "advancements.fantazia.spell_recharge_reduce.desc" : "Приобретите талант, сокращающий перезарядку спеллов",
+
   "advancements.fantazia.the_worldliness": "Из поколения в поколение...",
   "advancements.fantazia.the_worldliness.desc": "Приобретите Обмирщенность",
 
@@ -676,6 +731,9 @@
 
   "advancements.fantazia.spiral_nemesis": "§4Абсолютное отчаяние",
   "advancements.fantazia.spiral_nemesis.desc": "Найдите спиральную немезиду",
+
+  "advancements.fantazia.athame" : "Закон равноценного обмена",
+  "advancements.fantazia.athame.desc" : "Найдите атам",
 
   "advancements.fantazia.caught_thunder" : "§oНадо ж выдумать такое...",
   "advancements.fantazia.caught_thunder.desc": "Найдите схваченную грозу",
@@ -779,10 +837,28 @@
   "book.fantazia.entry.artifacts.caught_thunder.page.2" : "Этот артифакт может быть найден лишь в сокровищах в глубинах океана, спрятынный за слоями воды",
   "book.fantazia.entry.artifacts.caught_thunder.page.3" : "Данный заклинатель дарует небольшой контроль над природой, позволяя владельцу призвать мощный удар молнии на врага, приносящий большой вред цели и всем окружающим",
 
+  "book.fantazia.entry.artifacts.athame.name" : "§4Атам",
+  "book.fantazia.entry.artifacts.athame.heading" : "Заклинатель",
+  "book.fantazia.entry.artifacts.athame.page.1" : "Почему некоторые люди так усерндо верили в ритуалы, совершаемые ими? Отчего они были так убеждены что жертвоприношение одного из них или определенные действия могли и вправду повлиять на окружение? Был ли это простой недостаток знаний о нашем мире, или же искра надежды на возможность хоть как-то повлиять на то, что вне нашего контроля?",
+  "book.fantazia.entry.artifacts.athame.page.2" : "Этот нож может быть найдет в храмах, где с ним наверняка проводились ритуалы разного рода, от жертвоприношений до банальной клятвы крови, сопровождаемой порезом на ладони ради простого символизма; в любой случае, кровсь остается на клинке как напоминание о жертвах, на которые кто-то готов пойти дабы достичь того, что желает",
+  "book.fantazia.entry.artifacts.athame.page.3" : "Прямо как в ритуалах, пролитие собственной крови выполняется чтобы получить определенную мощь взамен. Спелл данного артифакта позволяет пользователю пожертвовать частью собственного благополучия взамен на преимущество над своими недругами",
+
+  "book.fantazia.entry.artifacts.contained_sound.name" : "§9Заточенный грохот",
+  "book.fantazia.entry.artifacts.contained_sound.heading" : "Заклинатель",
+  "book.fantazia.entry.artifacts.contained_sound.page.1" : "Еще один способ использования скалка, разработанный людьми. На этот раз способность подходящая для воинов, помогающая им сражаться против врага с численным преимуществом и все равно брать над ними верх. То, как скалк использует звук для вреда существам в данном случае - самый его важный критерий",
+  "book.fantazia.entry.artifacts.contained_sound.page.2" : "Крикун что призывает грозных хранителей является главной часть данного артифакта; его свойства усиляются и приспасабливаются для других целей",
+  "book.fantazia.entry.artifacts.contained_sound.page.3" : "С данным заклинателем носитель создает высоко энергичную волну звука с каждым ударом своего оружия; эта волна летит дальше от своего создателя, постоянно нанося урон всем существах, через которых пролетает",
+
+  "book.fantazia.entry.artifacts.nether_heart.name" : "§cСердце Незера",
+  "book.fantazia.entry.artifacts.nether_heart.heading" : "Ауротворец",
+  "book.fantazia.entry.artifacts.nether_heart.page.1" : "Огонь является одним из самых важных открытий для цивилизации, даже, быть может, тем, что и положило начало нашего прогресса нашего вида, от приматов до людей. Неудивительно, что пламя обладает немалым символизмом в нашей культуре, часто ассоциируясь со знаниями или прогрессом. Зная все это, не стоит забывать о том, насколько огонь опасная стихия, и к каким ужасающим разрушениям может привести он не в тех руках",
+  "book.fantazia.entry.artifacts.nether_heart.page.2" : "Сердце Незера есть сущность сего измерения, огонь в твердом обличии, расплавленный и затем затвердевший клочок пламени. Дабы получить его, придется погубить немало ифритов, существ буквально созданных из огня и пламени, ведь только они и могут владеть этой сущностью",
+  "book.fantazia.entry.artifacts.nether_heart.page.3" : "Аура данной реликвии превращает огонь в более ужасающую силу природы, чем она уже, значительно увеличивая ее вред существам внутри ауры",
+
   "book.fantazia.entry.mob_effects.cleanse.name" : "§bОчищение",
-  "book.fantazia.entry.mob_effects.cleanse.page.1" : "Широко известно то, насколько разными могут быть эффект в плане того, что они делают со своей целью, от обычного замедления до ужасающих проклятий; отсюда и неудивитльно что некотрые эффекты устроены иначе и требуют больше усилий чтобы их снять, будь это с себя или своего врага",
+  "book.fantazia.entry.mob_effects.cleanse.page.1" : "Широко известно, насколько разными могут быть эффекты в плане того, что они делают с существом, от обычного замедления до ужасающих проклятий; неудивитльно что некоторые эффекты устроены иначе и требуют больше усилий чтобы их снять, будь это с себя или со своего врага",
   "book.fantazia.entry.mob_effects.cleanse.page.2" : "Очищение и есть то, что позволяет избавиться от эффектов наложенных на кого-либо, и иметь оно может разные виды: §b§lОбычное, §3§lСреднее, §5§lМощное и §d§lАбсолютное",
-  "book.fantazia.entry.mob_effects.cleanse.page.3" : "Есть немало источников очищзения разной силы; ведро обычного молока, которое очень несложно получить, предоставляет Обычное очищение кому надо, хоть оно и снимает все эффекты что может, даже положительные; однако етьс и различные спеллы что позволяют наложить очищение различной силы либо на себя, либо, в случае с направленными спеллами, на своего врага",
+  "book.fantazia.entry.mob_effects.cleanse.page.3" : "Есть немало источников очищения разной силы; ведро обычного молока, которое очень несложно получить, предоставляет Обычное очищение, хоть оно и снимает все эффекты что может, в том числе положительные; однако притсутствуют и различные спеллы что позволяют наложить очищение различной силы либо на себя, либо, в случае с направленными спеллами, на своего врага",
 
   "book.fantazia.entry.mob_effects.absolute_barrier.name": "§dАбсолютный барьер",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.1": "Среди других барьеров, этот является наиболее мощным, защищая владельца без каких-либо условий от практически любых источников вреда. Помимо эторго, данный барьер будет оставаться на существе до тех пор, пока эффект не закончится, в отличии от других барьеров, что исчезают после получения определенного урона",

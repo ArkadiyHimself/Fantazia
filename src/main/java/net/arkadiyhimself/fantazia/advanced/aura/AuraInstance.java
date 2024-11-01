@@ -2,17 +2,15 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.dynamicattributemodifying.DynamicAttributeModifier;
-import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributes;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
 import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -29,8 +27,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -39,7 +37,6 @@ public class AuraInstance<T extends Entity> {
 
     private final List<T> supposedlyInside = Lists.newArrayList();
     private final List<DynamicAttributeModifier> dynamicAttributeModifiers = Lists.newArrayList();
-    @NotNull
     private final Entity owner;
     private final Level level;
     private Vec3 center;
@@ -69,7 +66,9 @@ public class AuraInstance<T extends Entity> {
     }
 
     public void tick() {
+        if (owner == null || !owner.isAlive()) removed = true;
         if (removed) return;
+
         FTZHooks.onAuraTick(this);
         this.center = owner.position();
 
@@ -130,7 +129,6 @@ public class AuraInstance<T extends Entity> {
     }
 
     public void discard() {
-        LevelAttributesGetter.acceptConsumer(level, AurasInstancesHolder.class, aurasInstancesHolder -> aurasInstancesHolder.removeAuraInstance(this));
         this.removed = true;
         entitiesInside().forEach(this::exitAura);
     }
@@ -168,11 +166,10 @@ public class AuraInstance<T extends Entity> {
         ResourceLocation auraID = ResourceLocation.parse(tag.getString("aura"));
         int ownerID = tag.getInt("owner");
 
-        BasicAura<?> aura = FantazicRegistry.AURAS.get(auraID);
+        BasicAura<?> aura = FantazicRegistries.AURAS.get(auraID);
         Entity owner = level.getEntity(ownerID);
 
-        if (aura == null) throw new IllegalStateException("Could not resolve aura: " + auraID);
-        else if (owner == null) throw new IllegalStateException("Could not resolve owner");
+        if (aura == null || owner == null) return null;
 
         return new AuraInstance<>(owner, aura);
     }
@@ -183,5 +180,9 @@ public class AuraInstance<T extends Entity> {
 
         AttributeInstance addition = livingEntity.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
         return addition == null ? initial : initial + (float) addition.getValue();
+    }
+
+    public boolean removed() {
+        return this.removed;
     }
 }

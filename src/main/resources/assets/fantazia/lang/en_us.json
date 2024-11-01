@@ -3,6 +3,10 @@
   "fantazia.creativetab.weapons" : "Fantazic Weapons",
   "fantazia.creativetab.expendables" : "Fantazic Expendables",
 
+  "entity.fantazia.shockwave" : "Shockwave",
+  "entity.fantazia.hatchet" : "Hatchet",
+  "entity.fantazia.dashstone" : "Dashstone",
+
   "fantazia.cleanse.basic" : "§b§lBasic",
   "fantazia.cleanse.medium" : "§3§lMedium",
   "fantazia.cleanse.powerful" : "§5§lPowerful",
@@ -152,6 +156,10 @@
   "effect.fantazia.electrocuted.tooltip.2" : "Deals damage to your body and",
   "effect.fantazia.electrocuted.tooltip.3" : "constantly interrupts your actions",
 
+  "effect.fantazia.rapid" : "§eRapid",
+  "effect.fantazia.rapid.lines" : "1",
+  "effect.fantazia.rapid.tooltip.1" : "Increases attack speed",
+
   "item.minecraft.lingering_potion.effect.recovery" : "Lingering Potion of Recovery",
   "item.minecraft.lingering_potion.effect.surge" : "Lingering Potion of Surge",
   "item.minecraft.lingering_potion.effect.fury" : "Lingering Potion of Fury",
@@ -237,20 +245,24 @@
   "key.fantazia.talents" : "Open talents window",
 
   "aura.fantazia.tranquil" : "§2Tranquil",
-  "aura.fantazia.leadership" : "§2Leadership",
-  "aura.fantazia.despair" : "§4Despair",
-
   "aura.icon.fantazia.tranquil.lines" : "1",
   "aura.icon.fantazia.tranquil.1" : "§aSlowly regenerates one's health",
 
+  "aura.fantazia.leadership" : "§2Leadership",
   "aura.icon.fantazia.leadership.lines" : "3",
   "aura.icon.fantazia.leadership.1" : "§aIncreases attack damage and",
   "aura.icon.fantazia.leadership.2" : "§agrants lifesteal to allies of",
   "aura.icon.fantazia.leadership.3" : "§aura's owner",
 
+  "aura.fantazia.despair" : "§4Despair",
   "aura.icon.fantazia.despair.lines" : "2",
   "aura.icon.fantazia.despair.1" : "§cDecreases melee attack damage",
   "aura.icon.fantazia.despair.2" : "§cof foes, and slows them down",
+
+  "aura.fantazia.hellfire" : "§4Hellfire",
+  "aura.icon.fantazia.hellfire.lines" : "2",
+  "aura.icon.fantazia.hellfire.1" : "§cPrevents the flames on affected",
+  "aura.icon.fantazia.hellfire.2" : "§ccreatures from fading away",
 
   "tooltip.fantazia.common.active" : "Active spell: %s",
   "tooltip.fantazia.common.active.passive" : "Alterations from the spell:",
@@ -382,9 +394,11 @@
   "spell.fantazia.sonic_boom.2" : "to create a powerful sonic wave, which",
   "spell.fantazia.sonic_boom.3" : "pierces through obstacles and ignores",
   "spell.fantazia.sonic_boom.4" : "most kinds of protection",
-  "spell.fantazia.sonic_boom.passive.lines" : "2",
+  "spell.fantazia.sonic_boom.passive.lines" : "4",
   "spell.fantazia.sonic_boom.passive.1" : "§9 * Allows the wearer to detect vibrations",
   "spell.fantazia.sonic_boom.passive.2" : "§9   emitted by other creatures",
+  "spell.fantazia.sonic_boom.passive.3" : "§9 * Each detected vibration shortens recharge",
+  "spell.fantazia.sonic_boom.passive.4" : "§9   of the spell by 0.5 seconds",
 
   "item.fantazia.mystic_mirror" : "§5Mystic Mirror",
   "spell.fantazia.reflect.name" : "Reflect",
@@ -426,7 +440,7 @@
   "item.fantazia.nimble_dagger" : "§cNimble Dagger",
   "spell.fantazia.bounce.desc.lines" : "1",
   "spell.fantazia.bounce.desc.1" : "§5You blinked!",
-  "spell.fantazia.bounce.name" : "§5Bounce",
+  "spell.fantazia.bounce.name" : "§5§lBounce",
   "spell.fantazia.bounce.lines" : "3",
   "spell.fantazia.bounce.1" : "While looking at a living creature, use the spell",
   "spell.fantazia.bounce.2" : "to instantly shorten the distance to it.",
@@ -435,15 +449,40 @@
   "item.fantazia.caught_thunder" : "§eCaught Thunder",
   "spell.fantazia.lightning_strike.desc.lines" : "1",
   "spell.fantazia.lightning_strike.desc.1" : "§cDo not mess with forces of nature!",
-  "spell.fantazia.lightning_strike.name" : "§6Lightning Strike",
+  "spell.fantazia.lightning_strike.name" : "§6§lLightning Strike",
   "spell.fantazia.lightning_strike.lines" : "3",
   "spell.fantazia.lightning_strike.1" : "While looking at a creature, use the spell",
   "spell.fantazia.lightning_strike.2" : "to strike it with a powerful lightning that",
   "spell.fantazia.lightning_strike.3" : "will hit the target and everyone around it",
-  "spell.fantazia.lightning_strike.passive.lines" : "2",
+  "spell.fantazia.lightning_strike.passive.lines" : "3",
   "spell.fantazia.lightning_strike.passive.1" : "§9 * Boosts one's resistance to lightning and",
   "spell.fantazia.lightning_strike.passive.2" : "§9   electrical damage",
+  "spell.fantazia.lightning_strike.passive.3" : "§9 * Recharge is shorter during thunder",
 
+  "item.fantazia.athame" : "§4Athame",
+  "spell.fantazia.transfer.desc.lines" : "1",
+  "spell.fantazia.transfer.desc.1" : "§cEverything has a price",
+  "spell.fantazia.transfer.name" : "§2§lTransfer",
+  "spell.fantazia.transfer.lines" : "3",
+  "spell.fantazia.transfer.1" : "Sacrifice a portion of own health",
+  "spell.fantazia.transfer.2" : "in exchange for a temporary boost",
+  "spell.fantazia.transfer.3" : "to attack damage and attack speed",
+  "spell.fantazia.transfer.passive.lines" : "3",
+  "spell.fantazia.transfer.passive.1" : "§5 +1 attack damage per unit of health",
+  "spell.fantazia.transfer.passive.2" : "§5 +1 attack speed per unit of health ",
+  "spell.fantazia.transfer.passive.3" : "§4 * Drains up to 4 health from its user",
+
+  "item.fantazia.contained_sound" : "§9Contained Sound",
+  "spell.fantazia.shockwave.desc.lines" : "1",
+  "spell.fantazia.shockwave.desc.1" : "Strength from within",
+  "spell.fantazia.shockwave.name" : "Shockwave",
+  "spell.fantazia.shockwave.lines" : "3",
+  "spell.fantazia.shockwave.1" : "Each successful attack a portion of mana",
+  "spell.fantazia.shockwave.2" : "is used to create a powerful beam of sound",
+  "spell.fantazia.shockwave.3" : "that flies further from the user",
+  "spell.fantazia.shockwave.passive.lines" : "2",
+  "spell.fantazia.shockwave.passive.1" : "§5 * The damage of beam depends on attacker's",
+  "spell.fantazia.shockwave.passive.2" : "§5   hunger, going up to 50% when saturated",
 
   "item.fantazia.leaders_horn" : "§5Leader's Horn",
   "aura.fantazia.leadership.desc.lines" : "1",
@@ -493,6 +532,17 @@
   "aura.fantazia.corrosive.stats.lines" : "2",
   "aura.fantazia.corrosive.stats.1" : "§c * -3 armor",
   "aura.fantazia.corrosive.stats.2" : "§c * -20% durability",
+
+  "item.fantazia.nether_heart" : "§cHeart of Nether",
+  "aura.fantazia.hellfire.desc.lines" : "1",
+  "aura.fantazia.hellfire.desc.1" : "§4From the depth!..",
+  "aura.fantazia.hellfire.name" : "§4§lHellfire",
+  "aura.fantazia.hellfire.lines" : "2",
+  "aura.fantazia.hellfire.1" : "All burning creatures within aura",
+  "aura.fantazia.hellfire.2" : "will never stop burning by themselves",
+  "aura.fantazia.hellfire.stats.lines" : "2",
+  "aura.fantazia.hellfire.stats.1" : "§c * Affects both fire and ancient flame",
+  "aura.fantazia.hellfire.stats.2" : "§c * Increases the fire damage taken by creatures",
 
   "item.fantazia.obscure_substance" : "§5Obscure Substance",
   "item.fantazia.unfinished_wings" : "§cUnfinished Wings",
@@ -666,6 +716,9 @@
   "advancements.fantazia.double_jump" : "§oI want wings",
   "advancements.fantazia.double_jump.desc" : "Obtain double jump",
 
+  "advancements.fantazia.spell_recharge_reduce" : "§oThe Heaven is near...",
+  "advancements.fantazia.spell_recharge_reduce.desc" : "Obtain the spell recharge reducing talent",
+
   "advancements.fantazia.the_worldliness" : "From generation to generation...",
   "advancements.fantazia.the_worldliness.desc" : "Obtain The Worldliness",
 
@@ -674,6 +727,9 @@
 
   "advancements.fantazia.spiral_nemesis" : "Absolute despair",
   "advancements.fantazia.spiral_nemesis.desc" : "Obtain the Spiral Nemesis",
+
+  "advancements.fantazia.athame" : "Law of Equivalent Exchange",
+  "advancements.fantazia.athame.desc" : "Obtain the Athame",
 
   "advancements.fantazia.caught_thunder" : "§oThe cycle ends here...",
   "advancements.fantazia.caught_thunder.desc": "Obtain the Caught Thunder",
@@ -776,6 +832,24 @@
   "book.fantazia.entry.artifacts.caught_thunder.page.1" : "The forces of nature were always something no one has control over; be it a small rain, a terrifying hurricane or a mighty thunder, there was not a way to prevent it and let alone summon it, but with progress incomprehensible becomes well-known, and impossible becomes ordinary",
   "book.fantazia.entry.artifacts.caught_thunder.page.2" : "The artifact can only be found deep within ocean treasures and ruins, well hidden below layers and layers of water",
   "book.fantazia.entry.artifacts.caught_thunder.page.3" : "This Spell Caster grants slight control over nature, allowing one to summon a powerful lighting strike on top of their foe, dealing great harm to the enemy and everyone nearby",
+
+  "book.fantazia.entry.artifacts.athame.name" : "§4Athame",
+  "book.fantazia.entry.artifacts.athame.heading" : "Spell Caster",
+  "book.fantazia.entry.artifacts.athame.page.1" : "Why did some people believe so much in the rituals they performed? What caused them to be convinced that sacrificing one of their own or doing specific actions could actually affect their environment? Was it just lack of knowledge of the world around us or was it a spark of hope to have at least some control over something we can not change?",
+  "book.fantazia.entry.artifacts.athame.page.2" : "This knife can be found in temples, where it was most likely used in different rituals, be it sacrifices or simple spilling of someone's blood for the sake of symbolism; either way, the blood remains on the blade as a reminder of sacrifices some were willing to make in order to achieve what they needed",
+  "book.fantazia.entry.artifacts.athame.page.3" : "Just like in rituals, a spilling of own blood is performed in order to gain a portion of power in exchange. The spell of this artifact allows its user to give up some of their well-being to gain upper hand over their foes",
+
+  "book.fantazia.entry.artifacts.contained_sound.name" : "§9Contained Sound",
+  "book.fantazia.entry.artifacts.contained_sound.heading" : "Spell Caster",
+  "book.fantazia.entry.artifacts.contained_sound.page.1" : "Another way to use the sculk developed by the people. This time, it has been weaponized for warriors, enhancing their capability to fight against all odds and allowing them to still be on top. The way sculk uses sound to harm creatures is the most important property of this substance in this case",
+  "book.fantazia.entry.artifacts.contained_sound.page.2" : "The shrieker that summons the formidable warden is the main part of this artifact, having its properties enhanced and adjusted for other purposes",
+  "book.fantazia.entry.artifacts.contained_sound.page.3" : "With this spellcaster, the wearer creates a high-energy wave and sound with each strike of their weapon, that flies further from its creator and continuously damages anyone it flies through",
+
+  "book.fantazia.entry.artifacts.nether_heart.name" : "§cHeart of Nether",
+  "book.fantazia.entry.artifacts.nether_heart.heading" : "Aura Caster",
+  "book.fantazia.entry.artifacts.nether_heart.page.1" : "Fire is among the most important discoveries for the civilisation, arguably being the one discovery that started our progress as species, from primates to humans. It does not surprise that flame got a great symbolism about it in our culture, being associated with knowledge or progress. Considering all of this, fire is still a dangerous element which can lead to devastating damage in the wrong hands",
+  "book.fantazia.entry.artifacts.nether_heart.page.2" : "The Heart of Nether is the essence of the dimension, a fire in a solid form, a melted and then solidified piece of flame. To get this artifact one has to slay blazes, creatures literally made of fires and flames, for only they seem to possess the essence",
+  "book.fantazia.entry.artifacts.nether_heart.page.3" : "The aura of this relic turns fire into even more devastating force of nature than it already is, greatly increasing its harm on creatures withing the aura",
 
   "book.fantazia.entry.mob_effects.cleanse.name" : "§bCleanse",
   "book.fantazia.entry.mob_effects.cleanse.page.1" : "Effects are known to have a wide variety of ways to affects their target, from simply slowing its movement to applying a terrible curse upon poor victim; it would only make sense that some of effects are built different and require quite an effort to get rid off, be it from thyself or from a foe. ",

@@ -20,6 +20,7 @@ import java.util.List;
 
 public class LootTableModifiersHolder extends PlayerAbilityHolder {
     private final List<LootModifierHolder> lootModifierHolders = LootInstancesManager.createModifiers();
+
     public LootTableModifiersHolder(Player player) {
         super(player, Fantazia.res("loot_table_modifiers"));
     }
@@ -37,7 +38,8 @@ public class LootTableModifiersHolder extends PlayerAbilityHolder {
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         ListTag lootModifiers = compoundTag.getList("lootModifiers", Tag.TAG_COMPOUND);
         List<LootModifierHolder> modifierHolders = Lists.newArrayList();
-        for (int i = 0; i < lootModifiers.size(); i++) modifierHolders.add(LootModifierHolder.deserialize(lootModifiers.getCompound(i)));
+        for (int i = 0; i < lootModifiers.size(); i++)
+            modifierHolders.add(LootModifierHolder.deserialize(lootModifiers.getCompound(i)));
         if (lootModifiers.isEmpty()) return;
 
         lootModifierHolders.clear();

@@ -13,19 +13,24 @@ import net.minecraft.nbt.CompoundTag;
  * operating under a concave distribution, meaning the proc chance
  * has the highest point.
  */
+
 public class PSERANInstance {
+
     private final double chance;
     private final double initialChance;
     private int fails = 0;
+
     public PSERANInstance(double chance) {
         this.chance = chance;
         if (chance >= 1) this.initialChance = 1;
         else if (chance <= 0) this.initialChance = 0;
         else this.initialChance = PSERANHelper.calculateC(chance);
     }
+
     public double getSupposedChance() {
         return chance;
     }
+
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean performAttempt() {
         if (Fantazia.RANDOM.nextFloat() < getActualChance()) {
@@ -38,20 +43,24 @@ public class PSERANInstance {
             return false;
         }
     }
+
     public double getActualChance() {
         return initialChance * (fails + 1);
     }
+
     public PSERANInstance transform(double newChance) {
         PSERANInstance newInstance = new PSERANInstance(newChance);
         newInstance.fails = this.fails;
         return newInstance;
     }
+
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
         tag.putDouble("chance", chance);
         tag.putInt("fails", fails);
         return tag;
     }
+
     public static PSERANInstance deserialize(CompoundTag tag) {
         PSERANInstance instance = new PSERANInstance(tag.getDouble("chance"));
         instance.fails = tag.getInt("fails");

@@ -77,6 +77,18 @@ public class PassiveSpell extends AbstractSpell {
             for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".tweaks." + i, null, null));
         }
 
+        String altern = Component.translatable(basicPath + ".passive.lines").getString();
+        lines = 0;
+        try {
+            lines = Integer.parseInt(altern);
+        } catch (NumberFormatException ignored) {}
+
+        if (lines > 0) {
+            components.add(Component.literal(" "));
+            components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active.passive", heading, null));
+            for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".passive." + i, null, null));
+        }
+
         return components;
     }
 

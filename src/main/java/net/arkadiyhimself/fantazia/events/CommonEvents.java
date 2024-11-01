@@ -19,6 +19,9 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityManager;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributeHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributes;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
@@ -26,7 +29,7 @@ import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.api.data_component.HiddenPotentialHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.data.loot.LootInstancesManager;
-import net.arkadiyhimself.fantazia.data.spawn.MobEffectsOnSpawnManager;
+import net.arkadiyhimself.fantazia.data.spawn.EffectsOnSpawnManager;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.TalentHierarchyManager;
@@ -60,7 +63,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.GameEventTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -68,6 +70,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -160,7 +163,8 @@ public class CommonEvents {
     @SubscribeEvent
     public static void entityLeaveLevel(EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player player) PlayerAbilityGetter.acceptConsumer(player, OwnedAurasHolder.class, OwnedAurasHolder::clearAll);
-        event.getEntity().getData(FTZAttachmentTypes.ARMOR_STAND_COMMAND_AURA).onDeath();
+      //  event.getEntity().getData(FTZAttachmentTypes.ARMOR_STAND_COMMAND_AURA).onDeath();
+      //  event.getEntity().getData(FTZAttachmentTypes.ADDED_AURAS).discard();
     }
 
     @SubscribeEvent
@@ -240,7 +244,8 @@ public class CommonEvents {
         target.getData(FTZAttachmentTypes.DATA_MANAGER).onHit(event);
         target.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHit(event);
 
-        for (Map.Entry<ResourceKey<DamageType>, Float> entry : AuraHelper.damageMultipliers(target).entrySet()) if (source.is(entry.getKey())) event.setNewDamage(amount * entry.getValue());
+        float auraMultiplier = AuraHelper.getDamageMultiplier(target, source.typeHolder());
+        event.setNewDamage(amount * auraMultiplier);
 
         if (event.getEntity() instanceof Player player && !source.is(FTZDamageTypes.REMOVAL)) player.getCooldowns().addCooldown(FTZItems.TRANQUIL_HERB.get(), 100);
     }
@@ -288,7 +293,7 @@ public class CommonEvents {
             if (SpellHelper.hasSpell(target, FTZSpells.LIGHTNING_STRIKE)) event.setAmount(damage * 0.6f);
         }
 
-        for (ResourceKey<DamageType> resourceKey : AuraHelper.damageImmunities(target)) if (source.is(resourceKey)) event.setCanceled(true);
+        if (AuraHelper.hasImmunityTo(target, source.typeHolder())) event.setCanceled(true);
 
         if (target instanceof Player player) player.getData(FTZAttachmentTypes.ABILITY_MANAGER).onHit(event);
         target.getData(FTZAttachmentTypes.DATA_MANAGER).onHit(event);
@@ -339,6 +344,8 @@ public class CommonEvents {
             }
 
             if (livingEntity instanceof Mob mob && !event.loadedFromDisk()) FantazicCombat.grantEffectsOnSpawn(mob);
+
+            if (livingEntity instanceof ServerPlayer serverPlayer) LevelAttributes.updateTracking(serverPlayer);
         }
     }
 
@@ -528,7 +535,7 @@ public class CommonEvents {
         event.addListener(new WisdomRewardManager());
         event.addListener(new TalentTabManager());
         event.addListener(new LootInstancesManager());
-        event.addListener(new MobEffectsOnSpawnManager());
+        event.addListener(new EffectsOnSpawnManager());
     }
 
     @SubscribeEvent

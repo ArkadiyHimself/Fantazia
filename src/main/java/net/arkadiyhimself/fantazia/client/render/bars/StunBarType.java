@@ -29,7 +29,7 @@ public class StunBarType extends RenderStateShard {
     }
     public static void render(@NotNull StunEffect stunEffect, PoseStack poseStack, MultiBufferSource buffers) {
         float stunPercent;
-        VertexConsumer stunBar = buffers.getBuffer(StunBarType.BAR_TEXTURE_TYPE);
+        VertexConsumer stunBar = buffers.getBuffer(BAR_TEXTURE_TYPE);
         final int light = 0xF000F0;
 
         if (stunEffect.stunned()) {

@@ -1,4 +1,8 @@
 {
   "replace": false,
-  "values": ["fantazia:dashstone1", "fantazia:dashstone2", "fantazia:dashstone3"]
+  "values": [
+    "fantazia:dashstone1",
+    "fantazia:dashstone2",
+    "fantazia:dashstone3"
+  ]
 }

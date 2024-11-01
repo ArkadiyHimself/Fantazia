@@ -5,7 +5,7 @@ import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.api.KeyBinding;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
 import net.arkadiyhimself.fantazia.client.render.layers.AbsoluteBarrier;
@@ -13,6 +13,7 @@ import net.arkadiyhimself.fantazia.client.render.layers.BarrierLayer;
 import net.arkadiyhimself.fantazia.client.render.layers.LayeredBarrierLayer;
 import net.arkadiyhimself.fantazia.client.render.layers.MysticMirror;
 import net.arkadiyhimself.fantazia.client.renderers.entity.DashStoneRenderer;
+import net.arkadiyhimself.fantazia.client.renderers.entity.ShockwaveRenderer;
 import net.arkadiyhimself.fantazia.client.renderers.entity.ThrownHatchetRenderer;
 import net.arkadiyhimself.fantazia.client.renderers.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.data.tags.HealingTypeTagsProvider;
@@ -167,6 +168,7 @@ public class RegistryEvents {
     public static void registerRenderer(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(FTZEntityTypes.HATCHET.get(), ThrownHatchetRenderer::new);
         event.registerEntityRenderer(FTZEntityTypes.DASHSTONE.get(), DashStoneRenderer::new);
+        event.registerEntityRenderer(FTZEntityTypes.SHOCKWAVE.get(), ShockwaveRenderer::new);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -263,7 +265,7 @@ public class RegistryEvents {
 
     @SubscribeEvent
     public static void newRegistry(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(FantazicRegistry.Keys.HEALING_TYPE, HealingType.CODEC, HealingType.CODEC);
+        event.dataPackRegistry(FantazicRegistries.Keys.HEALING_TYPE, HealingType.CODEC, HealingType.CODEC);
     }
 
     @SubscribeEvent
@@ -298,8 +300,8 @@ public class RegistryEvents {
 
     @SubscribeEvent
     public static void newRegistry(NewRegistryEvent event) {
-        event.register(FantazicRegistry.SPELLS);
-        event.register(FantazicRegistry.AURAS);
+        event.register(FantazicRegistries.SPELLS);
+        event.register(FantazicRegistries.AURAS);
     }
 
     @SubscribeEvent

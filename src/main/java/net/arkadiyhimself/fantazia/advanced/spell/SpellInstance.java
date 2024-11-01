@@ -4,12 +4,15 @@ import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
+import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
@@ -81,7 +84,10 @@ public class SpellInstance implements INBTSerializable<CompoundTag> {
     public void putOnRecharge() {
         if (livingEntity instanceof Player player && player.hasInfiniteMaterials()) return;
         AttributeInstance instance = livingEntity.getAttribute(FTZAttributes.RECHARGE_MULTIPLIER);
-        float multiplier = instance == null ? 0 : (float) instance.getValue() / 100;
+        float multiplier = instance == null ? 1 : (float) instance.getValue() / 100;
+
+        if (livingEntity.level().isThundering() && spell.value() == FTZSpells.LIGHTNING_STRIKE.value()) multiplier *= 0.6f;
+
         this.recharge = (int) ((float) spell.value().getRecharge() * multiplier);
     }
 
@@ -92,10 +98,14 @@ public class SpellInstance implements INBTSerializable<CompoundTag> {
 
         if (this.getSpell().value() instanceof SelfSpell selfSpell) flag = SpellHelper.trySelfSpell(livingEntity, selfSpell, false);
         else if (this.getSpell().value() instanceof TargetedSpell<?> targetedSpell) flag = SpellHelper.tryTargetedSpell(livingEntity, targetedSpell);
-        else if (this.getSpell().value() instanceof PassiveSpell) flag = true;
+        else if (this.getSpell().value() instanceof PassiveSpell) flag = !(livingEntity instanceof Player player) || PlayerAbilityGetter.wasteMana(player, spell.value().getManacost());
 
         if (flag) putOnRecharge();
 
         return flag;
+    }
+
+    public void reduceRecharge(int amount) {
+        this.recharge = Math.max(0, this.recharge - amount);
     }
 }

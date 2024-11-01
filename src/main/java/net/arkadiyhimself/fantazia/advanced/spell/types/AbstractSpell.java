@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.advanced.spell.types;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.api.type.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
@@ -67,7 +67,7 @@ public abstract class AbstractSpell implements ITooltipBuilder {
     }
 
     public final ResourceLocation getID() {
-        return FantazicRegistry.SPELLS.getKey(this);
+        return FantazicRegistries.SPELLS.getKey(this);
     }
 
     public final Component getName() {
@@ -113,7 +113,7 @@ public abstract class AbstractSpell implements ITooltipBuilder {
 
     public final boolean is(TagKey<AbstractSpell> tagKey) {
         if (getID() == null) return false;
-        Optional<Holder.Reference<AbstractSpell>> holder = FantazicRegistry.SPELLS.getHolder(getID());
+        Optional<Holder.Reference<AbstractSpell>> holder = FantazicRegistries.SPELLS.getHolder(getID());
         return holder.map(abstractSpellReference -> abstractSpellReference.is(tagKey)).orElse(false);
     }
 

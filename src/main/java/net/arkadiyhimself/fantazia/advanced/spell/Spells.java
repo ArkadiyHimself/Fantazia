@@ -11,6 +11,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataG
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.particless.options.ElectroParticleOption;
@@ -34,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class Spells {
+
     private Spells() {}
 
     public static final class Self {
@@ -59,6 +61,22 @@ public class Spells {
                 .cleanse()
                 .build();
 
+        public static final SelfSpell TRANSFER = new SelfSpell.Builder(2.5f,600, FTZSoundEvents.EFFECT_HAEMORRHAGE_FLESH_RIPPING,null)
+                .conditions(owner -> !(owner instanceof Player player) || !player.getAbilities().invulnerable)
+                .cleanse(Cleanse.MEDIUM)
+                .onCast(livingEntity -> {
+                    DamageSourcesHolder damageSourcesHolder = LevelAttributesHelper.getDamageSources(livingEntity.level());
+                    if (damageSourcesHolder == null) return;
+
+                    float damage = Math.min(livingEntity.getHealth() - 0.01f, 4);
+                    int sacrifice = (int) Math.max(damage, 1);
+
+                    LivingEffectHelper.effectWithoutParticles(livingEntity, FTZMobEffects.MIGHT,200, sacrifice);
+                    LivingEffectHelper.effectWithoutParticles(livingEntity, FTZMobEffects.RAPID,200, sacrifice);
+
+                    livingEntity.hurt(damageSourcesHolder.removal(), sacrifice);
+                })
+                .build();
     }
     public static final class Targeted {
         private Targeted() {}
@@ -154,5 +172,6 @@ public class Spells {
 
         public static final PassiveSpell REFLECT = new PassiveSpell.Builder(1.5f, 200, FTZSoundEvents.EFFECT_REFLECT, null).build();
         public static final PassiveSpell DAMNED_WRATH = new PassiveSpell.Builder(0f, 600, FTZSoundEvents.DAMNED_WRATH, null).cleanse(Cleanse.MEDIUM).build();
+        public static final PassiveSpell SHOCKWAVE = new PassiveSpell.Builder(0.8f, 0, null, null).build();
     }
 }

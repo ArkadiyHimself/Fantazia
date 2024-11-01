@@ -5,6 +5,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
+import net.minecraft.advancements.critereon.DamageSourcePredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 public class AuraHelper {
     private AuraHelper() {}
+
     // sorts a list of aura instances with a complicated algorithm, removing an aura instance if entity doesn't match Primary Conditions and then prioritising instances where entity matches Secondary Conditions
     public static <T extends Entity> List<AuraInstance<T>> sortUniqueAura(List<AuraInstance<T>> instances, @NotNull T entity) {
         instances.removeIf(auraInstance -> auraInstance.notInside(entity));
@@ -50,6 +52,7 @@ public class AuraHelper {
         }
         return unique;
     }
+
     @SuppressWarnings("unchecked")
     public static <T extends Entity> List<AuraInstance<T>> getAffectingAuras(@NotNull T entity) {
         AurasInstancesHolder aurasInstancesHolder = LevelAttributesGetter.takeHolder(entity.level(), AurasInstancesHolder.class);
@@ -64,13 +67,15 @@ public class AuraHelper {
         return false;
     }
 
-    public static <T extends Entity> List<ResourceKey<DamageType>> damageImmunities(@NotNull T entity) {
-        List<ResourceKey<DamageType>> damageImmune = Lists.newArrayList();
-        List<AuraInstance<T>> auraInstances = getAffectingAuras(entity);
+    public static <T extends Entity> boolean hasImmunityTo(@NotNull T entity, Holder<DamageType> holder) {
+        for (AuraInstance<T> auraInstance : getAffectingAuras(entity)) if (auraInstance.getAura().immunityTo(holder)) return true;
+        return false;
+    }
 
-        for (AuraInstance<T> auraInstance : auraInstances) for (ResourceKey<DamageType> resourceKey : auraInstance.getAura().immunities()) if (!damageImmune.contains(resourceKey)) damageImmune.add(resourceKey);
-
-        return damageImmune;
+    public static float getDamageMultiplier(@NotNull Entity entity, Holder<DamageType> holder) {
+        float d0 = 1f;
+        for (AuraInstance<Entity> auraInstance : getAffectingAuras(entity)) d0 *= auraInstance.getAura().multiplierFor(holder);
+        return d0;
     }
 
     public static <T extends Entity> Map<ResourceKey<DamageType>, Float> damageMultipliers(@NotNull T entity) {
@@ -87,13 +92,14 @@ public class AuraHelper {
 
         return damageMultiply;
     }
-    public static <T extends Entity> void auraTick(T entity, AuraInstance<T> auraInstance) {
-        BasicAura<T> basicAura = auraInstance.getAura();
+
+    public static void auraTick(Entity entity, AuraInstance<Entity> auraInstance) {
+        BasicAura<Entity> basicAura = auraInstance.getAura();
         if (!basicAura.canAffect(entity, auraInstance.getOwner())) return;
         if (entity instanceof LivingEntity livingEntity) for (Map.Entry<Holder<MobEffect>, Integer> entry : basicAura.getMobEffects().entrySet()) LivingEffectHelper.effectWithoutParticles(livingEntity, entry.getKey(), 2, entry.getValue());
     }
-    public static <T extends Entity> void aurasTick(T entity) {
-        List<AuraInstance<Entity>> affectingAuras = AuraHelper.getAffectingAuras(entity);
-        for (AuraInstance<Entity> auraInstance : affectingAuras) auraTick(entity, auraInstance);
+
+    public static void aurasTick(Entity entity) {
+        for (AuraInstance<Entity> auraInstance : AuraHelper.getAffectingAuras(entity)) auraTick(entity, auraInstance);
     }
 }

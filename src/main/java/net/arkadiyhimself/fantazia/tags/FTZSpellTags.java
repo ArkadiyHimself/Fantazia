@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.tags;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.minecraft.tags.TagKey;
 
 public interface FTZSpellTags {
@@ -10,6 +10,6 @@ public interface FTZSpellTags {
     TagKey<AbstractSpell> NOT_REFLECTABLE = createTargeted("not_reflectable");
     TagKey<AbstractSpell> THROUGH_WALLS = createTargeted("through_walls");
     private static TagKey<AbstractSpell> createTargeted(String pName) {
-        return TagKey.create(FantazicRegistry.Keys.SPELL, Fantazia.res("targeted/" + pName));
+        return TagKey.create(FantazicRegistries.Keys.SPELL, Fantazia.res("targeted/" + pName));
     }
 }

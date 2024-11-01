@@ -10,6 +10,7 @@ import net.arkadiyhimself.fantazia.api.type.level.ILevelAttributeHolder;
 import net.arkadiyhimself.fantazia.packets.attachment_syncing.LevelAttributesUpdateS2C;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -103,5 +104,9 @@ public class LevelAttributes implements IHolderManager<ILevelAttributeHolder, Le
 
     public static void updateTracking(Level level) {
         PacketDistributor.sendToAllPlayers(new LevelAttributesUpdateS2C(LevelAttributesGetter.getUnwrap(level).syncSerialize()));
+    }
+
+    public static void updateTracking(ServerPlayer serverPlayer) {
+        PacketDistributor.sendToPlayer(serverPlayer, new LevelAttributesUpdateS2C(LevelAttributesGetter.getUnwrap(serverPlayer.level()).syncSerialize()));
     }
 }

@@ -49,7 +49,7 @@ public class LootModifierHolder {
 
         List<LootInstance> instances = Lists.newArrayList();
         ListTag lootInstances = tag.getList("lootInstances", Tag.TAG_COMPOUND);
-        for (int i = 0; i < lootTables.size(); i++) instances.add(LootInstance.deserialize(lootInstances.getCompound(i)));
+        for (int i = 0; i < lootInstances.size(); i++) instances.add(LootInstance.deserialize(lootInstances.getCompound(i)));
 
         return new LootModifierHolder(locations, instances);
     }

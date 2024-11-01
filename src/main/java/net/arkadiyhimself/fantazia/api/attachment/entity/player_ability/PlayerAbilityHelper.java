@@ -1,10 +1,12 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability;
 
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.VibrationListenerHolder;
 import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -97,6 +99,7 @@ public class PlayerAbilityHelper {
             VibrationListenerHolder vibrationListenerHolder = PlayerAbilityGetter.takeHolder(player, VibrationListenerHolder.class);
             if (vibrationListenerHolder == null || !vibrationListenerHolder.listen()) return;
             vibrationListenerHolder.madeSound(livingEntity);
+            PlayerAbilityGetter.acceptConsumer(player, SpellInstancesHolder.class, spellInstancesHolder -> spellInstancesHolder.getOrCreate(FTZSpells.SONIC_BOOM).reduceRecharge(10));
         }
     }
     public static TalentsHolder.ProgressHolder getProgressHolder(Player player) {

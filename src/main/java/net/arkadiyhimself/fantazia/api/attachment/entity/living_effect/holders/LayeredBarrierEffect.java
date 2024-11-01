@@ -33,8 +33,8 @@ public class LayeredBarrierEffect extends LivingEffectHolder implements IDamageE
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         super.deserializeNBT(provider, compoundTag);
-        layers = compoundTag.contains("layers") ? compoundTag.getInt("layers") : 0;
-        color = compoundTag.contains("color") ? compoundTag.getFloat("color") : 0;
+        layers = compoundTag.getInt("layers");
+        color = compoundTag.getFloat("color");
     }
 
     @Override

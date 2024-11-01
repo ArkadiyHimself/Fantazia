@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -27,12 +27,12 @@ import java.util.List;
 public class SpellCastCommand {
     private SpellCastCommand() {}
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_SELF_SPELL = (context, builder) -> {
-        List<Holder.Reference<AbstractSpell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistry.SPELLS.holders().toList()));
+        List<Holder.Reference<AbstractSpell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistries.SPELLS.holders().toList()));
         spells.removeIf(spell -> !(spell.value() instanceof SelfSpell));
         return SharedSuggestionProvider.suggestResource(spells.stream().map(abstractSpellReference -> abstractSpellReference.value().getID()), builder);
     };
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_TARGETED_SPELL = (context, builder) -> {
-        List<Holder.Reference<AbstractSpell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistry.SPELLS.holders().toList()));
+        List<Holder.Reference<AbstractSpell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistries.SPELLS.holders().toList()));
         spells.removeIf(spell -> !(spell.value() instanceof TargetedSpell<?>));
         return SharedSuggestionProvider.suggestResource(spells.stream().map(abstractSpellReference -> abstractSpellReference.value().getID()), builder);
     };
@@ -57,7 +57,7 @@ public class SpellCastCommand {
         ServerPlayer player = commandContext.getSource().getPlayer();
         if (player == null) return;
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistry.SPELLS.holders().toList();
+        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistries.SPELLS.holders().toList();
         SelfSpell spell = null;
         for (Holder.Reference<AbstractSpell> spellRegistryObject : registryObjects) if (id.equals(spellRegistryObject.value().getID()) && spellRegistryObject.value() instanceof SelfSpell selfSpell) spell = selfSpell;
         if (spell == null) return;
@@ -69,7 +69,7 @@ public class SpellCastCommand {
         ServerPlayer player = commandContext.getSource().getPlayer();
         if (player == null) return;
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistry.SPELLS.holders().toList();
+        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistries.SPELLS.holders().toList();
         TargetedSpell<?> spell = null;
         for (Holder.Reference<AbstractSpell> spellRegistryObject : registryObjects) if (id.equals(spellRegistryObject.value().getID()) && spellRegistryObject.value() instanceof TargetedSpell<?> selfSpell) spell = selfSpell;
         if (spell == null) return;
@@ -88,7 +88,7 @@ public class SpellCastCommand {
             return;
         }
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistry.SPELLS.holders().toList();
+        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistries.SPELLS.holders().toList();
         TargetedSpell<?> spell = null;
         for (Holder.Reference<AbstractSpell> spellRegistryObject : registryObjects) if (id.equals(spellRegistryObject.value().getID()) && spellRegistryObject.value() instanceof TargetedSpell<?> selfSpell) spell = selfSpell;
         if (spell == null) return;

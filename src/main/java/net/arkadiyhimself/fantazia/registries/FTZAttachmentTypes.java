@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.registries;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataManager;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectManager;
+import net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders.AddedAurasHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders.ArmorStandCommandAuraHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders.ArrowEnchantmentsHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityManager;
@@ -24,6 +25,7 @@ public class FTZAttachmentTypes {
     // niche features
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ArrowEnchantmentsHolder>> ARROW_ENCHANTMENTS = REGISTER.register("niche.arrow_enchantments", () -> AttachmentType.builder(ArrowEnchantmentsHolder::new).serialize(new ArrowEnchantmentsHolder.Serializer()).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ArmorStandCommandAuraHolder>> ARMOR_STAND_COMMAND_AURA = REGISTER.register("niche.armor_stand_command_aura", () -> AttachmentType.builder(ArmorStandCommandAuraHolder::new).serialize(new ArmorStandCommandAuraHolder.Serializer()).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<AddedAurasHolder>> ADDED_AURAS = REGISTER.register("niche.added_auras", () -> AttachmentType.serializable(AddedAurasHolder::new).build());
 
     // level
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<LevelAttributes>> LEVEL_ATTRIBUTES = REGISTER.register("level.attributes", () -> AttachmentType.serializable(LevelAttributes::new).build());

@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.level.holders;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributeHolder;
 import net.arkadiyhimself.fantazia.registries.custom.FTZHealingTypes;
 import net.minecraft.core.HolderLookup;
@@ -26,7 +26,7 @@ public class HealingSourcesHolder extends LevelAttributeHolder {
 
     public HealingSourcesHolder(Level level) {
         super(level, Fantazia.res("healing_sources"));
-        healingTypes = level.registryAccess().registryOrThrow(FantazicRegistry.Keys.HEALING_TYPE);
+        healingTypes = level.registryAccess().registryOrThrow(FantazicRegistries.Keys.HEALING_TYPE);
 
         this.generic = this.source(FTZHealingTypes.GENERIC);
         this.naturalRegen = this.source(FTZHealingTypes.NATURAL_REGEN);

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category" : "misc",
+  "pattern": [
+    "YHY",
+    "X#X",
+    "YHY"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:sculk_shrieker"
+    },
+    "H": {
+      "item": "fantazia:obscure_substance"
+    },
+    "X" : {
+      "item": "minecraft:glass"
+    },
+    "Y" : {
+      "item": "minecraft:iron_nugget"
+    }
+  },
+  "result": {
+    "id": "fantazia:contained_sound"
+  },
+  "show_notification": true
+}

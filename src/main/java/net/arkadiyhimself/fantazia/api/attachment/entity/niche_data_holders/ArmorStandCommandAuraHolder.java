@@ -3,7 +3,8 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributes;
 import net.arkadiyhimself.fantazia.api.type.entity.IBasicHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class ArmorStandCommandAuraHolder implements IBasicHolder {
+
     private final ArmorStand armorStand;
     private @Nullable AuraInstance<? extends Entity> auraInstance = null;
 
@@ -41,7 +43,8 @@ public class ArmorStandCommandAuraHolder implements IBasicHolder {
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         if (!compoundTag.contains("aura") || armorStand == null) return;
         ResourceLocation resourceLocation = ResourceLocation.parse(compoundTag.getString("aura"));
-        auraInstance = new AuraInstance<>(armorStand, FantazicRegistry.AURAS.get(resourceLocation));
+        auraInstance = new AuraInstance<>(armorStand, FantazicRegistries.AURAS.get(resourceLocation));
+        LevelAttributes.updateTracking(armorStand.level());
     }
 
     @Override

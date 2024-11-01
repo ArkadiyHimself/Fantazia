@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.api.attachment.level.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributeHolder;
+import net.arkadiyhimself.fantazia.entities.ShockwaveEntity;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.minecraft.core.HolderLookup;
@@ -76,6 +77,9 @@ public class DamageSourcesHolder extends LevelAttributeHolder {
     }
     public DamageSource hatchet(ThrownHatchet hatchet, @Nullable Entity owner) {
         return this.source(FTZDamageTypes.HATCHET, hatchet, owner);
+    }
+    public DamageSource shockWave(ShockwaveEntity entity) {
+        return this.source(FTZDamageTypes.SHOCKWAVE, entity, entity.getOwner());
     }
 
     @Override

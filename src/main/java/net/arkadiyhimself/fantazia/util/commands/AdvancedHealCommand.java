@@ -6,7 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.minecraft.commands.CommandBuildContext;
@@ -28,10 +28,10 @@ public class AdvancedHealCommand {
                     if (sources == null) return 0;
                     return heal(ctx.getSource(), EntityArgument.getEntity(ctx, "target"), FloatArgumentType.getFloat(ctx, "amount"), sources.generic());
                 })
-                        .then(Commands.argument("healingType", ResourceArgument.resource(context, FantazicRegistry.Keys.HEALING_TYPE)).executes(ctx -> {
+                        .then(Commands.argument("healingType", ResourceArgument.resource(context, FantazicRegistries.Keys.HEALING_TYPE)).executes(ctx -> {
                             HealingSourcesHolder sources = LevelAttributesHelper.getHealingSources(ctx.getSource().getLevel());
                             if (sources == null) return 0;
-                            return heal(ctx.getSource(), EntityArgument.getEntity(ctx, "target"), FloatArgumentType.getFloat(ctx, "amount"), new HealingSource(ResourceArgument.getResource(ctx, "healingType", FantazicRegistry.Keys.HEALING_TYPE)));
+                            return heal(ctx.getSource(), EntityArgument.getEntity(ctx, "target"), FloatArgumentType.getFloat(ctx, "amount"), new HealingSource(ResourceArgument.getResource(ctx, "healingType", FantazicRegistries.Keys.HEALING_TYPE)));
                         })))));
     }
     private static int heal(CommandSourceStack stack, Entity pTarget, float pAmount, HealingSource pSource) throws CommandSyntaxException {

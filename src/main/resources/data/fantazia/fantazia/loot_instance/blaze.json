@@ -1,0 +1,12 @@
+{
+  "loot_tables": [
+    "minecraft:entities/blaze"
+  ],
+
+  "loot_instances": {
+    "fantazia:nether_heart": {
+      "chance": 0.175,
+      "first_time" : true
+    }
+  }
+}

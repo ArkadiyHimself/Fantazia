@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.apache.commons.compress.utils.Lists;
@@ -42,7 +43,10 @@ public class AurasInstancesHolder extends LevelAttributeHolder {
         if (!compoundTag.contains("auras")) return;
         ListTag tags = compoundTag.getList("auras", Tag.TAG_COMPOUND);
 
-        for (int i = 0; i < tags.size(); i++) auraInstances.add(AuraInstance.deserialize(tags.getCompound(i), getLevel()));
+        for (int i = 0; i < tags.size(); i++) {
+            AuraInstance<?> auraInstance = AuraInstance.deserialize(tags.getCompound(i), getLevel());
+            if (auraInstance != null) auraInstances.add(auraInstance);
+        }
     }
 
     @Override
@@ -64,23 +68,24 @@ public class AurasInstancesHolder extends LevelAttributeHolder {
         if (!tag.contains("auras")) return;
         ListTag tags = tag.getList("auras", Tag.TAG_COMPOUND);
 
-        for (int i = 0; i < tags.size(); i++) auraInstances.add(AuraInstance.deserialize(tags.getCompound(i), getLevel()));
+        for (int i = 0; i < tags.size(); i++) {
+            AuraInstance<?> auraInstance = AuraInstance.deserialize(tags.getCompound(i), getLevel());
+            if (auraInstance != null) auraInstances.add(auraInstance);
+        }
     }
 
     @Override
     public void tick() {
+        auraInstances.removeIf(AuraInstance::removed);
         auraInstances.forEach(AuraInstance::tick);
     }
 
     public List<AuraInstance<? extends Entity>> getAuraInstances() {
         return auraInstances;
     }
+
     public void addAuraInstance(AuraInstance<? extends Entity> instance) {
         if (!auraInstances.contains(instance)) auraInstances.add(instance);
-        LevelAttributes.updateTracking(getLevel());
-    }
-    public void removeAuraInstance(AuraInstance<?> instance) {
-        auraInstances.remove(instance);
         LevelAttributes.updateTracking(getLevel());
     }
 }

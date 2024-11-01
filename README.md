@@ -1,25 +1,9 @@
+<img width="1600" alt="fantazia_logo" src="https://github.com/user-attachments/assets/ecd4cf8c-a850-4fac-b201-4b635313e911">
 
-Installation information
-=======
+Fantazia is my way to express my imagination using my artistic abilities and programming skills.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+It adds several magical artifacts: spell casters which allow to use spells on yourself or creatures nearby, as well as auracasters, which allow you to create an aura around you that affects creatures inside it.
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+Aside of that, Fantazia also provides the player with a talent tree, althrough I'll admit that currently it is a bit empty :D
+The talents provide player with either unique abilities or stat changes and can be obtained by either doing specific actions or "buying" them with the new "wisdom" currency. The talents are data based and talents which change attributes can be added by regular players
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
-
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
-
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/

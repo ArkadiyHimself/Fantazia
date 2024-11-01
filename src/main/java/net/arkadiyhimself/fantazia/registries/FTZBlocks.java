@@ -34,9 +34,11 @@ public class FTZBlocks {
     protected static Map<ResourceLocation, BlockItemSupplier> getBlockItems() {
         return Collections.unmodifiableMap(BLOCK_ITEMS);
     }
+
     public static void register(IEventBus modEventBus) {
         REGISTER.register(modEventBus);
     }
+
     @FunctionalInterface
     protected interface BlockItemSupplier extends Function<Block, BlockItem> {
         @Override

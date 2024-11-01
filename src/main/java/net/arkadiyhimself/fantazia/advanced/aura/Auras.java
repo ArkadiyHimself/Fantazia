@@ -3,15 +3,22 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
+import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
@@ -96,4 +103,15 @@ public class Auras {
             .addAttributeModifier(FTZAttributes.MAX_STUN_POINTS, new AttributeModifier(Fantazia.res("aura.corrosive"), -0.2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
             .build();
 
+    public static final BasicAura<LivingEntity> HELLFIRE = new BasicAura.Builder<>(LivingEntity.class, BasicAura.TYPE.NEGATIVE, 6f)
+            .ownerConditions(owner -> false)
+            .onTickAffected((livingEntity, entity) -> {
+                if (livingEntity.getRemainingFireTicks() == 1) livingEntity.setRemainingFireTicks(21);
+
+                AncientFlameTicksHolder holder = LivingDataGetter.takeHolder(livingEntity, AncientFlameTicksHolder.class);
+                if (holder != null && holder.isBurning()) holder.setFlameTicks(2);
+            })
+            .putDamageMultiplier(FTZDamageTypeTags.IS_ANCIENT_FLAME, 1.5f)
+            .putDamageMultiplier(DamageTypeTags.IS_FIRE, 1.75f)
+            .build();
 }

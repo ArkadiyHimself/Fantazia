@@ -15,6 +15,7 @@ public interface FTZDamageTypes {
     ResourceKey<DamageType> PARRY = register("parry"); // implemented
     ResourceKey<DamageType> HATCHET = register("hatchet"); // implemented
     ResourceKey<DamageType> ELECTRIC = register("electric"); // implemented
+    ResourceKey<DamageType> SHOCKWAVE = register("shockwave");
 
     private static ResourceKey<DamageType> register(String name) {
         return ResourceKey.create(Registries.DAMAGE_TYPE, Fantazia.res(name));

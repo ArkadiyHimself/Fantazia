@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.data.spawn;
 
 import com.google.common.collect.ImmutableList;
+import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,19 +18,25 @@ import org.apache.commons.compress.utils.Lists;
 import java.util.List;
 
 public class EffectSpawnHolder {
-    private final ImmutableList<EntityType<?>> entityTypes;
-    private final ImmutableList<EffectSpawnInstance> effectSpawnInstances;
 
-    public EffectSpawnHolder(List<EntityType<?>> entityTypes, List<EffectSpawnInstance> effectSpawnInstances) {
+    private final ImmutableList<EntityType<?>> entityTypes;
+    private final ImmutableList<MobEffectSpawnInstance> mobEffectSpawnInstances;
+    private final ImmutableList<AuraSpawnInstance> auraSpawnInstances;
+
+    public EffectSpawnHolder(List<EntityType<?>> entityTypes, List<MobEffectSpawnInstance> mobEffectSpawnInstances, List<AuraSpawnInstance> auraSpawnInstances) {
         this.entityTypes = ImmutableList.copyOf(entityTypes);
-        this.effectSpawnInstances = ImmutableList.copyOf(effectSpawnInstances);
+        this.mobEffectSpawnInstances = ImmutableList.copyOf(mobEffectSpawnInstances);
+        this.auraSpawnInstances = ImmutableList.copyOf(auraSpawnInstances);
     }
     public boolean isAffected(LivingEntity livingEntity) {
         return entityTypes.contains(livingEntity.getType());
     }
+
     public void tryAddEffects(LivingEntity livingEntity) {
-        for (EffectSpawnInstance effectSpawnInstance : effectSpawnInstances) effectSpawnInstance.tryAddEffects(livingEntity);
+        for (MobEffectSpawnInstance mobEffectSpawnInstance : mobEffectSpawnInstances) mobEffectSpawnInstance.tryAddEffects(livingEntity);
+        for (AuraSpawnInstance auraSpawnInstance : auraSpawnInstances) auraSpawnInstance.tryAddAura(livingEntity);
     }
+
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
 
@@ -41,8 +48,12 @@ public class EffectSpawnHolder {
         tag.put("entity_types", entityTypesTag);
 
         ListTag effectSpawnInstancesTag = new ListTag();
-        for (EffectSpawnInstance effectSpawnInstance : effectSpawnInstances) effectSpawnInstancesTag.add(effectSpawnInstance.serialize());
+        for (MobEffectSpawnInstance mobEffectSpawnInstance : mobEffectSpawnInstances) effectSpawnInstancesTag.add(mobEffectSpawnInstance.serialize());
         tag.put("effect_instances", effectSpawnInstancesTag);
+
+        ListTag auraSpawnInstancesTag = new ListTag();
+        for (AuraSpawnInstance auraSpawnInstance : auraSpawnInstances) auraSpawnInstancesTag.add(auraSpawnInstance.serialize());
+        tag.put("aura_instances", auraSpawnInstancesTag);
 
         return tag;
     }
@@ -54,24 +65,41 @@ public class EffectSpawnHolder {
             entities.add(entityType);
         }
 
-        List<EffectSpawnInstance> instances = Lists.newArrayList();
-        ListTag effectInstances = tag.getList("effect_instances", Tag.TAG_COMPOUND);
-        for (int i = 0; i < effectInstances.size(); i++) instances.add(EffectSpawnInstance.deserialize(effectInstances.getCompound(i)));
+        List<MobEffectSpawnInstance> mobEffectInstances = Lists.newArrayList();
+        ListTag effectInstancesTag = tag.getList("effect_instances", Tag.TAG_COMPOUND);
+        for (int i = 0; i < effectInstancesTag.size(); i++) mobEffectInstances.add(MobEffectSpawnInstance.deserialize(effectInstancesTag.getCompound(i)));
 
-        return new EffectSpawnHolder(entities, instances);
+        List<AuraSpawnInstance> auraInstances = Lists.newArrayList();
+        ListTag auraInstancesTag = tag.getList("aura_instances", Tag.TAG_COMPOUND);
+        for (int i = 0; i < auraInstancesTag.size(); i++) auraInstances.add(AuraSpawnInstance.deserialize(auraInstancesTag.getCompound(i)));
+
+        return new EffectSpawnHolder(entities, mobEffectInstances, auraInstances);
     }
     public static class Builder {
+
         private final List<EntityType<?>> entityTypes = Lists.newArrayList();
-        private final ChaoticHierarchy<EffectSpawnInstance.Builder> effectSpawnInstances = new ChaoticHierarchy<>();
+
+        private final ChaoticHierarchy<MobEffectSpawnInstance.Builder> effectSpawnInstances = new ChaoticHierarchy<>();
+        private final ChaoticHierarchy<AuraSpawnInstance.Builder> auraSpawnInstances = new ChaoticHierarchy<>();
+
         public void addEntityType(ResourceLocation location) {
             EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.get(location);
             entityTypes.add(entityType);
         }
+
         public void addEffectInstance(Holder<MobEffect> effect, double chance, int level, boolean hidden) {
-            effectSpawnInstances.addElement(new EffectSpawnInstance.Builder(effect, chance, level, hidden));
+            effectSpawnInstances.addElement(new MobEffectSpawnInstance.Builder(effect, chance, level, hidden));
         }
+
+        public void addAuraInstance(Holder<BasicAura<?>> aura, double chance) {
+            auraSpawnInstances.addElement(new AuraSpawnInstance.Builder(aura, chance));
+        }
+
         public EffectSpawnHolder build() {
-            return new EffectSpawnHolder(entityTypes, effectSpawnInstances.transform(EffectSpawnInstance.Builder::build).getElements());
+            return new EffectSpawnHolder(entityTypes,
+                    effectSpawnInstances.transform(MobEffectSpawnInstance.Builder::build).getElements(),
+                    auraSpawnInstances.transform(AuraSpawnInstance.Builder::build).getElements()
+            );
         }
     }
 }

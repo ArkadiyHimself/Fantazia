@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
+import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
@@ -19,9 +20,11 @@ import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsOnSpawnHo
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.api.data_component.HiddenPotentialHolder;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
+import net.arkadiyhimself.fantazia.entities.ShockwaveEntity;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.*;
+import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.arkadiyhimself.fantazia.tags.FTZEntityTypeTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -37,6 +40,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
@@ -95,30 +99,38 @@ public class FantazicCombat {
     public static void meleeAttack(LivingDamageEvent.Pre event) {
         boolean meleeAttack = event.getSource().is(DamageTypes.PLAYER_ATTACK) || event.getSource().is(DamageTypes.MOB_ATTACK);
         boolean parry = event.getSource().is(FTZDamageTypes.PARRY);
-        if (!meleeAttack && !parry || !(event.getSource().getEntity() instanceof LivingEntity livingAtt)) return;
+        if (!meleeAttack && !parry || !(event.getSource().getEntity() instanceof LivingEntity livingAttacker)) return;
         LivingEntity target = event.getEntity();
 
         float amount = event.getOriginalDamage();
 
-        AttributeInstance lifeSteal = livingAtt.getAttribute(FTZAttributes.LIFESTEAL);
+        AttributeInstance lifeSteal = livingAttacker.getAttribute(FTZAttributes.LIFESTEAL);
         double heal = lifeSteal == null ? 0 : lifeSteal.getValue() * amount;
-        HealingSourcesHolder healingSources = LevelAttributesHelper.getHealingSources(livingAtt.level());
-        if (heal > 0 && healingSources != null) AdvancedHealing.tryHeal(livingAtt, healingSources.lifesteal(target), (float) heal);
+        HealingSourcesHolder healingSources = LevelAttributesHelper.getHealingSources(livingAttacker.level());
+        if (heal > 0 && healingSources != null) AdvancedHealing.tryHeal(livingAttacker, healingSources.lifesteal(target), (float) heal);
 
         Registry<Enchantment> enchantmentRegistry = target.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
         Optional<Holder.Reference<Enchantment>> bully = enchantmentRegistry.getHolder(FTZEnchantments.BULLY);
-        float bullyDMG = bully.map(enchantmentReference -> livingAtt.getMainHandItem().getEnchantmentLevel(enchantmentReference) * 1.5f).orElse(0F);
+        float bullyDMG = bully.map(enchantmentReference -> livingAttacker.getMainHandItem().getEnchantmentLevel(enchantmentReference) * 1.5f).orElse(0F);
         if (bullyDMG > 0) {
             LivingEffectHelper.microStun(target);
             StunEffect stunEffect = LivingEffectGetter.takeHolder(target, StunEffect.class);
             if (stunEffect != null && stunEffect.stunned()) event.setNewDamage(amount + bullyDMG);
         }
 
-        if (livingAtt instanceof ServerPlayer player) {
+        if (livingAttacker instanceof ServerPlayer player) {
             ItemStack itemStack = player.getMainHandItem();
             if (itemStack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) itemStack.update(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialHolder.DEFAULT, holder -> holder.onAttack(parry, target));
 
             if (TalentHelper.hasTalent(player, Fantazia.res("spider_powers/poison_attack"))) target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 2));
+        }
+
+        if (SpellHelper.hasActiveSpell(livingAttacker, FTZSpells.SHOCKWAVE)) {
+            float sat = livingAttacker instanceof Player player ? (float) player.getFoodData().getFoodLevel() / 20 : 1f;
+
+            ShockwaveEntity shockwaveEntity = new ShockwaveEntity(livingAttacker.level(), livingAttacker,amount * sat * 0.5f);
+            shockwaveEntity.setPos(livingAttacker.getEyePosition().add(0,-0.45,0));
+            livingAttacker.level().addFreshEntity(shockwaveEntity);
         }
     }
 

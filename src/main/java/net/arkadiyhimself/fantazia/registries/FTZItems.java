@@ -21,6 +21,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
 import net.neoforged.bus.api.IEventBus;
@@ -63,7 +64,7 @@ public class FTZItems {
 
     // dashstones
     public static final DeferredHolder<Item, DashStoneItem> DASHSTONE1 = magicItem("dashstone1", () -> new DashStoneItem(1)); // finished and implemented
-    public static final DeferredHolder<Item, DashStoneItem> DASHSTONE2 = magicItem("dashstone2", () -> new DashStoneItem(2));
+    public static final DeferredHolder<Item, DashStoneItem> DASHSTONE2 = magicItem("dashstone2", () -> new DashStoneItem(2)); // finished and implemented
     public static final DeferredHolder<Item, DashStoneItem> DASHSTONE3 = magicItem("dashstone3", () -> new DashStoneItem(3));
 
     // spellcasters
@@ -74,13 +75,16 @@ public class FTZItems {
     public static final DeferredHolder<Item, SpellCasterItem> BLOODLUST_AMULET = magicItem("bloodlust_amulet", () -> new SpellCasterItem(FTZSpells.DAMNED_WRATH)); // finished and implemented
     public static final DeferredHolder<Item, SpellCasterItem> ENIGMATIC_CLOCK = magicItem("enigmatic_clock", () -> new SpellCasterItem(FTZSpells.REWIND)); // finished and implemented
     public static final DeferredHolder<Item, SpellCasterItem> NIMBLE_DAGGER = magicItem("nimble_dagger", () -> new SpellCasterItem(FTZSpells.BOUNCE)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> CAUGHT_THUNDER = magicItem("caught_thunder", () -> new SpellCasterItem(FTZSpells.LIGHTNING_STRIKE));
+    public static final DeferredHolder<Item, SpellCasterItem> CAUGHT_THUNDER = magicItem("caught_thunder", () -> new SpellCasterItem(FTZSpells.LIGHTNING_STRIKE)); // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> ATHAME = magicItem("athame", () -> new SpellCasterItem(FTZSpells.TRANSFER)); // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> CONTAINED_SOUND = magicItem("contained_sound", () -> new SpellCasterItem(FTZSpells.SHOCKWAVE)); // finished and implemented
 
     // auracasters
     public static final DeferredHolder<Item, AuraCasterItem> LEADERS_HORN = magicItem("leaders_horn", () -> new AuraCasterItem(FTZAuras.LEADERSHIP)); // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> TRANQUIL_HERB = magicItem("tranquil_herb", () -> new AuraCasterItem(FTZAuras.TRANQUIL)); // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> SPIRAL_NEMESIS = magicItem("spiral_nemesis", () -> new AuraCasterItem(FTZAuras.DESPAIR)); // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> ACID_BOTTLE = magicItem("acid_bottle", () -> new AuraCasterItem(FTZAuras.CORROSIVE)); // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> NETHER_HEART = magicItem("nether_heart", () -> new AuraCasterItem(FTZAuras.HELLFIRE));
 
     // expendables
     public static final DeferredHolder<Item, ExpendableItem> OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON)); // finished and implemented

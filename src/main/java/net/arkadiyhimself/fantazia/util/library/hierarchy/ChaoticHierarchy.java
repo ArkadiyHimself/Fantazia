@@ -17,23 +17,27 @@ import java.util.function.Function;
  * Considering the fact that this hierarchy is supposed to be unordered and not used for more serious tasks, it has been made more forgiving in terms of causing errors
  */
 public class ChaoticHierarchy<T> extends ChainHierarchy<T> {
+
     @SuppressWarnings("ConstantConditions")
     public ChaoticHierarchy() {
         super(null);
     }
+
     public static <M> ChaoticHierarchy<M> of(List<M> elements) throws HierarchyException {
-        if (elements.isEmpty()) throw new HierarchyException("Hierarchy can not be empty!");
+        if (elements.isEmpty()) return new ChaoticHierarchy<>();
         ChaoticHierarchy<M> hierarchy = new ChaoticHierarchy<>();
         if (elements.isEmpty()) return hierarchy;
         for (M element : elements) hierarchy.addElement(element);
         return hierarchy;
     }
+
     public static <M> ChaoticHierarchy<M> of(M[] elements) {
         return of(Arrays.stream(elements).toList());
     }
     public static <M> ChaoticHierarchy<M> of(ChainHierarchy<M> elements) {
         return of(elements.getElements());
     }
+
     /**
      * Since this hierarchy is not supposed to have an order, duplicating and null values provided by transformer are ignored and do not cause an error to occur
      */
@@ -54,6 +58,7 @@ public class ChaoticHierarchy<T> extends ChainHierarchy<T> {
         }
         return of(newList);
     }
+
     /**
      * Since this hierarchy is not supposed to have an order, both methods related to structuration are redundant
      */

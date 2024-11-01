@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.api.type.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
@@ -16,6 +16,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
@@ -132,6 +133,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * be immune to while within aura
      */
     private final ImmutableList<ResourceKey<DamageType>> damageImmunities;
+    private final ImmutableList<TagKey<DamageType>> tagDamageImmunities;
     /**
      * Whenever a suitable entity inside aura takes damage from a {@link net.minecraft.world.damagesource.DamageSource source},
      * <br>
@@ -140,6 +142,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * by respective float value inside this map
      */
     private final ImmutableMap<ResourceKey<DamageType>, Float> damageMultipliers;
+    private final ImmutableMap<TagKey<DamageType>, Float> tagDamageMultipliers;
 
     protected BasicAura(Class<T> affectedType, TYPE type, float range,
                      Map<Holder<Attribute>, AttributeModifier> attributeModifiers,
@@ -152,8 +155,10 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
                      Consumer<Entity> onTickOwner,
                      BiConsumer<BlockPos, AuraInstance<T>> onTickBlock,
                      List<ResourceKey<DamageType>> damageImmunities,
-                     Map<ResourceKey<DamageType>, Float> damageMultipliers
-                     ) {
+                     List<TagKey<DamageType>> tagDamageImmunities,
+                     Map<ResourceKey<DamageType>, Float> damageMultipliers,
+                     Map<TagKey<DamageType>, Float> tagDamageMultipliers
+    ) {
         this.range = range;
         this.type = type;
         this.tClass = affectedType;
@@ -171,7 +176,9 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         this.onTickBlock = onTickBlock;
 
         this.damageImmunities = ImmutableList.copyOf(damageImmunities);
+        this.tagDamageImmunities = ImmutableList.copyOf(tagDamageImmunities);
         this.damageMultipliers = ImmutableMap.copyOf(damageMultipliers);
+        this.tagDamageMultipliers = ImmutableMap.copyOf(tagDamageMultipliers);
     }
 
     @Override
@@ -271,7 +278,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     }
 
     public ResourceLocation getID() {
-        return FantazicRegistry.AURAS.getKey(this);
+        return FantazicRegistries.AURAS.getKey(this);
     }
 
     public Component getAuraComponent() {
@@ -341,8 +348,21 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return damageImmunities;
     }
 
+    public boolean immunityTo(Holder<DamageType> damageTypeHolder) {
+        if (damageImmunities.contains(damageTypeHolder.getKey())) return true;
+        else for (TagKey<DamageType> tagKey : tagDamageImmunities) if (damageTypeHolder.is(tagKey)) return true;
+        return false;
+    }
+
     public Map<ResourceKey<DamageType>, Float> multipliers() {
         return damageMultipliers;
+    }
+
+    public float multiplierFor(Holder<DamageType> damageTypeHolder) {
+        Float d0 = damageMultipliers.get(damageTypeHolder.getKey());
+        float d1 = d0 == null ? 1f : d0;
+        for (Map.Entry<TagKey<DamageType>, Float> entry : tagDamageMultipliers.entrySet()) if (damageTypeHolder.is(entry.getKey())) d1 *= entry.getValue();
+        return d1;
     }
 
     private @Nullable Component bakeRangeComponent() {
@@ -373,7 +393,9 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         private BiConsumer<BlockPos, AuraInstance<T>> onTickBlock = ((blockPos, tmAuraInstance) -> {});
 
         private final List<ResourceKey<DamageType>> damageImmunities = Lists.newArrayList();
+        private final List<TagKey<DamageType>> tagDamageImmunities = Lists.newArrayList();
         private final Map<ResourceKey<DamageType>, Float> damageMultipliers = Maps.newHashMap();
+        private final Map<TagKey<DamageType>, Float> tagDamageMultipliers = Maps.newHashMap();
 
         public Builder(Class<T> affectedClass, TYPE type, float range) {
             this.affectedClass = affectedClass;
@@ -431,13 +453,37 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
             return this;
         }
 
+        public Builder<T> addDamageImmunity(TagKey<DamageType> damageType) {
+            this.tagDamageImmunities.add(damageType);
+            return this;
+        }
+
         public Builder<T> putDamageMultiplier(ResourceKey<DamageType> damageType, float multiplier) {
             this.damageMultipliers.put(damageType, multiplier);
             return this;
         }
 
+        public Builder<T> putDamageMultiplier(TagKey<DamageType> damageType, float multiplier) {
+            this.tagDamageMultipliers.put(damageType, multiplier);
+            return this;
+        }
+
         public BasicAura<T> build() {
-            return new BasicAura<>(affectedClass, type, range, attributeModifiers, dynamicAttributeModifiers, mobEffects, primaryFilter, secondaryFilter, ownerConditions, onTickAffected, onTickOwner, onTickBlock, damageImmunities, damageMultipliers);
+            return new BasicAura<>(affectedClass, type, range,
+                    attributeModifiers,
+                    dynamicAttributeModifiers,
+                    mobEffects,
+                    primaryFilter,
+                    secondaryFilter,
+                    ownerConditions,
+                    onTickAffected,
+                    onTickOwner,
+                    onTickBlock,
+                    damageImmunities,
+                    tagDamageImmunities,
+                    damageMultipliers,
+                    tagDamageMultipliers
+            );
         }
     }
 }

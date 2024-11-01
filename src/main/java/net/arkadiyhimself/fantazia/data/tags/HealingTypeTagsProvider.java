@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.data.tags;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.registries.custom.FTZHealingTypes;
 import net.arkadiyhimself.fantazia.tags.FTZHealingTypeTags;
 import net.minecraft.core.HolderLookup;
@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class HealingTypeTagsProvider extends TagsProvider<HealingType> {
     public HealingTypeTagsProvider(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pLookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(pOutput, FantazicRegistry.Keys.HEALING_TYPE, pLookupProvider, Fantazia.MODID, existingFileHelper);
+        super(pOutput, FantazicRegistries.Keys.HEALING_TYPE, pLookupProvider, Fantazia.MODID, existingFileHelper);
     }
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {

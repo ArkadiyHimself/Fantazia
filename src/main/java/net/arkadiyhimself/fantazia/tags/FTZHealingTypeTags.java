@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.tags;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
-import net.arkadiyhimself.fantazia.api.FantazicRegistry;
+import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.minecraft.tags.TagKey;
 
 public interface FTZHealingTypeTags {
@@ -15,6 +15,6 @@ public interface FTZHealingTypeTags {
     TagKey<HealingType> CONSENSUAL = create("consensual");
     TagKey<HealingType> UNHOLY = create("unholy");
     private static TagKey<HealingType> create(String pName) {
-        return TagKey.create(FantazicRegistry.Keys.HEALING_TYPE, Fantazia.res(pName));
+        return TagKey.create(FantazicRegistries.Keys.HEALING_TYPE, Fantazia.res(pName));
     }
 }

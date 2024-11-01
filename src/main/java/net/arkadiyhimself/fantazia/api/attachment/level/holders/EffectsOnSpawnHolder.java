@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.level.holders;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributeHolder;
 import net.arkadiyhimself.fantazia.data.spawn.EffectSpawnHolder;
-import net.arkadiyhimself.fantazia.data.spawn.MobEffectsOnSpawnManager;
+import net.arkadiyhimself.fantazia.data.spawn.EffectsOnSpawnManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -16,7 +16,9 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.List;
 
 public class EffectsOnSpawnHolder extends LevelAttributeHolder {
-    private final List<EffectSpawnHolder> effectSpawnHolders = MobEffectsOnSpawnManager.createHolders();
+
+    private final List<EffectSpawnHolder> effectSpawnHolders = EffectsOnSpawnManager.createHolders();
+
     public EffectsOnSpawnHolder(Level level) {
         super(level, Fantazia.res("effects_on_spawn"));
     }
@@ -37,8 +39,9 @@ public class EffectsOnSpawnHolder extends LevelAttributeHolder {
 
         ListTag effectHolders = compoundTag.getList("effect_holders", Tag.TAG_COMPOUND);
         for (int i = 0; i < effectHolders.size(); i++) effectSpawnHolders.add(EffectSpawnHolder.deserialize(effectHolders.getCompound(i)));
-        if (effectSpawnHolders.isEmpty()) effectSpawnHolders.addAll(MobEffectsOnSpawnManager.createHolders());
+        if (effectSpawnHolders.isEmpty()) effectSpawnHolders.addAll(EffectsOnSpawnManager.createHolders());
     }
+
     public void tryApplyEffects(LivingEntity spawned) {
         for (EffectSpawnHolder holder : effectSpawnHolders) if (holder.isAffected(spawned)) holder.tryAddEffects(spawned);
     }

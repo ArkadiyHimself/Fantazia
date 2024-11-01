@@ -22,6 +22,7 @@ public record LevelAttributesUpdateS2C(CompoundTag tag) implements IPacket {
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
+
     public void handle(IPayloadContext context) {
         context.enqueueWork(() -> {
             ClientLevel clientLevel = Minecraft.getInstance().level;

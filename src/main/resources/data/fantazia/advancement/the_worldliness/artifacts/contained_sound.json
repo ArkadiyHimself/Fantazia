@@ -1,0 +1,15 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "sculk_shrieker": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:sculk_shrieker"]
+          }
+        ]
+      }
+    }
+  }
+}

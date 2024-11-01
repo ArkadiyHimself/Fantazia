@@ -11,11 +11,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LootInstance {
+
     private final @NotNull Item added;
     private final PSERANInstance instance;
     private final @Nullable Item replaced;
     private final boolean firstTime;
     private boolean looted = false;
+
     public LootInstance(@NotNull Item added, PSERANInstance instance, @Nullable Item replaced, boolean firstTime, boolean looted) {
         this.added = added;
         this.instance = instance;
@@ -23,12 +25,14 @@ public class LootInstance {
         this.firstTime = firstTime;
         this.looted = looted;
     }
+
     public LootInstance(@NotNull Item added, PSERANInstance instance, @Nullable Item replaced, boolean firstTime) {
         this.added = added;
         this.instance = instance;
         this.replaced = replaced;
         this.firstTime = firstTime;
     }
+
     public void tryAddLoot(@NotNull ObjectArrayList<ItemStack> generatedLoot) {
         if (firstTime && looted) return;
         if (!instance.performAttempt()) return;
@@ -36,6 +40,7 @@ public class LootInstance {
         if (replaced != null) generatedLoot.removeIf(stack -> stack.is(replaced));
         looted = true;
     }
+
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
 
@@ -53,6 +58,7 @@ public class LootInstance {
         tag.putBoolean("looted", looted);
         return tag;
     }
+
     public static LootInstance deserialize(CompoundTag tag) {
         ResourceLocation addedID = ResourceLocation.parse(tag.getString("added"));
         Item added = BuiltInRegistries.ITEM.get(addedID);
