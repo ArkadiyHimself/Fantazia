@@ -87,7 +87,7 @@ public class CommonDataHolder extends LivingDataHolder implements IDamageEventLi
     }
 
     public boolean writtenParameters() {
-        return parameterHolders.size() == parameterHolders.getMaxSize();
+        return parameterHolders.size() >= parameterHolders.getMaxSize();
     }
 
     public boolean tryReadParameters(int index, LivingEntity livingEntity) {

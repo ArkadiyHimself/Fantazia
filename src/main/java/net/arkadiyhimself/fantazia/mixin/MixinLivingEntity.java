@@ -25,9 +25,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.common.EffectCure;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -92,14 +93,28 @@ public abstract class MixinLivingEntity extends Entity {
         int mX = Mth.floor(bb.minX);
         int mY = Mth.floor(bb.minY);
         int mZ = Mth.floor(bb.minZ);
-        for (int y = mY; y < bb.maxY; y++) for (int x = mX; x < bb.maxX; x++) for (int z = mZ; z < bb.maxZ; z++) if (fantazia$fitForClimbing(level().getBlockState(new BlockPos(x, y, z)), player)) return true;
+        for (int y = mY; y < bb.maxY - 1; y++) for (int x = mX; x < bb.maxX; x++) for (int z = mZ; z < bb.maxZ; z++) {
+            BlockPos blockPos = new BlockPos(x, y, z);
+
+            if (fantazia$fitForClimbing(blockPos, player)) return true;
+        }
         return false;
     }
 
     @Unique
-    private boolean fantazia$fitForClimbing(BlockState state, Player player) {
+    private boolean fantazia$fitForClimbing(BlockPos pos, Player player) {
         if (FantazicCombat.isPhasing(player)) return false;
+        if (pos.getX() == player.getBlockX() && pos.getZ() == player.getBlockZ()) return false;
+        BlockState state = level().getBlockState(pos);
+
+        Block block = state.getBlock();
+        boolean fullBlock = state.getShape(level(), pos) == Shapes.block();
+        if (block instanceof BedBlock) return false;
+        if (block instanceof SlabBlock && !fullBlock && pos.getY() - player.getBlockY() <= 0) return false;
+        if (block instanceof StairBlock && pos.getY() - player.getBlockY() <= 0) return false;
+
         if (state.isSolid() && TalentHelper.hasTalent(player, Fantazia.res("spider_powers/wall_climbing"))) return true;
         else return (state.is(Blocks.COBWEB) && TalentHelper.hasTalent(player, Fantazia.res("spider_powers/cobweb_climbing")));
     }
+
 }

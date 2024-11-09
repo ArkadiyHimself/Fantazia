@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
@@ -63,7 +62,6 @@ public class DoubleJumpHolder extends PlayerAbilityHolder implements ITalentList
         doTick = true;
         jumped = false;
         delay = 0;
-
     }
 
     @Override
@@ -99,17 +97,22 @@ public class DoubleJumpHolder extends PlayerAbilityHolder implements ITalentList
     public boolean isUnlocked() {
         return unlocked;
     }
+
     public boolean canJump() {
-        return recharge <= 0 && unlocked && !jumped && canJump && !getPlayer().onGround() && !getPlayer().hasEffect(MobEffects.LEVITATION) && !getPlayer().hasEffect(MobEffects.SLOW_FALLING);
+        return recharge <= 0 && unlocked && !jumped && canJump && !getPlayer().getAbilities().flying && !getPlayer().onGround() && !getPlayer().isInLiquid() &&
+                !getPlayer().hasEffect(MobEffects.LEVITATION) && !getPlayer().hasEffect(MobEffects.SLOW_FALLING);
     }
+
     public void regularJump() {
         this.doTick = false;
         this.delay = 1;
         this.jumped = true;
     }
+
     public void buttonRelease() {
         this.doTick = true;
     }
+
     public void tryToJump() {
         if (!canJump()) return;
         if (getPlayer().isFallFlying()) {
@@ -121,10 +124,12 @@ public class DoubleJumpHolder extends PlayerAbilityHolder implements ITalentList
             getPlayer().resetFallDistance();
         }
     }
+
     public void unlock() {
         unlocked = true;
         if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(SoundEvents.ZOMBIE_VILLAGER_CURE));
     }
+
     public int getRecharge() {
         return recharge;
     }

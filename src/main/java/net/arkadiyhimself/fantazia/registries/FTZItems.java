@@ -21,7 +21,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
 import net.neoforged.bus.api.IEventBus;
@@ -84,7 +83,8 @@ public class FTZItems {
     public static final DeferredHolder<Item, AuraCasterItem> TRANQUIL_HERB = magicItem("tranquil_herb", () -> new AuraCasterItem(FTZAuras.TRANQUIL)); // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> SPIRAL_NEMESIS = magicItem("spiral_nemesis", () -> new AuraCasterItem(FTZAuras.DESPAIR)); // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> ACID_BOTTLE = magicItem("acid_bottle", () -> new AuraCasterItem(FTZAuras.CORROSIVE)); // finished and implemented
-    public static final DeferredHolder<Item, AuraCasterItem> NETHER_HEART = magicItem("nether_heart", () -> new AuraCasterItem(FTZAuras.HELLFIRE));
+    public static final DeferredHolder<Item, AuraCasterItem> NETHER_HEART = magicItem("nether_heart", () -> new AuraCasterItem(FTZAuras.HELLFIRE)); // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> AMPLIFIED_ICE = magicItem("amplified_ice", () -> new AuraCasterItem(FTZAuras.FROSTBITE));
 
     // expendables
     public static final DeferredHolder<Item, ExpendableItem> OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON)); // finished and implemented

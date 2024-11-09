@@ -1,0 +1,23 @@
+{
+  "name": "book.fantazia.entry.artifacts.amplified_ice.name",
+  "icon": "fantazia:amplified_ice",
+  "category": "fantazia:artifacts",
+  "advancement" : "fantazia:the_worldliness/artifacts/amplified_ice",
+  "read_by_default": false,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.artifacts.amplified_ice.page.1"
+    },
+    {
+      "type": "crafting",
+      "recipe": "fantazia:amplified_ice",
+      "title" : "book.fantazia.entry.artifacts.amplified_ice.heading",
+      "text" : "book.fantazia.entry.artifacts.amplified_ice.page.2"
+    },
+    {
+      "type" : "patchouli:text",
+      "text" : "book.fantazia.entry.artifacts.amplified_ice.page.3"
+    }
+  ]
+}

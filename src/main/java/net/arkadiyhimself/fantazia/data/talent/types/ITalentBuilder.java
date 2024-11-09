@@ -1,21 +1,16 @@
 package net.arkadiyhimself.fantazia.data.talent.types;
 
 import com.google.common.collect.Maps;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DoubleJumpHolder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.item.Items;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface ITalentBuilder<T extends ITalent> {
     T build(ResourceLocation identifier);

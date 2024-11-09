@@ -544,6 +544,15 @@
   "aura.fantazia.hellfire.stats.1" : "§c * Affects both fire and ancient flame",
   "aura.fantazia.hellfire.stats.2" : "§c * Increases the fire damage taken by creatures",
 
+  "item.fantazia.amplified_ice" : "§3Amplified Ice",
+  "aura.fantazia.frostbite.desc.lines" : "1",
+  "aura.fantazia.frostbite.desc.1" : "§bCold...",
+  "aura.fantazia.frostbite.name" : "§b§lFrostbite",
+  "aura.fantazia.frostbite.lines" : "1",
+  "aura.fantazia.frostbite.1" : "All mobs within aura slowly freeze",
+  "aura.fantazia.frostbite.stats.lines" : "1",
+  "aura.fantazia.frostbite.stats.1" : "§c * Increases the frost damage taken by creatures",
+
   "item.fantazia.obscure_substance" : "§5Obscure Substance",
   "item.fantazia.unfinished_wings" : "§cUnfinished Wings",
   "item.fantazia.arachnid_eye" : "Arachnid Eye",
@@ -850,6 +859,12 @@
   "book.fantazia.entry.artifacts.nether_heart.page.1" : "Fire is among the most important discoveries for the civilisation, arguably being the one discovery that started our progress as species, from primates to humans. It does not surprise that flame got a great symbolism about it in our culture, being associated with knowledge or progress. Considering all of this, fire is still a dangerous element which can lead to devastating damage in the wrong hands",
   "book.fantazia.entry.artifacts.nether_heart.page.2" : "The Heart of Nether is the essence of the dimension, a fire in a solid form, a melted and then solidified piece of flame. To get this artifact one has to slay blazes, creatures literally made of fires and flames, for only they seem to possess the essence",
   "book.fantazia.entry.artifacts.nether_heart.page.3" : "The aura of this relic turns fire into even more devastating force of nature than it already is, greatly increasing its harm on creatures withing the aura",
+
+  "book.fantazia.entry.artifacts.amplified_ice.name" : "§3Amplified Ice",
+  "book.fantazia.entry.artifacts.amplified_ice.heading" : "Aura Caster",
+  "book.fantazia.entry.artifacts.amplified_ice.page.1" : "There are lands made of ice and snow, with barely any life in them. One will find it difficult to even survive in there, let alone have a normal life, for the unforgiving cold consumes every last corner of those places",
+  "book.fantazia.entry.artifacts.amplified_ice.page.2" : "Empowering the coldness of ice with substance, and then using some snow to contain new properties, we get a small ice crystal, purer than water in lake and tougher than the finest diamond",
+  "book.fantazia.entry.artifacts.amplified_ice.page.3" : "This artifact, embodying the very meaning of cold, freezes creatures inside its aura, causing their bodies to eventually succumb",
 
   "book.fantazia.entry.mob_effects.cleanse.name" : "§bCleanse",
   "book.fantazia.entry.mob_effects.cleanse.page.1" : "Effects are known to have a wide variety of ways to affects their target, from simply slowing its movement to applying a terrible curse upon poor victim; it would only make sense that some of effects are built different and require quite an effort to get rid off, be it from thyself or from a foe. ",

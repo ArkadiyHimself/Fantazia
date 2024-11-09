@@ -9,7 +9,6 @@ import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHol
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.particless.options.ElectroParticleOption;
 import net.arkadiyhimself.fantazia.simpleobjects.SimpleMobEffect;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;

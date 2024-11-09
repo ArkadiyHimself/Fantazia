@@ -3,7 +3,6 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
@@ -18,9 +17,9 @@ import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -104,7 +103,6 @@ public class Auras {
             .build();
 
     public static final BasicAura<LivingEntity> HELLFIRE = new BasicAura.Builder<>(LivingEntity.class, BasicAura.TYPE.NEGATIVE, 6f)
-            .ownerConditions(owner -> false)
             .onTickAffected((livingEntity, entity) -> {
                 if (livingEntity.getRemainingFireTicks() == 1) livingEntity.setRemainingFireTicks(21);
 
@@ -113,5 +111,12 @@ public class Auras {
             })
             .putDamageMultiplier(FTZDamageTypeTags.IS_ANCIENT_FLAME, 1.5f)
             .putDamageMultiplier(DamageTypeTags.IS_FIRE, 1.75f)
+            .build();
+
+    public static final BasicAura<Mob> FROSTBITE = new BasicAura.Builder<>(Mob.class, BasicAura.TYPE.NEGATIVE, 8f)
+            .primaryFilter((mob, entity) -> !(mob instanceof AgeableMob) && mob.canFreeze())
+            .onTickAffected((mob, entity) -> mob.setTicksFrozen(Math.min(mob.getTicksRequiredToFreeze() + 3, mob.getTicksFrozen() + 3)))
+            .putDamageMultiplier(DamageTypes.FREEZE, 3f)
+            .putDamageMultiplier(FTZDamageTypes.FROZEN, 2.5f)
             .build();
 }

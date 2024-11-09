@@ -36,14 +36,15 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
@@ -141,7 +142,7 @@ public class FantazicCombat {
     public static boolean isRanged(LivingEntity livingEntity) {
         if (livingEntity.getType().is(FTZEntityTypeTags.RANGED_ATTACK)) return true;
         Item item = livingEntity.getItemInHand(InteractionHand.MAIN_HAND).getItem();
-        return item instanceof BowItem || item instanceof TridentItem || item instanceof CrossbowItem || item instanceof HatchetItem;
+        return item instanceof ProjectileWeaponItem || item instanceof TridentItem || item instanceof HatchetItem;
     }
 
     public static void arrowImpact(AbstractArrow arrow, LivingEntity entity) {
@@ -157,8 +158,7 @@ public class FantazicCombat {
 
     public static boolean attemptEvasion(LivingIncomingDamageEvent event) {
         DamageSource source = event.getSource();
-        boolean flag1 = source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.PLAYER_ATTACK);
-        if (!flag1) return false;
+        if (!source.is(DamageTypes.MOB_ATTACK) && !source.is(DamageTypes.PLAYER_ATTACK)) return false;
 
         LivingEntity livingEntity = event.getEntity();
         EvasionHolder evasionHolder = LivingDataGetter.takeHolder(livingEntity, EvasionHolder.class);
