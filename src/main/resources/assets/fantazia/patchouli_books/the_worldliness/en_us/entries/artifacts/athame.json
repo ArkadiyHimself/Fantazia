@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.athame.name",
+  "name": "item.fantazia.athame",
   "icon": "fantazia:athame",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/athame",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:athame",
-      "title" : "book.fantazia.entry.artifacts.athame.heading",
+      "title" : "book.fantazia.heading.artifacts.spellcaster",
       "text" : "book.fantazia.entry.artifacts.athame.page.2"
     },
     {

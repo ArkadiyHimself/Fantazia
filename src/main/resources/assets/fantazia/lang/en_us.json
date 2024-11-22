@@ -484,6 +484,19 @@
   "spell.fantazia.shockwave.passive.1" : "§5 * The damage of beam depends on attacker's",
   "spell.fantazia.shockwave.passive.2" : "§5   hunger, going up to 50% when saturated",
 
+  "item.fantazia.withers_quintessence" : "§cWither's Quintessence",
+  "spell.fantazia.sustain.desc.lines" : "1",
+  "spell.fantazia.sustain.desc.1" : "§cThe bane of existence",
+  "spell.fantazia.sustain.name" : "Sustain",
+  "spell.fantazia.sustain.lines" : "4",
+  "spell.fantazia.sustain.1" : "Whenever a creature is murdered by the owner,",
+  "spell.fantazia.sustain.2" : "the spell stretches user's life by regenerating",
+  "spell.fantazia.sustain.3" : "a part of their health and providing several",
+  "spell.fantazia.sustain.4" : "layers of a barrier.",
+  "spell.fantazia.sustain.passive.lines" : "2",
+  "spell.fantazia.sustain.passive.1" : "§5 * Attacked creatures suffer from the Wither effect",
+  "spell.fantazia.sustain.passive.2" : "§4 * Constantly drains user's vitality",
+
   "item.fantazia.leaders_horn" : "§5Leader's Horn",
   "aura.fantazia.leadership.desc.lines" : "1",
   "aura.fantazia.leadership.desc.1" : "§5To rule them all...",
@@ -686,6 +699,17 @@
   "fantazia.talent.mana_recycle.mana_recycle3.desc.lines" : "1",
   "fantazia.talent.mana_recycle.mana_recycle3.desc.1" : "Executing an enemy restores significant amount of mana",
 
+  "fantazia.talent.euphoria_boost.savagery.name" : "§4Savagery",
+  "fantazia.talent.euphoria_boost.savagery.desc.lines" : "1",
+  "fantazia.talent.euphoria_boost.savagery.desc.1" : "When euphoria is at its peak, attacks have 25% lifesteal",
+
+  "fantazia.talent.euphoria_boost.relentless.name" : "§4Relentless",
+  "fantazia.talent.euphoria_boost.relentless.desc.lines" : "2",
+  "fantazia.talent.euphoria_boost.relentless.desc.1" : "If affected by euphoria, attacks deal critical damage",
+  "fantazia.talent.euphoria_boost.relentless.desc.2" : "depending on the combo",
+  "fantazia.talent.euphoria_boost.relentless.criteria.lines" : "1",
+  "fantazia.talent.euphoria_boost.relentless.criteria.1" : "Reach peak of euphoria",
+
   "fantazia.gui.talent.toast.info" : "New Talent",
   "fantazia.gui.talent.requirement" : "Requirement:",
   "fantazia.gui.talent.wisdom" : "§dWisdom: %s",
@@ -746,6 +770,9 @@
   "advancements.fantazia.doomed" : "§c§lUh oh!..",
   "advancements.fantazia.doomed.desc" : "Get afflicted with Doomed effect",
 
+  "advancements.fantazia.bloodthirsty" : "§4Bloodthirsty",
+  "advancements.fantazia.bloodthirsty.desc" : "Stay in peak of euphoria for a full minute",
+
   "book.fantazia.landing_text" : "Since the beginning of humanity people tried to understand what they could not explain, grasp what they could not comprehend, obtain the knowledge they could not possess, using the science and common sense, something that the human's mind can acknowledge. However humanity will never understand everything about the world around themselves; some secrets will remain hidden, some mysteries will remain unexplained, some truths will remain untold...",
 
   "book.fantazia.category.artifacts.name" : "§5Artifacts",
@@ -770,106 +797,77 @@
   "book.fantazia.entry.artifacts.dashstone.page.1" : "Nobody knows the origins of these mysterious stones, who created them, or if they even have a creator; what is even more unexplainable is their attraction to certain people. They seem to somehow find their way into hands of those people, almost like fate itself is responsible for it...",
   "book.fantazia.entry.artifacts.dashstone.page.2" : "Although the initial power of those relics seems pretty simple, it being a swift leap forward, they are not to be underestimated. The hidden potential inside every single one of them allows to warp spacetime itself to the will of their wearer, allowing one to move through the fabric of reality itself ",
 
-  "book.fantazia.entry.artifacts.entangler.name" : "§5Life-Death Entangler",
-  "book.fantazia.entry.artifacts.entangler.heading" : "Spell Caster",
+  "book.fantazia.heading.artifacts.spellcaster" : "Spell Caster",
+  "book.fantazia.heading.artifacts.auracaster" : "Aura Caster",
+
   "book.fantazia.entry.artifacts.entangler.page.1" : "For a long time already, mortality has been portrayed as natural part of our lives. People have been convinced to accept their inevitable demise and use it as a motivation to live own live to its fullest. But is it actually a natural part of what we are, or is it a decease, a sickness that plagues all living creatures that we simply feel to helpless to fight due to our inability to prevent it?",
   "book.fantazia.entry.artifacts.entangler.page.2" : "Using the power of a totem which allows to bypass our own demise, we can create an artifact which allows to stand on a fine line life and death",
   "book.fantazia.entry.artifacts.entangler.page.3" : "The entangler embodies humanity's desire to avoid death, and thus helps with it. This artifact can be activated when its owner is on the verge of dying, and using it makes one effectively immortal, even if it is only for a brief moment",
 
-  "book.fantazia.entry.artifacts.soul_eater.name" : "§5The Soul Eater",
-  "book.fantazia.entry.artifacts.soul_eater.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.soul_eater.page.1" : "The souls of living creatures have always been considered sacred, untouchable. However, that does not change the fact that souls are also rich sources of energy, and they can be harvested. After all, if it was wrong to use a soul for one's own profit, why are they good for that?",
   "book.fantazia.entry.artifacts.soul_eater.page.2" : "Of course, something so unholy that it allows to devour others' souls would only be found in the deepest pits of The Nether, be it remnants of bastions, or fortresses of an already dead civilisation",
   "book.fantazia.entry.artifacts.soul_eater.page.3" : "This artifact allows to devour one's soul whole, leaving no trace of the victim. Doing so benefits the devourer, healing their wounds and providing great power, albeit temporarily. Of course, such immense power would have a cost: the wearer of this spell caster suffers from insatiable hunger, desiring more and more souls",
 
-  "book.fantazia.entry.artifacts.heart_of_sculk.name" : "§5Heart of The Sculk",
-  "book.fantazia.entry.artifacts.heart_of_sculk.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.heart_of_sculk.page.1" : "The origins of sculk remain unclear even to this day; it's unknown where it originated, or if it's origins are even of the overworld. However, even from such undiscovered substance, humanity still found a way to harvest its powers",
   "book.fantazia.entry.artifacts.heart_of_sculk.page.2" : "The only places where such an artifact can be found are Ancient Cities, where sculk was explored and studies for benefits of people",
   "book.fantazia.entry.artifacts.heart_of_sculk.page.3" : "This mysterious heart allows its owner to strike their enemies with a powerful sonic boom, as well as detect sound vibrations emitted by other creatures, akin to wardens created by sculk",
 
-  "book.fantazia.entry.artifacts.mystic_mirror.name" : "§5Mystic Mirror",
-  "book.fantazia.entry.artifacts.mystic_mirror.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.mystic_mirror.page.1" : "Not all artifacts are meant to harm someone's foes, some of them are have defensive capabilities, protecting their owner from harm instead. This mysterious mirror is one of those artifacts, although it only helps against other spell casters",
   "book.fantazia.entry.artifacts.mystic_mirror.page.2" : "Using the obscure substance, one can influence properties of a reflective material to also reflect something more than just light",
   "book.fantazia.entry.artifacts.mystic_mirror.page.3" : "Embodying one's desire to avoid being harmed, the Mirror protects its owner from any magical spells targeted at them, reflecting them back at the caster",
 
-  "book.fantazia.entry.artifacts.bloodlust_amulet.name" : "§5Amulet of Bloodlust",
-  "book.fantazia.entry.artifacts.bloodlust_amulet.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.bloodlust_amulet.page.1" : "Even through anger making someone stronger can be interpreted as adrenaline flowing in person's veins and making one's muscles work to their full potential, it remains unclear as to why it also causes one to be harmed worse than usual. However, that negative effect can be reduced",
   "book.fantazia.entry.artifacts.bloodlust_amulet.page.2" : "This amulet can be discovered in depth of Nether, yet it is unknown what this artifact has to do with this dimension in particular",
   "book.fantazia.entry.artifacts.bloodlust_amulet.page.3" : "Embodying humans' bloodlust and brutality, this artifact is fueled by one's fear of it that is felt by someone close to pass away, and in turn the amulet turns that fear into wrath. The amulet also allows its owner to tame their fury, tuning down its negative effects and even gaining some additional benefits from it",
 
-  "book.fantazia.entry.artifacts.enigmatic_clock.name": "§5Enigmatic Clock",
-  "book.fantazia.entry.artifacts.enigmatic_clock.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.enigmatic_clock.page.1" : "Does time have a beginning? Will time ever have an end? Those questions are most likely among the mysteries that will always remain unknown to us. But even such ungraspable concept as flow of time can be bent to someone's will, assuming they have means to do that",
   "book.fantazia.entry.artifacts.enigmatic_clock.page.2" : "A regular clock, being the embodiment of the concept of time itself for a human's mind, has potential to influence this concept, which can be unleashed with enough magical essence",
   "book.fantazia.entry.artifacts.enigmatic_clock.page.3" : "The ability of the clock embodies one's deep desire to go back to past and fix mistakes they regret, allowing its user to return back in time, which reverts one's state to how it was",
 
-  "book.fantazia.entry.artifacts.leaders_horn.name" : "§5Leader's Horn",
-  "book.fantazia.entry.artifacts.leaders_horn.heading" : "Aura Caster",
   "book.fantazia.entry.artifacts.leaders_horn.page.1" : "There are people in the world who are simply born to be leaders, to be followed by everyone else. It may be charisma which helps with this, or respect which was gained through hard work, or something else entirely",
   "book.fantazia.entry.artifacts.leaders_horn.page.2" : "The horns were always associated with leadership by humans, so it is no surprise that they have potential to actually empower those who are being lead by someone who carries one. The Leader's Horn can be found in pillager outposts, often replacing regular one",
   "book.fantazia.entry.artifacts.leaders_horn.page.3" : "The aura created by this artifact empowers all allies of its owner, making them even stronger",
 
-  "book.fantazia.entry.artifacts.tranquil_herb.name" : "§2Tranquil Herb",
-  "book.fantazia.entry.artifacts.tranquil_herb.heading" : "Aura Caster",
   "book.fantazia.entry.artifacts.tranquil_herb.page.1" : "Before science was as advanced as it is right now, people could only notice patterns between different phenomena and draw conclusions out of them. Using plants and other flora for medical purposes is a good example of it, hence why plants are tightly associated with medicine in one's mind",
   "book.fantazia.entry.artifacts.tranquil_herb.page.2" : "This weird herb can be found deep underground in mineshafts, where those plants would be more useful than on a battlefield",
   "book.fantazia.entry.artifacts.tranquil_herb.page.3" : "This herb creates an aura which calms and soothes one's mental state and heals one's physical state, albeit very slowly",
 
-  "book.fantazia.entry.artifacts.spiral_nemesis.name" : "§5Spiral Nemesis",
-  "book.fantazia.entry.artifacts.spiral_nemesis.heading" : "Aura Caster",
   "book.fantazia.entry.artifacts.spiral_nemesis.page.1" : "Among all the emotions a human may experience, fear is probably the most powerful, being the most primal. After all, fear is what helped humanity survive in the harsh times, before humans themselves became apex predators",
-  "book.fantazia.entry.artifacts.spiral_nemesis.page.2" : "The artifacts can be obtained by slaying one of the horrifying teleporting tall dark creatures, which wander all three dimensions",
+  "book.fantazia.entry.artifacts.spiral_nemesis.page.2" : "The artifacts can be obtained by slaying one of the horrifying teleporting endermen, which wander all three dimensions",
   "book.fantazia.entry.artifacts.spiral_nemesis.page.3" : "This stone uses the fear of death that creatures feel, and manifests it into reality, making their doom even more imminent",
 
-  "book.fantazia.entry.artifacts.acid_bottle.name" : "§dAcid Bottle",
-  "book.fantazia.entry.artifacts.acid_bottle.heading" : "Aura Caster",
   "book.fantazia.entry.artifacts.acid_bottle.page.1" : "Chemistry is among the most important parts of science for us, studying the ways the matter changes under influence from other types of matter or environment. No wonder people learnt to use it for benefit, to help in everyday life or in a battle",
   "book.fantazia.entry.artifacts.acid_bottle.page.2" : "This small bottle can sometimes be found in possession by the witches, who are famous for their knowledge of science and alchemy",
   "book.fantazia.entry.artifacts.acid_bottle.page.3" : "The aura created by this bottle represents properties of its contents, eating away armor like an acid",
 
-  "book.fantazia.entry.artifacts.nimble_dagger.name" : "§cNimble Dagger",
-  "book.fantazia.entry.artifacts.nimble_dagger.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.nimble_dagger.page.1" : "It is no wonder that weaponry is perhaps the most advanced craft we have, since how else would humans kill other humans? A good weapon half a victory after all; having a sharper sword or a heavier bow is an advantage not to look down upon, but not every weapon has to be huge, menacing and being able to cut through humans like through butter",
   "book.fantazia.entry.artifacts.nimble_dagger.page.2" : "Combining a regular dagger, some magical substance and a pearl with teleporting capabilities to be applied to the dagger, we can obtain this incredibly light knife, so light in fact that it is barely useful as an actual weapon",
   "book.fantazia.entry.artifacts.nimble_dagger.page.3" : "Instead, the knife has a utility, allowing its user to instantly close the gap between their enemy and catch them off guard",
 
-  "book.fantazia.entry.artifacts.caught_thunder.name" : "§eCaught Thunder",
-  "book.fantazia.entry.artifacts.caught_thunder.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.caught_thunder.page.1" : "The forces of nature were always something no one has control over; be it a small rain, a terrifying hurricane or a mighty thunder, there was not a way to prevent it and let alone summon it, but with progress incomprehensible becomes well-known, and impossible becomes ordinary",
   "book.fantazia.entry.artifacts.caught_thunder.page.2" : "The artifact can only be found deep within ocean treasures and ruins, well hidden below layers and layers of water",
   "book.fantazia.entry.artifacts.caught_thunder.page.3" : "This Spell Caster grants slight control over nature, allowing one to summon a powerful lighting strike on top of their foe, dealing great harm to the enemy and everyone nearby",
 
-  "book.fantazia.entry.artifacts.athame.name" : "§4Athame",
-  "book.fantazia.entry.artifacts.athame.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.athame.page.1" : "Why did some people believe so much in the rituals they performed? What caused them to be convinced that sacrificing one of their own or doing specific actions could actually affect their environment? Was it just lack of knowledge of the world around us or was it a spark of hope to have at least some control over something we can not change?",
   "book.fantazia.entry.artifacts.athame.page.2" : "This knife can be found in temples, where it was most likely used in different rituals, be it sacrifices or simple spilling of someone's blood for the sake of symbolism; either way, the blood remains on the blade as a reminder of sacrifices some were willing to make in order to achieve what they needed",
   "book.fantazia.entry.artifacts.athame.page.3" : "Just like in rituals, a spilling of own blood is performed in order to gain a portion of power in exchange. The spell of this artifact allows its user to give up some of their well-being to gain upper hand over their foes",
 
-  "book.fantazia.entry.artifacts.contained_sound.name" : "§9Contained Sound",
-  "book.fantazia.entry.artifacts.contained_sound.heading" : "Spell Caster",
   "book.fantazia.entry.artifacts.contained_sound.page.1" : "Another way to use the sculk developed by the people. This time, it has been weaponized for warriors, enhancing their capability to fight against all odds and allowing them to still be on top. The way sculk uses sound to harm creatures is the most important property of this substance in this case",
   "book.fantazia.entry.artifacts.contained_sound.page.2" : "The shrieker that summons the formidable warden is the main part of this artifact, having its properties enhanced and adjusted for other purposes",
   "book.fantazia.entry.artifacts.contained_sound.page.3" : "With this spellcaster, the wearer creates a high-energy wave and sound with each strike of their weapon, that flies further from its creator and continuously damages anyone it flies through",
 
-  "book.fantazia.entry.artifacts.nether_heart.name" : "§cHeart of Nether",
-  "book.fantazia.entry.artifacts.nether_heart.heading" : "Aura Caster",
   "book.fantazia.entry.artifacts.nether_heart.page.1" : "Fire is among the most important discoveries for the civilisation, arguably being the one discovery that started our progress as species, from primates to humans. It does not surprise that flame got a great symbolism about it in our culture, being associated with knowledge or progress. Considering all of this, fire is still a dangerous element which can lead to devastating damage in the wrong hands",
   "book.fantazia.entry.artifacts.nether_heart.page.2" : "The Heart of Nether is the essence of the dimension, a fire in a solid form, a melted and then solidified piece of flame. To get this artifact one has to slay blazes, creatures literally made of fires and flames, for only they seem to possess the essence",
   "book.fantazia.entry.artifacts.nether_heart.page.3" : "The aura of this relic turns fire into even more devastating force of nature than it already is, greatly increasing its harm on creatures withing the aura",
 
-  "book.fantazia.entry.artifacts.amplified_ice.name" : "§3Amplified Ice",
-  "book.fantazia.entry.artifacts.amplified_ice.heading" : "Aura Caster",
   "book.fantazia.entry.artifacts.amplified_ice.page.1" : "There are lands made of ice and snow, with barely any life in them. One will find it difficult to even survive in there, let alone have a normal life, for the unforgiving cold consumes every last corner of those places",
   "book.fantazia.entry.artifacts.amplified_ice.page.2" : "Empowering the coldness of ice with substance, and then using some snow to contain new properties, we get a small ice crystal, purer than water in lake and tougher than the finest diamond",
   "book.fantazia.entry.artifacts.amplified_ice.page.3" : "This artifact, embodying the very meaning of cold, freezes creatures inside its aura, causing their bodies to eventually succumb",
 
-  "book.fantazia.entry.mob_effects.cleanse.name" : "§bCleanse",
-  "book.fantazia.entry.mob_effects.cleanse.page.1" : "Effects are known to have a wide variety of ways to affects their target, from simply slowing its movement to applying a terrible curse upon poor victim; it would only make sense that some of effects are built different and require quite an effort to get rid off, be it from thyself or from a foe. ",
-  "book.fantazia.entry.mob_effects.cleanse.page.2" : "Cleanse is what allows to get rid of effects applied on someone, and Cleanse can also have different variations: §b§lBasic, §3§lMedium, §5§lPowerful and §d§lAbsolute",
-  "book.fantazia.entry.mob_effects.cleanse.page.3" : "There is plenty of sources of cleanses with different strength; a bucket of regular milk, being easily obtainable, provides Basic cleanse to someone, that also removes all effects it can, even the positive ones; however, there are also different spells that open up a way to apply cleanse of various strength to thyself or, in case of targeted spells, to your enemy",
+  "book.fantazia.entry.artifacts.withers_quintessence.page.1" : "Long before the first civilisation has sprouted in our world, it was inhabited by the Creatures. They did not possess mind or desire, only the direction to do what they were created to do, like mindless robots. Among those creatures were the Withers, terrible beasts living at the expense of others, being able to survive only by slaughtering living beings",
+  "book.fantazia.entry.artifacts.withers_quintessence.page.2" : "The Wither that can be summoned is but a remnant of the past, being much less destructive, yet it still resembles its predecessors in its life draining powers and robot-like behaviour along with a single goal — to exterminate all living beings. Killing the Wither rewards the killer with a disgusting looking flesh core, a Wither's Quintessence",
+  "book.fantazia.entry.artifacts.withers_quintessence.page.3" : "The artifact is a manifestation of the very nature of the Wither; it's user lives off murdering other living creatures and inflicts terrible life draining curse on their victims, but such terrible power has an equally terrible price, it being constant draining of life forces on from the very owner of the artifact",
+
 
   "book.fantazia.entry.mob_effects.absolute_barrier.name" : "§dAbsolute Barrier",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.1" : "Among different kinds of barrier this one is the most powerful, protecting its host unconditionally from almost all sources of harm. Not only that, but this barrier will also stay on the creature as long as the effect is there, unlike other barrier types which can wear off after taking damage too much",
@@ -1022,5 +1020,14 @@
   "book.fantazia.entry.world.talents.page.1" : "Everyone has their own strengths and weaknesses; an artist has a capacity to turn an empty canvas into something great, a warrior is capable to protect those they care about, a farmer can provide people with food and resources needed to survive; everyone has a way to express their skill and passion towards their craft, that is how life works",
   "book.fantazia.entry.world.talents.page.2" : "It does not even matter if those skills are given to someone from their birth or received as they grow up and learn about the world around them; after all, what is a talent if not something that has to be studied, mastered and perfected? In fact, any person can learn any skill, as long as they are willing to put their time and mind into it",
   "book.fantazia.entry.world.talents.page.3" : "This is exactly how talents work for You, who is reading this. Any talent that is available can be learnt and sometimes even mastered, given enough effort, as they do not require one to be special. Some require to perform special rituals to obtain, some require enough intelligence and wisdom to be understood...",
-  "book.fantazia.entry.world.talents.page.4" : "Of course, some of those talents are more... supernatural than the others; certain talents allow to do some relatively grounded and basic skills, while others change one's very traits, often giving them properties of other living beings..."
+  "book.fantazia.entry.world.talents.page.4" : "Of course, some of those talents are more... supernatural than the others; certain talents allow to do some relatively grounded and basic skills, while others change one's very traits, often giving them properties of other living beings...",
+
+  "book.fantazia.entry.world.cleanse.name" : "§bCleanse",
+  "book.fantazia.entry.world.cleanse.page.1" : "Effects are known to have a wide variety of ways to affects their target, from simply slowing its movement to applying a terrible curse upon poor victim; it would only make sense that some of effects are built different and require quite an effort to get rid off, be it from thyself or from a foe. ",
+  "book.fantazia.entry.world.cleanse.page.2" : "Cleanse is what allows to get rid of effects applied on someone, and Cleanse can also have different variations: §b§lBasic, §3§lMedium, §5§lPowerful and §d§lAbsolute",
+  "book.fantazia.entry.world.cleanse.page.3" : "There is plenty of sources of cleanses with different strength; a bucket of regular milk, being easily obtainable, provides Basic cleanse to someone, that also removes all effects it can, even the positive ones; however, there are also different spells that open up a way to apply cleanse of various strength to thyself or, in case of targeted spells, to your enemy",
+
+  "book.fantazia.entry.world.euphoria.name" : "§6Euphoria",
+  "book.fantazia.entry.world.euphoria.page.1" : "Along all places one could find themselves in, a battle has been the most natural for a human to be in. In this state, a fighter forgets about such insignificant things as their achievements, wealth, status, or even who they are. The only thing that matters is the sheer resolve to survive and defeat the enemy",
+  "book.fantazia.entry.world.euphoria.page.2" : "Whenever one is fighting against a horde of enemies, each kill only increases their thirst for blood. This intoxicating desire for victory makes the fighter even more formidable, as they get faster and faster"
 }

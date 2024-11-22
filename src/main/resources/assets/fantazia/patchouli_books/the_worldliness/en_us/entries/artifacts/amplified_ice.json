@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.amplified_ice.name",
+  "name": "item.fantazia.amplified_ice",
   "icon": "fantazia:amplified_ice",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/amplified_ice",
@@ -12,7 +12,7 @@
     {
       "type": "crafting",
       "recipe": "fantazia:amplified_ice",
-      "title" : "book.fantazia.entry.artifacts.amplified_ice.heading",
+      "title" : "book.fantazia.heading.artifacts.auracaster",
       "text" : "book.fantazia.entry.artifacts.amplified_ice.page.2"
     },
     {

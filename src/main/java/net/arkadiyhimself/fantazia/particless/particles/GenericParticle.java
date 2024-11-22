@@ -16,7 +16,7 @@ public class GenericParticle extends RisingParticle {
         this.xd = pXSpeed;
         this.yd = pYSpeed;
         this.zd = pZSpeed;
-        this.quadSize *= 1.1;
+        this.quadSize *= 1.1f;
         this.lifetime = 15;
         this.spriteSet = spriteSet;
 

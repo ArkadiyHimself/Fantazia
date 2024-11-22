@@ -19,7 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class HaemorrhageEffect extends LivingEffectHolder implements IDamageEventListener, IHealEventListener {
+
     private float toHeal = 0;
+
     public HaemorrhageEffect(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("haemorrhage_effect"), FTZMobEffects.HAEMORRHAGE);
     }
@@ -50,10 +52,6 @@ public class HaemorrhageEffect extends LivingEffectHolder implements IDamageEven
         DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(getEntity().level());
         if (sources != null) getEntity().hurt(sources.bleeding(), getEntity().getHealth() * 0.1f);
         toHeal = 4 + 2 * instance.getAmplifier();
-    }
-
-    public void emitSound() {
-        getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
     }
 
 }

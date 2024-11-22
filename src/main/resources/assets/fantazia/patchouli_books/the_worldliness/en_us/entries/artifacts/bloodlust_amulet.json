@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.bloodlust_amulet.name",
+  "name": "item.fantazia.bloodlust_amulet",
   "icon": "fantazia:bloodlust_amulet",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/bloodlust_amulet",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:bloodlust_amulet",
-      "title" : "book.fantazia.entry.artifacts.bloodlust_amulet.heading",
+      "title" : "book.fantazia.heading.artifacts.spellcaster",
       "text" : "book.fantazia.entry.artifacts.bloodlust_amulet.page.2"
     },
     {

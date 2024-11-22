@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.MeleeBlockTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.PossessItemTrigger;
@@ -19,6 +20,7 @@ public class FTZCriterionTtiggers {
     public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<ObtainTalentTrigger.TriggerInstance>> OBTAIN_TALENT = REGISTER.register("talent_obtain", () -> ObtainTalentTrigger.INSTANCE);
     public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<PossessItemTrigger.TriggerInstance>> POSSESS_ITEM = REGISTER.register("possess_item", () -> PossessItemTrigger.INSTANCE);
     public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<MeleeBlockTrigger.TriggerInstance>> MELEE_BLOCK = REGISTER.register("melee_block", () -> MeleeBlockTrigger.INSTANCE);
+    public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<EuphoriaTrigger.TriggerInstance>> EUPHORIA = REGISTER.register("euphoria", () -> EuphoriaTrigger.INSTANCE);
 
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);

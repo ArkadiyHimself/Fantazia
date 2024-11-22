@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.leaders_horn.name",
+  "name": "item.fantazia.leaders_horn",
   "icon": "fantazia:leaders_horn",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/leaders_horn",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:leaders_horn",
-      "title" : "book.fantazia.entry.artifacts.leaders_horn.heading",
+      "title" : "book.fantazia.heading.artifacts.auracaster",
       "text" : "book.fantazia.entry.artifacts.leaders_horn.page.2"
     },
     {

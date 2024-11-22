@@ -40,7 +40,7 @@ public abstract class MixinMinecraft {
     }
 
     @Inject(method = "handleKeybinds", at = @At("HEAD"), cancellable = true)
-    private void keybindsCancel(CallbackInfo ci) {
+    private void keyBindsCancel(CallbackInfo ci) {
         if (ActionsHelper.preventActions(player)) ci.cancel();
     }
 

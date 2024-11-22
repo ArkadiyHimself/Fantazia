@@ -31,7 +31,7 @@ public class GuiHelper {
     }
 
     public static void wholeScreen(GuiGraphics guiGraphics, ResourceLocation resourceLocation, float red, float green, float blue, float alpha) {
-        float[] previousSC = RenderSystem.getShaderColor();
+        float[] previousSC = RenderSystem.getShaderColor().clone();
 
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);

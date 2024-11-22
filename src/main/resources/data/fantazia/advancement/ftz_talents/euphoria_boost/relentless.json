@@ -1,0 +1,10 @@
+{
+  "criteria": {
+    "reached_full": {
+      "trigger": "fantazia:euphoria",
+      "conditions": {
+        "combo" : 10
+      }
+    }
+  }
+}

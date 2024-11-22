@@ -14,7 +14,7 @@ import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.particless.options.ElectroParticleOption;
+import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -160,19 +160,25 @@ public class Spells {
                 })
                 .tickingConditions(AbstractSpell.TickingConditions.NOT_ON_COOLDOWN)
                 .ownerTick(livingEntity -> {
-                    if (livingEntity.tickCount % 3 == 0) for (int i = 0; i < 2; i++) VisualHelper.randomEntityChasingParticle(livingEntity, ((entity, vec3) -> new ElectroParticleOption(entity.getId(), vec3, FTZParticleTypes.ELECTRO.random())), 0.65f);
+                    if (livingEntity.tickCount % 3 == 0) for (int i = 0; i < 2; i++) VisualHelper.randomEntityChasingParticle(livingEntity, (entity, vec3) -> new EntityChasingParticleOption<>(entity.getId(), vec3, FTZParticleTypes.ELECTRO.random()), 0.65f);
                     if (livingEntity.tickCount % 16 == 0) livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.LIGHTNING_STRIKE_TICK.get(), SoundSource.PLAYERS, 0.115f,1.05f);
                 })
                 .build();
-
     }
 
     public static final class Passive {
+
         private Passive() {}
 
         public static final PassiveSpell REFLECT = new PassiveSpell.Builder(1.5f, 200, FTZSoundEvents.EFFECT_REFLECT, null).build();
         public static final PassiveSpell DAMNED_WRATH = new PassiveSpell.Builder(0f, 600, FTZSoundEvents.DAMNED_WRATH, null).cleanse(Cleanse.MEDIUM).build();
         public static final PassiveSpell SHOCKWAVE = new PassiveSpell.Builder(0.8f, 0, null, null).build();
-
+        public static final PassiveSpell SUSTAIN = new PassiveSpell.Builder(0f, 0, null, null)
+                .ownerTick(owner -> {
+                    DamageSourcesHolder holder = LevelAttributesHelper.getDamageSources(owner.level());
+                    if (holder == null || owner instanceof Player player && player.getAbilities().invulnerable) return;
+                    owner.hurt(holder.removal(), 0.125f / 20);
+                    if ((owner.tickCount & 2) == 0) VisualHelper.randomEntityChasingParticle(owner, ((entity, vec3) -> new EntityChasingParticleOption<>(entity.getId(), vec3, FTZParticleTypes.WITHER.value())), 0.65f);
+                }).cleanse().build();
     }
 }

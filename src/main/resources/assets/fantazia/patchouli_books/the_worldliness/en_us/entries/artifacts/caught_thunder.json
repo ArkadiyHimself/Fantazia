@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.caught_thunder.name",
+  "name": "item.fantazia.caught_thunder",
   "icon": "fantazia:caught_thunder",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/caught_thunder",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:caught_thunder",
-      "title" : "book.fantazia.entry.artifacts.caught_thunder.heading",
+      "title" : "book.fantazia.heading.artifacts.spellcaster",
       "text" : "book.fantazia.entry.artifacts.caught_thunder.page.2"
     },
     {

@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.mystic_mirror.name",
+  "name": "item.fantazia.mystic_mirror",
   "icon": "fantazia:mystic_mirror",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/mystic_mirror",
@@ -12,7 +12,7 @@
     {
       "type": "crafting",
       "recipe": "fantazia:mystic_mirror",
-      "title" : "book.fantazia.entry.artifacts.mystic_mirror.heading",
+      "title" : "book.fantazia.heading.artifacts.spellcaster",
       "text" : "book.fantazia.entry.artifacts.mystic_mirror.page.2"
     },
     {

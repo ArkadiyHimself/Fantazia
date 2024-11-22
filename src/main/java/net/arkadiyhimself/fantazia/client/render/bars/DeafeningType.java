@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.DeafenedEffect;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -33,8 +34,8 @@ public class DeafeningType extends RenderStateShard {
     public static void render(@NotNull DeafenedEffect deafenedEffect, PoseStack poseStack, MultiBufferSource buffers, float iconHeight) {
         poseStack.pushPose();
         poseStack.translate(0,iconHeight,0);
-        int tick = deafenedEffect.getAnimTick();
-        int alpha = 55 + deafenedEffect.getAlphaTick();
+        int tick = deafenedEffect.getEntity().tickCount;
+        int alpha = 125 + (int) (FantazicMath.intoSin(tick, 28) * 65);
         final int light = 0xF000F0;
 
         float halfSize = 0.25f;

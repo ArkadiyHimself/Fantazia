@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.nether_heart.name",
+  "name": "item.fantazia.nether_heart",
   "icon": "fantazia:nether_heart",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/nether_heart",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:nether_heart",
-      "title" : "book.fantazia.entry.artifacts.nether_heart.heading",
+      "title" : "book.fantazia.heading.artifacts.auracaster",
       "text" : "book.fantazia.entry.artifacts.nether_heart.page.2"
     },
     {

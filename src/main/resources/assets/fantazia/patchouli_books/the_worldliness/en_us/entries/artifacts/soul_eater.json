@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.soul_eater.name",
+  "name": "item.fantazia.soul_eater",
   "icon": "fantazia:soul_eater",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/soul_eater",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:soul_eater",
-      "title" : "book.fantazia.entry.artifacts.soul_eater.heading",
+      "title" : "book.fantazia.heading.artifacts.spellcaster",
       "text" : "book.fantazia.entry.artifacts.soul_eater.page.2"
     },
     {

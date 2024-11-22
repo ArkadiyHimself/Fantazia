@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.particless.particles;
 
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FuryEffect;
-import net.arkadiyhimself.fantazia.particless.options.ElectroParticleOption;
+import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -13,13 +13,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-public class ElectroParticle extends TextureSheetParticle {
+public class EntityChasingParticle extends TextureSheetParticle {
 
     private final SpriteSet spriteSet;
     private final @Nullable Entity entity;
     private final Vec3 relative;
 
-    public ElectroParticle(ClientLevel level, SpriteSet spriteSet, int id, Vec3 relative) {
+    public EntityChasingParticle(ClientLevel level, SpriteSet spriteSet, int id, Vec3 relative) {
         super(level,0,0,0,0,0,0);
         this.spriteSet = spriteSet;
         this.xd = 0;
@@ -66,10 +66,11 @@ public class ElectroParticle extends TextureSheetParticle {
         return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
-    public record Provider(SpriteSet spriteSet) implements ParticleProvider<ElectroParticleOption> {
+    public record Provider(SpriteSet spriteSet) implements ParticleProvider<EntityChasingParticleOption<?>> {
+
         @Override
-        public @NotNull Particle createParticle(@NotNull ElectroParticleOption option, @NotNull ClientLevel clientLevel, double x, double y, double z, double dx, double dy, double dz) {
-            return new ElectroParticle(clientLevel, spriteSet, option.getEntityId(), option.getRelative());
+        public @NotNull Particle createParticle(@NotNull EntityChasingParticleOption<?> option, @NotNull ClientLevel clientLevel, double x, double y, double z, double dx, double dy, double dz) {
+            return new EntityChasingParticle(clientLevel, spriteSet, option.getEntityId(), option.getRelative());
         }
     }
 }

@@ -1,0 +1,25 @@
+{
+  "parent" : "fantazia:main/root",
+  "criteria": {
+    "reached_full": {
+      "trigger": "fantazia:euphoria",
+      "conditions": {
+        "peakTicks" : 1200
+      }
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.fantazia.bloodthirsty.desc"
+    },
+    "hidden" : true,
+    "frame": "challenge",
+    "icon": {
+      "id": "fantazia:bloodlust_amulet"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.bloodthirsty"
+    }
+  }
+}

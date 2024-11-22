@@ -14,6 +14,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.S
 import net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders.ArrowEnchantmentsHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.EuphoriaHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsOnSpawnHolder;
@@ -39,6 +40,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.Item;
@@ -86,7 +88,7 @@ public class FantazicCombat {
             DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
             if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() >= 2) return true;
         }
-        return entity.isInvulnerable() || entity.hurtTime > 0;
+        return entity.isInvulnerable();
     }
 
     public static boolean isPhasing(LivingEntity entity) {
@@ -103,7 +105,7 @@ public class FantazicCombat {
         if (!meleeAttack && !parry || !(event.getSource().getEntity() instanceof LivingEntity livingAttacker)) return;
         LivingEntity target = event.getEntity();
 
-        float amount = event.getOriginalDamage();
+        float amount = event.getNewDamage();
 
         AttributeInstance lifeSteal = livingAttacker.getAttribute(FTZAttributes.LIFESTEAL);
         double heal = lifeSteal == null ? 0 : lifeSteal.getValue() * amount;
@@ -124,15 +126,18 @@ public class FantazicCombat {
             if (itemStack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) itemStack.update(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialHolder.DEFAULT, holder -> holder.onAttack(parry, target));
 
             if (TalentHelper.hasTalent(player, Fantazia.res("spider_powers/poison_attack"))) target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 2));
+
+            player.getData(FTZAttachmentTypes.ABILITY_MANAGER).optionalHolder(EuphoriaHolder.class).ifPresent(euphoriaHolder -> euphoriaHolder.processAttack(event));
         }
 
         if (SpellHelper.hasActiveSpell(livingAttacker, FTZSpells.SHOCKWAVE)) {
             float sat = livingAttacker instanceof Player player ? (float) player.getFoodData().getFoodLevel() / 20 : 1f;
-
             ShockwaveEntity shockwaveEntity = new ShockwaveEntity(livingAttacker.level(), livingAttacker,amount * sat * 0.5f);
             shockwaveEntity.setPos(livingAttacker.getEyePosition().add(0,-0.45,0));
             livingAttacker.level().addFreshEntity(shockwaveEntity);
         }
+
+        if (SpellHelper.hasSpell(livingAttacker, FTZSpells.SUSTAIN)) LivingEffectHelper.effectWithoutParticles(target, MobEffects.WITHER,80,2);
     }
 
     public static boolean isFlying(LivingEntity livingEntity) {

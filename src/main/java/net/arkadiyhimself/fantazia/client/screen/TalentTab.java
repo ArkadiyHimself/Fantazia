@@ -27,8 +27,6 @@ public class TalentTab {
     private final List<IHierarchy<ITalent>> HIERARCHIES = Lists.newArrayList();
     private final ResourceLocation icon;
     private final Component title;
-    private boolean up = true;
-    private float alpha = 0.5f;
     @Nullable
     private ITalent selectedTalent = null;
 
@@ -64,10 +62,7 @@ public class TalentTab {
     }
 
     public void drawInsides(GuiGraphics guiGraphics, TalentsHolder talentsHolder, Font font, int scrollX, int scrollY, double mouseX, double mouseY, int bgX, int bgY) {
-        if (up) alpha += 0.01f;
-        else alpha -= 0.01f;
-        if (alpha > 1f) up = false;
-        else if (alpha < 0.5f) up = true;
+        float alpha = 0.7f + (float) FantazicMath.intoSin(talentsHolder.getPlayer().tickCount, 24) * 0.15f;
 
         int x0 = bgX + scrollX + 12;
         int y0 = bgY + scrollY + 12;

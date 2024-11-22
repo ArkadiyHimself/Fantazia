@@ -19,37 +19,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class DeafenedEffect extends LivingEffectHolder implements IDamageEventListener {
-    private int animTick = 0;
-    private int alphaTick = 0;
-    private boolean goUp = true;
+
     public DeafenedEffect(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("deafened_effect"), FTZMobEffects.DEAFENED);
     }
-
-    @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
-        CompoundTag tag = super.serializeNBT(provider);
-        tag.putInt("animTick", animTick);
-        tag.putInt("alphaTick", alphaTick);
-        return tag;
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-        super.deserializeNBT(provider, compoundTag);
-        animTick = compoundTag.contains("animTick") ? compoundTag.getInt("animTick") : 0;
-        alphaTick = compoundTag.contains("alphaTick") ? compoundTag.getInt("alphaTick") : 0;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        animTick++;
-        if (animTick >= 28) animTick = 0;
-        if (goUp) alphaTick = Math.min(alphaTick + 7, 255); else alphaTick = Math.max(alphaTick - 7, 55);
-        if (alphaTick >= 200) goUp = false; else if (alphaTick <= 0) goUp = true;
-    }
-
 
     @Override
     public void onHit(LivingDamageEvent.Post event) {
@@ -62,13 +35,5 @@ public class DeafenedEffect extends LivingEffectHolder implements IDamageEventLi
 
     public boolean renderDeaf() {
         return duration() > 0;
-    }
-
-    public int getAnimTick() {
-        return animTick;
-    }
-
-    public int getAlphaTick() {
-        return alphaTick;
     }
 }

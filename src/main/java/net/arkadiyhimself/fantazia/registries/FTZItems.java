@@ -77,6 +77,7 @@ public class FTZItems {
     public static final DeferredHolder<Item, SpellCasterItem> CAUGHT_THUNDER = magicItem("caught_thunder", () -> new SpellCasterItem(FTZSpells.LIGHTNING_STRIKE)); // finished and implemented
     public static final DeferredHolder<Item, SpellCasterItem> ATHAME = magicItem("athame", () -> new SpellCasterItem(FTZSpells.TRANSFER)); // finished and implemented
     public static final DeferredHolder<Item, SpellCasterItem> CONTAINED_SOUND = magicItem("contained_sound", () -> new SpellCasterItem(FTZSpells.SHOCKWAVE)); // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> WITHERS_QUINTESSENCE = magicItem("withers_quintessence", () -> new SpellCasterItem(FTZSpells.SUSTAIN));
 
     // auracasters
     public static final DeferredHolder<Item, AuraCasterItem> LEADERS_HORN = magicItem("leaders_horn", () -> new AuraCasterItem(FTZAuras.LEADERSHIP)); // finished and implemented
@@ -84,7 +85,7 @@ public class FTZItems {
     public static final DeferredHolder<Item, AuraCasterItem> SPIRAL_NEMESIS = magicItem("spiral_nemesis", () -> new AuraCasterItem(FTZAuras.DESPAIR)); // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> ACID_BOTTLE = magicItem("acid_bottle", () -> new AuraCasterItem(FTZAuras.CORROSIVE)); // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> NETHER_HEART = magicItem("nether_heart", () -> new AuraCasterItem(FTZAuras.HELLFIRE)); // finished and implemented
-    public static final DeferredHolder<Item, AuraCasterItem> AMPLIFIED_ICE = magicItem("amplified_ice", () -> new AuraCasterItem(FTZAuras.FROSTBITE));
+    public static final DeferredHolder<Item, AuraCasterItem> AMPLIFIED_ICE = magicItem("amplified_ice", () -> new AuraCasterItem(FTZAuras.FROSTBITE)); // finished and implemented
 
     // expendables
     public static final DeferredHolder<Item, ExpendableItem> OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON)); // finished and implemented

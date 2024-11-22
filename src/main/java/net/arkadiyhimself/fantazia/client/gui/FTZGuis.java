@@ -72,6 +72,8 @@ public class FTZGuis {
     public static final LayeredDraw.Layer FTZ_GUI = ((guiGraphics, deltaTracker) -> {
         Player player = Minecraft.getInstance().player;
         if (player == null || player.isSpectator() || player.isCreative()) return;
+        Screen screen = Minecraft.getInstance().screen;
+        if (screen != null && !(screen instanceof ChatScreen)) return;
 
         // draw mana bar
         int x0mn = FantazicConfig.manaBarXoff.get() + 10;
@@ -85,16 +87,25 @@ public class FTZGuis {
         StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null) y0st = FantazicGui.renderStamina(staminaHolder, guiGraphics, x0st, y0st);
 
+
+        // draw dash and double jump
         x0st += 3;
         DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
         if (dashHolder != null && dashHolder.isAvailable()) x0st = FantazicGui.renderDashIcon(dashHolder, guiGraphics, x0st, y0st);
         DoubleJumpHolder doubleJumpHolder = PlayerAbilityGetter.takeHolder(player, DoubleJumpHolder.class);
         if (doubleJumpHolder != null && doubleJumpHolder.isUnlocked()) FantazicGui.renderDoubleJumpIcon(doubleJumpHolder, guiGraphics, x0st, y0st);
 
+        // layered barrier
         int x0 = guiGraphics.guiWidth() / 2;
         int y0 = guiGraphics.guiHeight() - 14;
         LayeredBarrierEffect layeredBarrierEffect = LivingEffectGetter.takeHolder(player, LayeredBarrierEffect.class);
         if (layeredBarrierEffect != null && layeredBarrierEffect.hasBarrier()) FantazicGui.renderBarrierLayers(layeredBarrierEffect, guiGraphics, x0, y0);
+
+        // euphoria
+        int x0eu = 10 + FantazicConfig.euphoriaIconXoff.get();
+        int y0eu = 40 + FantazicConfig.euphoriaIconYoff.get();
+        EuphoriaHolder euphoriaHolder = PlayerAbilityGetter.takeHolder(player, EuphoriaHolder.class);
+        if (euphoriaHolder != null) FantazicGui.renderEuphoriaBar(euphoriaHolder, guiGraphics, x0eu, y0eu);
     });
 
     public static final LayeredDraw.Layer OBTAINED_WISDOM = ((guiGraphics, deltaTracker) -> {
@@ -271,6 +282,7 @@ public class FTZGuis {
         String string1 = "DEVELOPER MODE";
         int width1 = font.width(string1);
         guiGraphics.drawString(font, string1, guiGraphics.guiWidth() - width1, 0, 16755200);
+        guiGraphics.drawString(font, "Tick count: " + player.tickCount, guiGraphics.guiWidth() - width1, 10, 16755200);
     });
 
     public static final LayeredDraw.Layer FURY_VEINS = ((guiGraphics, deltaTracker) -> {

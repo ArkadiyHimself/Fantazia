@@ -19,6 +19,7 @@ import java.util.Random;
 
 @Mod(Fantazia.MODID)
 public class Fantazia {
+
     public static final String MODID = "fantazia";
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final Random RANDOM = new Random();

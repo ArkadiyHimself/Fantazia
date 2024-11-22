@@ -65,6 +65,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.animal.Animal;
@@ -114,12 +115,14 @@ import java.util.Optional;
 
 @EventBusSubscriber(modid = Fantazia.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class CommonEvents {
+
     private CommonEvents() {}
 
     @SubscribeEvent
     public static void livingDeath(LivingDeathEvent event) {
         LivingEntity livingTarget = event.getEntity();
         DamageSource source = event.getSource();
+
         if (livingTarget.level().isClientSide()) return;
 
         if (source.is(FTZDamageTypeTags.NON_LETHAL)) {
@@ -137,6 +140,7 @@ public class CommonEvents {
 
         if (source.getEntity() instanceof LivingEntity attacker) {
             MobEffectInstance instance;
+
             if ((instance = attacker.getEffect(FTZMobEffects.FURY)) != null) {
                 boolean amulet = SpellHelper.hasSpell(attacker, FTZSpells.DAMNED_WRATH);
                 if (amulet) LivingEffectHelper.effectWithoutParticles(attacker, instance.getEffect(), instance.getDuration() + 100, instance.getAmplifier());
@@ -145,6 +149,7 @@ public class CommonEvents {
                 SoundEvent soundEvent = amulet ? FTZSoundEvents.FURY_PROLONG.get() : FTZSoundEvents.FURY_DISPEL.get();
                 if (attacker instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(soundEvent));
             }
+
             if (attacker instanceof Player player) {
                 ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(livingTarget.getType());
                 TalentsHolder.ProgressHolder progressHolder = PlayerAbilityHelper.getProgressHolder(player);
@@ -152,19 +157,28 @@ public class CommonEvents {
 
                 int manaRecycle = TalentHelper.getUnlockLevel(player, Fantazia.res("mana_recycle"));
                 if (manaRecycle > 0) player.addEffect(new MobEffectInstance(FTZMobEffects.SURGE, 40, manaRecycle - 1));
+                PlayerAbilityGetter.acceptConsumer(player, EuphoriaHolder.class, EuphoriaHolder::increase);
             }
+
             if ((instance = livingTarget.getEffect(FTZMobEffects.CURSED_MARK)) != null) {
                 int dur = 600 + instance.getAmplifier() * 600;
                 LivingEffectHelper.makeDoomed(attacker, dur);
             }
+
+            if (SpellHelper.hasSpell(attacker, FTZSpells.SUSTAIN)) {
+                EffectCleansing.tryCleanseAll(attacker, Cleanse.BASIC, MobEffectCategory.HARMFUL);
+                LivingEffectHelper.effectWithoutParticles(attacker, MobEffects.REGENERATION,50,2);
+                LivingEffectHelper.effectWithoutParticles(attacker, FTZMobEffects.LAYERED_BARRIER,200,2);
+                if (attacker instanceof Player player) player.getFoodData().eat(1,1);
+            }
+
+
         }
     }
 
     @SubscribeEvent
     public static void entityLeaveLevel(EntityLeaveLevelEvent event) {
         if (event.getEntity() instanceof Player player) PlayerAbilityGetter.acceptConsumer(player, OwnedAurasHolder.class, OwnedAurasHolder::clearAll);
-      //  event.getEntity().getData(FTZAttachmentTypes.ARMOR_STAND_COMMAND_AURA).onDeath();
-      //  event.getEntity().getData(FTZAttachmentTypes.ADDED_AURAS).discard();
     }
 
     @SubscribeEvent
@@ -233,7 +247,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void livingHurt(LivingDamageEvent.Pre event) {
         DamageSource source = event.getSource();
-        float amount = event.getNewDamage();
+
         LivingEntity target = event.getEntity();
         if (event.getEntity().level().isClientSide()) return;
         if (source.is(FTZDamageTypes.BLEEDING)) VisualHelper.randomParticleOnModel(target, FTZParticleTypes.BLOOD.random(), VisualHelper.ParticleMovement.FALL);
@@ -244,6 +258,7 @@ public class CommonEvents {
         target.getData(FTZAttachmentTypes.DATA_MANAGER).onHit(event);
         target.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHit(event);
 
+        float amount = event.getNewDamage();
         float auraMultiplier = AuraHelper.getDamageMultiplier(target, source.typeHolder());
         event.setNewDamage(amount * auraMultiplier);
 
@@ -255,6 +270,11 @@ public class CommonEvents {
         LivingEntity target = event.getEntity();
         DamageSource source = event.getSource();
         Entity attacker = source.getEntity();
+
+        if (source.is(FTZDamageTypes.REMOVAL)) {
+            target.hurtTime = 0;
+            target.invulnerableTime = 0;
+        }
 
         if (target instanceof Player player) {
             player.getData(FTZAttachmentTypes.ABILITY_MANAGER).onHit(event);
@@ -316,7 +336,6 @@ public class CommonEvents {
     @SubscribeEvent
     public static void effectAdded(MobEffectEvent.Added event) {
         MobEffectInstance instance = event.getEffectInstance();
-        if (instance == null) return;
         Holder<MobEffect> effect = instance.getEffect();
         LivingEntity livingEntity = event.getEntity();
         livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).effectAdded(event.getEffectInstance());

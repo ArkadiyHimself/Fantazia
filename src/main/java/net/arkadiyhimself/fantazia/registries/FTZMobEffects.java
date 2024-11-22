@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.particless.options.ElectroParticleOption;
+import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.arkadiyhimself.fantazia.simpleobjects.SimpleMobEffect;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -56,7 +56,7 @@ public class FTZMobEffects {
     private static final BiConsumer<LivingEntity, Integer> electrocutedTick = ((livingEntity, integer) -> {
         DamageSourcesHolder damageSourcesHolder = LevelAttributesHelper.getDamageSources(livingEntity.level());
         if (damageSourcesHolder != null && (livingEntity.tickCount & 10) == 0) livingEntity.hurt(damageSourcesHolder.electric(), 1.5f + integer * 0.75f);
-        for (int i = 0; i < Math.sqrt(integer * 1.5 + 3); i++) VisualHelper.randomEntityChasingParticle(livingEntity, ((entity, vec3) -> new ElectroParticleOption(entity.getId(), vec3, FTZParticleTypes.ELECTRO.random())), 0.65f);
+        for (int i = 0; i < Math.sqrt(integer * 1.5 + 3); i++) VisualHelper.randomEntityChasingParticle(livingEntity, ((entity, vec3) -> new EntityChasingParticleOption<>(entity.getId(), vec3, FTZParticleTypes.ELECTRO.random())), 0.65f);
     });
 
     public static final DeferredHolder<MobEffect, SimpleMobEffect> HAEMORRHAGE = REGISTER.register("haemorrhage", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 6553857, true)); // finished and implemented

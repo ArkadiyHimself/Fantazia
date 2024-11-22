@@ -1,27 +1,30 @@
 package net.arkadiyhimself.fantazia.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.DisarmEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.HaemorrhageEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.events.FTZHooks;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.tags.FTZMobEffectTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -30,17 +33,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.common.EffectCure;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Collection;
-
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
+    @Shadow @Final public WalkAnimationState walkAnimation;
+
+    @Shadow public int hurtTime;
+
+    @Shadow protected abstract void playHurtSound(DamageSource source);
+
     public MixinLivingEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -48,13 +58,13 @@ public abstract class MixinLivingEntity extends Entity {
     @Unique
     private final LivingEntity fantazia$entity = (LivingEntity) (Object) this;
 
-    @Inject(at = @At(value = "HEAD"), method = "playHurtSound", cancellable = true)
-    protected void cancelSound(DamageSource pSource, CallbackInfo ci) {
-        if (pSource == null) return;
-        if (pSource.is(FTZDamageTypeTags.NO_HURT_SOUND)) ci.cancel();
-        if (pSource.is(FTZDamageTypes.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) LivingEffectGetter.acceptConsumer(fantazia$entity, HaemorrhageEffect.class, HaemorrhageEffect::emitSound);
-        Collection<MobEffectInstance> instanceCollection = fantazia$entity.getActiveEffects();
-        for (MobEffectInstance instance : instanceCollection) if (FTZMobEffectTags.hasTag(instance.getEffect(), FTZMobEffectTags.BARRIER)) ci.cancel();
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;playHurtSound(Lnet/minecraft/world/damagesource/DamageSource;)V"), method = "hurt")
+    private void cancelSound(LivingEntity instance, DamageSource source) {
+        if (source == null) return;
+        boolean play = true;
+        for (MobEffectInstance mobEffectInstance : fantazia$entity.getActiveEffects()) if (FTZMobEffectTags.hasTag(mobEffectInstance.getEffect(), FTZMobEffectTags.BARRIER)) play = false;
+        if (!source.is(FTZDamageTypeTags.NO_HURT_SOUND) && play) playHurtSound(source);
+        if (source.is(FTZDamageTypes.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) fantazia$entity.level().playSound(null, fantazia$entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
     }
 
     @Inject(at = @At(value = "HEAD"), method = "onItemPickup", cancellable = true)
@@ -77,6 +87,11 @@ public abstract class MixinLivingEntity extends Entity {
     private void attackAnim(float pPartialTick, CallbackInfoReturnable<Float> cir) {
         DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(fantazia$entity, DisarmEffect.class);
         if (disarmEffect != null && disarmEffect.renderDisarm()) cir.setReturnValue(0f);
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/WalkAnimationState;setSpeed(F)V", args = {"damagesource"}), method = "handleDamageEvent")
+    private void walkAnimation(WalkAnimationState instance, float speed, @Local(argsOnly = true) DamageSource damageSourceLocalRef) {
+        if (!damageSourceLocalRef.is(FTZDamageTypes.REMOVAL)) instance.setSpeed(speed);
     }
 
     @Inject(at = @At(value = "HEAD"), method = "onClimbable", cancellable = true)

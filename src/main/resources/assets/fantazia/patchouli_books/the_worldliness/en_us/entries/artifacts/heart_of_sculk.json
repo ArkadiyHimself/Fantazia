@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.heart_of_sculk.name",
+  "name": "item.fantazia.heart_of_sculk",
   "icon": "fantazia:heart_of_sculk",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/heart_of_sculk",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:heart_of_sculk",
-      "title" : "book.fantazia.entry.artifacts.heart_of_sculk.heading",
+      "title" : "book.fantazia.heading.artifacts.spellcaster",
       "text" : "book.fantazia.entry.artifacts.heart_of_sculk.page.2"
     },
     {

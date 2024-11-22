@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.entangler.name",
+  "name": "item.fantazia.entangler",
   "icon": "fantazia:entangler",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/entangler",
@@ -11,7 +11,7 @@
     {
       "type": "crafting",
       "recipe": "fantazia:entangler",
-      "title" : "book.fantazia.entry.artifacts.entangler.heading",
+      "title" : "book.fantazia.heading.artifacts.spellcaster",
       "text" : "book.fantazia.entry.artifacts.entangler.page.2"
     },
     {

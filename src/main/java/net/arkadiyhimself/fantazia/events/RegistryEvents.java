@@ -160,7 +160,7 @@ public class RegistryEvents {
         event.registerAboveAll(Fantazia.res("auras"), FTZGuis.AURAS);
         event.registerAboveAll(Fantazia.res("developer_mode"), FTZGuis.DEVELOPER_MODE);
         event.registerBelowAll(Fantazia.res("frozen_effect"), FTZGuis.FROZEN_EFFECT);
-        event.registerAboveAll(Fantazia.res("fury_veins"), FTZGuis.FURY_VEINS);
+        event.registerBelowAll(Fantazia.res("fury_veins"), FTZGuis.FURY_VEINS);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -222,12 +222,13 @@ public class RegistryEvents {
 
         event.registerSpriteSet(FTZParticleTypes.TIME_TRAVEL.get(), TimeTravelParticle.Provider::new);
 
-        event.registerSpriteSet(FTZParticleTypes.ELECTRO1.get(), ElectroParticle.Provider::new);
-        event.registerSpriteSet(FTZParticleTypes.ELECTRO2.get(), ElectroParticle.Provider::new);
-        event.registerSpriteSet(FTZParticleTypes.ELECTRO3.get(), ElectroParticle.Provider::new);
-        event.registerSpriteSet(FTZParticleTypes.ELECTRO4.get(), ElectroParticle.Provider::new);
-        event.registerSpriteSet(FTZParticleTypes.ELECTRO5.get(), ElectroParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO1.get(), EntityChasingParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO2.get(), EntityChasingParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO3.get(), EntityChasingParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO4.get(), EntityChasingParticle.Provider::new);
+        event.registerSpriteSet(FTZParticleTypes.ELECTRO5.get(), EntityChasingParticle.Provider::new);
 
+        event.registerSpriteSet(FTZParticleTypes.WITHER.get(), EntityChasingParticle.Provider::new);
     }
 
     @OnlyIn(Dist.CLIENT)

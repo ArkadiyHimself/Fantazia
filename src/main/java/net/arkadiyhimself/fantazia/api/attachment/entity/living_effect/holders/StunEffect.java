@@ -3,6 +3,8 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.EuphoriaHolder;
 import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
@@ -41,8 +43,6 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
     private static final int DELAY = 40;
     private int points = 0;
     private int delay = 0;
-    private int color = 0;
-    private boolean shift = false;
 
     public StunEffect(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("stun_effect"), FTZMobEffects.STUN);
@@ -52,7 +52,6 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = super.serializeNBT(provider);
         tag.putInt("points", points);
-        tag.putInt("color", color);
         return tag;
     }
 
@@ -60,13 +59,11 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         super.deserializeNBT(provider, compoundTag);
         points = compoundTag.getInt("points");
-        color = compoundTag.getInt("color");
     }
 
     @Override
     public void tick() {
         super.tick();
-        colorTick();
 
         boolean furious = getEntity().hasEffect(FTZMobEffects.FURY);
 
@@ -82,12 +79,15 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
     @Override
     public void ended() {
         super.ended();
-        if (getEntity() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C(""));
+        if (getEntity() instanceof ServerPlayer serverPlayer) {
+            PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C(""));
+            PlayerAbilityGetter.acceptConsumer(serverPlayer, EuphoriaHolder.class, EuphoriaHolder::reset);
+        }
     }
 
     @Override
     public void onHit(LivingDamageEvent.Post event) {
-        if (FantazicCombat.blocksDamage(getEntity()) || event.getNewDamage() <= 0 || event.getEntity().hurtTime > 0 || stunned()) return;
+        if (FantazicCombat.blocksDamage(getEntity()) || event.getNewDamage() <= 0 || stunned()) return;
         DamageSource source = event.getSource();
         float amount = event.getNewDamage();
 
@@ -170,17 +170,6 @@ public class StunEffect extends LivingEffectHolder implements IDamageEventListen
         points = 0;
         delay = 0;
         LivingEffectHelper.makeStunned(getEntity(), dur);
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    private void colorTick() {
-        if (shift) color += 15;
-        else color -= 15;
-        if (color <= 160)  shift = true;
-        if (color >= 255)  shift = false;
     }
 
     private float pointMultiplier(ServerLevel serverLevel) {

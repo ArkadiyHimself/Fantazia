@@ -30,11 +30,13 @@ import java.util.function.Function;
  * {@link #percentGetter} is the function which is called to calculate the percentage of amount that will be applied for attribute modifier every tick. Keep in mind that this function is supposed to return a floating value between 0.0 and 1.0, and even if it returns a negative value or a value greater than one, the value will be {@link Mth#clamp(int, int, int) clamped} in {@link #tryAdd(LivingEntity) applying method}
  */
 public class DynamicAttributeModifier {
+
     private final Holder<Attribute> attribute;
     private final ResourceLocation id;
     private final double amount;
     private final AttributeModifier.Operation operation;
     private final Function<LivingEntity, Float> percentGetter;
+
     public DynamicAttributeModifier(Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation, Function<LivingEntity, Float> percentGetter) {
         this.attribute = attribute;
         this.id = id;
@@ -42,21 +44,26 @@ public class DynamicAttributeModifier {
         this.operation = operation;
         this.percentGetter = percentGetter;
     }
+
     public DynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier modifier, Function<LivingEntity, Float> percentGetter) {
         this(attribute, modifier.id(), modifier.amount(), modifier.operation(), percentGetter);
     }
+
     public AttributeModifier maximumModifier() {
         return new AttributeModifier(id, amount, operation);
     }
+
     public void tick(LivingEntity entity) {
         tryRemove(entity);
         tryAdd(entity);
     }
+
     public void tryRemove(LivingEntity entity) {
         AttributeInstance instance = entity.getAttribute(attribute);
         if (instance == null) return;
         if (instance.getModifier(id) != null) instance.removeModifier(id);
     }
+
     public void tryAdd(LivingEntity entity) {
         AttributeInstance instance = entity.getAttribute(attribute);
         if (instance == null) return;
@@ -64,6 +71,7 @@ public class DynamicAttributeModifier {
         double amo = amount * percent;
         instance.addTransientModifier(new AttributeModifier(id, amo, operation));
     }
+
     public ResourceLocation getId() {
         return id;
     }

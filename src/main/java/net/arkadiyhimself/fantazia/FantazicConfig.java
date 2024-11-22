@@ -16,6 +16,9 @@ public class FantazicConfig {
     public static final ModConfigSpec.ConfigValue<Integer> curioSlotsXoff;
     public static final ModConfigSpec.ConfigValue<Integer> curioSlotsYoff;
 
+    public static final ModConfigSpec.ConfigValue<Integer> euphoriaIconXoff;
+    public static final ModConfigSpec.ConfigValue<Integer> euphoriaIconYoff;
+
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
@@ -40,6 +43,12 @@ public class FantazicConfig {
         curioSlotsYoff = builder
                 .comment("The Y offset of curio slots for Spell Casters and Aura Casters")
                 .define("curioSlotsYoff", 0);
+        euphoriaIconXoff = builder
+                .comment("The X offset of euphoria icon")
+                .define("euphoriaIconXoff", 0);
+        euphoriaIconYoff = builder
+                .comment("The Y offset of euphoria icon")
+                .define("euphoriaIconYoff", 0);
         builder.pop();
 
 

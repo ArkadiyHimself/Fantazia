@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.spiral_nemesis.name",
+  "name": "item.fantazia.spiral_nemesis",
   "icon": "fantazia:spiral_nemesis",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/spiral_nemesis",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:spiral_nemesis",
-      "title" : "book.fantazia.entry.artifacts.spiral_nemesis.heading",
+      "title" : "book.fantazia.heading.artifacts.auracaster",
       "text" : "book.fantazia.entry.artifacts.spiral_nemesis.page.2"
     },
     {

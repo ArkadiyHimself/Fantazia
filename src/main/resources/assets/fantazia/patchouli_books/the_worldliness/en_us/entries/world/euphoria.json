@@ -1,0 +1,16 @@
+{
+  "name": "book.fantazia.entry.world.euphoria.name",
+  "icon": "minecraft:iron_axe",
+  "category": "fantazia:world",
+  "advancement" : "fantazia:the_worldliness/world/euphoria",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.world.euphoria.page.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.euphoria.page.2"
+    }
+  ]
+}

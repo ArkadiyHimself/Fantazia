@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.acid_bottle.name",
+  "name": "item.fantazia.acid_bottle",
   "icon": "fantazia:acid_bottle",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/acid_bottle",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:acid_bottle",
-      "title" : "book.fantazia.entry.artifacts.acid_bottle.heading",
+      "title" : "book.fantazia.heading.artifacts.auracaster",
       "text" : "book.fantazia.entry.artifacts.acid_bottle.page.2"
     },
     {

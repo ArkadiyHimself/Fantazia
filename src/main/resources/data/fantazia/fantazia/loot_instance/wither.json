@@ -1,0 +1,11 @@
+{
+  "loot_tables": [
+    "minecraft:entities/wither"
+  ],
+  "loot_instances": {
+    "fantazia:withers_quintessence": {
+      "chance": 1,
+      "first_time" : true
+    }
+  }
+}

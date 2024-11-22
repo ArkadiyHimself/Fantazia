@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.tranquil_herb.name",
+  "name": "item.fantazia.tranquil_herb",
   "icon": "fantazia:tranquil_herb",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/tranquil_herb",
@@ -11,7 +11,7 @@
     {
       "type": "spotlight",
       "item" : "fantazia:tranquil_herb",
-      "title" : "book.fantazia.entry.artifacts.tranquil_herb.heading",
+      "title" : "book.fantazia.heading.artifacts.auracaster",
       "text" : "book.fantazia.entry.artifacts.tranquil_herb.page.2"
     },
     {

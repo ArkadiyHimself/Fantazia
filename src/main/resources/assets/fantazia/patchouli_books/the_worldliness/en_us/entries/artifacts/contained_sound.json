@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.entry.artifacts.contained_sound.name",
+  "name": "item.fantazia.contained_sound",
   "icon": "fantazia:contained_sound",
   "category": "fantazia:artifacts",
   "advancement" : "fantazia:the_worldliness/artifacts/contained_sound",
@@ -12,7 +12,7 @@
     {
       "type": "crafting",
       "recipe": "fantazia:contained_sound",
-      "title" : "book.fantazia.entry.artifacts.contained_sound.heading",
+      "title" : "book.fantazia.heading.artifacts.spellcaster",
       "text" : "book.fantazia.entry.artifacts.contained_sound.page.2"
     },
     {

@@ -8,10 +8,7 @@ import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.BarrierEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DoubleJumpHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ManaHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -24,6 +21,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,11 +60,18 @@ public class FantazicGui {
     private static final ResourceLocation DASH1 = Fantazia.res("textures/talents/dash/dash1.png");
     private static final ResourceLocation DASH2 = Fantazia.res("textures/talents/dash/dash2.png");
     private static final ResourceLocation DASH3 = Fantazia.res("textures/talents/dash/dash3.png");
+
     // double jump stuff
     private static final ResourceLocation DOUBLE_JUMP = Fantazia.res("textures/talents/aerial/double_jump.png");
     private static final ResourceLocation DOUBLE_JUMP_EMPTY = Fantazia.res("textures/talents/aerial/double_jump_empty.png");
+
     // layered barrier stuff
     private static final ResourceLocation LAYERS = Fantazia.res("textures/gui/ftz_gui/layers.png");
+
+    // euphoria
+    private static final ResourceLocation EUPHORIA = Fantazia.res("textures/gui/euphoria/icon.png");
+    private static final ResourceLocation EUPHORIA_EMPTY = Fantazia.res("textures/gui/euphoria/empty.png");
+
     public static boolean renderStunBar(@Nullable StunEffect stunEffect, GuiGraphics guiGraphics, int x, int y) {
         if (stunEffect == null || !stunEffect.renderBar()) return false;
         if (stunEffect.stunned()) {
@@ -78,6 +85,7 @@ public class FantazicGui {
         }
         return true;
     }
+
     public static boolean renderBarrierBar(@Nullable BarrierEffect barrierEffect, GuiGraphics guiGraphics, int x, int y) {
         if (barrierEffect == null || !barrierEffect.hasBarrier()) return false;
         int percent = (int) (barrierEffect.getHealth() / barrierEffect.getInitial() * 182);
@@ -85,6 +93,7 @@ public class FantazicGui {
         guiGraphics.blit(FantazicGui.BARS, x, y, 0, 0, 45F, percent, 5, 182, 182);
         return true;
     }
+
     public static void renderAurasInventory(GuiGraphics guiGraphics) {
         Font font = Minecraft.getInstance().font;
         LocalPlayer player = Minecraft.getInstance().player;
@@ -137,6 +146,7 @@ public class FantazicGui {
             }
         }
     }
+
     public static int renderMana(@NotNull ManaHolder manaHolder, GuiGraphics guiGraphics, int x0, int y0) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return y0;
@@ -175,6 +185,7 @@ public class FantazicGui {
         }
         return y0 - 35 - frHGT;
     }
+
     public static int renderStamina(@NotNull StaminaHolder staminaHolder, GuiGraphics guiGraphics, int x0, int y0) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return y0;
@@ -213,6 +224,7 @@ public class FantazicGui {
         }
         return y0 - frHGT - 35;
     }
+
     public static int renderDashIcon(@NotNull DashHolder dashHolder, GuiGraphics guiGraphics, int x0, int y0) {
         final int dashIconSize = 20;
         ResourceLocation emptyIcon = switch (dashHolder.getLevel()) {
@@ -237,6 +249,7 @@ public class FantazicGui {
         guiGraphics.blit(dashIcon, x0, y0, 0, 0, dashIconSize - filling, dashIconSize, dashIconSize, dashIconSize);
         return x0 + 23;
     }
+
     public static void renderDoubleJumpIcon(@NotNull DoubleJumpHolder doubleJumpHolder, GuiGraphics guiGraphics, int x0, int y0) {
         int recharge = doubleJumpHolder.getRecharge();
         if (recharge > 0) {
@@ -246,13 +259,46 @@ public class FantazicGui {
             return;
         }
         ResourceLocation icon = doubleJumpHolder.canJump() ? DOUBLE_JUMP : DOUBLE_JUMP_EMPTY;
-        guiGraphics.blit(icon, x0, y0, 0,0,20,20,20,20);
+        guiGraphics.blit(icon, x0, y0,0,0,20,20,20,20);
     }
+
     public static void renderBarrierLayers(@NotNull LayeredBarrierEffect layeredBarrierEffect, GuiGraphics guiGraphics, int x0, int y0) {
-        RenderSystem.setShaderTexture(0, LAYERS);
         String amo = "×" + layeredBarrierEffect.getLayers();
         int offset = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? 92 : -120;
         guiGraphics.blit(LAYERS, x0 + offset, y0,0,0,9,9,9,9);
         guiGraphics.drawString(Minecraft.getInstance().font, amo, x0 + 10 + offset, y0 + 1, 8780799, true);
+    }
+
+    public static void renderEuphoriaBar(@NotNull EuphoriaHolder euphoriaHolder, GuiGraphics guiGraphics, int x0, int y0) {
+        int combo = Math.min(10, euphoriaHolder.kills());
+        int ticks = euphoriaHolder.ticks();
+        if (combo <= 1) return;
+
+        int halfDur = EuphoriaHolder.TICKS / 2;
+        int phase = ticks - halfDur;
+        float alpha = ticks < halfDur ? 0.45f + (float) FantazicMath.intoCos(phase, 20) * 0.275f : 1f;
+        float red = euphoriaHolder.comboPercent();
+
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(red * 0.4f + 0.6f,1f,1f, alpha);
+
+        guiGraphics.blit(EUPHORIA_EMPTY, x0, y0,0,0,20,20,20,20);
+        guiGraphics.blit(EUPHORIA, x0, y0,0,0,combo * 2,20,20,20);
+
+        RenderSystem.disableBlend();
+        RenderSystem.setShaderColor(1f,1f,1f,1f);
+
+        if (!Fantazia.DEVELOPER_MODE || Minecraft.getInstance().player == null) return;
+        guiGraphics.drawString(Minecraft.getInstance().font, "Combo: " + combo,x0 + 24, y0,0);
+        guiGraphics.drawString(Minecraft.getInstance().font, "Ticks: " + ticks,x0 + 24, y0 + 8,0);
+
+        AttributeInstance attack = Minecraft.getInstance().player.getAttribute(Attributes.ATTACK_SPEED);
+        AttributeInstance movement = Minecraft.getInstance().player.getAttribute(Attributes.MOVEMENT_SPEED);
+
+        double attr1 = attack == null ? 0 : attack.getValue();
+        double attr2 = movement == null ? 0 : movement.getValue();
+
+        guiGraphics.drawString(Minecraft.getInstance().font, "Attack: " + attr1,x0 + 24, y0 + 16,0);
+        guiGraphics.drawString(Minecraft.getInstance().font, "Movement: " + attr2,x0 + 24, y0 + 24,0);
     }
 }

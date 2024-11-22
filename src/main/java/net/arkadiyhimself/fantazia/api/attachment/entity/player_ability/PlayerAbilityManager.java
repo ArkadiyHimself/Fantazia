@@ -133,5 +133,6 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
         putHolder(SpellInstancesHolder::new);
         putHolder(OwnedAurasHolder::new);
         putHolder(CustomCriteriaHolder::new);
+        putHolder(EuphoriaHolder::new);
     }
 }

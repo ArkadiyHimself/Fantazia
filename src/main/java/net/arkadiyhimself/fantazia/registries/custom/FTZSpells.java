@@ -29,6 +29,7 @@ public class FTZSpells {
     public static final DeferredHolder<AbstractSpell, PassiveSpell> REFLECT = REGISTER.register("reflect", () -> Spells.Passive.REFLECT);
     public static final DeferredHolder<AbstractSpell, PassiveSpell> DAMNED_WRATH = REGISTER.register("damned_wrath", () -> Spells.Passive.DAMNED_WRATH);
     public static final DeferredHolder<AbstractSpell, PassiveSpell> SHOCKWAVE = REGISTER.register("shockwave", () -> Spells.Passive.SHOCKWAVE);
+    public static final DeferredHolder<AbstractSpell, PassiveSpell> SUSTAIN = REGISTER.register("sustain", () -> Spells.Passive.SUSTAIN);
 
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);
