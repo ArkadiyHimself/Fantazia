@@ -4,6 +4,7 @@ import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
@@ -82,12 +83,7 @@ public class SpellInstance implements INBTSerializable<CompoundTag> {
 
     public void putOnRecharge() {
         if (livingEntity instanceof Player player && player.hasInfiniteMaterials()) return;
-        AttributeInstance instance = livingEntity.getAttribute(FTZAttributes.RECHARGE_MULTIPLIER);
-        float multiplier = instance == null ? 1 : (float) instance.getValue() / 100;
-
-        if (livingEntity.level().isThundering() && spell.value() == FTZSpells.LIGHTNING_STRIKE.value()) multiplier *= 0.6f;
-
-        this.recharge = (int) ((float) spell.value().getRecharge() * multiplier);
+        this.recharge = spell.value().getRecharge(livingEntity);
     }
 
     public boolean attemptCast() {

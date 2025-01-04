@@ -1,0 +1,19 @@
+{
+  "name": "book.fantazia.entry.world.concept_of_consistency.name",
+  "icon": "fantazia:textures/entries/concept_of_consistency.png",
+  "category": "fantazia:world",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.entry.world.concept_of_consistency.page.1"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.concept_of_consistency.page.2"
+    },
+    {
+      "type": "patchouli:text",
+      "text" : "book.fantazia.entry.world.concept_of_consistency.page.3"
+    }
+  ]
+}

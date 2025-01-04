@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category" : "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:paper"
+    },
+    {
+      "item": "fantazia:obscure_substance"
+    },
+    [
+      {
+        "item": "minecraft:ink_sac"
+      },
+      {
+        "item": "minecraft:glow_ink_sac"
+      }
+    ]
+  ],
+  "result": {
+    "id": "fantazia:card_deck"
+  },
+  "show_notification": true
+}

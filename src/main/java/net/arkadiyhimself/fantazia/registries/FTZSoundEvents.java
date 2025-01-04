@@ -61,7 +61,10 @@ public class FTZSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> REFLECT_CAST = fixedRange("spell.reflect.cast", 12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> REWIND_CAST = fixedRange("spell.rewind.cast",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> BOUNCE_CAST = variableRange("spell.bounce.cast"); // implemented
-    public static final DeferredHolder<SoundEvent, SoundEvent> BOUNCE_RECHARGE = fixedRange("spell.bounce.recharge", 8f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> VANISH_CAST = fixedRange("spell.vanish.cast", 12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> PUPPETEER_CAST = fixedRange("spell.puppeteer.cast", 16f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> ALL_IN_CAST = fixedRange("spell.all_in.cast", 12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> BOUNCE_RECHARGE = fixedRange("spell.bounce.recharge", 8f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> LIGHTNING_STRIKE_TICK = fixedRange("spell.lightning_strike.tick", 4f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> LIGHTNING_STRIKE_RECHARGE = fixedRange("spell.lightning_strike.recharge", 8f); // implemented
 

@@ -21,21 +21,24 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public abstract class AbstractSpell implements ITooltipBuilder {
 
     private final float manacost;
-    private final int recharge;
+    private final int defaultRecharge;
     private final @Nullable Holder<SoundEvent> castSound;
     private final @Nullable Holder<SoundEvent> rechargeSound;
     private final TickingConditions tickingConditions;
     private final Consumer<LivingEntity> ownerTick;
     private final Cleanse cleanse;
     private final boolean doCleanse;
+    private final Function<LivingEntity, Integer> recharge;
 
-    protected AbstractSpell(float manacost, int recharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse) {
+    protected AbstractSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge) {
         this.manacost = manacost;
-        this.recharge = recharge;
+        this.defaultRecharge = defaultRecharge;
+
         this.castSound = castSound;
         this.rechargeSound = rechargeSound;
 
@@ -43,14 +46,22 @@ public abstract class AbstractSpell implements ITooltipBuilder {
         this.ownerTick = ownerTick;
         this.cleanse = cleanse;
         this.doCleanse = doCleanse;
+        this.recharge = recharge;
     }
 
     public final float getManacost() {
         return manacost;
     }
 
-    public final int getRecharge() {
-        return recharge;
+    public final int getDefaultRecharge() {
+        return defaultRecharge;
+    }
+
+    public final int getRecharge(LivingEntity owner) {
+        int basic = recharge.apply(owner);
+        AttributeInstance multiplier = owner.getAttribute(FTZAttributes.RECHARGE_MULTIPLIER);
+        float finalRech = multiplier == null ? basic : (float) (basic * multiplier.getValue() / 100);
+        return (int) finalRech;
     }
 
     public @Nullable Holder<SoundEvent> getCastSound() {
@@ -78,7 +89,7 @@ public abstract class AbstractSpell implements ITooltipBuilder {
     protected Component bakeRechargeComponent(ChatFormatting[] heading, ChatFormatting[] ability) {
         Component deltaRechargeComponent = bakeModifiedRechargeComponent();
 
-        String recharge = String.format("%.1f", ((float) this.getRecharge()) / 20);
+        String recharge = String.format("%.1f", ((float) getDefaultRecharge()) / 20);
         Component basicRecharge = Component.literal(recharge).withStyle(ability);
         Component rechargeComponent;
         if (deltaRechargeComponent != null) rechargeComponent = Component.translatable("tooltip.fantazia.common.recharge_modified", basicRecharge, deltaRechargeComponent).withStyle(heading);
@@ -87,13 +98,10 @@ public abstract class AbstractSpell implements ITooltipBuilder {
     }
 
     protected Component bakeModifiedRechargeComponent() {
-        AttributeInstance instance = Minecraft.getInstance().player == null ? null : Minecraft.getInstance().player.getAttribute(FTZAttributes.RECHARGE_MULTIPLIER);
-        if (instance == null) return null;
-        float value = (float) instance.getValue();
-        float delta = -(this.getRecharge() - this.getRecharge() * value / 100) / 20;
+        float delta = (float) -(defaultRecharge - getRecharge(Minecraft.getInstance().player)) / 20;
         if (delta == 0) return null;
         if (delta > 0) return Component.literal("+ " + delta).withStyle(ChatFormatting.RED, ChatFormatting.BOLD, ChatFormatting.ITALIC);
-        else return Component.literal("- " + Math.min(this.getRecharge(), Math.abs(delta))).withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD, ChatFormatting.ITALIC);
+        else return Component.literal("- " + Math.min(getRecharge(Minecraft.getInstance().player), Math.abs(delta))).withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD, ChatFormatting.ITALIC);
     }
 
 

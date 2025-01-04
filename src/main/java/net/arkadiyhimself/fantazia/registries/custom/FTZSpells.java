@@ -7,6 +7,7 @@ import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.FantazicRegistries;
+import net.minecraft.world.entity.monster.Monster;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -20,11 +21,14 @@ public class FTZSpells {
     public static final DeferredHolder<AbstractSpell, SelfSpell> ENTANGLE = REGISTER.register("entangle", () -> Spells.Self.ENTANGLE);
     public static final DeferredHolder<AbstractSpell, SelfSpell> REWIND = REGISTER.register("rewind", () -> Spells.Self.REWIND);
     public static final DeferredHolder<AbstractSpell, SelfSpell> TRANSFER = REGISTER.register("transfer", () -> Spells.Self.TRANSFER);
+    public static final DeferredHolder<AbstractSpell, SelfSpell> VANISH = REGISTER.register("vanish", () -> Spells.Self.VANISH);
+    public static final DeferredHolder<AbstractSpell, SelfSpell> ALL_IN = REGISTER.register("all_in", () -> Spells.Self.ALL_IN);
     // targeted
     public static final DeferredHolder<AbstractSpell, TargetedSpell<?>> DEVOUR = REGISTER.register("devour", () -> Spells.Targeted.DEVOUR);
     public static final DeferredHolder<AbstractSpell, TargetedSpell<?>> SONIC_BOOM = REGISTER.register("sonic_boom", () -> Spells.Targeted.SONIC_BOOM);
     public static final DeferredHolder<AbstractSpell, TargetedSpell<?>> BOUNCE = REGISTER.register("bounce", () -> Spells.Targeted.BOUNCE);
     public static final DeferredHolder<AbstractSpell, TargetedSpell<?>> LIGHTNING_STRIKE = REGISTER.register("lightning_strike", () -> Spells.Targeted.LIGHTNING_STRIKE);
+    public static final DeferredHolder<AbstractSpell, TargetedSpell<Monster>> PUPPETEER = REGISTER.register("puppeteer", () -> Spells.Targeted.PUPPETEER);
     // passive
     public static final DeferredHolder<AbstractSpell, PassiveSpell> REFLECT = REGISTER.register("reflect", () -> Spells.Passive.REFLECT);
     public static final DeferredHolder<AbstractSpell, PassiveSpell> DAMNED_WRATH = REGISTER.register("damned_wrath", () -> Spells.Passive.DAMNED_WRATH);

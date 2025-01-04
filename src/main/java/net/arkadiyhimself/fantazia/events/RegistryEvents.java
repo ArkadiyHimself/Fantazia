@@ -8,10 +8,7 @@ import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
 import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.api.KeyBinding;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.client.render.layers.AbsoluteBarrier;
-import net.arkadiyhimself.fantazia.client.render.layers.BarrierLayer;
-import net.arkadiyhimself.fantazia.client.render.layers.LayeredBarrierLayer;
-import net.arkadiyhimself.fantazia.client.render.layers.MysticMirror;
+import net.arkadiyhimself.fantazia.client.render.layers.*;
 import net.arkadiyhimself.fantazia.client.renderers.entity.DashStoneRenderer;
 import net.arkadiyhimself.fantazia.client.renderers.entity.ShockwaveRenderer;
 import net.arkadiyhimself.fantazia.client.renderers.entity.ThrownHatchetRenderer;
@@ -30,7 +27,6 @@ import net.arkadiyhimself.fantazia.packets.stuff.*;
 import net.arkadiyhimself.fantazia.particless.particles.*;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -43,7 +39,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -95,23 +90,27 @@ public class RegistryEvents {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static <E extends Player, M extends HumanoidModel<E>> void addLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, PlayerSkin.Model skinName) {
+    private static void addLayerToPlayerSkin(EntityRenderersEvent.AddLayers event, PlayerSkin.Model skinName) {
         EntityRenderer renderer = event.getSkin(skinName);
         if (renderer instanceof LivingEntityRenderer livingEntityRenderer) {
+            Fantazia.LOGGER.info("Adding layers to player...");
             livingEntityRenderer.addLayer(new BarrierLayer.LayerBarrier<>(livingEntityRenderer));
             livingEntityRenderer.addLayer(new LayeredBarrierLayer.LayerBarrier<>(livingEntityRenderer));
             livingEntityRenderer.addLayer(new AbsoluteBarrier.LayerBarrier<>(livingEntityRenderer));
             livingEntityRenderer.addLayer(new MysticMirror.LayerMirror<>(livingEntityRenderer));
-        };
+            livingEntityRenderer.addLayer(new DeflectLayer.LayerBarrier<>(livingEntityRenderer));
+            Fantazia.LOGGER.info("Layers are added to player!");
+        }
     }
 
     private static <T extends LivingEntity, M extends EntityModel<T>> void addLayers(LivingEntityRenderer<T,M> livingEntityRenderer) {
-        Fantazia.LOGGER.info("Adding layers...");
+        Fantazia.LOGGER.info("Adding layers to entity type...");
         livingEntityRenderer.addLayer(new BarrierLayer.LayerBarrier<>(livingEntityRenderer));
         livingEntityRenderer.addLayer(new LayeredBarrierLayer.LayerBarrier<>(livingEntityRenderer));
         livingEntityRenderer.addLayer(new AbsoluteBarrier.LayerBarrier<>(livingEntityRenderer));
         livingEntityRenderer.addLayer(new MysticMirror.LayerMirror<>(livingEntityRenderer));
-        Fantazia.LOGGER.info("Layers are added!");
+        livingEntityRenderer.addLayer(new DeflectLayer.LayerBarrier<>(livingEntityRenderer));
+        Fantazia.LOGGER.info("Layers are added to entity type!");
     }
 
     @SubscribeEvent

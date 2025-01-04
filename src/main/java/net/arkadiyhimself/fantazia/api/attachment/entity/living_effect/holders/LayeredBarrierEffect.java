@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class LayeredBarrierEffect extends LivingEffectHolder implements IDamageEventListener {
+
     private int layers;
     private float color;
 

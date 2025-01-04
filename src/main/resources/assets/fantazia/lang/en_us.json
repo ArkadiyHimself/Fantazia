@@ -160,6 +160,12 @@
   "effect.fantazia.rapid.lines" : "1",
   "effect.fantazia.rapid.tooltip.1" : "Increases attack speed",
 
+  "effect.fantazia.disguised" : "Disguised",
+  "effect.fantazia.disguised.lines" : "1",
+  "effect.fantazia.disguised.tooltip.1" : "Hides you from other creatures",
+
+  "effect.fantazia.puppeteered" : "Puppeteered",
+
   "item.minecraft.lingering_potion.effect.recovery" : "Lingering Potion of Recovery",
   "item.minecraft.lingering_potion.effect.surge" : "Lingering Potion of Surge",
   "item.minecraft.lingering_potion.effect.fury" : "Lingering Potion of Fury",
@@ -225,6 +231,9 @@
   "fantazia.subtitles.spell.reflect.cast" : "Reflect activating",
   "fantazia.subtitles.spell.rewind.cast" : "Bite the dust",
   "fantazia.subtitles.spell.bounce.cast" : "Distance reduced",
+  "fantazia.subtitles.spell.vanish.cast" : "Disappeared!",
+  "fantazia.subtitles.spell.all_in.cast" : "All in!",
+  "fantazia.subtitles.spell.puppeteer.cast" : "Enslavement",
   "fantazia.subtitles.spell.bounce.recharge" : "Bounce is ready",
   "fantazia.subtitles.spell.lightning_strike.tick" : "Sparking Electricity",
   "fantazia.subtitles.spell.lightning_strike.recharge" : "Lightning Strike is ready",
@@ -349,7 +358,7 @@
 
   "item.fantazia.murasama" : "§4HF Murasama",
   "weapon.fantazia.taunt.desc.lines" : "1",
-  "weapon.fantazia.taunt.desc.1" : "What is it doing it here?..",
+  "weapon.fantazia.taunt.desc.1" : "§oWhat is it doing it here?..",
   "weapon.fantazia.taunt.name" : "Taunt",
   "weapon.fantazia.taunt.lines" : "3",
   "weapon.fantazia.taunt.1" : "Mock all nearby enemies to put them",
@@ -358,7 +367,7 @@
 
   "item.fantazia.entangler" : "§5The Entangler of Life and Death",
   "spell.fantazia.entangle.desc.lines" : "1",
-  "spell.fantazia.entangle.desc.1" : "§4Mortality is a decease",
+  "spell.fantazia.entangle.desc.1" : "§4§oMortality is a decease",
   "spell.fantazia.entangle.name" : "Entangle",
   "spell.fantazia.entangle.lines" : "3",
   "spell.fantazia.entangle.1" : "When on the verge of death, use the spell",
@@ -371,7 +380,7 @@
 
   "item.fantazia.soul_eater" : "§5The Soul Eater",
   "spell.fantazia.devour.desc.lines" : "1",
-  "spell.fantazia.devour.desc.1" : "§4There are fates worse than death",
+  "spell.fantazia.devour.desc.1" : "§4§oThere are fates worse than death",
   "spell.fantazia.devour.name" : "Devour",
   "spell.fantazia.devour.lines" : "8",
   "spell.fantazia.devour.1" : "While looking at an entity, use the spell",
@@ -387,7 +396,7 @@
 
   "item.fantazia.heart_of_sculk" : "§5Heart of Sculk",
   "spell.fantazia.sonic_boom.desc.lines" : "1",
-  "spell.fantazia.sonic_boom.desc.1" : "§1Silence...",
+  "spell.fantazia.sonic_boom.desc.1" : "§1§oSilence...",
   "spell.fantazia.sonic_boom.name" : "Sonic Boom",
   "spell.fantazia.sonic_boom.lines" : "4",
   "spell.fantazia.sonic_boom.1" : "While looking at a mob, use the spell",
@@ -403,7 +412,7 @@
   "item.fantazia.mystic_mirror" : "§5Mystic Mirror",
   "spell.fantazia.reflect.name" : "Reflect",
   "spell.fantazia.reflect.desc.lines" : "1",
-  "spell.fantazia.reflect.desc.1": "§dBeautifully warped...",
+  "spell.fantazia.reflect.desc.1": "§d§oBeautifully warped...",
   "spell.fantazia.reflect.lines" : "5",
   "spell.fantazia.reflect.1" : "Whenever the owner is targeted by an",
   "spell.fantazia.reflect.2" : "a spell from a foe, the spell will",
@@ -413,7 +422,7 @@
 
   "item.fantazia.bloodlust_amulet" : "§5Amulet of Bloodlust",
   "spell.fantazia.damned_wrath.desc.lines" : "1",
-  "spell.fantazia.damned_wrath.desc.1" : "§4Let your anger flow through you",
+  "spell.fantazia.damned_wrath.desc.1" : "§4§oLet your anger flow through you",
   "spell.fantazia.damned_wrath.name" : "Wrath of the Damned",
   "spell.fantazia.damned_wrath.lines" : "5",
   "spell.fantazia.damned_wrath.1" : "Whenever owner's health drops below",
@@ -429,7 +438,7 @@
 
   "item.fantazia.enigmatic_clock": "§5Enigmatic Clock",
   "spell.fantazia.rewind.desc.lines": "1",
-  "spell.fantazia.rewind.desc.1": "Redirects the flow of time",
+  "spell.fantazia.rewind.desc.1": "§oRedirects the flow of time",
   "spell.fantazia.rewind.name": "Rewind",
   "spell.fantazia.rewind.lines": "4",
   "spell.fantazia.rewind.1": "Allows to create and enter a wormhole",
@@ -439,7 +448,7 @@
 
   "item.fantazia.nimble_dagger" : "§cNimble Dagger",
   "spell.fantazia.bounce.desc.lines" : "1",
-  "spell.fantazia.bounce.desc.1" : "§5You blinked!",
+  "spell.fantazia.bounce.desc.1" : "§5§oYou blinked!",
   "spell.fantazia.bounce.name" : "§5§lBounce",
   "spell.fantazia.bounce.lines" : "3",
   "spell.fantazia.bounce.1" : "While looking at a living creature, use the spell",
@@ -448,7 +457,7 @@
 
   "item.fantazia.caught_thunder" : "§eCaught Thunder",
   "spell.fantazia.lightning_strike.desc.lines" : "1",
-  "spell.fantazia.lightning_strike.desc.1" : "§cDo not mess with forces of nature!",
+  "spell.fantazia.lightning_strike.desc.1" : "§c§oDo not mess with forces of nature!",
   "spell.fantazia.lightning_strike.name" : "§6§lLightning Strike",
   "spell.fantazia.lightning_strike.lines" : "3",
   "spell.fantazia.lightning_strike.1" : "While looking at a creature, use the spell",
@@ -461,7 +470,7 @@
 
   "item.fantazia.athame" : "§4Athame",
   "spell.fantazia.transfer.desc.lines" : "1",
-  "spell.fantazia.transfer.desc.1" : "§cEverything has a price",
+  "spell.fantazia.transfer.desc.1" : "§c§oEverything has a price",
   "spell.fantazia.transfer.name" : "§2§lTransfer",
   "spell.fantazia.transfer.lines" : "3",
   "spell.fantazia.transfer.1" : "Sacrifice a portion of own health",
@@ -474,7 +483,7 @@
 
   "item.fantazia.contained_sound" : "§9Contained Sound",
   "spell.fantazia.shockwave.desc.lines" : "1",
-  "spell.fantazia.shockwave.desc.1" : "Strength from within",
+  "spell.fantazia.shockwave.desc.1" : "§oStrength from within",
   "spell.fantazia.shockwave.name" : "Shockwave",
   "spell.fantazia.shockwave.lines" : "3",
   "spell.fantazia.shockwave.1" : "Each successful attack a portion of mana",
@@ -486,7 +495,7 @@
 
   "item.fantazia.withers_quintessence" : "§cWither's Quintessence",
   "spell.fantazia.sustain.desc.lines" : "1",
-  "spell.fantazia.sustain.desc.1" : "§cThe bane of existence",
+  "spell.fantazia.sustain.desc.1" : "§c§oThe bane of existence",
   "spell.fantazia.sustain.name" : "Sustain",
   "spell.fantazia.sustain.lines" : "4",
   "spell.fantazia.sustain.1" : "Whenever a creature is murdered by the owner,",
@@ -497,9 +506,52 @@
   "spell.fantazia.sustain.passive.1" : "§5 * Attacked creatures suffer from the Wither effect",
   "spell.fantazia.sustain.passive.2" : "§4 * Constantly drains user's vitality",
 
+  "item.fantazia.sandmans_dust" : "§eSandman's Dust",
+  "spell.fantazia.vanish.desc.lines" : "1",
+  "spell.fantazia.vanish.desc.1" : "§c§oExit light, enter night!",
+  "spell.fantazia.vanish.name" : "§eVanish",
+  "spell.fantazia.vanish.lines" : "3",
+  "spell.fantazia.vanish.1" : "Creates a smoke screen at one's location",
+  "spell.fantazia.vanish.2" : "after which the owner is disguised from",
+  "spell.fantazia.vanish.3" : "other creatures",
+  "spell.fantazia.vanish.passive.lines" : "1",
+  "spell.fantazia.vanish.passive.1" : "§5 * Removes revealing effects",
+
+  "item.fantazia.puppet_doll" : "§4Puppet Doll",
+  "spell.fantazia.puppeteer.desc.lines" : "1",
+  "spell.fantazia.puppeteer.desc.1" : "§4§oObey your master!",
+  "spell.fantazia.puppeteer.name" : "Puppeteer",
+  "spell.fantazia.puppeteer.lines" : "4",
+  "spell.fantazia.puppeteer.1" : "While looking at an undead creature, use the spell",
+  "spell.fantazia.puppeteer.2" : "to enslave it, taking the target under your control.",
+  "spell.fantazia.puppeteer.3" : "Enslaved creature does not attack its owner, targeting",
+  "spell.fantazia.puppeteer.4" : "monsters instead",
+  "spell.fantazia.puppeteer.passive.lines" : "3",
+  "spell.fantazia.puppeteer.passive.1" : "§5 * Grants the puppet damage boost",
+  "spell.fantazia.puppeteer.passive.2" : "§4 * Creating a new puppet instantly kills the",
+  "spell.fantazia.puppeteer.passive.3" : "§4   old one, if it exists",
+
+  "item.fantazia.card_deck" : "§2Card Deck",
+  "spell.fantazia.all_in.desc.lines" : "1",
+  "spell.fantazia.all_in.desc.1" : "§5§oTest your luck",
+  "spell.fantazia.all_in.name" : "All In",
+  "spell.fantazia.all_in.lines" : "8",
+  "spell.fantazia.all_in.1" : "Pull out a random card from the deck to get",
+  "spell.fantazia.all_in.2" : "any of following effects:",
+  "spell.fantazia.all_in.3" : "§9 * Fire a bunch of fireworks",
+  "spell.fantazia.all_in.4" : "§9 * A boost to damage as well as several",
+  "spell.fantazia.all_in.5" : "§9   layers of barrier, along with cleansing",
+  "spell.fantazia.all_in.6" : "§9   of negative effects",
+  "spell.fantazia.all_in.7" : "§9 * Restores used mana and recharges random spell",
+  "spell.fantazia.all_in.8" : "§9 * Applies blindness, slowness and corrosion",
+  "spell.fantazia.all_in.passive.lines" : "3",
+  "spell.fantazia.all_in.passive.1" : "§5The recharge of spell depends on owner's luck,",
+  "spell.fantazia.all_in.passive.2" : "§5changing by 1 second per luck, decreasing down",
+  "spell.fantazia.all_in.passive.3" : "§5to 5 seconds or increasing up to 20 seconds",
+
   "item.fantazia.leaders_horn" : "§5Leader's Horn",
   "aura.fantazia.leadership.desc.lines" : "1",
-  "aura.fantazia.leadership.desc.1" : "§5To rule them all...",
+  "aura.fantazia.leadership.desc.1" : "§5§oTo rule them all...",
   "aura.fantazia.leadership.name" : "Leadership",
   "aura.fantazia.leadership.lines" : "3",
   "aura.fantazia.leadership.1" : "All allied entities within the aura",
@@ -511,7 +563,7 @@
 
   "item.fantazia.tranquil_herb" : "§2Tranquil Herb",
   "aura.fantazia.tranquil.desc.lines" : "1",
-  "aura.fantazia.tranquil.desc.1" : "§aYummy",
+  "aura.fantazia.tranquil.desc.1" : "§a§oYummy",
   "aura.fantazia.tranquil.name" : "Tranquilise",
   "aura.fantazia.tranquil.lines" : "3",
   "aura.fantazia.tranquil.1" : "All passive mobs within the aura",
@@ -523,7 +575,7 @@
 
   "item.fantazia.spiral_nemesis" : "§5Spiral Nemesis",
   "aura.fantazia.despair.desc.lines" : "1",
-  "aura.fantazia.despair.desc.1" : "§4The most primal emotion",
+  "aura.fantazia.despair.desc.1" : "§4§oThe most primal emotion",
   "aura.fantazia.despair.name" : "Despair",
   "aura.fantazia.despair.lines" : "5",
   "aura.fantazia.despair.1" : "Hopelessness and fear of certain doom",
@@ -537,7 +589,7 @@
 
   "item.fantazia.acid_bottle" : "§dAcid Bottle",
   "aura.fantazia.corrosive.desc.lines" : "1",
-  "aura.fantazia.corrosive.desc.1" : "§cExtremely caustic!",
+  "aura.fantazia.corrosive.desc.1" : "§c§oExtremely caustic!",
   "aura.fantazia.corrosive.name": "Corrosive",
   "aura.fantazia.corrosive.lines" : "2",
   "aura.fantazia.corrosive.1" : "Corrodes the protection of monsters,",
@@ -548,7 +600,7 @@
 
   "item.fantazia.nether_heart" : "§cHeart of Nether",
   "aura.fantazia.hellfire.desc.lines" : "1",
-  "aura.fantazia.hellfire.desc.1" : "§4From the depth!..",
+  "aura.fantazia.hellfire.desc.1" : "§4§oFrom the depth!..",
   "aura.fantazia.hellfire.name" : "§4§lHellfire",
   "aura.fantazia.hellfire.lines" : "2",
   "aura.fantazia.hellfire.1" : "All burning creatures within aura",
@@ -559,7 +611,7 @@
 
   "item.fantazia.amplified_ice" : "§3Amplified Ice",
   "aura.fantazia.frostbite.desc.lines" : "1",
-  "aura.fantazia.frostbite.desc.1" : "§bCold...",
+  "aura.fantazia.frostbite.desc.1" : "§b§oCold...",
   "aura.fantazia.frostbite.name" : "§b§lFrostbite",
   "aura.fantazia.frostbite.lines" : "1",
   "aura.fantazia.frostbite.1" : "All mobs within aura slowly freeze",
@@ -645,9 +697,10 @@
   "fantazia.talent.spider_powers.poison_attack.desc.2" : "Incoming poison damage is decreased",
 
   "fantazia.talent.evasion_boost.name": "§aEvasion Boost",
-  "fantazia.talent.evasion_boost.desc.lines" : "2",
+  "fantazia.talent.evasion_boost.desc.lines" : "3",
   "fantazia.talent.evasion_boost.desc.1": "Allows to passively dodge an incoming attack",
   "fantazia.talent.evasion_boost.desc.2": "or projectile with a certain chance",
+  "fantazia.talent.evasion_boost.desc.3": "This mechanic abides to The Concept of Consistency",
 
   "fantazia.talent.health_boost.name" : "§5Health Boost",
   "fantazia.talent.health_boost.desc.lines": "1",
@@ -764,7 +817,7 @@
   "advancements.fantazia.athame" : "Law of Equivalent Exchange",
   "advancements.fantazia.athame.desc" : "Obtain the Athame",
 
-  "advancements.fantazia.caught_thunder" : "§oThe cycle ends here...",
+  "advancements.fantazia.caught_thunder" : "§oYou've been thunderstruck!...",
   "advancements.fantazia.caught_thunder.desc": "Obtain the Caught Thunder",
 
   "advancements.fantazia.doomed" : "§c§lUh oh!..",
@@ -772,6 +825,9 @@
 
   "advancements.fantazia.bloodthirsty" : "§4Bloodthirsty",
   "advancements.fantazia.bloodthirsty.desc" : "Stay in peak of euphoria for a full minute",
+
+  "advancements.fantazia.card_deck" : "Gambling addiction",
+  "advancements.fantazia.card_deck.desc" : "Obtain a card deck",
 
   "book.fantazia.landing_text" : "Since the beginning of humanity people tried to understand what they could not explain, grasp what they could not comprehend, obtain the knowledge they could not possess, using the science and common sense, something that the human's mind can acknowledge. However humanity will never understand everything about the world around themselves; some secrets will remain hidden, some mysteries will remain unexplained, some truths will remain untold...",
 
@@ -868,6 +924,17 @@
   "book.fantazia.entry.artifacts.withers_quintessence.page.2" : "The Wither that can be summoned is but a remnant of the past, being much less destructive, yet it still resembles its predecessors in its life draining powers and robot-like behaviour along with a single goal — to exterminate all living beings. Killing the Wither rewards the killer with a disgusting looking flesh core, a Wither's Quintessence",
   "book.fantazia.entry.artifacts.withers_quintessence.page.3" : "The artifact is a manifestation of the very nature of the Wither; it's user lives off murdering other living creatures and inflicts terrible life draining curse on their victims, but such terrible power has an equally terrible price, it being constant draining of life forces on from the very owner of the artifact",
 
+  "book.fantazia.entry.artifacts.sandmans_dust.page.1" : "Who has never played with sand during their childhood? After all, it is such a flexible substance, which can be given any form you wish to give it, the only limit you have is your own imagination. And gravity",
+  "book.fantazia.entry.artifacts.sandmans_dust.page.2" : "After fusing regular sand with some substance and a bit of metal one obtains some quite interesting glowing dust; it seems to always be warm and somehow does not stick to one's hands or clothes like sand does",
+  "book.fantazia.entry.artifacts.sandmans_dust.page.3" : "The sandman's dust allows one to disappear out of sight for a few seconds, making it pretty difficult for other creatures to see them",
+
+  "book.fantazia.entry.artifacts.puppet_doll.page.1" : "Many possess a desire to control others so they do their bidding, be it for the great good or for selfish reasons; almost anyone has dreamt of becoming a king in their life, to rule everyone around; of course there would inevitably be created a spell that allows to puppeteer other creatures",
+  "book.fantazia.entry.artifacts.puppet_doll.page.2" : "Imbuing an armor stand with magic and bits of iron turns it into a smaller doll, that functions as a vessel for someone's free will that it can take away",
+  "book.fantazia.entry.artifacts.puppet_doll.page.3" : "The unholy power of the doll allows its user to enslave any undead creature they want, turning them into a puppet that attacks any monster it can find",
+
+  "book.fantazia.entry.artifacts.card_deck.page.1" : "Do you think you were born lucky? Maybe you wish to test it? In that case, here you can see exactly what you want: an artifact that can give you a random effect, positive or negative, or even completely useless one!",
+  "book.fantazia.entry.artifacts.card_deck.page.2" : "After drawing on paper and fusing it with magical substance, one gets seemingly regular playing cards, just like the ones used in poker",
+  "book.fantazia.entry.artifacts.card_deck.page.3" : "But be not fooled, for the cards have a unique property: pull out any of them blindly out of the deck, and receive a random effect! Who knows, maybe it will be something good...",
 
   "book.fantazia.entry.mob_effects.absolute_barrier.name" : "§dAbsolute Barrier",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.1" : "Among different kinds of barrier this one is the most powerful, protecting its host unconditionally from almost all sources of harm. Not only that, but this barrier will also stay on the creature as long as the effect is there, unlike other barrier types which can wear off after taking damage too much",
@@ -882,8 +949,8 @@
   "book.fantazia.entry.mob_effects.deafened.page.2" : "Of course, such niche effect can only affect a select few types of creatures, which have an ability to hear to take away. The effect appears above one's head as sound waves fading in and out",
 
   "book.fantazia.entry.mob_effects.deflect.name" : "§bDeflect",
-  "book.fantazia.entry.mob_effects.deflect.page.1" : "",
-  "book.fantazia.entry.mob_effects.deflect.page.2" : "",
+  "book.fantazia.entry.mob_effects.deflect.page.1" : "This effect protects its user from harmful magic coming from their foes, blocking any targeted spell that is used against the creature, no matter how powerful it may be",
+  "book.fantazia.entry.mob_effects.deflect.page.2" : "The visible blue-ish lines should be quite obvious indicator of the creature having this effect",
 
   "book.fantazia.entry.mob_effects.disarm.name" : "§9Disarm",
   "book.fantazia.entry.mob_effects.disarm.page.1" : "This effect is rather simple, rendering any creature it affects unable to perform a melee attack, making it defenseless. Although one should also keep in mind that the effect does not prevent from performing range attacks or harming others in ways other than regular melee attacks",
@@ -907,7 +974,7 @@
 
   "book.fantazia.entry.mob_effects.might.name" : "§6Might",
   "book.fantazia.entry.mob_effects.might.page.1" : "Does what it says and says what it does. Similar to strength, it increases one's melee attack damage. Come on, it's not rocket science",
-  "book.fantazia.entry.mob_effects.might.page.2" : "It is one of effects which does not have obvious ways to show itself to others, so one should be careful if they are not sure that it is not there",
+  "book.fantazia.entry.mob_effects.might.page.2" : "It is not difficult to see if a creature is affected by the effect: small flames will appear around the entity, indicating that its attack damage has drastically increased",
 
   "book.fantazia.entry.mob_effects.stun.name" : "§4Stun",
   "book.fantazia.entry.mob_effects.stun.page.1" : "One of harsher effects as it stupefies the creature, rendering it unable to perform any actions such as moving, using items, spells, or anything else. Stunned creature is essentially helpless, able to neither fight or flee, making it vulnerable",
@@ -996,7 +1063,7 @@
   "book.fantazia.entry.world.the_worldliness.page.1" : "From one generation to another, from fathers to sons, from teachers to students, humanity has always been evolving, getting smarter, wiser and more intelligent. This progress of culture is constantly getting faster and faster, and the depth of one's knowledge a hundred tears ago is incomparable to what is known nowadays, and humanity constantly gets smarter than it was a moment ago",
   "book.fantazia.entry.world.the_worldliness.page.2" : "Of course, the knowledge always had a cost. Throughout our history, people have been constantly making mistakes which they learned from, some were screwed by life and were forced to adapt and evolve, for it is suffering that builds one's spirit. However, what emerges from those misfortunes is truly unstoppable and better than it used to be",
   "book.fantazia.entry.world.the_worldliness.page.3" : "But humans are still mortal, and life is still tragically short; the amount of thoughts one can make throughout their lifetime will always be finite and no one will ever know everything, for the world is limitless and will never be known completely. This is the exact reason for people to create persistent representation of their knowledge and wisdom in books and other forms of information",
-  "book.fantazia.entry.world.the_worldliness.page.4" : "The knowledge was passed from one to another, from parent to child, to make life of the next generation ever so slightly easier than the previous one. This resulted in different nations getting different culture and different traditions and shaped people into who they are nowadays, whether they believe it or not",
+  "book.fantazia.entry.world.the_worldliness.page.4" : "The knowledge was passed from one to another, from parent to child, to make life of the next generation ever so slightly easier than the previous one. This resulted in different nations getting different culture and different traditions and shaped people into who they are nowadays",
   "book.fantazia.entry.world.the_worldliness.page.5" : "The Worldliness is the culmination of all the knowledge of this world, carefully gathered from every human that has ever lived, their wisdom. Although the book starts with it being empty, it reveals more and more of itself as its owner explores the world",
 
   "book.fantazia.entry.world.fate.name" : "Fate",
@@ -1029,5 +1096,10 @@
 
   "book.fantazia.entry.world.euphoria.name" : "§6Euphoria",
   "book.fantazia.entry.world.euphoria.page.1" : "Along all places one could find themselves in, a battle has been the most natural for a human to be in. In this state, a fighter forgets about such insignificant things as their achievements, wealth, status, or even who they are. The only thing that matters is the sheer resolve to survive and defeat the enemy",
-  "book.fantazia.entry.world.euphoria.page.2" : "Whenever one is fighting against a horde of enemies, each kill only increases their thirst for blood. This intoxicating desire for victory makes the fighter even more formidable, as they get faster and faster"
+  "book.fantazia.entry.world.euphoria.page.2" : "Whenever one is fighting against a horde of enemies, each kill only increases their thirst for blood. This intoxicating desire for victory makes the fighter even more formidable, as they get faster and faster",
+
+  "book.fantazia.entry.world.concept_of_consistency.name" : "§5Concept of Consistency",
+  "book.fantazia.entry.world.concept_of_consistency.page.1" : "With how chaotic the events in the world may be, one probably thinks that they are not connected and do not affect each other; and if it might be the case for other worlds and their rules, it is not true for this one. All the events, objects and living creatures are linked to each other on a deep level throughout past, present and future, and even transcending space-time itself",
+  "book.fantazia.entry.world.concept_of_consistency.page.2" : "Same goes for seemingly random things; even those which have a clear chance of happening, without any particular patterns for them taking place, are connected to each other. Every time something that can randomly happen fails to do so, it is more and more likely to happen next time, and vice versa: whenever something random does successfully happen, its chance to happen the very next time is quite low",
+  "book.fantazia.entry.world.concept_of_consistency.page.3" : "If someone fails to find a certain artifact inside a treasure, they will be more likely to be successful next time, for the relics will inevitably be found and used, such is their purpose. Same can be said for something like a random chance to evade a blow from your foe, etc. This makes those occurrences more consistent and controllable by people, thus the name of the phenomenon: The Concept of Consistency"
 }

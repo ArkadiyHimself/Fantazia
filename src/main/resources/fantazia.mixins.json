@@ -20,6 +20,7 @@
     "MixinPlayer",
     "MixinRegenerationMobEffect",
     "MixinSlime",
+    "MixinTargetingConditions",
     "MixinVibrationUser",
     "MixinWarden",
     "MixinWebBlock"

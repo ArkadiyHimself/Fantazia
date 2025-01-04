@@ -35,6 +35,7 @@ import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.TalentTabManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.WisdomRewardManager;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
+import net.arkadiyhimself.fantazia.entities.goals.PuppeteeredAttackableTargets;
 import net.arkadiyhimself.fantazia.entities.goals.StandStillGoal;
 import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.packets.attachment_syncing.PlayerAbilityUpdateS2C;
@@ -60,6 +61,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.GameEventTags;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
@@ -70,6 +72,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -171,8 +174,6 @@ public class CommonEvents {
                 LivingEffectHelper.effectWithoutParticles(attacker, FTZMobEffects.LAYERED_BARRIER,200,2);
                 if (attacker instanceof Player player) player.getFoodData().eat(1,1);
             }
-
-
         }
     }
 
@@ -365,6 +366,10 @@ public class CommonEvents {
             if (livingEntity instanceof Mob mob && !event.loadedFromDisk()) FantazicCombat.grantEffectsOnSpawn(mob);
 
             if (livingEntity instanceof ServerPlayer serverPlayer) LevelAttributes.updateTracking(serverPlayer);
+
+            if (entity instanceof Mob mob) {
+                mob.targetSelector.addGoal(2, new PuppeteeredAttackableTargets<>(mob, Monster.class, true));
+            }
         }
     }
 
@@ -397,7 +402,7 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
-    public static void livingTick(EntityTickEvent.Pre event) {
+    public static void entityTickPre(EntityTickEvent.Pre event) {
         Entity entity = event.getEntity();
         AuraHelper.aurasTick(entity);
 
@@ -415,6 +420,15 @@ public class CommonEvents {
         if (!livingEntity.getActiveEffects().isEmpty() && livingEntity.hasEffect(FTZMobEffects.FURY)) {
             Collection<MobEffectInstance> effects = new ArrayList<>(livingEntity.getActiveEffects());
             for (MobEffectInstance effect : effects) if (effect.getEffect() == FTZMobEffects.STUN) effect.tick(livingEntity, () -> {});
+        }
+    }
+
+    @SubscribeEvent
+    public static void entityTickPost(EntityTickEvent.Post event) {
+        Entity entity = event.getEntity();
+
+        if (entity instanceof LivingEntity livingEntity) {
+            if (livingEntity.hasEffect(FTZMobEffects.DISGUISED)) livingEntity.setInvisible(true);
         }
     }
 
@@ -493,7 +507,6 @@ public class CommonEvents {
         if (event.getTarget() instanceof LivingEntity target) {
             Registry<Enchantment> enchantmentRegistry = attacker.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
 
-
             Optional<Holder.Reference<Enchantment>> iceAspect = enchantmentRegistry.getHolder(FTZEnchantments.ICE_ASPECT);
             int i = iceAspect.map(stack::getEnchantmentLevel).orElse(0);
             if (i > 0) LivingEffectHelper.effectWithoutParticles(target, FTZMobEffects.FROZEN, 40 + i * 20);
@@ -508,6 +521,31 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
+    public static void livingEntityUseItemStart(LivingEntityUseItemEvent.Start event) {
+        if (!event.isCanceled()) LivingEffectHelper.unDisguise(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void playerInteract(PlayerInteractEvent.RightClickItem event) {
+        if (event.getCancellationResult() != InteractionResult.FAIL) LivingEffectHelper.unDisguise(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void playerInteract(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getCancellationResult() != InteractionResult.FAIL) LivingEffectHelper.unDisguise(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void playerInteract(PlayerInteractEvent.EntityInteractSpecific event) {
+        if (event.getCancellationResult() != InteractionResult.FAIL) LivingEffectHelper.unDisguise(event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void playerInteract(PlayerInteractEvent.LeftClickBlock event) {
+        if (!event.isCanceled()) LivingEffectHelper.unDisguise(event.getEntity());
+    }
+
+    @SubscribeEvent
     public static void playerRespawn(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getEntity();
         player.getData(FTZAttachmentTypes.ABILITY_MANAGER).respawn();
@@ -515,7 +553,7 @@ public class CommonEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void livingChangeTarget(LivingChangeTargetEvent event) {
-        if (event.getEntity().hasEffect(FTZMobEffects.STUN)) event.setCanceled(true);
+        if (event.getEntity().hasEffect(FTZMobEffects.STUN) && event.getNewAboutToBeSetTarget() != null) event.setCanceled(true);
     }
 
     @SubscribeEvent

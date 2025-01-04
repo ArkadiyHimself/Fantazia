@@ -112,7 +112,7 @@ public class LivingEffectManager implements IHolderManager<ILivingEffect, Living
         for (ILivingEffect iLivingEffect : holders.values()) if (iLivingEffect instanceof IHealEventListener listener) listener.onHeal(event);
     }
 
-    public void provide() {
+    private void provide() {
         putHolder(AbsoluteBarrierEffect::new);
         putHolder(StunEffect::new);
         putHolder(BarrierEffect::new);
@@ -124,5 +124,7 @@ public class LivingEffectManager implements IHolderManager<ILivingEffect, Living
         putHolder(DeafenedEffect::new);
         putHolder(HaemorrhageEffect::new);
         putHolder(CursedMarkEffect::new);
+        putHolder(PuppeteeredEffect::new);
+        putHolder(DeflectEffect::new);
     }
 }

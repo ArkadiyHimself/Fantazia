@@ -15,7 +15,7 @@
       "hidden" : true
     },
     "fantazia:deflect" : {
-      "chance" : 0.07,
+      "chance" : 0.15,
       "level" : 0,
       "hidden" : false
     },

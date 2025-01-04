@@ -112,4 +112,11 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
         if (!getPlayer().hasInfiniteMaterials()) spellInstance.attemptCast();
         return true;
     }
+
+    public Map<Holder<AbstractSpell>, SpellInstance> availableSpells() {
+        Map<Holder<AbstractSpell>, SpellInstance> instanceMap = Maps.newHashMap();
+        for (Map.Entry<Holder<AbstractSpell>, SpellInstance> entry : spellInstances.entrySet())
+            if (entry.getValue().isAvailable()) instanceMap.put(entry.getKey(), entry.getValue());
+        return instanceMap;
+    }
 }

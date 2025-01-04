@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
@@ -27,11 +28,14 @@ import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.*;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.arkadiyhimself.fantazia.tags.FTZEntityTypeTags;
+import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -39,20 +43,28 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.behavior.MoveToSkySeeingSpot;
+import net.minecraft.world.entity.ai.goal.SwellGoal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ProjectileWeaponItem;
-import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.FireworkExplosion;
+import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.phys.EntityHitResult;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 
 public class FantazicCombat {
@@ -107,6 +119,7 @@ public class FantazicCombat {
 
         float amount = event.getNewDamage();
 
+        LivingEffectHelper.unDisguise(livingAttacker);
         AttributeInstance lifeSteal = livingAttacker.getAttribute(FTZAttributes.LIFESTEAL);
         double heal = lifeSteal == null ? 0 : lifeSteal.getValue() * amount;
         HealingSourcesHolder healingSources = LevelAttributesHelper.getHealingSources(livingAttacker.level());
@@ -184,5 +197,38 @@ public class FantazicCombat {
     public static void grantEffectsOnSpawn(LivingEntity livingEntity) {
         if (!(livingEntity.level() instanceof ServerLevel level)) return;
         LevelAttributesGetter.acceptConsumer(level, EffectsOnSpawnHolder.class, effectsOnSpawnHolder -> effectsOnSpawnHolder.tryApplyEffects(livingEntity));
+    }
+
+    public static void clearTarget(Mob mob, @Nullable LivingEntity target) {
+        if (mob.getTarget() == target || target == null) {
+            mob.setTarget(null);
+            for (WrappedGoal wrappedGoal : mob.targetSelector.getAvailableGoals()) {
+                if (wrappedGoal.getGoal() instanceof HurtByTargetGoal goal) goal.stop();
+                if (wrappedGoal.getGoal() instanceof SwellGoal goal) goal.stop();
+            }
+        }
+    }
+
+    public static ItemStack getFirework(DyeColor color, int flightTime) {
+        ItemStack itemstack = new ItemStack(Items.FIREWORK_ROCKET);
+        itemstack.set(
+                DataComponents.FIREWORKS,
+                new Fireworks(
+                        (byte)flightTime,
+                        List.of(new FireworkExplosion(FireworkExplosion.Shape.BURST, IntList.of(color.getFireworkColor()), IntList.of(), false, false))
+                )
+        );
+        return itemstack;
+    }
+
+    public static void summonRandomFirework(LivingEntity owner) {
+        DyeColor dyecolor = Util.getRandom(DyeColor.values(), owner.getRandom());
+        int i = owner.getRandom().nextInt(3);
+        ItemStack itemstack = getFirework(dyecolor, i);
+
+        double x = owner.getX() + Fantazia.RANDOM.nextDouble(-0.5, 0.5);
+        double z = owner.getZ() + Fantazia.RANDOM.nextDouble(-0.5, 0.5);
+        FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(owner.level(), owner, x, owner.getEyeY(), z, itemstack);
+        owner.level().addFreshEntity(fireworkrocketentity);
     }
 }

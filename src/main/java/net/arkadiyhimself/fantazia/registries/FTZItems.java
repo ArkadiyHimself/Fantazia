@@ -1,6 +1,8 @@
 package net.arkadiyhimself.fantazia.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
+import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.events.RegistryEvents;
 import net.arkadiyhimself.fantazia.items.TheWorldliness;
 import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
@@ -15,6 +17,7 @@ import net.arkadiyhimself.fantazia.items.weapons.Melee.MurasamaItem;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -48,52 +51,115 @@ public class FTZItems {
         RegistryEvents.EXPENDABLES.add(item);
         return item;
     }
-    public static final DeferredHolder<Item, TheWorldliness> THE_WORLDLINESS = REGISTER.register("the_worldliness", TheWorldliness::new); // implemented and extended
+
+    private static DeferredHolder<Item, SpellCasterItem> spellCaster(String id, Holder<AbstractSpell> spellHolder) {
+        return magicItem(id, () -> new SpellCasterItem(spellHolder));
+    }
+
+    private static DeferredHolder<Item, AuraCasterItem> auraCaster(String id, Holder<BasicAura<?>> auraHolder) {
+        return magicItem(id, () -> new AuraCasterItem(auraHolder));
+    }
+
+    public static final DeferredHolder<Item, TheWorldliness> THE_WORLDLINESS; // implemented and extended
+
     // melee weapons
-    public static final DeferredHolder<Item, FragileBladeItem> FRAGILE_BLADE = weaponItem("fragile_blade", FragileBladeItem::new); // finished and implemented
-    public static final DeferredHolder<Item, MurasamaItem> MURASAMA = weaponItem("murasama", MurasamaItem::new);
+    public static final DeferredHolder<Item, FragileBladeItem> FRAGILE_BLADE; // finished and implemented
+    public static final DeferredHolder<Item, MurasamaItem> MURASAMA;
 
     // hatchets
-    public static final DeferredHolder<Item, HatchetItem> WOODEN_HATCHET = weaponItem("wooden_hatchet", () -> new HatchetItem(Tiers.WOOD, -2.6f, new Item.Properties())); // finished and implemented
-    public static final DeferredHolder<Item, HatchetItem> STONE_HATCHET = weaponItem("stone_hatchet", () -> new HatchetItem(Tiers.STONE, -2.6f, new Item.Properties())); // finished and implemented
-    public static final DeferredHolder<Item, HatchetItem> IRON_HATCHET = weaponItem("iron_hatchet", () -> new HatchetItem(Tiers.IRON, -2.6f, new Item.Properties())); // finished and implemented
-    public static final DeferredHolder<Item, HatchetItem> GOLDEN_HATCHET = weaponItem("golden_hatchet", () -> new HatchetItem(Tiers.GOLD, -2.6f, new Item.Properties())); // finished and implemented
-    public static final DeferredHolder<Item, HatchetItem> DIAMOND_HATCHET = weaponItem("diamond_hatchet", () -> new HatchetItem(Tiers.DIAMOND, -2.6f, new Item.Properties())); // finished and implemented
-    public static final DeferredHolder<Item, HatchetItem> NETHERITE_HATCHET = weaponItem("netherite_hatchet", () -> new HatchetItem(Tiers.NETHERITE, -2.6f, new Item.Properties())); // finished and implemented
+    public static final DeferredHolder<Item, HatchetItem> WOODEN_HATCHET; // finished and implemented
+    public static final DeferredHolder<Item, HatchetItem> STONE_HATCHET; // finished and implemented
+    public static final DeferredHolder<Item, HatchetItem> IRON_HATCHET; // finished and implemented
+    public static final DeferredHolder<Item, HatchetItem> GOLDEN_HATCHET; // finished and implemented
+    public static final DeferredHolder<Item, HatchetItem> DIAMOND_HATCHET; // finished and implemented
+    public static final DeferredHolder<Item, HatchetItem> NETHERITE_HATCHET; // finished and implemented
 
     // dashstones
-    public static final DeferredHolder<Item, DashStoneItem> DASHSTONE1 = magicItem("dashstone1", () -> new DashStoneItem(1)); // finished and implemented
-    public static final DeferredHolder<Item, DashStoneItem> DASHSTONE2 = magicItem("dashstone2", () -> new DashStoneItem(2)); // finished and implemented
-    public static final DeferredHolder<Item, DashStoneItem> DASHSTONE3 = magicItem("dashstone3", () -> new DashStoneItem(3));
+    public static final DeferredHolder<Item, DashStoneItem> DASHSTONE1; // finished and implemented
+    public static final DeferredHolder<Item, DashStoneItem> DASHSTONE2; // finished and implemented
+    public static final DeferredHolder<Item, DashStoneItem> DASHSTONE3;
 
     // spellcasters
-    public static final DeferredHolder<Item, SpellCasterItem> ENTANGLER = magicItem("entangler", () -> new SpellCasterItem(FTZSpells.ENTANGLE)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> SOUL_EATER = magicItem("soul_eater", () -> new SpellCasterItem(FTZSpells.DEVOUR)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> SCULK_HEART = magicItem("heart_of_sculk", () -> new SpellCasterItem(FTZSpells.SONIC_BOOM)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> MYSTIC_MIRROR = magicItem("mystic_mirror", () -> new SpellCasterItem(FTZSpells.REFLECT)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> BLOODLUST_AMULET = magicItem("bloodlust_amulet", () -> new SpellCasterItem(FTZSpells.DAMNED_WRATH)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> ENIGMATIC_CLOCK = magicItem("enigmatic_clock", () -> new SpellCasterItem(FTZSpells.REWIND)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> NIMBLE_DAGGER = magicItem("nimble_dagger", () -> new SpellCasterItem(FTZSpells.BOUNCE)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> CAUGHT_THUNDER = magicItem("caught_thunder", () -> new SpellCasterItem(FTZSpells.LIGHTNING_STRIKE)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> ATHAME = magicItem("athame", () -> new SpellCasterItem(FTZSpells.TRANSFER)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> CONTAINED_SOUND = magicItem("contained_sound", () -> new SpellCasterItem(FTZSpells.SHOCKWAVE)); // finished and implemented
-    public static final DeferredHolder<Item, SpellCasterItem> WITHERS_QUINTESSENCE = magicItem("withers_quintessence", () -> new SpellCasterItem(FTZSpells.SUSTAIN));
+    public static final DeferredHolder<Item, SpellCasterItem> ENTANGLER; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> ENIGMATIC_CLOCK; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> ATHAME; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> SANDMANS_DUST; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> CARD_DECK; // finished and implemented
+
+    public static final DeferredHolder<Item, SpellCasterItem> SOUL_EATER; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> SCULK_HEART; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> NIMBLE_DAGGER; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> CAUGHT_THUNDER; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> PUPPET_DOLL; // finished and implemented
+
+    public static final DeferredHolder<Item, SpellCasterItem> MYSTIC_MIRROR; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> BLOODLUST_AMULET; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> CONTAINED_SOUND; // finished and implemented
+    public static final DeferredHolder<Item, SpellCasterItem> WITHERS_QUINTESSENCE; // finished and implemented
 
     // auracasters
-    public static final DeferredHolder<Item, AuraCasterItem> LEADERS_HORN = magicItem("leaders_horn", () -> new AuraCasterItem(FTZAuras.LEADERSHIP)); // finished and implemented
-    public static final DeferredHolder<Item, AuraCasterItem> TRANQUIL_HERB = magicItem("tranquil_herb", () -> new AuraCasterItem(FTZAuras.TRANQUIL)); // finished and implemented
-    public static final DeferredHolder<Item, AuraCasterItem> SPIRAL_NEMESIS = magicItem("spiral_nemesis", () -> new AuraCasterItem(FTZAuras.DESPAIR)); // finished and implemented
-    public static final DeferredHolder<Item, AuraCasterItem> ACID_BOTTLE = magicItem("acid_bottle", () -> new AuraCasterItem(FTZAuras.CORROSIVE)); // finished and implemented
-    public static final DeferredHolder<Item, AuraCasterItem> NETHER_HEART = magicItem("nether_heart", () -> new AuraCasterItem(FTZAuras.HELLFIRE)); // finished and implemented
-    public static final DeferredHolder<Item, AuraCasterItem> AMPLIFIED_ICE = magicItem("amplified_ice", () -> new AuraCasterItem(FTZAuras.FROSTBITE)); // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> LEADERS_HORN; // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> TRANQUIL_HERB; // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> SPIRAL_NEMESIS; // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> ACID_BOTTLE; // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> NETHER_HEART; // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> AMPLIFIED_ICE; // finished and implemented
 
     // expendables
-    public static final DeferredHolder<Item, ExpendableItem> OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON)); // finished and implemented
-    public static final DeferredHolder<Item, TalentProvidingItem> UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Fantazia.res("double_jump"))); // finished and implemented
-    public static final DeferredHolder<Item, Item> ARACHNID_EYE = expendableItem("arachnid_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(64).food(Foods.arachnidEye))); // finished and implemented
-    public static final DeferredHolder<Item, Item> VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(Foods.vitalityFruit))); // finished and implemented
-    public static final DeferredHolder<Item, AncientSparkItem> ANCIENT_SPARK = expendableItem("ancient_spark", AncientSparkItem::new); // finished and implemented
-    public static final DeferredHolder<Item, InsightBottleItem> INSIGHT_ESSENCE = expendableItem("insight_essence", InsightBottleItem::new); // finished and implemented
+    public static final DeferredHolder<Item, ExpendableItem> OBSCURE_SUBSTANCE; // finished and implemented
+    public static final DeferredHolder<Item, TalentProvidingItem> UNFINISHED_WINGS; // finished and implemented
+    public static final DeferredHolder<Item, Item> ARACHNID_EYE; // finished and implemented
+    public static final DeferredHolder<Item, Item> VITALITY_FRUIT; // finished and implemented
+    public static final DeferredHolder<Item, AncientSparkItem> ANCIENT_SPARK; // finished and implemented
+    public static final DeferredHolder<Item, InsightBottleItem> INSIGHT_ESSENCE; // finished and implemented
+
+    static {
+        THE_WORLDLINESS = REGISTER.register("the_worldliness", TheWorldliness::new);
+        FRAGILE_BLADE = weaponItem("fragile_blade", FragileBladeItem::new);
+        MURASAMA = weaponItem("murasama", MurasamaItem::new);
+
+        WOODEN_HATCHET = weaponItem("wooden_hatchet", () -> new HatchetItem(Tiers.WOOD, -2.6f, new Item.Properties()));
+        STONE_HATCHET = weaponItem("stone_hatchet", () -> new HatchetItem(Tiers.STONE, -2.6f, new Item.Properties()));
+        IRON_HATCHET = weaponItem("iron_hatchet", () -> new HatchetItem(Tiers.IRON, -2.6f, new Item.Properties()));
+        GOLDEN_HATCHET = weaponItem("golden_hatchet", () -> new HatchetItem(Tiers.GOLD, -2.6f, new Item.Properties()));
+        DIAMOND_HATCHET = weaponItem("diamond_hatchet", () -> new HatchetItem(Tiers.DIAMOND, -2.6f, new Item.Properties()));
+        NETHERITE_HATCHET = weaponItem("netherite_hatchet", () -> new HatchetItem(Tiers.NETHERITE, -2.6f, new Item.Properties()));
+
+        DASHSTONE1 = magicItem("dashstone1", () -> new DashStoneItem(1));
+        DASHSTONE2 = magicItem("dashstone2", () -> new DashStoneItem(2));
+        DASHSTONE3 = magicItem("dashstone3", () -> new DashStoneItem(3));
+
+        ENTANGLER = spellCaster("entangler", FTZSpells.ENTANGLE);
+        ENIGMATIC_CLOCK = spellCaster("enigmatic_clock", FTZSpells.REWIND);
+        ATHAME = spellCaster("athame", FTZSpells.TRANSFER);
+        SANDMANS_DUST = spellCaster("sandmans_dust", FTZSpells.VANISH);
+        CARD_DECK = spellCaster("card_deck", FTZSpells.ALL_IN);
+
+        SOUL_EATER = spellCaster("soul_eater", FTZSpells.DEVOUR);
+        SCULK_HEART = spellCaster("heart_of_sculk", FTZSpells.SONIC_BOOM);
+        NIMBLE_DAGGER = spellCaster("nimble_dagger", FTZSpells.BOUNCE);
+        CAUGHT_THUNDER = spellCaster("caught_thunder", FTZSpells.LIGHTNING_STRIKE);
+        PUPPET_DOLL = spellCaster("puppet_doll", FTZSpells.PUPPETEER);
+
+        MYSTIC_MIRROR = spellCaster("mystic_mirror", FTZSpells.REFLECT);
+        BLOODLUST_AMULET = spellCaster("bloodlust_amulet", FTZSpells.DAMNED_WRATH);
+        CONTAINED_SOUND = spellCaster("contained_sound", FTZSpells.SHOCKWAVE);
+        WITHERS_QUINTESSENCE = spellCaster("withers_quintessence", FTZSpells.SUSTAIN);
+
+        LEADERS_HORN = auraCaster("leaders_horn", FTZAuras.LEADERSHIP);
+        TRANQUIL_HERB = auraCaster("tranquil_herb", FTZAuras.TRANQUIL);
+        SPIRAL_NEMESIS = auraCaster("spiral_nemesis", FTZAuras.DESPAIR);
+        ACID_BOTTLE = auraCaster("acid_bottle", FTZAuras.CORROSIVE);
+        NETHER_HEART = auraCaster("nether_heart", FTZAuras.HELLFIRE);
+        AMPLIFIED_ICE = auraCaster("amplified_ice", FTZAuras.FROSTBITE);
+
+        OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON));
+        UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Fantazia.res("double_jump")));
+        ARACHNID_EYE = expendableItem("arachnid_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(64).food(Foods.arachnidEye)));
+        VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(Foods.vitalityFruit)));
+        ANCIENT_SPARK = expendableItem("ancient_spark", AncientSparkItem::new);
+        INSIGHT_ESSENCE = expendableItem("insight_essence", InsightBottleItem::new);
+    }
 
     public static void onRegistry(RegisterEvent event) {
         FTZBlocks.getBlockItems().forEach((block, item) -> event.register(Registries.ITEM, block, () -> item.apply(BuiltInRegistries.BLOCK.get(block))));

@@ -48,6 +48,8 @@ public class MysticMirror {
         }
         @Override
         public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+            if (pLivingEntity.isInvisible()) return;
+
             if (!(pLivingEntity instanceof Player player)) return;
 
             DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);

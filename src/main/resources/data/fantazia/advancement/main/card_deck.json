@@ -1,0 +1,30 @@
+{
+  "parent" : "fantazia:main/caster",
+  "criteria": {
+    "card_deck": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "fantazia:card_deck"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.fantazia.card_deck.desc"
+    },
+    "hidden": true,
+    "icon": {
+      "id": "fantazia:card_deck"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.fantazia.card_deck"
+    }
+  }
+}

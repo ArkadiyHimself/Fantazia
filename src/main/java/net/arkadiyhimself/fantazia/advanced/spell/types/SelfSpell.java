@@ -16,6 +16,7 @@ import org.apache.commons.compress.utils.Lists;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class SelfSpell extends AbstractSpell {
@@ -23,8 +24,8 @@ public class SelfSpell extends AbstractSpell {
     private final Predicate<LivingEntity> conditions;
     private final Consumer<LivingEntity> onCast;
 
-    protected SelfSpell(float manacost, int recharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse, Predicate<LivingEntity> conditions, Consumer<LivingEntity> onCast) {
-        super(manacost, recharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse);
+    protected SelfSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Predicate<LivingEntity> conditions, Consumer<LivingEntity> onCast) {
+        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, recharge);
         this.conditions = conditions;
         this.onCast = onCast;
     }
@@ -34,15 +35,15 @@ public class SelfSpell extends AbstractSpell {
     }
 
     public void onCast(LivingEntity livingEntity) {
-        if (this.doCleanse()) EffectCleansing.tryCleanseAll(livingEntity, this.getCleanse(), MobEffectCategory.BENEFICIAL);
+        if (doCleanse()) EffectCleansing.tryCleanseAll(livingEntity, getCleanse(), MobEffectCategory.BENEFICIAL);
         onCast.accept(livingEntity);
     }
 
     @Override
     public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
         List<Component> components = Lists.newArrayList();
-        if (this.getID() == null) return components;
-        String basicPath = "spell." + this.getID().getNamespace() + "." + this.getID().getPath();
+        if (getID() == null) return components;
+        String basicPath = "spell." + getID().getNamespace() + "." + getID().getPath();
         int lines = 0;
         if (!Screen.hasShiftDown()) {
             String desc = Component.translatable(basicPath + ".desc.lines").getString();
@@ -64,13 +65,12 @@ public class SelfSpell extends AbstractSpell {
         String namePath = basicPath + ".name";
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active", heading, ability, Component.translatable(namePath).getString()));
         // spell recharge
-        String recharge = String.format("%.1f", ((float) this.getRecharge()) / 20);
         components.add(bakeRechargeComponent(heading, ability));
         // spell manacost
-        String manacost = String.format("%.1f", this.getManacost());
+        String manacost = String.format("%.1f", getManacost());
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.manacost", heading, ability, manacost));
         // spell cleanse
-        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", heading, ability, this.getCleanse().getName()));
+        if (doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", heading, ability, getCleanse().getName()));
 
         components.add(Component.literal(" "));
 
@@ -100,7 +100,7 @@ public class SelfSpell extends AbstractSpell {
     public static class Builder {
 
         private final float manacost;
-        private final int recharge;
+        private final int defaultRecharge;
         private final @Nullable Holder<SoundEvent> castSound;
         private final @Nullable Holder<SoundEvent> rechargeSound;
 
@@ -108,15 +108,19 @@ public class SelfSpell extends AbstractSpell {
         private Consumer<LivingEntity> ownerTick = owner -> {};
         private Cleanse cleanse = Cleanse.BASIC;
         private boolean doCleanse = false;
+        private Function<LivingEntity, Integer> recharge;
 
         private Predicate<LivingEntity> conditions = livingEntity -> true;
         private Consumer<LivingEntity> onCast = livingEntity -> {};
 
-        public Builder(float manacost, int recharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
+        public Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
             this.manacost = manacost;
-            this.recharge = recharge;
+            this.defaultRecharge = defaultRecharge;
             this.castSound = castSound;
             this.rechargeSound = rechargeSound;
+
+            // safety measure
+            this.recharge = livingEntity -> defaultRecharge;
         }
 
         public Builder tickingConditions(TickingConditions value) {
@@ -139,6 +143,16 @@ public class SelfSpell extends AbstractSpell {
             return this;
         }
 
+        public Builder recharge(Function<LivingEntity, Integer> recharge) {
+            this.recharge = recharge;
+            return this;
+        }
+
+        public Builder recharge(int recharge) {
+            this.recharge = livingEntity -> recharge;
+            return this;
+        }
+
         public Builder conditions(Predicate<LivingEntity> value) {
             this.conditions = value;
             return this;
@@ -150,7 +164,7 @@ public class SelfSpell extends AbstractSpell {
         }
 
         public SelfSpell build() {
-            return new SelfSpell(manacost, recharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, conditions, onCast);
+            return new SelfSpell(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, recharge, conditions, onCast);
         }
     }
 }

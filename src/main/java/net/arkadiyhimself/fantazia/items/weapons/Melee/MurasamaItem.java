@@ -43,6 +43,7 @@ public class MurasamaItem extends MeleeWeaponItem implements ITooltipBuilder {
     public void activeAbility(ServerPlayer player) {
         PlayerAbilityGetter.acceptConsumer(player, ClientValuesHolder.class, ClientValuesHolder::taunt);
         PacketDistributor.sendToPlayer(player, new PlayAnimationS2C("taunt"));
+        if (LivingEffectHelper.isDisguised(player)) return;
         ServerLevel level = (ServerLevel) player.level();
         AABB aabb = player.getBoundingBox().inflate(10);
         List<Mob> mobs = level.getEntitiesOfClass(Mob.class, aabb);

@@ -85,7 +85,7 @@ public class ManaHolder extends PlayerAbilityHolder  {
     }
 
     public void regenerate(float value) {
-        this.mana = org.joml.Math.min(getMaxMana(), mana + value);
+        this.mana = Math.min(getMaxMana(), mana + value);
     }
 
     public void philStone() {

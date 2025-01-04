@@ -51,7 +51,6 @@
   "enchantment.fantazia.ricochet": "Рикошет",
   "enchantment.fantazia.headshot": "В яблочко!",
 
-
   "effect.fantazia.fury": "§cЯрость",
   "effect.fantazia.fury.lines": "3",
   "effect.fantazia.fury.tooltip.1": "Вы в ярости!",
@@ -78,7 +77,7 @@
   "effect.fantazia.layered_barrier.tooltip.2": "Получаемый урон будет впитываться",
   "effect.fantazia.layered_barrier.tooltip.3": "барьером ценой его «слоев»",
 
-  "effect.fantazia.absolute_barrier": "§dАбсолютный Барьер",
+  "effect.fantazia.absolute_barrier": "§dАбсолютный барьер",
   "effect.fantazia.absolute_barrier.lines": "3",
   "effect.fantazia.absolute_barrier.tooltip.1": "Барьер защищает вас!",
   "effect.fantazia.absolute_barrier.tooltip.2": "Полностью защищает от любого урона",
@@ -130,7 +129,7 @@
   "effect.fantazia.corrosion.lines": "1",
   "effect.fantazia.corrosion.tooltip.1": "Разъедает защиту",
 
-  "effect.fantazia.mana_boost": "§3Прирост Маны",
+  "effect.fantazia.mana_boost": "§3Прирост маны",
   "effect.fantazia.mana_boost.lines": "1",
   "effect.fantazia.mana_boost.tooltip.1": "Увеличивает объем маны",
 
@@ -138,7 +137,7 @@
   "effect.fantazia.stamina_boost.lines": "1",
   "effect.fantazia.stamina_boost.tooltip.1": "Увеличивает объем выносливости",
 
-  "effect.fantazia.cursed_mark": "§4Проклятая Метка",
+  "effect.fantazia.cursed_mark": "§4Проклятая метка",
   "effect.fantazia.cursed_mark.lines": "2",
   "effect.fantazia.cursed_mark.tooltip.1": "Вы помечены несчастьями...",
   "effect.fantazia.cursed_mark.tooltip.2": "В случае смерти, ваш убийца будет обречен.",
@@ -151,15 +150,21 @@
   "effect.fantazia.surge.lines" : "1",
   "effect.fantazia.surge.tooltip.1" : "Восстанавливает вашу ману",
 
-  "effect.fantazia.electrocuted" : "§bЭлектризован",
+  "effect.fantazia.electrocuted" : "§bЭлектризованность",
   "effect.fantazia.electrocuted.lines" : "3",
   "effect.fantazia.electrocuted.tooltip.1" : "Вас поразило током!",
   "effect.fantazia.electrocuted.tooltip.2" : "Наносит урон и постоянно",
   "effect.fantazia.electrocuted.tooltip.3" : "прерывает ваши действия",
 
-  "effect.fantazia.rapid" : "§eРезвый",
+  "effect.fantazia.rapid" : "§eРезвость",
   "effect.fantazia.rapid.lines" : "1",
   "effect.fantazia.rapid.tooltip.1" : "Увеличивает скорость атаки",
+
+  "effect.fantazia.disguised" : "Маскировка",
+  "effect.fantazia.disguised.lines" : "1",
+  "effect.fantazia.disguised.tooltip.1" : "Прячет вас от других существ",
+
+  "effect.fantazia.puppeteered" : "Манипуляция",
 
   "item.minecraft.lingering_potion.effect.recovery" : "Туманное зелье передышки",
   "item.minecraft.lingering_potion.effect.surge" : "Туманное зелье всплеска",
@@ -226,6 +231,9 @@
   "fantazia.subtitles.spell.reflect.cast" : "Активация отражения",
   "fantazia.subtitles.spell.rewind.cast" : "Перемотка",
   "fantazia.subtitles.spell.bounce.cast" : "Сокращение дистанции",
+  "fantazia.subtitles.spell.vanish.cast" : "Исчезновение!",
+  "fantazia.subtitles.spell.puppeteer.cast" : "Порабощение",
+  "fantazia.subtitles.spell.all_in.cast" : "Ва-банк!",
   "fantazia.subtitles.spell.bounce.recharge" : "Отскок готов",
   "fantazia.subtitles.spell.lightning_strike.tick" : "Искрящийся ток",
   "fantazia.subtitles.spell.lightning_strike.recharge" : "Разрялд молнии готов",
@@ -304,7 +312,7 @@
 
   "item.fantazia.dashstone1": "§7Дремлющий камень стремительности",
   "dash.fantazia.dash1.desc.lines": "1",
-  "dash.fantazia.dash1.desc.1": "Практически вся его мощь была утеряна...",
+  "dash.fantazia.dash1.desc.1": "§oПрактически вся его мощь была утеряна...",
   "dash.fantazia.dash1.name": "Стремительный рывок",
   "dash.fantazia.dash1.lines": "2",
   "dash.fantazia.dash1.1": "Нажмите кнопку рывка чтобы совершить быстрый",
@@ -315,7 +323,7 @@
 
   "item.fantazia.dashstone2": "§1Пробужденный камень стремительности",
   "dash.fantazia.dash2.desc.lines": "1",
-  "dash.fantazia.dash2.desc.1": "§9Часть его мощи была возвращена",
+  "dash.fantazia.dash2.desc.1": "§9§oЧасть его мощи была возвращена",
   "dash.fantazia.dash2.name": "Призрачный прыжок",
   "dash.fantazia.dash2.lines": "7",
   "dash.fantazia.dash2.1": "Нажмите кнопку рывка чтобы покинуть",
@@ -332,7 +340,7 @@
 
   "item.fantazia.dashstone3": "§5Высвобожденный камень стремительности",
   "dash.fantazia.dash3.desc.lines": "1",
-  "dash.fantazia.dash3.desc.1": "§cКонтиниум стал изогнут...",
+  "dash.fantazia.dash3.desc.1": "§c§oКонтиниум стал изогнут...",
   "dash.fantazia.dash3.name": "Скачок скозь измерения",
   "dash.fantazia.dash3.lines": "7",
   "dash.fantazia.dash3.1": "Нажмите кнопку рывка чтобы создать трещину",
@@ -351,7 +359,7 @@
 
   "item.fantazia.murasama": "§4ВЧ Мурасама",
   "weapon.fantazia.taunt.desc.lines": "1",
-  "weapon.fantazia.taunt.desc.1": "Что оно тут делает?..",
+  "weapon.fantazia.taunt.desc.1": "§oЧто оно тут делает?..",
   "weapon.fantazia.taunt.name": "Насмешка",
   "weapon.fantazia.taunt.lines": "3",
   "weapon.fantazia.taunt.1": "Высмейте всех ближайших врагов",
@@ -360,7 +368,7 @@
 
   "item.fantazia.entangler": "§5Запутчик жизни и смерти",
   "spell.fantazia.entangle.desc.lines": "1",
-  "spell.fantazia.entangle.desc.1": "§4Смерность есть болезнь",
+  "spell.fantazia.entangle.desc.1": "§4§oСмерность есть болезнь",
   "spell.fantazia.entangle.name": "Запутывание",
   "spell.fantazia.entangle.lines": "3",
   "spell.fantazia.entangle.1": "Находясь в шаге от смерти, используйте спелл",
@@ -373,7 +381,7 @@
 
   "item.fantazia.soul_eater": "§5Душеед",
   "spell.fantazia.devour.desc.lines": "1",
-  "spell.fantazia.devour.desc.1": "§4Судьба хуже смерти",
+  "spell.fantazia.devour.desc.1": "§4§oЕсть судьба хуже смерти",
   "spell.fantazia.devour.name": "Пожирание",
   "spell.fantazia.devour.lines": "8",
   "spell.fantazia.devour.1": "Смотря на существо, используйте способность чтобы",
@@ -389,7 +397,7 @@
 
   "item.fantazia.heart_of_sculk": "§5Сердце скалка",
   "spell.fantazia.sonic_boom.desc.lines": "1",
-  "spell.fantazia.sonic_boom.desc.1": "§1Тишина...",
+  "spell.fantazia.sonic_boom.desc.1": "§1§oТишина...",
   "spell.fantazia.sonic_boom.name": "Звуковой удар",
   "spell.fantazia.sonic_boom.lines": "4",
   "spell.fantazia.sonic_boom.1": "Смотря на существо, используйте способность",
@@ -405,7 +413,7 @@
   "item.fantazia.mystic_mirror": "§5Тайное зеркало",
   "spell.fantazia.reflect.name": "Отражение",
   "spell.fantazia.reflect.desc.lines": "1",
-  "spell.fantazia.reflect.desc.1": "§dКрасиво искаженное...",
+  "spell.fantazia.reflect.desc.1": "§d§oКрасиво искаженное...",
   "spell.fantazia.reflect.lines": "5",
   "spell.fantazia.reflect.1": "Когда носитель становится целью направленного",
   "spell.fantazia.reflect.2": "спелла от вражеского существа, зеркало",
@@ -415,7 +423,7 @@
 
   "item.fantazia.bloodlust_amulet": "§5Амулет жажды крови",
   "spell.fantazia.damned_wrath.desc.lines": "1",
-  "spell.fantazia.damned_wrath.desc.1": "§4Дай гневу овладеть тобой",
+  "spell.fantazia.damned_wrath.desc.1": "§4§oДай гневу овладеть тобой",
   "spell.fantazia.damned_wrath.name": "Гнев обреченных",
   "spell.fantazia.damned_wrath.lines": "5",
   "spell.fantazia.damned_wrath.1": "Когда здоровье владельца падает ниже",
@@ -431,7 +439,7 @@
 
   "item.fantazia.enigmatic_clock": "§5Загадочные часы",
   "spell.fantazia.rewind.desc.lines": "1",
-  "spell.fantazia.rewind.desc.1": "Перенаправляет поток времени",
+  "spell.fantazia.rewind.desc.1": "§oПеренаправляет поток времени",
   "spell.fantazia.rewind.name": "Перемотка",
   "spell.fantazia.rewind.lines": "4",
   "spell.fantazia.rewind.1": "Позволяет создать червоточину чтобы",
@@ -441,7 +449,7 @@
 
   "item.fantazia.nimble_dagger": "§cКлинок проворника",
   "spell.fantazia.bounce.desc.lines": "1",
-  "spell.fantazia.bounce.desc.1": "§5Не моргай!",
+  "spell.fantazia.bounce.desc.1": "§5§oНе моргай!",
   "spell.fantazia.bounce.name": "§5§lОтскок",
   "spell.fantazia.bounce.lines": "3",
   "spell.fantazia.bounce.1": "Смотря на существо, используйте спелл",
@@ -450,7 +458,7 @@
 
   "item.fantazia.caught_thunder": "§eСхваченная гроза",
   "spell.fantazia.lightning_strike.desc.lines": "1",
-  "spell.fantazia.lightning_strike.desc.1": "§cНе шутите с силами природы!",
+  "spell.fantazia.lightning_strike.desc.1": "§c§oНе шутите с силами природы!",
   "spell.fantazia.lightning_strike.name": "§6§lРазряд молнии",
   "spell.fantazia.lightning_strike.lines": "3",
   "spell.fantazia.lightning_strike.1": "Смотря на существо, используйте спелл чтобы",
@@ -463,7 +471,7 @@
 
   "item.fantazia.athame" : "§4Атам",
   "spell.fantazia.transfer.desc.lines" : "1",
-  "spell.fantazia.transfer.desc.1" : "§cУ всего есть цена",
+  "spell.fantazia.transfer.desc.1" : "§c§oУ всего есть цена",
   "spell.fantazia.transfer.name" : "§2§lРазмен",
   "spell.fantazia.transfer.lines" : "3",
   "spell.fantazia.transfer.1" : "Пожертвуйте долей своего здоровья",
@@ -476,7 +484,7 @@
 
   "item.fantazia.contained_sound" : "§9Заточенный грохот",
   "spell.fantazia.shockwave.desc.lines" : "1",
-  "spell.fantazia.shockwave.desc.1" : "§dВнутренняя мощь",
+  "spell.fantazia.shockwave.desc.1" : "§d§oВнутренняя мощь",
   "spell.fantazia.shockwave.name" : "Ударная волна",
   "spell.fantazia.shockwave.lines" : "3",
   "spell.fantazia.shockwave.1" : "Каждый успешный удар тратит часть маны",
@@ -488,20 +496,63 @@
 
   "item.fantazia.withers_quintessence" : "§cПриродность Иссушения",
   "spell.fantazia.sustain.desc.lines" : "1",
-  "spell.fantazia.sustain.desc.1" : "§cБич всего бытия",
+  "spell.fantazia.sustain.desc.1" : "§c§oБич всего бытия",
   "spell.fantazia.sustain.name" : "Удержание",
   "spell.fantazia.sustain.lines" : "4",
   "spell.fantazia.sustain.1" : "Когда существо умерщвлено владельцем, спелл",
   "spell.fantazia.sustain.2" : "растягивает жизнь пользователя восстановлением",
   "spell.fantazia.sustain.3" : "части здоровья и дарованием нескольких слоев",
-  "spell.fantazia.sustain.4" : "от барьера",
+  "spell.fantazia.sustain.4" : "барьера",
   "spell.fantazia.sustain.passive.lines" : "2",
   "spell.fantazia.sustain.passive.1" : "§5 * Атакованные существа страдают от иссушения",
   "spell.fantazia.sustain.passive.2" : "§4 * Постоянно вытягивает жизненные силы",
 
+  "item.fantazia.sandmans_dust" : "§eПыль Сеятеля",
+  "spell.fantazia.vanish.desc.lines" : "1",
+  "spell.fantazia.vanish.desc.1" : "§c§oСолнце прочь, здравствуй ночь!",
+  "spell.fantazia.vanish.name" : "§eСкрытие",
+  "spell.fantazia.vanish.lines" : "3",
+  "spell.fantazia.vanish.1" : "Создает на месте дымовую завесу, после",
+  "spell.fantazia.vanish.2" : "чего владелец становится скрытым от",
+  "spell.fantazia.vanish.3" : "других существ",
+  "spell.fantazia.vanish.passive.lines" : "1",
+  "spell.fantazia.vanish.passive.1" : "§5 * Снимает раскрывающие эффекты",
+
+  "item.fantazia.puppet_doll" : "§4Марионетка",
+  "spell.fantazia.puppeteer.desc.lines" : "1",
+  "spell.fantazia.puppeteer.desc.1" : "§4§oЯ твой хозяин!",
+  "spell.fantazia.puppeteer.name" : "Кукловод",
+  "spell.fantazia.puppeteer.lines" : "4",
+  "spell.fantazia.puppeteer.1" : "Смотря на нежить, используйте спелл, чтобы",
+  "spell.fantazia.puppeteer.2" : "поработить существо, беря его под свой контроль.",
+  "spell.fantazia.puppeteer.3" : "Порабащенная цель не атакует валадельца, выбирая",
+  "spell.fantazia.puppeteer.4" : "вместо этого других монстров",
+  "spell.fantazia.puppeteer.passive.lines" : "3",
+  "spell.fantazia.puppeteer.passive.1" : "§5 * Драует существу прирост к урону",
+  "spell.fantazia.puppeteer.passive.2" : "§4 * Создание новой марионетки моментально убивает",
+  "spell.fantazia.puppeteer.passive.3" : "§4   старую, если таковая существует",
+
+  "item.fantazia.card_deck" : "§2Колода карт",
+  "spell.fantazia.all_in.desc.lines" : "1",
+  "spell.fantazia.all_in.desc.1" : "§5§oИспытай удачу",
+  "spell.fantazia.all_in.name" : "Ва-банк",
+  "spell.fantazia.all_in.lines" : "8",
+  "spell.fantazia.all_in.1" : "Достаньте случайную карту из колоды, чтобы",
+  "spell.fantazia.all_in.2" : "получить один из следующих эффектов:",
+  "spell.fantazia.all_in.3" : "§9 * Запуск нескольких фейерверков",
+  "spell.fantazia.all_in.4" : "§9 * Прирост к урону и несколько слоев барьера,",
+  "spell.fantazia.all_in.5" : "§9   а так-же очищение негативных эффектов",
+  "spell.fantazia.all_in.6" : "§9 * Восполняет потраченную ману и перезаряжает",
+  "spell.fantazia.all_in.7" : "§9   случайный спелл",
+  "spell.fantazia.all_in.8" : "§9 * Ослепление, замедление и ржавение",
+  "spell.fantazia.all_in.passive.lines" : "3",
+  "spell.fantazia.all_in.passive.1" : "§5Перезарядка спелла зависит от удачи владельца,",
+  "spell.fantazia.all_in.passive.2" : "§5изменяясь на 1 секунду за единицу удачи, снижаясь",
+  "spell.fantazia.all_in.passive.3" : "§5вплоть до 5 секунд или повышаясь вплоть до 20",
+
   "item.fantazia.leaders_horn": "§5Горн лидера",
   "aura.fantazia.leadership.desc.lines": "1",
-  "aura.fantazia.leadership.desc.1": "§5Чтоб править всеми...",
+  "aura.fantazia.leadership.desc.1": "§5§oЧтоб править всеми...",
   "aura.fantazia.leadership.name": "Лидерство",
   "aura.fantazia.leadership.lines": "3",
   "aura.fantazia.leadership.1": "Все союзные существа внутри ауры",
@@ -513,7 +564,7 @@
 
   "item.fantazia.tranquil_herb": "§2Успокаивающая трава",
   "aura.fantazia.tranquil.desc.lines": "1",
-  "aura.fantazia.tranquil.desc.1": "§aНям-ням",
+  "aura.fantazia.tranquil.desc.1": "§a§oНям-ням",
   "aura.fantazia.tranquil.name": "Успокоение",
   "aura.fantazia.tranquil.lines": "3",
   "aura.fantazia.tranquil.1": "Все мирные существа внутри ауры",
@@ -525,7 +576,7 @@
 
   "item.fantazia.spiral_nemesis": "§5Спиральная немезида",
   "aura.fantazia.despair.desc.lines": "1",
-  "aura.fantazia.despair.desc.1": "§4Самая древняя эмоция",
+  "aura.fantazia.despair.desc.1": "§4§oСамая древняя эмоция",
   "aura.fantazia.despair.name": "Отчаяние",
   "aura.fantazia.despair.lines": "5",
   "aura.fantazia.despair.1": "Безнадежность и ужас от неминуемой гибели",
@@ -539,7 +590,7 @@
 
   "item.fantazia.acid_bottle": "§dБутыль кислоты",
   "aura.fantazia.corrosive.desc.lines": "1",
-  "aura.fantazia.corrosive.desc.1": "§cОчень едкая!",
+  "aura.fantazia.corrosive.desc.1": "§c§oОчень едкая!",
   "aura.fantazia.corrosive.name": "Ржавение",
   "aura.fantazia.corrosive.lines": "2",
   "aura.fantazia.corrosive.1": "Разъедает защиту монстров, что",
@@ -550,7 +601,7 @@
 
   "item.fantazia.nether_heart" : "§cСердце Незера",
   "aura.fantazia.hellfire.desc.lines" : "1",
-  "aura.fantazia.hellfire.desc.1" : "§4Из глубин!..",
+  "aura.fantazia.hellfire.desc.1" : "§4§oИз глубин!..",
   "aura.fantazia.hellfire.name" : "§4§lПолымя",
   "aura.fantazia.hellfire.lines" : "2",
   "aura.fantazia.hellfire.1" : "Все горящие существа внутри ауры",
@@ -561,7 +612,7 @@
 
   "item.fantazia.amplified_ice" : "§3Усиленный лед",
   "aura.fantazia.frostbite.desc.lines" : "1",
-  "aura.fantazia.frostbite.desc.1" : "§bХолодно...",
+  "aura.fantazia.frostbite.desc.1" : "§b§oХолодно...",
   "aura.fantazia.frostbite.name" : "§b§lОзноб",
   "aura.fantazia.frostbite.lines" : "1",
   "aura.fantazia.frostbite.1" : "Все мобы внутри ауры медленно замерзают",
@@ -652,6 +703,7 @@
   "fantazia.talent.evasion_boost.desc.lines": "2",
   "fantazia.talent.evasion_boost.desc.1": "Позволяет пассивно проигнорировать атаку",
   "fantazia.talent.evasion_boost.desc.2": "или снаряд с некоторым шансом",
+  "fantazia.talent.evasion_boost.desc.3": "Данная механика подчиняется Концепту постоянства",
 
   "fantazia.talent.health_boost.name": "§5Прирост здоровья",
   "fantazia.talent.health_boost.desc.lines": "1",
@@ -777,6 +829,9 @@
   "advancements.fantazia.bloodthirsty" : "§4Кровожадный",
   "advancements.fantazia.bloodthirsty.desc" : "Оставайтесь на пределе эйфории в течении минуты",
 
+  "advancements.fantazia.card_deck" : "§oВы где их заряжаете?!",
+  "advancements.fantazia.card_deck.desc" : "Приобретите колоду карт",
+
   "book.fantazia.landing_text": "С самого рождения человечества люди пытались понять то, что нельзя было объяснить, осознать то, что нельзя было постичь, обрести знания, коими нельзя было завладеть, используя науку и здравый смысл, вещи которые человеческий разум способен признать. Однако, человечеству не суждено познать абсолютно все о мире вокруг них; есть секреты, что останутся скрыты, есть тайны, что останутся необъяснены, есть истина, что остается нерассказанной...",
 
   "book.fantazia.category.artifacts.name": "§5Артефакты",
@@ -871,6 +926,18 @@
   "book.fantazia.entry.artifacts.withers_quintessence.page.2" : "Иссушитель что может быть призван есть лишь пережиток прошлого, ненастолько разрушительный, но все же похожиав на своих предшественников и их высасывающими жизнь способностями и поведением, вместе с одной лишь целью — искоренить все живое. Убийство Иссушителя дарует одержавшему веръх гадкое ядро из плоти - Природность Иссушения",
   "book.fantazia.entry.artifacts.withers_quintessence.page.3" : "Этот артефакт есть олицетворение самой сущности Иссушителя; его владелец живет убивая других живых существ и накладывает ужасающее высасывающее жизнь проклятие на своих жертвб но настолько зловещей мощи положена такая же зловещая цена, коей является постоянная потеря жизненных сил самим владельцем такого артефакта",
 
+  "book.fantazia.entry.artifacts.sandmans_dust.page.1" : "Есть ли те, кто никогда в детстве не игрался с песком? В конце концов, это настолько податливая субстаниция, которой можно дать любую форму которую пожелаешь; единственное, что вас ограничивает - ваше собственное воображение! И гравитация.",
+  "book.fantazia.entry.artifacts.sandmans_dust.page.2" : "Объединяя обычный песок и немного субстанции вместе с частицами металла, можно получить крайне интересную светящуюся пыль; она всегда теплая и каким-то образом не прилипает к рукам или одежде, как это делает песок",
+  "book.fantazia.entry.artifacts.sandmans_dust.page.3" : "Пыль Сеятела позволяет исчезнуть из вида на несколько секунд, отчего другим существам сложнее вас отслеживать",
+
+  "book.fantazia.entry.artifacts.puppet_doll.page.1" : "Многие обладают желанием управлять другими, чтобы те выполняли их приказы, будь это ради общего блага или ради своего же благосостояния; практически каждый мечтал в своей жизни стать королем и управлять всеми вокруг; разумеется, появление спелла, что позволяет контролировать других — вопрос времени",
+  "book.fantazia.entry.artifacts.puppet_doll.page.2" : "Пронизывая стойку для брони магией и частичками желеща превращает её в небольшую куклу, что является сосудом чьей-либо насильно отобранной свободы воли",
+  "book.fantazia.entry.artifacts.puppet_doll.page.3" : "Нечестивая мощь куклы позволяет владельцу поработить любую нежить, какую он захочет, превращая её в марионетку что атакует любое чудовище, что может найти",
+
+  "book.fantazia.entry.artifacts.card_deck.page.1" : "Считаете ли вы себя везучим? Должно быть, вам хочется испытать свою удачу? В таком случае, вы нашли то что хотели: артефакт, что может выдать случайный эффект, положительный или отрицательный, или может быть абсолютно бесполезный!",
+  "book.fantazia.entry.artifacts.card_deck.page.2" : "После рисования на листе и пронизывания его с волшебной субстанцией, можно получить на вид обычные игральнные карты, словно те, что использоуются при игре в покер",
+  "book.fantazia.entry.artifacts.card_deck.page.3" : "Но не обманывайтесь, ведь карты обладают уникальным свойством: выньте вслепую любую из них, и приобретите случайный эффект! Кто знает, может быть произойдет что-нибудь хорошее...",
+
   "book.fantazia.entry.mob_effects.absolute_barrier.name": "§dАбсолютный барьер",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.1": "Среди других барьеров, этот является наиболее мощным, защищая владельца без каких-либо условий от практически любых источников вреда. Помимо эторго, данный барьер будет оставаться на существе до тех пор, пока эффект не закончится, в отличии от других барьеров, что исчезают после получения определенного урона",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.2": "Показывает себя в виде тианственной фиолетовой «брони» с различными символами на ней, что покрывает владельца",
@@ -884,8 +951,8 @@
   "book.fantazia.entry.mob_effects.deafened.page.2": "Конечно, настолько ситуативный эффект может влиять лишь на некоторых существ, у которых есть какой-либо вид слуха. Эффект показывает себя в виде угасающих звуковых волн над головой жертвы",
 
   "book.fantazia.entry.mob_effects.deflect.name": "§bБлокировка",
-  "book.fantazia.entry.mob_effects.deflect.page.1": "",
-  "book.fantazia.entry.mob_effects.deflect.page.2": "",
+  "book.fantazia.entry.mob_effects.deflect.page.1": "Данный эффект защищает владельца от враждебной магии исходящей от врагов, блокируя любой направленный спелл использованный против существа, не важно насколько он может быть мощный",
+  "book.fantazia.entry.mob_effects.deflect.page.2": "Хорошо видные синеватые линии должны быть очевидным индикатором того, что этот эффект действует на существо",
 
   "book.fantazia.entry.mob_effects.disarm.name": "§9Безоружность",
   "book.fantazia.entry.mob_effects.disarm.page.1": "Не очень сложный эффект, что не позволяет существу, на которое он влияет, совершать атаки в ближнем бою, делая его беззащитным. Хотя не стоит забывать, что эффект не предотвращает совершение атак в дальнем бою или в целом вреда путем чего-то, что не является ударом",
@@ -909,7 +976,7 @@
 
   "book.fantazia.entry.mob_effects.might.name": "§6Мощь",
   "book.fantazia.entry.mob_effects.might.page.1": "Делает то, что сказано, а сказано то, что делает. Подобно эффекту силы, увеличивает урон от атак в ближнем бою. Ну же, что тут сложного?",
-  "book.fantazia.entry.mob_effects.might.page.2": "Это один из тех эффектов, что не имеет очевидных индикаторов, так что стоит быть осторожным в бою, если не знаете, притсутствует ли этот эффект или нет",
+  "book.fantazia.entry.mob_effects.might.page.2": "Не сложно увидеть, что существо находится под влиянием эффекта: небольшие огоньки разжигаются вокруг существа, показывая, что её урон от атак был значительно усилен",
 
   "book.fantazia.entry.mob_effects.stun.name": "§4Ошеломление",
   "book.fantazia.entry.mob_effects.stun.page.1": "Один из более суровых эффектов, что поражает существо, отчего то неспособно совершать действия, такие как движение, использование предметов и что-либо еще. Ошеломленное существо практически беспомощно, неспособно как сражаться, так и убегать",
@@ -998,7 +1065,7 @@
   "book.fantazia.entry.world.the_worldliness.page.1": "От поколения в поколение, от отцов к сыновьям, от учителей к ученикам, человечество всегда беспрерывно развивалось, становилость умнее, мудрее и разумнее. Этот прогресс культуры становится все быстрее и быстрее, ведь глубина познаний кого-то, кто жил сто лет назад, несравнима с тем что известно людям в нынешние дни, когда человечество становится умнее с каждым моментом",
   "book.fantazia.entry.world.the_worldliness.page.2": "Разумеется, у знаний есть своя цена. На протяжении истории человечество постоянно совершало ошибки, из которых усваивали уроки, кто-то был обделен жизнью и должен был адаптироваться и развиваться, ведь страдания и создают характер. Во всяком случае, то что возникает из таких несчастий - по настоящему неостановимо, и лучше, чем было когда-то",
   "book.fantazia.entry.world.the_worldliness.page.3": "Но люди все еще смертны, и жизнь все еще трагически короткая; количество мыслей, которое кто-то может придумать в течении своей жизни - конечно, и нкикому не дано узнать абсолютно все, особенно когда мир безграничен и никогда не будет полностью изучен. Именно по этой причине люди и содают постоянные представления о своих знаниях и опыте в виде книг и других источников информации",
-  "book.fantazia.entry.world.the_worldliness.page.4": "Знания передавались от одного к другому, о родителей детям, чтобы хотя бы слегка упростить быт следующего поколения по сравнению в средыдущим. От этого и возникли различные культуры в различных народах, также как и традиции, которые и сформировали людей такими, какие они нынче, хотите верить в это или нет",
+  "book.fantazia.entry.world.the_worldliness.page.4": "Знания передавались от одного к другому, о родителей детям, чтобы хотя бы слегка упростить быт следующего поколения по сравнению в средыдущим. От этого и возникли различные культуры в различных народах, также как и традиции, которые и сформировали людей такими, какие они нынче",
   "book.fantazia.entry.world.the_worldliness.page.5": "Обмирщенность есть кульминация всех познаний об этом мире, тщательно собранных с каждого человека, что когда-либо жил, их мудрость. Хотя книга и начинается пустой, в ней раскрывается больше и больше страниц когда владелец изучает мир",
 
   "book.fantazia.entry.world.fate.name": "Судьба",
@@ -1031,5 +1098,10 @@
 
   "book.fantazia.entry.world.euphoria.name" : "§6Эйфория",
   "book.fantazia.entry.world.euphoria.page.1" : "Среди всех ситуаций, в которой можно оказаться, битва была естественной средой для человека. В таких обстоятельствах боец забывает про такие маловажные вещи как его достижения, статус, достаток и даже то, кем он является. Все что имеет значение – это ярая решительность выжить и одолеть своего врага",
-  "book.fantazia.entry.world.euphoria.page.2" : "В битве, где против вас орда врагов, каждое убийство лишь увеличивает жажду крови в вас. Это опъяняющее стремление к победе делает бойца еще более устрашающим, так как он становится быстрее и быстрее"
+  "book.fantazia.entry.world.euphoria.page.2" : "В битве, где против вас орда врагов, каждое убийство лишь увеличивает жажду крови в вас. Это опъяняющее стремление к победе делает бойца еще более устрашающим, так как он становится быстрее и быстрее",
+
+  "book.fantazia.entry.world.concept_of_consistency.name" : "§5Концепт постоянства",
+  "book.fantazia.entry.world.concept_of_consistency.page.1" : "Учитывая насколько хаотичны могут быть события в нашем мире, кто-то может подумать что они никак не связаны и не влияют друг на друга; и если так можно сказать про другие миры и их правила, этот является исключением. Все события, объекты и живые существа переплетены друг с другом на очень глубоком уровне сквозь прошлое, настоящее и будущее, даже переступая пределы времени-пространства",
+  "book.fantazia.entry.world.concept_of_consistency.page.2" : "Тоже самое можно сказать и про случайные на вид вещи; даже те, что имеют случайный шанс произойти, без каких-либо видимых закономернотей, взаимосвязаны между собой. Каждый раз, когда что-то может произойти, но не происходит, шанс того, что оно произойдет в следующийц раз, возрастает, и наоборот: если что-то случайное успешно происходит, шанс этого случая становится крайне малым",
+  "book.fantazia.entry.world.concept_of_consistency.page.3" : "Если кому-то не везет с нахождением артефактов внутри сокровищницы, тот будет более успешным в следующицй раз, ведь этим реликвиям суждено быть найденными и использованными, таково их предназначение. Это же является правдой и для чего-нибудь по типу случайного шанса избежать атаки, и тд. Из-за этого такие события более постоянны, на них можно влиять, отсюда и название феномена: Концепт постоянства"
 }

@@ -1,6 +1,8 @@
 package net.arkadiyhimself.fantazia.packets.stuff;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
@@ -51,10 +53,12 @@ public record KeyInputC2S(INPUT input, int action) implements IPacket {
             if (integer != 1) return;
             Vec3 vec3 = PlayerAbilityHelper.dashDeltaMovement(serverPlayer, 1.8f, true);
             PlayerAbilityGetter.acceptConsumer(serverPlayer, DashHolder.class, dash -> dash.beginDash(vec3));
+            LivingEffectHelper.unDisguise(serverPlayer);
         }), // finished
         BLOCK((serverPlayer, integer) -> {
             if (integer != 1) return;
             PlayerAbilityGetter.acceptConsumer(serverPlayer, MeleeBlockHolder.class, MeleeBlockHolder::startBlocking);
+            LivingEffectHelper.unDisguise(serverPlayer);
         }), // finished
         JUMP((serverPlayer, integer) -> {
             if (integer == 0) PlayerAbilityGetter.acceptConsumer(serverPlayer, DoubleJumpHolder.class, DoubleJumpHolder::buttonRelease);

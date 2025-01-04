@@ -51,6 +51,8 @@ public class AbsoluteBarrier {
         }
         @Override
         public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+            if (pLivingEntity.isInvisible()) return;
+
             EvasionHolder evasionHolder = LivingDataGetter.takeHolder(pLivingEntity, EvasionHolder.class);
             if (evasionHolder != null && evasionHolder.getIFrames() > 0) return;
 

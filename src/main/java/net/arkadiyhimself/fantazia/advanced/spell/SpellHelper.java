@@ -4,6 +4,7 @@ import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ClientValuesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
@@ -42,6 +43,7 @@ public class SpellHelper {
     public static boolean trySelfSpell(LivingEntity entity, SelfSpell spell, boolean ignoreConditions) {
         if (entity instanceof Player player && !PlayerAbilityGetter.wasteMana(player, spell.getManacost())) return false;
         if (spell.conditions(entity) || ignoreConditions) {
+            LivingEffectHelper.unDisguise(entity);
             spell.onCast(entity);
             if (spell.getCastSound() != null) entity.level().playSound(null, entity.blockPosition(), spell.getCastSound().value(), SoundSource.NEUTRAL);
             return true;
@@ -64,7 +66,7 @@ public class SpellHelper {
         }
 
         if (!blocked) spell.afterBlockCheck(caster, target);
-
+        LivingEffectHelper.unDisguise(caster);
         return true;
     }
 

@@ -406,7 +406,33 @@
       }
     ]
   },
-
+  "spell.vanish.cast" : {
+    "subtitle" : "fantazia.subtitles.spell.vanish.cast",
+    "sounds" : [
+      {
+        "name": "fantazia:spell/vanish",
+        "stream": false
+      }
+    ]
+  },
+  "spell.puppeteer.cast" : {
+    "subtitle" : "fantazia.subtitles.spell.puppeteer.cast",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/puppeteer",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.all_in.cast" : {
+    "subtitle" : "fantazia.subtitles.spell.all_in.cast",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/all_in",
+        "stream" : false
+      }
+    ]
+  },
   "entity.fallen_breath" : {
     "subtitle" : "fantazia.subtitles.entity.fallen_breath",
     "sounds": [

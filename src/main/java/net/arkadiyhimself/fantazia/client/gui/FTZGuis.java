@@ -160,7 +160,7 @@ public class FTZGuis {
                     int recharge = spellInstancesHolder.getOrCreate(spell).recharge();
                     if (recharge <= 0) continue;
 
-                    float percent = ((float) recharge / spell.value().getRecharge());
+                    float percent = ((float) recharge / spell.value().getDefaultRecharge());
                     int fill = (int) Math.max(1, percent * 16);
 
                     guiGraphics.blit(RECHARGE_BAR,x + 22,y + j * 20 + 1,0,0,6,18,6,18);
@@ -182,7 +182,7 @@ public class FTZGuis {
                     int recharge = spellInstancesHolder.getOrCreate(spell).recharge();
                     if (recharge <= 0) continue;
 
-                    float percent = ((float) recharge / spell.value().getRecharge());
+                    float percent = ((float) recharge / spell.value().getDefaultRecharge());
                     int fill = (int) Math.max(1, percent * 16);
 
                     guiGraphics.blit(RECHARGE_BAR,x + 22,y + k * 20 + 1 + 20 * num1,0,0,6,18,6,18);

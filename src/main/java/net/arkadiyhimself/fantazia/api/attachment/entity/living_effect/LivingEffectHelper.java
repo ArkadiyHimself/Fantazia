@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect;
 
+import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.AbsoluteBarrierEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.BarrierEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffect;
@@ -44,6 +45,10 @@ public class LivingEffectHelper {
         return false;
     }
 
+    public static boolean isDisguised(LivingEntity livingEntity) {
+        return livingEntity.hasEffect(FTZMobEffects.DISGUISED);
+    }
+
     public static boolean hurtRedColor(LivingEntity livingEntity) {
         if (hasBarrier(livingEntity)) return false;
         if (livingEntity.getLastDamageSource() != null && livingEntity.getLastDamageSource().is(FTZDamageTypeTags.NOT_TURNING_RED)) return false;
@@ -60,6 +65,10 @@ public class LivingEffectHelper {
 
     public static void effectWithoutParticles(LivingEntity entity, Holder<MobEffect> effect, int duration) {
         effectWithoutParticles(entity, effect, duration, 0);
+    }
+
+    public static void puppeteer(LivingEntity entity, int duration) {
+        effectWithoutParticles(entity, FTZMobEffects.PUPPETEERED, duration);
     }
 
     public static void makeFurious(LivingEntity entity, int duration) {
@@ -99,10 +108,17 @@ public class LivingEffectHelper {
     }
 
     public static void giveHaemorrhage(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.HAEMORRHAGE , duration);
+        effectWithoutParticles(entity, FTZMobEffects.HAEMORRHAGE, duration);
+    }
+
+    public static void makeDisguised(LivingEntity entity, int duration) {
+        effectWithoutParticles(entity, FTZMobEffects.DISGUISED, duration);
     }
 
     public static void microStun(LivingEntity entity) {
         effectWithoutParticles(entity, FTZMobEffects.MICROSTUN, 1);
+    }
+    public static void unDisguise(LivingEntity entity) {
+        EffectCleansing.forceCleanse(entity, FTZMobEffects.DISGUISED);
     }
 }
