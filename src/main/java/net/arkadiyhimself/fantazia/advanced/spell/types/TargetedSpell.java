@@ -45,8 +45,13 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         return affected.isInstance(entity);
     }
 
-    public boolean conditions(LivingEntity caster, T target) {
-        return this.conditions.test(caster, target);
+    @SuppressWarnings("unchecked")
+    public boolean conditions(LivingEntity caster, LivingEntity target) {
+        try {
+            return this.conditions.test(caster, (T) target);
+        } catch (ClassCastException ignored) {
+            return false;
+        }
     }
 
     public void beforeBlockCheck(LivingEntity caster, T target) {

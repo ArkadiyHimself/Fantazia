@@ -14,6 +14,7 @@ import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -118,5 +119,10 @@ public class Auras {
             .onTickAffected((mob, entity) -> mob.setTicksFrozen(Math.min(mob.getTicksRequiredToFreeze() + 3, mob.getTicksFrozen() + 3)))
             .putDamageMultiplier(DamageTypes.FREEZE, 3f)
             .putDamageMultiplier(FTZDamageTypes.FROZEN, 2.5f)
+            .putTooltipFormating(ChatFormatting.BLUE)
+            .build();
+
+    public static final BasicAura<Monster> DIFFRACTION = new BasicAura.Builder<>(Monster.class, BasicAura.TYPE.NEGATIVE, 6f)
+
             .build();
 }

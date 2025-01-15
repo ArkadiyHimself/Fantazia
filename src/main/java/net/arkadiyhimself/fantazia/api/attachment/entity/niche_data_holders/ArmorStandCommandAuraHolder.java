@@ -44,7 +44,6 @@ public class ArmorStandCommandAuraHolder implements IBasicHolder {
         if (!compoundTag.contains("aura") || armorStand == null) return;
         ResourceLocation resourceLocation = ResourceLocation.parse(compoundTag.getString("aura"));
         auraInstance = new AuraInstance<>(armorStand, FantazicRegistries.AURAS.get(resourceLocation));
-        LevelAttributes.updateTracking(armorStand.level());
     }
 
     @Override

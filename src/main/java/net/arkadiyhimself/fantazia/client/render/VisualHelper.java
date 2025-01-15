@@ -10,6 +10,7 @@ import net.arkadiyhimself.fantazia.packets.stuff.ChasingParticleS2C;
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -58,6 +59,32 @@ public class VisualHelper {
         Vec3 delta = type.modify(new Vec3(x0, y0, z0), entity.getDeltaMovement());
 
         PacketDistributor.sendToAllPlayers(new AddParticleS2C(new Vec3(x0, y0, z0).toVector3f(), delta.toVector3f(), particle));
+    }
+
+    public static void randomParticleOnModelClient(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type) {
+        randomParticleOnModelClient(entity, particle, type, 1f);
+    }
+
+    public static void randomParticleOnModelClient(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type, float range) {
+        ClientLevel clientLevel = Minecraft.getInstance().level;
+        if (particle == null || clientLevel == null) return;
+
+        // getting entity's height and width
+        float radius = entity.getBbWidth() * (float) 0.7;
+        float height = entity.getBbHeight();
+
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(range);
+        double x = vec3.x();
+        double z = vec3.z();
+        double y = Fantazia.RANDOM.nextDouble(height * 0.1,height * 0.8);
+
+        double x0 = entity.getX() + x;
+        double y0 = entity.getY() + y;
+        double z0 = entity.getZ() + z;
+
+        Vec3 delta = type.modify(new Vec3(x0, y0, z0), entity.getDeltaMovement());
+
+        clientLevel.addParticle(particle, x0, y0, z0, delta.x, delta.y, delta.z);
     }
 
     public static void randomEntityChasingParticle(Entity entity, BiFunction<Entity, Vec3, EntityChasingParticleOption<?>> factory) {

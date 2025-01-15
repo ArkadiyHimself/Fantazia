@@ -15,6 +15,7 @@ import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.arkadiyhimself.fantazia.tags.FTZSpellTags;
 import net.arkadiyhimself.fantazia.util.library.Vector3;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -35,6 +36,8 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class SpellHelper {
+
+    public static final float RAY_RADIUS = 1.5F;
 
     public enum TargetedCastResult {
         DEFAULT, REFLECTED, BLOCKED
@@ -72,8 +75,8 @@ public class SpellHelper {
 
     @SuppressWarnings("unchecked")
     private static <T extends LivingEntity> @Nullable T getTarget(LivingEntity caster, TargetedSpell<T> spell) {
-        List<LivingEntity> targets = getTargets(caster, 1.5f, spell.range(), spell.is(FTZSpellTags.THROUGH_WALLS));
-        targets.removeIf(Predicate.not(spell::canAffect));
+        List<LivingEntity> targets = getTargets(caster, RAY_RADIUS, spell.range(), spell.is(FTZSpellTags.THROUGH_WALLS));
+        targets.removeIf(Predicate.not(spell::canAffect) );
         List<T> newTargets = (List<T>) targets;
         newTargets.removeIf(living -> !spell.conditions(caster, living));
         if (newTargets.isEmpty()) return null;
@@ -201,7 +204,7 @@ public class SpellHelper {
 
         for (int distance = 1; distance < finalRange; ++distance) {
             head = casterCenter.add(new Vector3(caster.getLookAngle().normalize()).multiply(distance)).add(0.0, 0.5, 0.0);
-            List<LivingEntity> list = caster.level().getEntitiesOfClass(LivingEntity.class, new AABB(head.x - radius, head.y - radius, head.z - radius, head.x + radius, head.y + radius, head.z + radius));
+            List<LivingEntity> list = caster.level().getEntitiesOfClass(LivingEntity.class, FantazicMath.squareBoxFromCenterAndSide(head.toVec3D(), radius));
             list.removeIf(entity -> (entity == caster || (!caster.hasLineOfSight(entity) && !(ignoreObstacles && Minecraft.getInstance().shouldEntityAppearGlowing(entity)))));
             entities.addAll(list);
         }
@@ -209,13 +212,13 @@ public class SpellHelper {
         return entities;
     }
 
-    public static <T extends LivingEntity> @Nullable T getClosestEntity(List<T> entities, LivingEntity player) {
+    public static <T extends LivingEntity> @Nullable T getClosestEntity(List<T> entities, LivingEntity livingEntity) {
         if (entities.isEmpty()) return null;
         if (entities.size() == 1) return entities.getFirst();
         Map<Double, T> livingEntityMap = new HashMap<>();
         List<Double> distances = new ArrayList<>();
         for (T entity : entities) {
-            double distance = entity.distanceTo(player);
+            double distance = entity.distanceTo(livingEntity);
             livingEntityMap.put(distance, entity);
             distances.add(distance);
         }

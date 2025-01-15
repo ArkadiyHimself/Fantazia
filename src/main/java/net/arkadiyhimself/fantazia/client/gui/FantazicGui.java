@@ -10,6 +10,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.L
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,8 +19,13 @@ import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.util.FormattedCharSink;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -35,6 +41,7 @@ public class FantazicGui {
     private static final ResourceLocation AURA_POSITIVE_COMPONENT = Fantazia.res("textures/gui/aura_icon/positive_component.png");
     private static final ResourceLocation AURA_NEGATIVE_COMPONENT = Fantazia.res("textures/gui/aura_icon/negative_component.png");
     private static final ResourceLocation AURA_MIXED_COMPONENT = Fantazia.res("textures/gui/aura_icon/mixed_component.png");
+    private static final ResourceLocation AURA_OWNED_COMPONENT = Fantazia.res("textures/gui/aura_icon/owned_component.png");
     // bars
     public static final ResourceLocation BARS = Fantazia.res("textures/gui/bars.png");
     // mana bar stuff
@@ -114,30 +121,37 @@ public class FantazicGui {
         int x = leftPos - 82;
         int topPos = (screen.height - imgHGT) / 2;
 
-        List<AuraInstance<Player>> playerAuras = AuraHelper.getAffectingAuras(player);
+        List<AuraInstance<? extends Entity>> playerAuras = AuraHelper.getAllAffectingAuras(player);
         if (playerAuras.isEmpty()) return;
 
-        List<AuraInstance<Player>> uniqueAuras = AuraHelper.sortUniqueAura(playerAuras, player);
-        if (Fantazia.DEVELOPER_MODE) guiGraphics.drawString(font, "Affecting auras: " + uniqueAuras.size(), 0, 180, 16777215);
-        for (int i = 0; i < Math.min(uniqueAuras.size(), 9); i++) {
-            AuraInstance< Player> instance = uniqueAuras.get(i);
-            BasicAura<Player> aura = instance.getAura();
+        if (Fantazia.DEVELOPER_MODE) guiGraphics.drawString(font, "Affecting auras: " + playerAuras.size(), 0, 180, 16777215);
+        for (int i = 0; i < Math.min(playerAuras.size(), 9); i++) {
+            AuraInstance<? extends Entity> instance = playerAuras.get(i);
+            BasicAura<? extends Entity> aura = instance.getAura();
+
+            boolean owned = instance.getOwner() == player;
 
             int y = topPos + i * 22;
-            ResourceLocation location = switch (aura.getType()) {
+            ResourceLocation location = owned ? AURA_OWNED_COMPONENT : switch (aura.getType()) {
                 case POSITIVE -> AURA_POSITIVE_COMPONENT;
                 case NEGATIVE -> AURA_NEGATIVE_COMPONENT;
                 case MIXED -> AURA_MIXED_COMPONENT;
             };
             guiGraphics.blit(location, x, y, 0,0,80,20,80,20);
             ResourceLocation icon = aura.getIcon();
-            Component name = aura.getAuraComponent();
+
+            MutableComponent name = aura.getAuraComponent();
+            name.withStyle(aura.tooltipFormatting());
+            if (owned) name.withStyle(ChatFormatting.GOLD);
+
             int length = font.width(name);
             if (!instance.getAura().secondary(player, instance.getOwner())) RenderSystem.setShaderColor(0.65f,0.65f,0.65f,0.65f);
             guiGraphics.blit(icon, x + 2, y + 2, 0,0,16,16,16,16);
             RenderSystem.setShaderColor(1f,1f,1f,1f);
+
             if (length > 60) guiGraphics.drawString(Minecraft.getInstance().font, name,x + 20,y + 6,0);
-            else guiGraphics.drawCenteredString(Minecraft.getInstance().font, name,x + 50,y + 6,0);
+            else guiGraphics.drawCenteredString(Minecraft.getInstance().font, name,x + 48,y + 6,0);
+
 
             if (!aura.buildIconTooltip().isEmpty()) {
                 int mouseX = (int)(Minecraft.getInstance().mouseHandler.xpos() * (double)guiGraphics.guiWidth() / (double)Minecraft.getInstance().getWindow().getScreenWidth());

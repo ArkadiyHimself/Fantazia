@@ -9,6 +9,7 @@ import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -99,11 +100,24 @@ public class PlayerAbilityHelper {
             VibrationListenerHolder vibrationListenerHolder = PlayerAbilityGetter.takeHolder(player, VibrationListenerHolder.class);
             if (vibrationListenerHolder == null || !vibrationListenerHolder.listen()) return;
             vibrationListenerHolder.madeSound(livingEntity);
-            PlayerAbilityGetter.acceptConsumer(player, SpellInstancesHolder.class, spellInstancesHolder -> spellInstancesHolder.getOrCreate(FTZSpells.SONIC_BOOM).reduceRecharge(10));
+            PlayerAbilityGetter.acceptConsumer(player, SpellInstancesHolder.class, spellInstancesHolder -> spellInstancesHolder.getOrCreate(FTZSpells.SONIC_BOOM).reduceRecharge(25));
         }
     }
+
     public static TalentsHolder.ProgressHolder getProgressHolder(Player player) {
         TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
         return talentsHolder == null ? null : talentsHolder.getProgressHolder();
+    }
+
+    public static void awardWisdom(Player player, String action, ResourceLocation instance) {
+        TalentsHolder.ProgressHolder progressHolder = getProgressHolder(player);
+        if (progressHolder == null) return;
+        progressHolder.award(action, instance);
+    }
+
+    public static void awardWisdom(Player player, String action, int amount) {
+        TalentsHolder.ProgressHolder progressHolder = getProgressHolder(player);
+        if (progressHolder == null) return;
+        progressHolder.award(action, amount);
     }
 }

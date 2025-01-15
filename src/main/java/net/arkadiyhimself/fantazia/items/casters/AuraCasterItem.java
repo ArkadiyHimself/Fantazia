@@ -48,13 +48,16 @@ public class AuraCasterItem extends Item {
             return InteractionResultHolder.success(pPlayer.getItemInHand(pUsedHand));
         } else return super.use(pLevel, pPlayer,pUsedHand);
     }
+
     @Override
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack pStack) {
         return this == FTZItems.LEADERS_HORN.get() ? UseAnim.TOOT_HORN : super.getUseAnimation(pStack);
     }
+
     public BasicAura<? extends Entity> getBasicAura() {
         return basicAura.value();
     }
+
     public List<Component> buildTooltip() {
         List<Component> components = Lists.newArrayList();
         if (getBasicAura() != null) components.addAll(getBasicAura().itemTooltip(null));

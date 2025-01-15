@@ -33,6 +33,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -55,6 +56,7 @@ public class FTZGuis {
     private static final ResourceLocation AURA_POSITIVE = Fantazia.res("textures/gui/aura_icon/positive.png");
     private static final ResourceLocation AURA_NEGATIVE = Fantazia.res("textures/gui/aura_icon/negative.png");
     private static final ResourceLocation AURA_MIXED = Fantazia.res("textures/gui/aura_icon/mixed.png");
+    private static final ResourceLocation AURA_OWNED = Fantazia.res("textures/gui/aura_icon/owned.png");
 
     // fury effect
     private static final ResourceLocation VEINS = Fantazia.res("textures/misc/fury/veins.png");
@@ -254,17 +256,21 @@ public class FTZGuis {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         if (Minecraft.getInstance().screen != null && !(Minecraft.getInstance().screen instanceof ChatScreen)) return;
-        List<AuraInstance<Player>> auras = AuraHelper.getAffectingAuras(player);
+        List<AuraInstance<? extends Entity>> auras = AuraHelper.getAllAffectingAuras(player);
         for (int i = 0; i < Math.min(auras.size(), 6); i++) {
-            AuraInstance<Player> auraInstance = auras.get(i);
-            BasicAura<Player> aura = auraInstance.getAura();
+            AuraInstance<? extends Entity> auraInstance = auras.get(i);
+            BasicAura<? extends Entity> aura = auraInstance.getAura();
+
+            boolean owned = auraInstance.getOwner() == player;
+
             int x = 2 + i * 22;
             int y = 2;
-            ResourceLocation location = switch (aura.getType()) {
+            ResourceLocation location = owned ? AURA_OWNED : switch (aura.getType()) {
                 case POSITIVE -> AURA_POSITIVE;
                 case NEGATIVE -> AURA_NEGATIVE;
                 case MIXED -> AURA_MIXED;
             };
+
             guiGraphics.blit(location, x, y, 0,0,20,20,20,20);
             ResourceLocation icon = aura.getIcon();
             if (!aura.secondary(player, auraInstance.getOwner())) RenderSystem.setShaderColor(0.65f,0.65f,0.65f,0.65f);

@@ -58,7 +58,6 @@ public class AddedAurasHolder implements IBasicHolder {
             BasicAura<?> basicAura = FantazicRegistries.AURAS.get(ResourceLocation.parse(listTag.getString(i)));
             if (basicAura != null) addedAuras.add(new AuraInstance<>(owner, basicAura));
         }
-        LevelAttributes.updateTracking(owner.level());
     }
 
     @Override
@@ -74,7 +73,6 @@ public class AddedAurasHolder implements IBasicHolder {
         if (owner == null) return;
         for (AuraInstance<?> auraInstance : addedAuras) if (auraInstance.getAura() == aura) return;
         addedAuras.add(new AuraInstance<>(owner, aura));
-        LevelAttributes.updateTracking(owner.level());
     }
 
     public void discard() {

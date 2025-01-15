@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category" : "misc",
+  "pattern": [
+    " HX",
+    "Y#Y",
+    "XH "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:glass_pane"
+    },
+    "H": {
+      "item": "fantazia:obscure_substance"
+    },
+    "X" : {
+      "item": "minecraft:iron_ingot"
+    },
+    "Y" : {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "result": {
+    "id": "fantazia:optical_lens"
+  },
+  "show_notification": true
+}

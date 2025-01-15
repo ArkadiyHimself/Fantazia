@@ -6,6 +6,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.VibrationListenerHolder;
 import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
+import net.arkadiyhimself.fantazia.events.ClientEvents;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -48,14 +49,14 @@ public abstract class MixinMinecraft {
     private void glowing(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
         if (player == null) return;
         if (pEntity instanceof ThrownHatchet hatchet && hatchet.getOwner() == player) cir.setReturnValue(true);
-
-        if (pEntity instanceof LivingEntity livingEntity) {
+        else if (pEntity instanceof LivingEntity livingEntity) {
             FuryEffect furyEffect = LivingEffectGetter.takeHolder(livingEntity, FuryEffect.class);
             if (furyEffect != null && furyEffect.isFurious() && player.hasLineOfSight(pEntity)) cir.setReturnValue(true);
-        }
 
-        if (pEntity instanceof DashStoneEntity) cir.setReturnValue(true);
-        VibrationListenerHolder vibrationListenerHolder = PlayerAbilityGetter.takeHolder(player, VibrationListenerHolder.class);
-        if (vibrationListenerHolder != null && pEntity instanceof LivingEntity && vibrationListenerHolder.revealed().contains(pEntity)) cir.setReturnValue(true);
+            VibrationListenerHolder vibrationListenerHolder = PlayerAbilityGetter.takeHolder(player, VibrationListenerHolder.class);
+            if (vibrationListenerHolder != null && vibrationListenerHolder.revealed().contains(livingEntity)) cir.setReturnValue(true);
+
+            if (pEntity == ClientEvents.suitableTarget) cir.setReturnValue(true);
+        } else if (pEntity instanceof DashStoneEntity) cir.setReturnValue(true);
     }
 }

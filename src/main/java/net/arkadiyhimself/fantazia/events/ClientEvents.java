@@ -2,6 +2,8 @@ package net.arkadiyhimself.fantazia.events;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
+import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.KeyBinding;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
@@ -20,28 +22,38 @@ import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.FragileBladeItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.MurasamaItem;
 import net.arkadiyhimself.fantazia.packets.stuff.KeyInputC2S;
+import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.tags.FTZItemTags;
 import net.arkadiyhimself.fantazia.tags.FTZSoundEventTags;
+import net.arkadiyhimself.fantazia.util.library.Vector3;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -49,14 +61,25 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Quaternionf;
+import top.theillusivec4.curios.api.event.SlotModifiersUpdatedEvent;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
 @EventBusSubscriber(value = Dist.CLIENT, modid = Fantazia.MODID)
 public class ClientEvents {
+
+    public static @Nullable LivingEntity suitableTarget = null;
+
+    @SubscribeEvent
+    public static void entityTickPre(EntityTickEvent.Pre event) {
+        Entity entity = event.getEntity();
+        if (entity == suitableTarget) VisualHelper.randomParticleOnModelClient(entity, ParticleTypes.SMOKE, VisualHelper.ParticleMovement.REGULAR);
+    }
 
     @SubscribeEvent
     public static void fovModifier(ComputeFovModifierEvent event) {
@@ -101,7 +124,6 @@ public class ClientEvents {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null) return;
-        GuiGraphics guiGraphics = event.getGuiGraphics();
         PoseStack poseStack = event.getGuiGraphics().pose();
         ResourceLocation overlay = event.getName();
         if (overlay.equals(VanillaGuiLayers.SUBTITLE_OVERLAY) && !player.shouldShowDeathScreen()) poseStack.translate(0,48,0);
@@ -243,7 +265,7 @@ public class ClientEvents {
             event.setSwingHand(false);
         }
         if (player.hasEffect(FTZMobEffects.DISARM)) event.setSwingHand(false);
-        if (KeyBinding.BLOCK.consumeClick() && player.getMainHandItem().is(FTZItemTags.MELEE_BLOCK)) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.BLOCK, 1));
+        if (KeyBinding.BLOCK.consumeClick() && player.getMainHandItem().is(FTZItemTags.MELEE_BLOCK) && player.getOffhandItem().isEmpty()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.BLOCK, 1));
     }
 
     @SubscribeEvent
@@ -297,9 +319,86 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void onRenderFire(RenderBlockScreenEffectEvent event) {
+    public static void renderBlockScreenEffect(RenderBlockScreenEffectEvent event) {
+        if (Minecraft.getInstance().player == null) return;
         AncientFlameTicksHolder ancientFlameTicksHolder = LivingDataGetter.takeHolder(Minecraft.getInstance().player, AncientFlameTicksHolder.class);
         if (event.getOverlayType() == RenderBlockScreenEffectEvent.OverlayType.FIRE && ancientFlameTicksHolder != null && ancientFlameTicksHolder.isBurning()) event.setCanceled(true);
     }
 
+    @SubscribeEvent
+    public static void clientTickPre(ClientTickEvent.Pre event) {
+        LocalPlayer localPlayer = Minecraft.getInstance().player;
+        if (localPlayer == null) return;
+
+        BlockPos playerPos = localPlayer.blockPosition();
+        int x0 = playerPos.getX();
+        int y0 = playerPos.getY();
+        int z0 = playerPos.getZ();
+
+        Item item = localPlayer.getMainHandItem().getItem();
+
+        if ((localPlayer.tickCount % 6) == 0 && item instanceof AuraCasterItem auraCasterItem) {
+            float radius = auraCasterItem.getBasicAura().getRadius();
+
+            AttributeInstance instance = localPlayer.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
+            float additional = instance == null ? 0 : (float) instance.getValue();
+
+            int finalRadius = (int) (radius + Math.max(0, additional)) + 1;
+            Minecraft.getInstance().levelRenderer.setBlocksDirty(x0 - finalRadius, y0 - finalRadius, z0 - finalRadius, x0 + finalRadius, y0 + finalRadius, z0 + finalRadius);
+        }
+
+        ClientLevel level = Minecraft.getInstance().level;
+        if (item instanceof SpellCasterItem spellCasterItem && spellCasterItem.getSpell().value() instanceof TargetedSpell<?> targetedSpell && level != null) {
+            float range = targetedSpell.range();
+
+            AttributeInstance instance = localPlayer.getAttribute(FTZAttributes.CAST_RANGE_ADDITION);
+            float additional = instance == null ? 0 : (float) instance.getValue();
+
+            int finalRange = (int) (range + additional);
+
+            Vector3 casterCenter = Vector3.fromEntityCenter(localPlayer);
+            Vector3 head;
+
+            for (float i = 1; i < finalRange; i += 0.5f) {
+                head = casterCenter.add(new Vector3(localPlayer.getLookAngle().normalize()).multiply(i)).add(0.0, 0.5, 0.0);
+                BlockPos blockPos = new BlockPos((int) head.x, (int) head.y, (int) head.z);
+
+                AABB aabb = FantazicMath.squareBoxFromCenterAndSide(head.toVec3D(), SpellHelper.RAY_RADIUS);
+                List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, aabb);
+                list.removeIf(livingEntity -> livingEntity == localPlayer
+                        || !localPlayer.hasLineOfSight(livingEntity) || livingEntity.isInvisible() ||
+                        !targetedSpell.canAffect(livingEntity) || !targetedSpell.conditions(localPlayer, livingEntity));
+                if (!list.isEmpty()) {
+                    LivingEntity livingEntity = SpellHelper.getClosestEntity(list, localPlayer);
+                    if (livingEntity != null) {
+                        suitableTarget = livingEntity;
+                        break;
+                    }
+                }
+
+                if (level.getBlockState(blockPos).isSolid()) {
+                    float j = i - 0.75f;
+                    head = casterCenter.add(new Vector3(localPlayer.getLookAngle().normalize()).multiply(j)).add(0.0, 0.5, 0.0);
+                    level.addParticle(ParticleTypes.SMOKE, head.x, head.y, head.z,0,0,0);
+                    suitableTarget = null;
+                    break;
+                }
+
+                if (Math.abs(i - finalRange) <= 0.5f) {
+                    level.addParticle(ParticleTypes.SMOKE, head.x, head.y, head.z,0,0,0);
+                    suitableTarget = null;
+                    break;
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void clientTickPost(ClientTickEvent.Post event) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player != null) {
+            Item item = player.getMainHandItem().getItem();
+            if (!(item instanceof SpellCasterItem spellCasterItem) || !(spellCasterItem.getSpell().value() instanceof TargetedSpell<?>)) suitableTarget = null;
+        }
+    }
 }

@@ -11,6 +11,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -39,7 +41,11 @@ public class ActionsHelper {
             player.stopFallFlying();
             PlayerAbilityGetter.acceptConsumer(player, DashHolder.class, DashHolder::stopDash);
             PlayerAbilityGetter.acceptConsumer(player, MeleeBlockHolder.class, MeleeBlockHolder::interrupt);
-        } else if (entity instanceof Mob mob) mob.setTarget(null);
+        } else if (entity instanceof Mob mob) {
+            mob.setTarget(null);
+            for (WrappedGoal goal : mob.goalSelector.getAvailableGoals()) goal.stop();
+            for (WrappedGoal goal : mob.targetSelector.getAvailableGoals()) goal.stop();
+        }
     }
 
     public static boolean cancelMouseMoving(LocalPlayer player) {

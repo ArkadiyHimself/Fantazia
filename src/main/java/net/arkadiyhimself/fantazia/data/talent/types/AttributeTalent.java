@@ -8,6 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -31,7 +32,7 @@ public record AttributeTalent(ITalent.BasicProperties properties, Holder<Attribu
         AttributeModifier modifier = makeModifier();
         if (instance == null || instance.hasModifier(getID())) return;
         instance.addPermanentModifier(modifier);
-        if (Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.translatable(String.valueOf(instance.getValue())));
+        if (Fantazia.DEVELOPER_MODE && player instanceof ServerPlayer) player.sendSystemMessage(Component.translatable(String.valueOf(instance.getValue())));
     }
 
     @Override

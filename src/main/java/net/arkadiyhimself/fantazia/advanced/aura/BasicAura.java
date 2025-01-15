@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -144,20 +145,23 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     private final ImmutableMap<ResourceKey<DamageType>, Float> damageMultipliers;
     private final ImmutableMap<TagKey<DamageType>, Float> tagDamageMultipliers;
 
+    private final ChatFormatting[] tooltipFormatting;
+
     protected BasicAura(Class<T> affectedType, TYPE type, float range,
-                     Map<Holder<Attribute>, AttributeModifier> attributeModifiers,
-                     Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers,
-                     Map<Holder<MobEffect>, Integer> mobEffects,
-                     BiPredicate<T, Entity> primaryFilter,
-                     BiPredicate<T, Entity> secondaryFilter,
-                     Predicate<Entity> ownerConditions,
-                     BiConsumer<T, Entity> onTickAffected,
-                     Consumer<Entity> onTickOwner,
-                     BiConsumer<BlockPos, AuraInstance<T>> onTickBlock,
-                     List<ResourceKey<DamageType>> damageImmunities,
-                     List<TagKey<DamageType>> tagDamageImmunities,
-                     Map<ResourceKey<DamageType>, Float> damageMultipliers,
-                     Map<TagKey<DamageType>, Float> tagDamageMultipliers
+                        Map<Holder<Attribute>, AttributeModifier> attributeModifiers,
+                        Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers,
+                        Map<Holder<MobEffect>, Integer> mobEffects,
+                        BiPredicate<T, Entity> primaryFilter,
+                        BiPredicate<T, Entity> secondaryFilter,
+                        Predicate<Entity> ownerConditions,
+                        BiConsumer<T, Entity> onTickAffected,
+                        Consumer<Entity> onTickOwner,
+                        BiConsumer<BlockPos, AuraInstance<T>> onTickBlock,
+                        List<ResourceKey<DamageType>> damageImmunities,
+                        List<TagKey<DamageType>> tagDamageImmunities,
+                        Map<ResourceKey<DamageType>, Float> damageMultipliers,
+                        Map<TagKey<DamageType>, Float> tagDamageMultipliers,
+                        @Nullable ChatFormatting[] tooltipFormatting
     ) {
         this.range = range;
         this.type = type;
@@ -179,13 +183,20 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         this.tagDamageImmunities = ImmutableList.copyOf(tagDamageImmunities);
         this.damageMultipliers = ImmutableMap.copyOf(damageMultipliers);
         this.tagDamageMultipliers = ImmutableMap.copyOf(tagDamageMultipliers);
+
+        this.tooltipFormatting = tooltipFormatting != null ? tooltipFormatting :
+                switch (type) {
+                    case POSITIVE -> new ChatFormatting[]{ChatFormatting.GREEN};
+                    case NEGATIVE -> new ChatFormatting[]{ChatFormatting.RED};
+                    case MIXED -> new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
+                };
     }
 
     @Override
     public List<Component> buildIconTooltip() {
         List<Component> components = Lists.newArrayList();
         if (getID() == null) return components;
-        String lines = Component.translatable("aura.icon." + this.getID().getNamespace() + "." + this.getID().getPath() + ".lines").getString();
+        String lines = Component.translatable("aura_tooltip." + this.getID().getNamespace() + "." + this.getID().getPath() + ".lines").getString();
         int li = 0;
         try {
             li = Integer.parseInt(lines);
@@ -197,7 +208,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
                 case NEGATIVE -> new ChatFormatting[]{ChatFormatting.RED};
                 case POSITIVE -> new ChatFormatting[]{ChatFormatting.GREEN};
             };
-            for (int i = 1; i <= li; i++) components.add(Component.translatable("aura.icon." + this.getID().getNamespace() + "." + this.getID().getPath() + "." + i).withStyle(head));
+            for (int i = 1; i <= li; i++) components.add(Component.translatable("aura_tooltip." + this.getID().getNamespace() + "." + this.getID().getPath() + "." + i).withStyle(head));
 
         }
         return components;
@@ -281,9 +292,9 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return FantazicRegistries.AURAS.getKey(this);
     }
 
-    public Component getAuraComponent() {
+    public MutableComponent getAuraComponent() {
         if (getID() == null) return null;
-        String s = "aura." + getID().getNamespace() + "." + getID().getPath();
+        String s = "aura.icon." + getID().getNamespace() + "." + getID().getPath();
         return Component.translatable(s);
     }
 
@@ -300,12 +311,14 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return range;
     }
 
-    public boolean couldAffect(T entity, Entity owner) {
-        return primaryFilter.test(entity, owner) && entity != owner;
-    }
+    @SuppressWarnings("unchecked")
+    public boolean canAffect(Entity entity, Entity owner) {
+        try {
+            return primaryFilter.test((T) entity, owner) && secondaryFilter.test((T) entity, owner) && entity != owner;
+        } catch (ClassCastException ignored) {
+            return false;
+        }
 
-    public boolean canAffect(T entity, Entity owner) {
-        return primaryFilter.test(entity, owner) && secondaryFilter.test(entity, owner) && entity != owner;
     }
 
     public Map<Holder<MobEffect>, Integer> getMobEffects() {
@@ -320,12 +333,22 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return dynamicAttributeModifiers;
     }
 
-    public boolean primary(T entity, Entity owner) {
-        return primaryFilter.test(entity, owner);
+    @SuppressWarnings("unchecked")
+    public boolean primary(Entity entity, Entity owner) {
+        try {
+            return primaryFilter.test((T) entity, owner);
+        } catch (ClassCastException ignored) {
+            return false;
+        }
     }
 
-    public boolean secondary(T entity, Entity owner) {
-        return secondaryFilter.test(entity, owner);
+    @SuppressWarnings("unchecked")
+    public boolean secondary(Entity entity, Entity owner) {
+        try {
+            return secondaryFilter.test((T) entity, owner);
+        } catch (ClassCastException ignored) {
+            return false;
+        }
     }
 
     public boolean ownerCond(Entity owner) {
@@ -365,6 +388,10 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return d1;
     }
 
+    public ChatFormatting[] tooltipFormatting() {
+        return tooltipFormatting;
+    }
+
     private @Nullable Component bakeRangeComponent() {
         AttributeInstance instance = Minecraft.getInstance().player == null ? null : Minecraft.getInstance().player.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
         if (instance == null) return null;
@@ -396,6 +423,8 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         private final List<TagKey<DamageType>> tagDamageImmunities = Lists.newArrayList();
         private final Map<ResourceKey<DamageType>, Float> damageMultipliers = Maps.newHashMap();
         private final Map<TagKey<DamageType>, Float> tagDamageMultipliers = Maps.newHashMap();
+
+        private @Nullable ChatFormatting[] tooltipFormatting = null;
 
         public Builder(Class<T> affectedClass, TYPE type, float range) {
             this.affectedClass = affectedClass;
@@ -468,6 +497,11 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
             return this;
         }
 
+        public Builder<T> putTooltipFormating(ChatFormatting... chatFormattings) {
+            this.tooltipFormatting = chatFormattings;
+            return this;
+        }
+
         public BasicAura<T> build() {
             return new BasicAura<>(affectedClass, type, range,
                     attributeModifiers,
@@ -482,7 +516,8 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
                     damageImmunities,
                     tagDamageImmunities,
                     damageMultipliers,
-                    tagDamageMultipliers
+                    tagDamageMultipliers,
+                    tooltipFormatting
             );
         }
     }

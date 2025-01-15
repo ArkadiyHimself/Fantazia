@@ -9,6 +9,7 @@
     "MixinEntity",
     "MixinFoodData",
     "MixinHealOrHarmMobEffect",
+    "MixinInventory",
     "MixinInventoryChangeTrigger",
     "MixinIronGolem",
     "MixinKeyMapping",
@@ -34,6 +35,7 @@
     "MixinItemInHandRenderer",
     "MixinLivingEntityRenderer",
     "MixinLocalPlayer",
+    "MixinModelBlockRenderer",
     "MixinParticle",
     "MixinWolfRenderer"
   ],

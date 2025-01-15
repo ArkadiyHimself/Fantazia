@@ -24,6 +24,7 @@ public class FTZAuras {
     public static final DeferredHolder<BasicAura<? extends Entity>, BasicAura<Monster>> CORROSIVE = REGISTER.register("corrosive", () -> Auras.CORROSIVE);
     public static final DeferredHolder<BasicAura<? extends Entity>, BasicAura<LivingEntity>> HELLFIRE = REGISTER.register("hellfire", () -> Auras.HELLFIRE);
     public static final DeferredHolder<BasicAura<? extends Entity>, BasicAura<Mob>> FROSTBITE = REGISTER.register("frostbite", () -> Auras.FROSTBITE);
+    public static final DeferredHolder<BasicAura<? extends Entity>, BasicAura<Monster>> DIFFRACTION = REGISTER.register("diffraction", () -> Auras.DIFFRACTION);
 
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);

@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.events;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
+import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
@@ -42,6 +43,7 @@ import net.arkadiyhimself.fantazia.packets.attachment_syncing.PlayerAbilityUpdat
 import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.*;
+import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.tags.FTZItemTags;
@@ -50,9 +52,14 @@ import net.arkadiyhimself.fantazia.util.commands.*;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.entity.DisplayRenderer;
+import net.minecraft.client.resources.model.BlockStateModelLoader;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -77,6 +84,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.Snowball;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -130,7 +139,7 @@ public class CommonEvents {
 
         if (source.is(FTZDamageTypeTags.NON_LETHAL)) {
             event.setCanceled(true);
-            livingTarget.setHealth(1f);
+            livingTarget.setHealth(0.1f);
         }
 
         CommonDataHolder commonDataHolder = LivingDataGetter.takeHolder(livingTarget, CommonDataHolder.class);
@@ -154,9 +163,7 @@ public class CommonEvents {
             }
 
             if (attacker instanceof Player player) {
-                ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(livingTarget.getType());
-                TalentsHolder.ProgressHolder progressHolder = PlayerAbilityHelper.getProgressHolder(player);
-                if (progressHolder != null) progressHolder.award("slayed", id);
+                PlayerAbilityHelper.awardWisdom(player, "slayed", BuiltInRegistries.ENTITY_TYPE.getKey(livingTarget.getType()));
 
                 int manaRecycle = TalentHelper.getUnlockLevel(player, Fantazia.res("mana_recycle"));
                 if (manaRecycle > 0) player.addEffect(new MobEffectInstance(FTZMobEffects.SURGE, 40, manaRecycle - 1));
@@ -272,7 +279,9 @@ public class CommonEvents {
         DamageSource source = event.getSource();
         Entity attacker = source.getEntity();
 
-        if (source.is(FTZDamageTypes.REMOVAL)) {
+        boolean removal = source.is(FTZDamageTypes.REMOVAL);
+
+        if (removal) {
             target.hurtTime = 0;
             target.invulnerableTime = 0;
         }
@@ -289,12 +298,25 @@ public class CommonEvents {
         float post = target.getHealth() - event.getNewDamage();
         if (target.level().isClientSide()) return;
         Holder<AbstractSpell> damned = FTZSpells.DAMNED_WRATH;
-        if (post < 0.3f * target.getMaxHealth() && !source.is(FTZDamageTypes.REMOVAL)) {
+        if (post < 0.3f * target.getMaxHealth() && !removal) {
             if (SpellHelper.hasActiveSpell(target, damned)) {
                 EffectCleansing.tryCleanseAll(target, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
                 LivingEffectHelper.makeFurious(target, 200);
                 LivingEffectHelper.giveBarrier(target, 20);
                 if (target instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(FTZSoundEvents.DAMNED_WRATH.get()));
+            }
+        }
+
+        DamageSourcesHolder damageSourcesHolder = LevelAttributesHelper.getDamageSources(target.level());
+        AuraInstance<? extends Entity> diffraction = AuraHelper.takeAuraInstance(target, FTZAuras.DIFFRACTION.value());
+        if (diffraction != null && damageSourcesHolder != null) {
+            if (!removal && attacker instanceof Monster monster) {
+                List<? extends Entity> affected = diffraction.entitiesInside();
+                affected.removeIf(entity -> entity == monster);
+                for (Entity entity : affected) {
+                    entity.hurt(damageSourcesHolder.removal(), event.getNewDamage() * 0.35f);
+                    for (int i = 0; i < 4; i++) VisualHelper.randomParticleOnModel(entity, ParticleTypes.DAMAGE_INDICATOR, VisualHelper.ParticleMovement.ASCEND);
+                }
             }
         }
     }
@@ -526,6 +548,17 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
+    public static void livingEntityUseItemFinish(LivingEntityUseItemEvent.Finish event) {
+        ItemStack itemStack = event.getResultStack();
+        Item item = itemStack.getItem();
+
+        if (event.getEntity() instanceof Player player) {
+            FoodProperties foodProperties = itemStack.getFoodProperties(player);
+            if (foodProperties != null) PlayerAbilityHelper.awardWisdom(player,"consumed", BuiltInRegistries.ITEM.getKey(item));
+        }
+    }
+
+    @SubscribeEvent
     public static void playerInteract(PlayerInteractEvent.RightClickItem event) {
         if (event.getCancellationResult() != InteractionResult.FAIL) LivingEffectHelper.unDisguise(event.getEntity());
     }
@@ -611,17 +644,15 @@ public class CommonEvents {
         PotionContents potionContents = event.getStack().get(DataComponents.POTION_CONTENTS);
         if (potionContents == null) return;
 
-        TalentsHolder.ProgressHolder progressHolder = PlayerAbilityHelper.getProgressHolder(player);
-        if (progressHolder != null) potionContents.customEffects().forEach(effect -> progressHolder.award("brewed", BuiltInRegistries.MOB_EFFECT.getKey(effect.getEffect().value())));
+        potionContents.customEffects().forEach(effect -> PlayerAbilityHelper.awardWisdom(player,"brewed", BuiltInRegistries.MOB_EFFECT.getKey(effect.getEffect().value())));
     }
 
     @SubscribeEvent
     public static void animalTamed(AnimalTameEvent event) {
         Player player = event.getTamer();
         Animal animal = event.getAnimal();
-        ResourceLocation location = BuiltInRegistries.ENTITY_TYPE.getKey(animal.getType());
-        TalentsHolder.ProgressHolder progressHolder = PlayerAbilityHelper.getProgressHolder(player);
-        if (progressHolder != null) progressHolder.award("tamed", location);
+        PlayerAbilityHelper.awardWisdom(player,"tamed", BuiltInRegistries.ENTITY_TYPE.getKey(animal.getType()));
+
     }
 
     @SubscribeEvent
@@ -629,8 +660,15 @@ public class CommonEvents {
         Level level = event.getEntity().level();
 
         ResourceKey<Level> to = event.getTo();
-        TalentsHolder.ProgressHolder progressHolder = PlayerAbilityHelper.getProgressHolder(event.getEntity());
-        if (progressHolder != null && !to.equals(Level.OVERWORLD)) progressHolder.award("visited_" + to.location(), 50);
+        if (!to.equals(Level.OVERWORLD)) PlayerAbilityHelper.awardWisdom(event.getEntity(), "visited_" + to.location(), 50);
+    }
+
+    @SubscribeEvent
+    public static void itemCraftedEvent(PlayerEvent.ItemCraftedEvent event) {
+        ItemStack itemStack = event.getCrafting();
+        Item item = itemStack.getItem();
+
+        if (event.getInventory() instanceof TransientCraftingContainer) PlayerAbilityHelper.awardWisdom(event.getEntity(),"crafted", BuiltInRegistries.ITEM.getKey(item));
     }
 
     @SubscribeEvent

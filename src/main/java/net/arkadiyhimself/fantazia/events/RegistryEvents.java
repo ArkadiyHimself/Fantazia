@@ -78,7 +78,7 @@ public class RegistryEvents {
         return new ModifierLayer<>();
     }
 
-    private static final IClientItemExtensions iClientItemExsentions = new IClientItemExtensions() {
+    private static final IClientItemExtensions iClientItemExtensions = new IClientItemExtensions() {
         @Override
         public @NotNull BlockEntityWithoutLevelRenderer getCustomRenderer() {
             return Fantazia.getItemsRenderer();
@@ -86,7 +86,10 @@ public class RegistryEvents {
     };
 
     private static void registerVariants() {
-        ItemProperties.register(FTZItems.LEADERS_HORN.get(), ResourceLocation.withDefaultNamespace("tooting"), ((itemStack, clientLevel, livingEntity, i) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getUseItem() == itemStack ? 1f : 0f));
+        ItemProperties.register(FTZItems.LEADERS_HORN.get(),
+                ResourceLocation.withDefaultNamespace("tooting"),
+                ((itemStack, clientLevel, livingEntity, i) ->
+                        livingEntity != null && livingEntity.isUsingItem() && livingEntity.getUseItem() == itemStack ? 1f : 0f));
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -249,7 +252,7 @@ public class RegistryEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(iClientItemExsentions, FTZItems.FRAGILE_BLADE);
+        event.registerItem(iClientItemExtensions, FTZItems.FRAGILE_BLADE);
     }
 
     @SubscribeEvent

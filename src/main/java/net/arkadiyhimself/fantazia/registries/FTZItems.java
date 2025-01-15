@@ -104,6 +104,7 @@ public class FTZItems {
     public static final DeferredHolder<Item, AuraCasterItem> ACID_BOTTLE; // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> NETHER_HEART; // finished and implemented
     public static final DeferredHolder<Item, AuraCasterItem> AMPLIFIED_ICE; // finished and implemented
+    public static final DeferredHolder<Item, AuraCasterItem> OPTICAL_LENS;
 
     // expendables
     public static final DeferredHolder<Item, ExpendableItem> OBSCURE_SUBSTANCE; // finished and implemented
@@ -152,6 +153,7 @@ public class FTZItems {
         ACID_BOTTLE = auraCaster("acid_bottle", FTZAuras.CORROSIVE);
         NETHER_HEART = auraCaster("nether_heart", FTZAuras.HELLFIRE);
         AMPLIFIED_ICE = auraCaster("amplified_ice", FTZAuras.FROSTBITE);
+        OPTICAL_LENS = auraCaster("optical_lens", FTZAuras.DIFFRACTION);
 
         OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON));
         UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Fantazia.res("double_jump")));

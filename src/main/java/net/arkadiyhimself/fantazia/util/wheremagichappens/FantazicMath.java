@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public class FantazicMath {
@@ -33,5 +34,13 @@ public class FantazicMath {
 
     public static int toTicks(int hrs, int min, int sec) {
         return (hrs * 60 * 60 + min * 60 + sec) * 20;
+    }
+
+    public static AABB boxFromCenterAndSides(Vec3 center, double dx, double dy, double dz) {
+        return new AABB(center.x - dx, center.y - dy, center.z - dz, center.x + dx, center.y + dy, center.z + dz);
+    }
+
+    public static AABB squareBoxFromCenterAndSide(Vec3 center, double side) {
+        return boxFromCenterAndSides(center, side, side, side);
     }
 }

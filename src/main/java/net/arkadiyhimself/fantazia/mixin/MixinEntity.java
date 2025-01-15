@@ -9,6 +9,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
+import net.arkadiyhimself.fantazia.events.ClientEvents;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -55,6 +56,7 @@ public class MixinEntity {
         if (!(fantazia$entity instanceof LivingEntity livingEntity)) return;
         FuryEffect furyEffect = LivingEffectGetter.takeHolder(livingEntity, FuryEffect.class);
         if (furyEffect != null && furyEffect.isFurious()) cir.setReturnValue(12586510);
+        if (livingEntity == ClientEvents.suitableTarget) cir.setReturnValue(13788415);
     }
 
     @Inject(at = @At("HEAD"), method = "isNoGravity", cancellable = true)
