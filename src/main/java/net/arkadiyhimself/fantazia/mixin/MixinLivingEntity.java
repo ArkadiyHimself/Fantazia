@@ -9,7 +9,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.D
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
-import net.arkadiyhimself.fantazia.events.FTZHooks;
+import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -33,9 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.common.EffectCure;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -45,11 +43,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
-    @Shadow @Final public WalkAnimationState walkAnimation;
-
-    @Shadow public int hurtTime;
-
-    @Shadow protected abstract void playHurtSound(DamageSource source);
 
     public MixinLivingEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -58,18 +51,17 @@ public abstract class MixinLivingEntity extends Entity {
     @Unique
     private final LivingEntity fantazia$entity = (LivingEntity) (Object) this;
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;playHurtSound(Lnet/minecraft/world/damagesource/DamageSource;)V"), method = "hurt")
-    private void cancelSound(LivingEntity instance, DamageSource source) {
+    @Inject(at = @At(value = "HEAD"), method = "playHurtSound", cancellable = true)
+    private void hurtSound(DamageSource source, CallbackInfo ci) {
         if (source == null) return;
-        boolean play = true;
-        for (MobEffectInstance mobEffectInstance : fantazia$entity.getActiveEffects()) if (FTZMobEffectTags.hasTag(mobEffectInstance.getEffect(), FTZMobEffectTags.BARRIER)) play = false;
-        if (!source.is(FTZDamageTypeTags.NO_HURT_SOUND) && play) playHurtSound(source);
+        for (MobEffectInstance mobEffectInstance : fantazia$entity.getActiveEffects()) if (FTZMobEffectTags.hasTag(mobEffectInstance.getEffect(), FTZMobEffectTags.BARRIER)) ci.cancel();
+        if (source.is(FTZDamageTypeTags.NO_HURT_SOUND)) ci.cancel();
         if (source.is(FTZDamageTypes.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) fantazia$entity.level().playSound(null, fantazia$entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
     }
 
     @Inject(at = @At(value = "HEAD"), method = "onItemPickup", cancellable = true)
     protected void pickUp(ItemEntity pItemEntity, CallbackInfo ci) {
-        if (!FTZHooks.ForgeExtension.onLivingPickUpItem(fantazia$entity, pItemEntity)) ci.cancel();
+        if (!FantazicHooks.ForgeExtension.onLivingPickUpItem(fantazia$entity, pItemEntity)) ci.cancel();
     }
 
     @Inject(at = @At(value = "HEAD"), method = "removeEffectsCuredBy", cancellable = true, remap = false)

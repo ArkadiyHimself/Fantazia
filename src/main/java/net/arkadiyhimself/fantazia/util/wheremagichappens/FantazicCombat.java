@@ -35,7 +35,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -45,12 +44,9 @@ import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.behavior.MoveToSkySeeingSpot;
 import net.minecraft.world.entity.ai.goal.SwellGoal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -150,7 +146,7 @@ public class FantazicCombat {
             livingAttacker.level().addFreshEntity(shockwaveEntity);
         }
 
-        if (SpellHelper.hasSpell(livingAttacker, FTZSpells.SUSTAIN)) LivingEffectHelper.effectWithoutParticles(target, MobEffects.WITHER,80,2);
+        if (SpellHelper.castPassiveSpell(livingAttacker, FTZSpells.SUSTAIN)) LivingEffectHelper.effectWithoutParticles(target, MobEffects.WITHER,80,2);
     }
 
     public static boolean isFlying(LivingEntity livingEntity) {

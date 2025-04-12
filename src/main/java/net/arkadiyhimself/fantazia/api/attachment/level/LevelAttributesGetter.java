@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.api.attachment.level;
 
-import net.arkadiyhimself.fantazia.api.type.level.ILevelAttributeHolder;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.world.level.Level;
 

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_left_open",
+  "textures": {
+    "bottom": "fantazia:block/obscure_door_bottom",
+    "top": "fantazia:block/obscure_door_top"
+  }
+}

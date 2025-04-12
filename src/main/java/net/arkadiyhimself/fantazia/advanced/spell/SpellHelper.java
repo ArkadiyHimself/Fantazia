@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.advanced.spell;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
@@ -27,7 +28,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,12 +43,27 @@ public class SpellHelper {
         DEFAULT, REFLECTED, BLOCKED
     }
 
+    public static boolean castPassiveSpell(LivingEntity entity, Holder<AbstractSpell> spell) {
+        if (!(entity instanceof Player player)) return false;
+        SpellInstancesHolder spellInstancesHolder = PlayerAbilityGetter.takeHolder(player, SpellInstancesHolder.class);
+        return spellInstancesHolder != null && spellInstancesHolder.tryToCast(spell);
+    }
+
+    public static boolean tryPassiveSpell(LivingEntity entity, PassiveSpell spell) {
+        if (true) {
+            LivingEffectHelper.unDisguise(entity);
+            spell.onActivation(entity);
+            if (spell.getCastSound() != null) entity.level().playSound(null, entity.blockPosition(), spell.getCastSound().value(), SoundSource.PLAYERS);
+            return true;
+        }
+        return false;
+    }
+
     public static boolean trySelfSpell(LivingEntity entity, SelfSpell spell, boolean ignoreConditions) {
-        if (entity instanceof Player player && !PlayerAbilityGetter.wasteMana(player, spell.getManacost())) return false;
         if (spell.conditions(entity) || ignoreConditions) {
             LivingEffectHelper.unDisguise(entity);
             spell.onCast(entity);
-            if (spell.getCastSound() != null) entity.level().playSound(null, entity.blockPosition(), spell.getCastSound().value(), SoundSource.NEUTRAL);
+            if (spell.getCastSound() != null) entity.level().playSound(null, entity.blockPosition(), spell.getCastSound().value(), SoundSource.PLAYERS);
             return true;
         }
         return false;
@@ -58,7 +73,6 @@ public class SpellHelper {
     public static <T extends LivingEntity> boolean tryTargetedSpell(LivingEntity caster, TargetedSpell<T> spell) {
         T target = getTarget(caster, spell);
         if (target == null) return false;
-        if (caster instanceof Player player && !PlayerAbilityGetter.wasteMana(player, spell.getManacost())) return false;
         spell.beforeBlockCheck(caster, target);
 
         boolean blocked = false;

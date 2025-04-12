@@ -3,9 +3,8 @@
     "minecraft:cramming",
     "minecraft:drown",
     "minecraft:starve",
-    "minecraft:generic_kill",
+    "minecraft:generic",
     "minecraft:in_wall",
-    "#fantazia:no_knockback",
-    "fantazia:removal"
+    "#minecraft:no_knockback"
   ]
 }

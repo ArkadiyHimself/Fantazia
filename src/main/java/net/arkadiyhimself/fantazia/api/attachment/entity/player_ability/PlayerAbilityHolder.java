@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability;
 
-import net.arkadiyhimself.fantazia.api.type.entity.IPlayerAbility;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

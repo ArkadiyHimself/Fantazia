@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:dark_forest",
+    "minecraft:forest",
+    "minecraft:birch_forest",
+    "minecraft:flower_forest",
+    "minecraft:taiga"
+  ],
+  "features": "fantazia:obscure_trees",
+  "step": "vegetal_decoration"
+}

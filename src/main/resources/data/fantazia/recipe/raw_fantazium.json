@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "fantazia:raw_fantazium_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "fantazia:raw_fantazium"
+  }
+}

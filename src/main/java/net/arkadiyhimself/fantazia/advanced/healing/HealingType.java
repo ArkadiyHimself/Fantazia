@@ -17,4 +17,16 @@ public record HealingType(String id, float exhaustion, RandomList<ResourceLocati
     public HealingType(String id, float exhaustion, List<ResourceLocation> particleTypes) {
         this(id, exhaustion, new RandomList<>(particleTypes));
     }
+
+    public HealingType(String id, float exhaustion, ResourceLocation... locations) {
+        this(id, exhaustion, List.of(locations));
+    }
+
+    public HealingType(String id, float exhaustion) {
+        this(id, exhaustion, List.of());
+    }
+
+    public HealingType(String id) {
+        this(id, 0);
+    }
 }

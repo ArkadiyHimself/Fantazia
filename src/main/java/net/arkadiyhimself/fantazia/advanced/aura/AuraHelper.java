@@ -1,12 +1,10 @@
 package net.arkadiyhimself.fantazia.advanced.aura;
 
-import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
@@ -15,7 +13,6 @@ import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +25,7 @@ public class AuraHelper {
         for (AuraInstance<? extends Entity> auraInstance : instances) if (auraInstance.getOwner() == entity) ownedAuras.add(auraInstance);
         instances.removeIf(auraInstance -> auraInstance.getOwner() == entity);
 
-        instances.removeIf(auraInstance -> auraInstance.notInside(entity));
+        instances.removeIf(auraInstance -> !auraInstance.isInside(entity));
         instances.removeIf(auraInstance -> !auraInstance.getAura().affectedClass().isInstance(entity) && !Fantazia.DEVELOPER_MODE);
         instances.removeIf(auraInstance -> !auraInstance.getAura().primary(entity, auraInstance.getOwner()) && !Fantazia.DEVELOPER_MODE);
 
@@ -95,7 +92,7 @@ public class AuraHelper {
         return d0;
     }
 
-    public static @Nullable AuraInstance<? extends Entity> takeAuraInstance(@NotNull Entity entity, BasicAura<? extends Entity> basicAura) {
+    public static @Nullable AuraInstance<? extends Entity> ownedAuraInstance(@NotNull Entity entity, BasicAura<? extends Entity> basicAura) {
         List<AuraInstance<? extends Entity>> auraInstances = ownedAuras(entity);
         for (AuraInstance<? extends Entity> auraInstance : auraInstances) if (auraInstance.getAura() == basicAura) return auraInstance;
         return null;

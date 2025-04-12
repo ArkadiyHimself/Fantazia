@@ -3,9 +3,9 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
@@ -45,9 +45,12 @@ import java.util.Map;
 
 public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventListener {
 
+    private static final int XP_PER_WISDOM = 25;
+
     private final NonNullList<ITalent> TALENTS = NonNullList.create();
     private final ProgressHolder progressHolder = new ProgressHolder();
     private int wisdom = 0;
+    private int xpConverting = 0;
 
     public TalentsHolder(Player player) {
         super(player, Fantazia.res("talents"));
@@ -57,6 +60,7 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putInt("wisdom", wisdom);
+        tag.putInt("xpConverting", xpConverting);
         ListTag talentTag = new ListTag();
         TALENTS.forEach(talent -> talentTag.add(StringTag.valueOf(talent.getID().toString())));
         tag.put("talents", talentTag);
@@ -68,7 +72,8 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         TALENTS.clear();
 
-        if (compoundTag.contains("wisdom")) wisdom = compoundTag.getInt("wisdom");
+        wisdom = compoundTag.getInt("wisdom");
+        xpConverting = compoundTag.getInt("xpConverting");
         if (compoundTag.contains("progress")) progressHolder.deserializeNBT(provider, compoundTag.getCompound("progress"));
 
         if (!compoundTag.contains("talents")) return;
@@ -116,8 +121,19 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     }
 
     public void grantWisdom(int amount) {
+        if (amount <= 0) return;
         this.wisdom += amount;
         PlayerAbilityGetter.acceptConsumer(getPlayer(), ClientValuesHolder.class, clientValues -> clientValues.obtainedWisdom(amount));
+    }
+
+    public void convertXP(int xp) {
+        xp = Math.abs(xp);
+        int newXP = xpConverting + xp;
+        int addWis = newXP / XP_PER_WISDOM;
+        int remaining = newXP % XP_PER_WISDOM;
+
+        grantWisdom(addWis);
+        xpConverting = remaining;
     }
 
     public ProgressHolder getProgressHolder() {

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "fantazia:block/obscure_slab"
+    },
+    "type=double": {
+      "model": "fantazia:block/obscure_planks"
+    },
+    "type=top": {
+      "model": "fantazia:block/obscure_slab_top"
+    }
+  }
+}

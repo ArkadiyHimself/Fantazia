@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHolder;
-import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.util.library.SizedList;
 import net.minecraft.core.HolderLookup;

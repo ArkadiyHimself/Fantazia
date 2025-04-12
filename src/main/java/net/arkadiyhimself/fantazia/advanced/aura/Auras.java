@@ -122,7 +122,7 @@ public class Auras {
             .putTooltipFormating(ChatFormatting.BLUE)
             .build();
 
-    public static final BasicAura<Monster> DIFFRACTION = new BasicAura.Builder<>(Monster.class, BasicAura.TYPE.NEGATIVE, 6f)
+    public static final BasicAura<Monster> DIFFRACTION = new BasicAura.Builder<>(Monster.class, BasicAura.TYPE.NEGATIVE, 6f).build();
 
-            .build();
+    public static final BasicAura<LivingEntity> UNCOVER = new BasicAura.Builder<>(LivingEntity.class, BasicAura.TYPE.NEGATIVE, 24f).build();
 }

@@ -3,8 +3,8 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ICurioListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.api.type.entity.ICurioListener;
 import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.core.HolderLookup;

@@ -1,11 +1,10 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ITalentListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.api.type.entity.ITalentListener;
 import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;

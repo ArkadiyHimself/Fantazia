@@ -37,7 +37,8 @@
     "MixinLocalPlayer",
     "MixinModelBlockRenderer",
     "MixinParticle",
-    "MixinWolfRenderer"
+    "MixinWolfRenderer",
+    "TextureAtlasHolderAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

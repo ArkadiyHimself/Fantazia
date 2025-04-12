@@ -1,18 +1,18 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ITalentListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.custom_events.BlockingEvent;
-import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.api.type.entity.ITalentListener;
 import net.arkadiyhimself.fantazia.data.criterion.MeleeBlockTrigger;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
-import net.arkadiyhimself.fantazia.events.FTZHooks;
+import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.packets.stuff.SwingHandS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -149,7 +149,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         }
 
         if (expiring && block_ticks == 0) {
-            FTZHooks.onBlockingExpired(serverPlayer, serverPlayer.getMainHandItem());
+            FantazicHooks.onBlockingExpired(serverPlayer, serverPlayer.getMainHandItem());
             expiring = false;
         }
     }
@@ -165,7 +165,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         lastAttacker = attacker;
         dmgTaken = event.getAmount();
 
-        BlockingEvent.ParryDecision decision = FTZHooks.onParryDecision(player, player.getMainHandItem(), event.getAmount(), attacker);
+        BlockingEvent.ParryDecision decision = FantazicHooks.onParryDecision(player, player.getMainHandItem(), event.getAmount(), attacker);
         if (decision.getResult() == BlockingEvent.ParryDecision.Result.DO_PARRY || (parry_ticks > 0 && decision.getResult() != BlockingEvent.ParryDecision.Result.DO_NOT_PARRY)) {
             // parrying
             AttributeInstance attackDamage = player.getAttribute(Attributes.ATTACK_DAMAGE);
@@ -202,7 +202,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
     }
 
     private boolean parryAttack(float amount) {
-        BlockingEvent.Parry parryEvent = FTZHooks.onParry(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker, amount);
+        BlockingEvent.Parry parryEvent = FantazicHooks.onParry(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker, amount);
         if (parryEvent.isCanceled()) return false;
 
         dmgParry = parryEvent.getParryDamage();
@@ -226,7 +226,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
     }
 
     private boolean blockAttack() {
-        if (!FTZHooks.onBlock(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker)) return false;
+        if (!FantazicHooks.onBlock(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker)) return false;
 
         getPlayer().getMainHandItem().hurtAndBreak(2, getPlayer(), EquipmentSlot.MAINHAND);
         if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C("block"));
@@ -245,7 +245,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
     }
 
     public void startBlocking() {
-        if (!unlocked || block_cd > 0 || !FTZHooks.onBlockingStart(getPlayer(), getPlayer().getMainHandItem())) return;
+        if (!unlocked || block_cd > 0 || !FantazicHooks.onBlockingStart(getPlayer(), getPlayer().getMainHandItem())) return;
         block_cd = BLOCK_CD;
         block_ticks = BLOCK_WINDOW;
         parry_ticks = getPlayer().level() instanceof ServerLevel serverLevel ? getParryWindow(serverLevel) : PARRY_WINDOW;

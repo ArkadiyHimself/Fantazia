@@ -11,6 +11,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -25,7 +26,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class AuraCasterItem extends Item {
+
     private final Holder<BasicAura<? extends Entity>> basicAura;
+
     public AuraCasterItem(Holder<BasicAura<? extends Entity>> basicAura) {
         super(new Properties().stacksTo(1).fireResistant().rarity(Rarity.RARE));
         this.basicAura = basicAura;
@@ -52,6 +55,11 @@ public class AuraCasterItem extends Item {
     @Override
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack pStack) {
         return this == FTZItems.LEADERS_HORN.get() ? UseAnim.TOOT_HORN : super.getUseAnimation(pStack);
+    }
+
+    @Override
+    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
+        return this == FTZItems.LEADERS_HORN.get() ? 140 : 0;
     }
 
     public BasicAura<? extends Entity> getBasicAura() {

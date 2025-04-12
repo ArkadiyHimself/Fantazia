@@ -1,5 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
+import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
+import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FuryEffect;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
@@ -7,6 +9,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.
 import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
 import net.arkadiyhimself.fantazia.events.ClientEvents;
+import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -58,5 +61,7 @@ public abstract class MixinMinecraft {
 
             if (pEntity == ClientEvents.suitableTarget) cir.setReturnValue(true);
         } else if (pEntity instanceof DashStoneEntity) cir.setReturnValue(true);
+        AuraInstance<? extends Entity> uncover = AuraHelper.ownedAuraInstance(player, FTZAuras.UNCOVER.value());
+        if (uncover != null && uncover.isInside(pEntity)) cir.setReturnValue(true);
     }
 }

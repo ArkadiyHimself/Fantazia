@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -26,14 +25,15 @@ public class AncientSparkItem extends ExpendableItem {
     public @NotNull InteractionResult useOn(UseOnContext pContext) {
         Level level = pContext.getLevel();
         BlockPos blockpos = pContext.getClickedPos();
+        BlockPos actual = blockpos.relative(pContext.getClickedFace());
         BlockState blockstate = level.getBlockState(blockpos);
         boolean flag = false;
-        if (!CampfireBlock.canLight(blockstate) && !CandleBlock.canLight(blockstate) && !CandleCakeBlock.canLight(blockstate) && AncientFlameBlock.canBePlacedAt(level, blockpos, pContext.getClickedFace())) {
-            blockpos = blockpos.relative(pContext.getClickedFace());
-            this.playSound(level, blockpos);
+        if (!CampfireBlock.canLight(blockstate) && !CandleBlock.canLight(blockstate) && !CandleCakeBlock.canLight(blockstate) && AncientFlameBlock.canBePlacedAt(level, actual, pContext.getClickedFace())) {
 
-            level.setBlockAndUpdate(blockpos, FTZBlocks.ANCIENT_FLAME.get().getStateForPlacement(level, blockpos));
-            level.gameEvent(pContext.getPlayer(), GameEvent.BLOCK_PLACE, blockpos);
+            this.playSound(level, actual);
+
+            level.setBlockAndUpdate(actual, FTZBlocks.ANCIENT_FLAME.get().getStateForPlacement(level, actual));
+            level.gameEvent(pContext.getPlayer(), GameEvent.BLOCK_PLACE, actual);
             flag = true;
         }
 

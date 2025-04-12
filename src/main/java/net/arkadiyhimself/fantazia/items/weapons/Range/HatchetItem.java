@@ -28,8 +28,8 @@ import java.util.Objects;
 
 public class HatchetItem extends TieredItem {
     private final float attackSpeedModifier;
-    public HatchetItem(Tier pTier, float pAttackSpeedModifier, Properties pProperties) {
-        super(pTier, pProperties);
+    public HatchetItem(Tier pTier, float pAttackSpeedModifier) {
+        super(pTier, new Properties());
         this.attackSpeedModifier = pAttackSpeedModifier;
     }
     @Override
@@ -40,7 +40,6 @@ public class HatchetItem extends TieredItem {
 
     @Override
     public void onUseTick(@NotNull Level pLevel, @NotNull LivingEntity pLivingEntity, @NotNull ItemStack pStack, int pRemainingUseDuration) {
-        super.onUseTick(pLevel, pLivingEntity, pStack, pRemainingUseDuration);
         if (pLivingEntity instanceof LocalPlayer player) {
             int i = getUseDuration(pStack, pLivingEntity) - pRemainingUseDuration;
             if (i == 0) PlayerAnimations.animatePlayer(player, PlayerAnimations.WINDUP_START());

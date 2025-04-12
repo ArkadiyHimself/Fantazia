@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.arkadiyhimself.fantazia.events.ClientEvents;
 import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.client.Minecraft;

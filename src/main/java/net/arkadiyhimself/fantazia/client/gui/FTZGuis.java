@@ -289,6 +289,7 @@ public class FTZGuis {
         int width1 = font.width(string1);
         guiGraphics.drawString(font, string1, guiGraphics.guiWidth() - width1, 0, 16755200);
         guiGraphics.drawString(font, "Tick count: " + player.tickCount, guiGraphics.guiWidth() - width1, 10, 16755200);
+        guiGraphics.drawString(font, "Inv: " + player.invulnerableTime, guiGraphics.guiWidth() - width1, 20, 16755200);
     });
 
     public static final LayeredDraw.Layer FURY_VEINS = ((guiGraphics, deltaTracker) -> {

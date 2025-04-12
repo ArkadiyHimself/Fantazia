@@ -1,8 +1,10 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability;
 
 import com.google.common.collect.Maps;
+import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
+import net.arkadiyhimself.fantazia.api.attachment.IHolderManager;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
-import net.arkadiyhimself.fantazia.api.type.entity.*;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

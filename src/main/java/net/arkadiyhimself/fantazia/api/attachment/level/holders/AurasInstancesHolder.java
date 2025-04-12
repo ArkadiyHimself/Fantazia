@@ -4,8 +4,6 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributeHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributes;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

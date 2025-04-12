@@ -1,14 +1,14 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ITalentListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.api.type.entity.ITalentListener;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
-import net.arkadiyhimself.fantazia.events.FTZHooks;
+import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
 import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -95,7 +95,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
             if (recharge > 0) recharge--;
             if (wasDashing) {
                 wasDashing = false;
-                FTZHooks.onDashExpired(getPlayer(), this);
+                FantazicHooks.onDashExpired(getPlayer(), this);
                 getPlayer().hurtMarked = true;
                 getPlayer().setDeltaMovement(0, 0, 0);
                 if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C(""));
@@ -197,7 +197,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
         StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(getPlayer(), StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(STAMINA, true, 65)) return;
 
-        int actualDur = FTZHooks.onDashStart(getPlayer(), this, getInitDur());
+        int actualDur = FantazicHooks.onDashStart(getPlayer(), this, getInitDur());
         if (actualDur <= 0) return;
 
         velocity = vec3;
@@ -216,7 +216,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
         if (level < 3 && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C("dash.start"));
     }
     public void stopDash() {
-        if (!FTZHooks.onDashEnd(getPlayer(), this)) return;
+        if (!FantazicHooks.onDashEnd(getPlayer(), this)) return;
         this.duration = 0;
         this.wasDashing = false;
         getPlayer().hurtMarked = true;

@@ -1,0 +1,33 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "fantazium_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["fantazia:fantazium_ingot"]
+          }
+        ]
+      }
+    },
+    "gold_ingot" : {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:gold_ingot"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements" : [
+    [
+      "fantazium_ingot"
+    ],
+    [
+      "gold_ingot"
+    ]
+  ]
+}

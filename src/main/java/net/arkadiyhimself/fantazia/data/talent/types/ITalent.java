@@ -2,10 +2,10 @@ package net.arkadiyhimself.fantazia.data.talent.types;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.arkadiyhimself.fantazia.api.type.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.data.talent.TalentDataException;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
+import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;

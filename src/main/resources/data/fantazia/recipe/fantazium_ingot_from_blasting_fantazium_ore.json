@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 2.0,
+  "group": "fantazium_ingot",
+  "ingredient": {
+    "item": "fantazia:fantazium_ore"
+  },
+  "result": {
+    "count": 1,
+    "id": "fantazia:fantazium_ingot"
+  }
+}

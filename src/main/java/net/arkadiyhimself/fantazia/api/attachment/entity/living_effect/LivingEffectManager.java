@@ -1,9 +1,12 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect;
 
 import com.google.common.collect.Maps;
+import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
+import net.arkadiyhimself.fantazia.api.attachment.IHolderManager;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IHealEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.*;
 import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
-import net.arkadiyhimself.fantazia.api.type.entity.*;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

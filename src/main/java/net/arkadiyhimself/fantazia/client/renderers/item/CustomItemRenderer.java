@@ -32,9 +32,11 @@ public class CustomItemRenderer extends BlockEntityWithoutLevelRenderer {
     public static final ModelResourceLocation BLADE3 = Fantazia.modelRes("item/fragile_blade/fragile_blade_in_hand3");
     public static final ModelResourceLocation BLADE4 = Fantazia.modelRes("item/fragile_blade/fragile_blade_in_hand4");
     public static final ModelResourceLocation BLADE_MODEL = Fantazia.modelRes("item/fragile_blade/fragile_blade_model");
+
     public CustomItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
     }
+
     public static ModelResourceLocation getFragBladeModel(ItemStack item) {
         HiddenPotentialHolder hiddenPotentialHolder = item.get(FTZDataComponentTypes.HIDDEN_POTENTIAL);
         if (hiddenPotentialHolder == null) return BLADE0;

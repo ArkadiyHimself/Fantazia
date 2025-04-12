@@ -2,6 +2,7 @@
   "fantazia.creativetab.artifacts": "Фантазийные артефакты",
   "fantazia.creativetab.weapons": "Фантазийное оружие",
   "fantazia.creativetab.expendables": "Фантазийные расходники",
+  "fantazia.creativetab.blocks" : "Фантазийные блоки",
 
   "entity.fantazia.shockwave" : "Волна",
   "entity.fantazia.hatchet" : "Топорик",
@@ -31,14 +32,17 @@
   "fantazia.attribute.recharge_multiplier" : "Перезарядка",
   "fantazia.attribute.aura_range_addition" : "Радиус аур",
 
-  "commands.cooldown.add.success": "Added %1$s second cooldown to %2$s for %3$s",
-  "commands.cooldown.remove.success": "Removed cooldown of %1$s for %2$s",
-  "commands.spellcast.self.success": "Successfully casted %1$s",
-  "commands.spellcast.targeted.success.single": "Successfully casted %1$s on %2$s",
-  "commands.spellcast.targeted.success": "Successfully casted %1$s on %2$s entities",
-  "commands.spellcast.targeted.failure": "Unable to find any targets",
-  "commands.advancedheal.invulnerable": "Target can not be healed by the given healing type",
-  "commands.advancedheal.success": "Applied %1$s heal to %2$s",
+  "commands.cooldown.add.success": "Добавлен %1$s секундная перезарядка к %2$s у %3$s",
+  "commands.cooldown.remove.success": "Убарана перезарядка %1$s у %2$s",
+  "commands.spellcast.self.success": "Успешно использован %1$s",
+  "commands.spellcast.targeted.success.single": "Успешно использован %1$s на %2$s",
+  "commands.spellcast.targeted.success": "Успешно использован %1$s на %2$s существ",
+  "commands.spellcast.targeted.failure": "Не удалось найти цели",
+  "commands.advancedheal.invulnerable": "Цель не может быть исцелена выбранным типом лечения",
+  "commands.advancedheal.success": "Вылечено %1$s здоровья у %2$s",
+
+  "painting.fantazia.fantazia.author": "ArkadiyHimself",
+  "painting.fantazia.fantazia.title": "Фантазия",
 
   "enchantment.fantazia.ice_aspect": "Заговор льда",
   "enchantment.fantazia.freeze": "Стужа",
@@ -102,7 +106,7 @@
   "effect.fantazia.doomed": "§4Обреченность",
   "effect.fantazia.doomed.lines": "2",
   "effect.fantazia.doomed.tooltip.1": "ВЫ ОБРЕЧЕНЫ.",
-  "effect.fantazia.doomed.tooltip.2": "Любой получаемый урон - смертелен!",
+  "effect.fantazia.doomed.tooltip.2": "Любой получаемый урон смертелен!",
 
   "effect.fantazia.disarm": "§9Безоружность",
   "effect.fantazia.disarm.lines": "3",
@@ -181,7 +185,38 @@
   "item.minecraft.tipped_arrow.effect.recovery" : "Стрела передышки",
   "item.minecraft.tipped_arrow.effect.surge" : "Стрела всплеска",
   "item.minecraft.tipped_arrow.effect.fury" : "Стрела ярости",
-  "item.minecraft.tipped_arrow.effect.corrosion" : "Стрела пжавения",
+  "item.minecraft.tipped_arrow.effect.corrosion" : "Стрела ржавения",
+
+  "block.fantazia.obscure_button": "Кнопка из непонятного дуба",
+  "block.fantazia.obscure_door": "Дверь из непонятного дуба",
+  "block.fantazia.obscure_fence": "Забор из непонятного дуба",
+  "block.fantazia.obscure_fence_gate": "Калитка из непонятного дуба",
+  "block.fantazia.obscure_hanging_sign": "Подвесная табличка из непонятного дуба",
+  "block.fantazia.obscure_leaves": "Листья непонятного дуба",
+  "block.fantazia.obscure_log": "Бревно непонятного дуба",
+  "block.fantazia.obscure_planks": "Доски из непонятного дуба",
+  "block.fantazia.obscure_pressure_plate": "Нажимная плита из непонятного дуба",
+  "block.fantazia.obscure_sapling": "Саженец непонятного дуба",
+  "block.fantazia.obscure_sign": "Табличка из непонятного дуба",
+  "block.fantazia.obscure_slab": "Плита из непонятного дуба",
+  "block.fantazia.obscure_stairs": "Ступеньки из непонятного дуба",
+  "block.fantazia.obscure_trapdoor": "Люк из непонятного дуба",
+  "block.fantazia.obscure_wall_hanging_sign": "Настенная подвесная табличка из непонятного дуба",
+  "block.fantazia.obscure_wall_sign": "Настенная табличка из непонятного дуба",
+  "block.fantazia.obscure_wood": "Непонятный дуб",
+  "block.fantazia.potted_obscure_sapling": "Саженец непонятного дуба в горшке",
+  "block.fantazia.stripped_obscure_log": "Обтёсанное бревно непонятного дуба",
+  "block.fantazia.stripped_obscure_wood": "Обтёсанная древесина непонятного дуба",
+  "block.fantazia.deepslate_fantazium_ore": "Фантазумоносный глубинный сланец",
+  "block.fantazia.fantazium_ore": "Фантазиумная руда",
+  "block.fantazia.fantazium_block": "Фантазиумный блок",
+  "block.fantazia.raw_fantazium_block": "Блок рудного фантазиума",
+  "item.fantazia.raw_fantazium": "Рудный фантазиум",
+  "item.fantazia.fantazium_ingot": "Фантазиумный слиток",
+  "item.fantazia.wisdom_catcher" : "Взыскатель мудрости",
+  "item.fantazia.obscure_boat": "Лодка из непонятного дуба",
+  "item.fantazia.obscure_chest_boat": "Грузовая лодка из непонятного дуба",
+  "item.fantazia.fantazic_painting" : "Фантазийная картина",
 
   "item.fantazia.wooden_hatchet": "Деревянный топорик",
   "item.fantazia.stone_hatchet": "Каменный топорик",
@@ -284,6 +319,10 @@
   "aura.icon.fantazia.diffraction" : "Дифракция",
   "aura_tooltip.fantazia.diffraction.lines" : "1",
   "aura_tooltip.fantazia.diffraction.1" : "Перенаправляет вред, полученный владельцем",
+
+  "aura.icon.fantazia.uncover" : "Раскрытие",
+  "aura_tooltip.fantazia.uncover.lines" : "1",
+  "aura_tooltip.fantazia.uncover.1" : "Раскрывает монстров владельцу",
 
   "tooltip.fantazia.common.active": "Активный спелл: %s",
   "tooltip.fantazia.common.active.passive": "Изменения от спелла:",
@@ -514,9 +553,10 @@
   "spell.fantazia.sustain.2" : "растягивает жизнь пользователя восстановлением",
   "spell.fantazia.sustain.3" : "части здоровья и дарованием нескольких слоев",
   "spell.fantazia.sustain.4" : "барьера",
-  "spell.fantazia.sustain.passive.lines" : "2",
+  "spell.fantazia.sustain.passive.lines" : "3",
   "spell.fantazia.sustain.passive.1" : "§5 * Атакованные существа страдают от иссушения",
-  "spell.fantazia.sustain.passive.2" : "§4 * Постоянно вытягивает жизненные силы",
+  "spell.fantazia.sustain.passive.2" : "§5 * Дарует иммунитет к иссушению",
+  "spell.fantazia.sustain.passive.3" : "§4 * Постоянно вытягивает жизненные силы",
 
   "item.fantazia.sandmans_dust" : "§eПыль Сеятеля",
   "spell.fantazia.vanish.desc.lines" : "1",
@@ -560,6 +600,16 @@
   "spell.fantazia.all_in.passive.1" : "§5Перезарядка спелла зависит от удачи владельца,",
   "spell.fantazia.all_in.passive.2" : "§5изменяясь на 1 секунду за единицу удачи, снижаясь",
   "spell.fantazia.all_in.passive.3" : "§5вплоть до 5 секунд или повышаясь вплоть до 20",
+
+  "item.fantazia.rusty_ring" : "§1Ржавое колечко",
+  "spell.fantazia.reinforce.desc.lines" : "1",
+  "spell.fantazia.reinforce.desc.1" : "§5§oСтарая безделушка",
+  "spell.fantazia.reinforce.name" : "Укрепление",
+  "spell.fantazia.reinforce.lines" : "2",
+  "spell.fantazia.reinforce.1" : "Уменьшает любой получаемый вред",
+  "spell.fantazia.reinforce.2" : "на малое, но фиксированное значение",
+  "spell.fantazia.reinforce.passive.lines" : "1",
+  "spell.fantazia.reinforce.passive.1" : "§5 * Снижает весь урон на 0.75",
 
   "item.fantazia.leaders_horn": "§5Горн лидера",
   "aura.fantazia.leadership.desc.lines": "1",
@@ -643,6 +693,14 @@
   "aura.fantazia.diffraction.stats.1" : "§c * Перенаправляет 35% урона",
   "aura.fantazia.diffraction.stats.2" : "§c * Перенаправленный урон все ещё наносится владельцу",
 
+  "item.fantazia.necklace_of_clairvoyance" : "§bОжерелье проницательности",
+  "aura.fantazia.uncover.desc.lines" : "1",
+  "aura.fantazia.uncover.desc.1" : "§5§oУзри незримое",
+  "aura.fantazia.uncover.name" : "Раскрытие",
+  "aura.fantazia.uncover.lines" : "2",
+  "aura.fantazia.uncover.1" : "Все монстры внутри ауры постоянно",
+  "aura.fantazia.uncover.2" : "раскрыты ее владельцу",
+
   "item.fantazia.obscure_substance": "§5Непонятная субстанция",
   "item.fantazia.unfinished_wings": "§cНезавершенные крылья",
   "item.fantazia.arachnid_eye": "Глаз арахнида",
@@ -719,8 +777,7 @@
   "fantazia.talent.spider_powers.poison_attack.name" : "§7Паучье жало",
   "fantazia.talent.spider_powers.poison_attack.desc.lines" : "2",
   "fantazia.talent.spider_powers.poison_attack.desc.1" : "Атаки отравляют жертву",
-    "fantazia.talent.spider_powers.poison_attack.desc.2" : "Получаемый урон от яда уменьшен",
-
+  "fantazia.talent.spider_powers.poison_attack.desc.2" : "Получаемый урон от яда уменьшен",
 
   "fantazia.talent.evasion_boost.name": "§aБонус к уклонению",
   "fantazia.talent.evasion_boost.desc.lines": "2",
@@ -846,7 +903,7 @@
   "advancements.fantazia.caught_thunder" : "§oНадо ж выдумать такое...",
   "advancements.fantazia.caught_thunder.desc": "Найдите схваченную грозу",
 
-  "advancements.fantazia.doomed": "§c§lОй-ой!..",
+  "advancements.fantazia.doomed": "§c§lОдна ошибка, и ты ошибся!",
   "advancements.fantazia.doomed.desc": "Попадите под воздействие эффекта обреченности",
 
   "advancements.fantazia.bloodthirsty" : "§4Кровожадный",
@@ -879,8 +936,11 @@
   "book.fantazia.entry.artifacts.dashstone.page.1": "Никто не знает происхождение этих таинственных камней, кто их создатели или есть ли у них создатели в принципе; даже сложнее объяснить их притяжение к определенным людям. Каким-то образом они находят способ попасть в руки таких людей, словно сама судьба стоит за этим...",
   "book.fantazia.entry.artifacts.dashstone.page.2": "Хотя изначально способность этих камней вполне проста, являясь обычным скачком вперед, эти камни не стоит недооценивать. Скрытый потенция, что лежит внутри каждого из них, позволяет искажать пространство-время так, как это пожелает их носитель, позволяя ему перемещаться сквозь ткань самой реальности",
 
-  "book.fantazia.heading.artifacts.spellcaster" : "Spell Caster",
-  "book.fantazia.heading.artifacts.auracaster" : "Aura Caster",
+  "book.fantazia.heading.artifacts.spellcaster" : "Заклинатель",
+  "book.fantazia.heading.artifacts.auracaster" : "Ауротворец",
+  "book.fantazia.heading.artifacts.expendable": "Расходник",
+  "book.fantazia.heading.artifacts.appliance" : "Приспособление",
+
   "book.fantazia.entry.artifacts.entangler.page.1": "Уже очень долгое время, смерность изображалась как естественнная часть жизни. Люди были убеждены, что надо принять свою неизбежную гибель и использовать ее как мотивацю жить полной жизнью. Однако же, правда ли это неотъемлемая часть того кто мы есть, или же это болезнь, недуг, коим болеют все живые существа и с которым мы просто напросто не способны бороться в связи с нашей неспособностью предотврощать его?",
   "book.fantazia.entry.artifacts.entangler.page.2": "Используя мощь тотема что позволяет обойти нашу собтвенную участь, мы способны создать артефакт, дарующий возможность ходить на грани между жизнью и смертью",
   "book.fantazia.entry.artifacts.entangler.page.3": "Запутчик воплощяет желание человечества избежать смерти, помогая именно с этой задачей. Этот артефакт может быть активирован когда его владелец в шаге от смерти, и его способность делает владцельца фактически бессмертным, пусть и кратковременно",
@@ -964,6 +1024,18 @@
   "book.fantazia.entry.artifacts.optical_lens.page.1" : "Дифракция есть явление, когда световые волны отклоняются от прямой траектории и законов геометрической оптики как таковой, в связи с препятствием или небольшим отверстием на своём пути. Приводит это к искажению картины, полученной в результате отскока фотонов от стены или другой поверхности; и как выяснилось, приводить это может не только лишь к обычным оптическим иллюзиям",
   "book.fantazia.entry.artifacts.optical_lens.page.2" : "Объединяя очень тонкую стеклянную панель с субстанцией даёт нам линзу с магическими свойствами, что может искажать направление не только света",
   "book.fantazia.entry.artifacts.optical_lens.page.3" : "Когда владелец артефакта получает ранение от другого существа, часть вреда будет перенаправлена всем другим существам, высасывая их жизненные силы",
+
+  "book.fantazia.entry.artifacts.rusty_ring.page.1" : "Кто знает, какую историю может иметь любая маленькая вещица, до которой дойдут ваши ручонки? Возможно, что тот небольшой клинок на который вы наткнулись был использован в убийстве кого-то очень важного, или то дерево, мимо которого вы проходите не задумываясь, является свидетелем событий в которые многие люди даже не поверят...",
+  "book.fantazia.entry.artifacts.rusty_ring.page.2" : "Горсть железа переработана в колечко, что затем пропитывается магией, отчего получается обычно выглядящий аксессуар с загадочными защитными свойствами",
+  "book.fantazia.entry.artifacts.rusty_ring.page.3" : "Любая рана, которую получает владелец артефакта, будет слегка облегчена, что делает вещицу незаменимой в ситуациях, где владелец атакован ордой не очень сильных вгагов",
+
+  "book.fantazia.entry.artifacts.necklace_of_clairvoyance.page.1" : "Понимание своего окружения есть чрезвычайно важная вещь когда ты путешествуешь в любых обычных и незнакомых местах; знание того, где находятся недруги, предотвращает большинство внезапных атак что могли бы закончиться крайне печально, поэтому неудивительно, что был создан артифакт, что позволяет буквально видеть своих врагов",
+  "book.fantazia.entry.artifacts.necklace_of_clairvoyance.page.2" : "Из маленьких кусочков железа создается цепь, что затем соединятся с небольшой чатсью фантазиума, что приводит к созданию ожерелья со сверхестественными свойствами",
+  "book.fantazia.entry.artifacts.necklace_of_clairvoyance.page.3" : "Кусочек фантазиума, носисый на шее, становится намного прочнее, и дарует что-то наподобии 'шестого чувства', что позволяет видеть всех существ в определенном расстоянии",
+
+  "book.fantazia.entry.artifacts.wisdom_catcher.page.1" : "Хоть опыт из убитых суцществ и походит на простую магическую субстанцию, что используется в зачаровании, он может также использоваться в расширении чьих-нибудь природных способностей и в ускоренном изучении новых навыков",
+  "book.fantazia.entry.artifacts.wisdom_catcher.page.2" : "Фантазиум смешивается с золотом, после чего обычная бутыль используется как основа для необычного магического сосуда",
+  "book.fantazia.entry.artifacts.wisdom_catcher.page.3" : "Смешивание фантазума с золотом меняет его электромагнитные свойства металла, отчего опыт начинает притягиваться к сосуду, а не к человеку что его держит, и затем перерабатывается в мудрость",
 
   "book.fantazia.entry.mob_effects.absolute_barrier.name": "§dАбсолютный барьер",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.1": "Среди других барьеров, этот является наиболее мощным, защищая владельца без каких-либо условий от практически любых источников вреда. Помимо эторго, данный барьер будет оставаться на существе до тех пор, пока эффект не закончится, в отличии от других барьеров, что исчезают после получения определенного урона",
@@ -1130,5 +1202,15 @@
   "book.fantazia.entry.world.concept_of_consistency.name" : "§5Концепт постоянства",
   "book.fantazia.entry.world.concept_of_consistency.page.1" : "Учитывая насколько хаотичны могут быть события в нашем мире, кто-то может подумать что они никак не связаны и не влияют друг на друга; и если так можно сказать про другие миры и их правила, этот является исключением. Все события, объекты и живые существа переплетены друг с другом на очень глубоком уровне сквозь прошлое, настоящее и будущее, даже переступая пределы времени-пространства",
   "book.fantazia.entry.world.concept_of_consistency.page.2" : "Тоже самое можно сказать и про случайные на вид вещи; даже те, что имеют случайный шанс произойти, без каких-либо видимых закономернотей, взаимосвязаны между собой. Каждый раз, когда что-то может произойти, но не происходит, шанс того, что оно произойдет в следующийц раз, возрастает, и наоборот: если что-то случайное успешно происходит, шанс этого случая становится крайне малым",
-  "book.fantazia.entry.world.concept_of_consistency.page.3" : "Если кому-то не везет с нахождением артефактов внутри сокровищницы, тот будет более успешным в следующицй раз, ведь этим реликвиям суждено быть найденными и использованными, таково их предназначение. Это же является правдой и для чего-нибудь по типу случайного шанса избежать атаки, и тд. Из-за этого такие события более постоянны, на них можно влиять, отсюда и название феномена: Концепт постоянства"
+  "book.fantazia.entry.world.concept_of_consistency.page.3" : "Если кому-то не везет с нахождением артефактов внутри сокровищницы, тот будет более успешным в следующицй раз, ведь этим реликвиям суждено быть найденными и использованными, таково их предназначение. Это же является правдой и для чего-нибудь по типу случайного шанса избежать атаки, и тд. Из-за этого такие события более постоянны, на них можно влиять, отсюда и название феномена: Концепт постоянства",
+
+  "book.fantazia.entry.world.obscure_tree.name" : "Непонятные деревья",
+  "book.fantazia.entry.world.obscure_tree.page.1" : "В этом мире есть много разных вещех что мы считаем аномальными; то, что не входит в рамки привычного понимания вещей всегда будет центром внимания у людей, неавжно, насколько полезна или вредна вещь, о которой идет речь; среди этих явлений - Непонятные Деревья. Никто так и не смог понять, откуда берутся эта неоьбычная сине-фиолетовая флора, или из нашего ли она мира вообще",
+  "book.fantazia.entry.world.obscure_tree.page.2" : "Величиственные, не так ли?",
+  "book.fantazia.entry.world.obscure_tree.page.3" : "Такие деревья чрезвычайно редки, и могут быть найдены только в лесах среди многих, многих обычный, подобно блестяшке, лежащей среди камней. Саженец таких леревьев может быть получаен у странствующих торговцев, пусть и шансы не так высоки",
+
+  "book.fantazia.entry.world.fantazium.name" : "Фантазиум",
+  "book.fantazia.entry.world.fantazium.page.1" : "Все материалы различаются своей твердостью, прочностью, пластичностью, цветом и подобными свойствами; и, обычно, эти свойства меняются от очевидных внешних и внутренних факторов: резкие или постепенные изменения температуры, деформация при низких или близких к плавлению температурах, смешивание с другими элементами, и тд. - все это ведет к разным, но предсказуемым модификациям",
+  "book.fantazia.entry.world.fantazium.page.2" : "Существует, однако, необычный материал - фантазиум - что меняется не от механических или химических воздействий, а от своего использования; будучи обычно более мягким металлом, он может стать твердым как алмаз, дай ему лишь нужную форму, или тянущимся как пластилин, при этом разрушаясь от намного меньших деформаций в обычных услових",
+  "book.fantazia.entry.world.fantazium.page.3" : "Фантазиумная руда может быть найдена среди многих других руд под землей, но пока не избавиться от породы и других ненужных примесей внутри нее, руда не принесет много пользы, так как большинство элементов делают этот металл неспособным адаптироваться к своему текущему назначению"
 }

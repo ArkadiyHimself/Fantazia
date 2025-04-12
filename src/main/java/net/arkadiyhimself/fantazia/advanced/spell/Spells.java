@@ -21,6 +21,7 @@ import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
@@ -50,6 +51,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Map;
 
@@ -150,8 +152,7 @@ public class Spells {
                         RandomList<SpellInstance> spellInstances = RandomList.emptyRandomList();
                         for (SpellInstance instance : availableSpells.values()) if (instance.recharge() > 0) spellInstances.add(instance);
 
-                        SpellInstance instance = spellInstances.random();
-                        if (instance != null) instance.resetRecharge();
+                        spellInstances.performOnRandom(SpellInstance::resetRecharge);
                     } else {
                         // oops!
                         owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
@@ -211,7 +212,7 @@ public class Spells {
                 })
                 .build();
 
-        public static final TargetedSpell<LivingEntity> BOUNCE = new TargetedSpell.Builder<>(3.5f, 160, FTZSoundEvents.BOUNCE_CAST, FTZSoundEvents.BOUNCE_RECHARGE, LivingEntity.class, 16f)
+        public static final TargetedSpell<LivingEntity> BOUNCE = new TargetedSpell.Builder<>(3.5f,160, FTZSoundEvents.BOUNCE_CAST, FTZSoundEvents.BOUNCE_RECHARGE, LivingEntity.class,16f)
                 .conditions((caster, entity) -> !FantazicCombat.isInvulnerable(entity))
                 .beforeBlockChecking((caster, entity) -> {
                     for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() * 8 + 16; i++) VisualHelper.randomParticleOnModel(caster, ParticleTypes.PORTAL, VisualHelper.ParticleMovement.REGULAR);
@@ -234,6 +235,7 @@ public class Spells {
                 .build();
 
         public static final TargetedSpell<LivingEntity> LIGHTNING_STRIKE = new TargetedSpell.Builder<>(5.5f, 400, null, FTZSoundEvents.LIGHTNING_STRIKE_RECHARGE, LivingEntity.class, 12f)
+                .conditions((owner, entity) -> entity.level().canSeeSky(entity.blockPosition()))
                 .afterBlockChecking((caster, entity) -> {
                     LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(caster.level());
                     if (lightningBolt == null) return;
@@ -270,17 +272,31 @@ public class Spells {
 
     public static final class Passive {
 
-        private Passive() {}
+        private Passive() {
+        }
 
         public static final PassiveSpell REFLECT = new PassiveSpell.Builder(1.5f, 200, FTZSoundEvents.EFFECT_REFLECT, null).build();
-        public static final PassiveSpell DAMNED_WRATH = new PassiveSpell.Builder(0f, 600, FTZSoundEvents.DAMNED_WRATH, null).cleanse(Cleanse.MEDIUM).build();
+        public static final PassiveSpell DAMNED_WRATH = new PassiveSpell.Builder(0f, 600, FTZSoundEvents.DAMNED_WRATH, null)
+                .onActivation(owner -> {
+                    EffectCleansing.tryCleanseAll(owner, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
+                    LivingEffectHelper.makeFurious(owner, 200);
+                    LivingEffectHelper.giveBarrier(owner, 20);
+                    if (owner instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(FTZSoundEvents.DAMNED_WRATH.get()));
+                })
+                .cleanse(Cleanse.MEDIUM).build();
         public static final PassiveSpell SHOCKWAVE = new PassiveSpell.Builder(0.8f, 0, null, null).build();
         public static final PassiveSpell SUSTAIN = new PassiveSpell.Builder(0f, 0, null, null)
                 .ownerTick(owner -> {
                     DamageSourcesHolder holder = LevelAttributesHelper.getDamageSources(owner.level());
                     if (holder == null || owner instanceof Player player && player.getAbilities().invulnerable) return;
                     owner.hurt(holder.removal(), 0.125f / 20);
-                    if ((owner.tickCount & 2) == 0) VisualHelper.randomEntityChasingParticle(owner, ((entity, vec3) -> new EntityChasingParticleOption<>(entity.getId(), vec3, FTZParticleTypes.WITHER.value())), 0.65f);
+                    if ((owner.tickCount & 2) == 0)
+                        VisualHelper.randomEntityChasingParticle(owner, (entity, vec3) -> new EntityChasingParticleOption<>(entity.getId(), vec3, FTZParticleTypes.WITHER.value()), 0.65f);
                 }).cleanse().build();
+        public static final PassiveSpell REINFORCE = new PassiveSpell.Builder(0.25f, 0, null, null)
+                .onActivation(owner -> {
+                    for (int i = 0; i < 10; i++) VisualHelper.randomParticleOnModelClient(owner, ParticleTypes.DAMAGE_INDICATOR, VisualHelper.ParticleMovement.REGULAR);
+                })
+                .build();
     }
 }

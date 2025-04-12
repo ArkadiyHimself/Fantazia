@@ -1,0 +1,20 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "substance" : {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["fantazia:obscure_sapling"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements" : [
+    [
+      "substance"
+    ]
+  ]
+}

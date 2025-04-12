@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.packets.stuff;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.type.IPacket;
+import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;

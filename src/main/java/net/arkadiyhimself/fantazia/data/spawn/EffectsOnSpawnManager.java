@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.data.spawn;
 import com.google.gson.*;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
-import net.arkadiyhimself.fantazia.api.FantazicRegistries;
+import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

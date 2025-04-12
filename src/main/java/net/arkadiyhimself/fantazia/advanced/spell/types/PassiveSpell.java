@@ -1,12 +1,14 @@
 package net.arkadiyhimself.fantazia.advanced.spell.types;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
+import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.compress.utils.Lists;
@@ -18,8 +20,11 @@ import java.util.function.Function;
 
 public class PassiveSpell extends AbstractSpell {
 
-    protected PassiveSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge) {
+    private final Consumer<LivingEntity> onActivation;
+
+    protected PassiveSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Consumer<LivingEntity> onActivation) {
         super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, recharge);
+        this.onActivation = onActivation;
     }
 
     @Override
@@ -57,7 +62,6 @@ public class PassiveSpell extends AbstractSpell {
 
         components.add(Component.literal(" "));
 
-
         String desc = Component.translatable(basicPath + ".lines").getString();
         try {
             lines = Integer.parseInt(desc);
@@ -92,6 +96,11 @@ public class PassiveSpell extends AbstractSpell {
         return components;
     }
 
+    public void onActivation(LivingEntity livingEntity) {
+        if (doCleanse()) EffectCleansing.tryCleanseAll(livingEntity, getCleanse(), MobEffectCategory.BENEFICIAL);
+        this.onActivation.accept(livingEntity);
+    }
+
     public static class Builder {
 
         private final float manacost;
@@ -104,6 +113,7 @@ public class PassiveSpell extends AbstractSpell {
         private Cleanse cleanse = Cleanse.BASIC;
         private boolean doCleanse = false;
         private Function<LivingEntity, Integer> recharge;
+        private Consumer<LivingEntity> onActivation = owner -> {};
 
         public Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
             this.manacost = manacost;
@@ -117,7 +127,6 @@ public class PassiveSpell extends AbstractSpell {
 
         public Builder tickingConditions(TickingConditions value) {
             this.tickingConditions = value;
-            this.doCleanse = true;
             return this;
         }
 
@@ -147,8 +156,13 @@ public class PassiveSpell extends AbstractSpell {
             return this;
         }
 
+        public Builder onActivation(Consumer<LivingEntity> onActivation) {
+            this.onActivation = onActivation;
+            return this;
+        }
+
         public PassiveSpell build() {
-            return new PassiveSpell(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, recharge);
+            return new PassiveSpell(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, recharge, onActivation);
         }
     }
 }

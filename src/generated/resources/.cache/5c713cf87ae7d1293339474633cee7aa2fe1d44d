@@ -1,0 +1,6 @@
+// 1.21.1	2025-04-09T20:58:32.359683	Tags for minecraft:mob_effect mod id fantazia
+3ae0c78ae0a6a177e9077c566280c95d76880b89 data/fantazia/tags/mob_effect/barrier.json
+279a51d04cc780541dd4b7d4a4231966cad238ad data/fantazia/tags/mob_effect/cleanse/absolute.json
+187bc84c586f7c86fa03bd112aee11931ad4df92 data/fantazia/tags/mob_effect/cleanse/medium.json
+7be6d4f0f99a8577d60a8d6535c66619fae70337 data/fantazia/tags/mob_effect/cleanse/powerful.json
+73aa61a15a4f96bef22f16427b02f1348cf590ab data/fantazia/tags/mob_effect/interrupt.json

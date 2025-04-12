@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.advanced.cleansing;
 
 import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
-import net.arkadiyhimself.fantazia.events.FTZHooks;
+import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -20,7 +20,7 @@ public class EffectCleansing {
 
     public static void tryCleanse(LivingEntity livingEntity, Cleanse cleanse, Holder<MobEffect> effect) {
         if (!livingEntity.hasEffect(effect)) return;
-        VanillaEventsExtension.CleanseEffectEvent event = FTZHooks.ForgeExtension.onEffectCleanse(livingEntity, livingEntity.getEffect(effect), cleanse);
+        VanillaEventsExtension.CleanseEffectEvent event = FantazicHooks.ForgeExtension.onEffectCleanse(livingEntity, livingEntity.getEffect(effect), cleanse);
         if (event.isCanceled()) return;
         if (event.getStrength().strongEnough(effect)) livingEntity.removeEffect(effect);
     }

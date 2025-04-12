@@ -15,7 +15,6 @@ import java.util.function.Function;
  * Each element can only have up to one parent and up to one child, like chains going one after another
  */
 public class ChainHierarchy<T> extends MonoHierarchy<T> {
-
     /**
      * An ordered collection of elements of hierarchy, where the first element is the main one
      * <br>

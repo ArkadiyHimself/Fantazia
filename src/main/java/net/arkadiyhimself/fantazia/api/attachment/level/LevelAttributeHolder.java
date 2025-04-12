@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.api.attachment.level;
 
-import net.arkadiyhimself.fantazia.api.type.level.ILevelAttributeHolder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;

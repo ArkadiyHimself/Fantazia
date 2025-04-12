@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.registries;
 
 import com.mojang.serialization.MapCodec;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.world.gen.structures.SimpleNetherStructure;
+import net.arkadiyhimself.fantazia.worldgen.structures.SimpleNetherStructure;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;

@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "corail_woodcutter"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "fantazia"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "fantazia:obscure_door"
+    }
+  ],
+  "type": "corail_woodcutter:woodcutting",
+  "ingredient": {
+    "tag": "fantazia:obscure_logs"
+  },
+  "result": {
+    "id": "fantazia:obscure_door",
+    "count": 4
+  }
+}

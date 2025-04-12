@@ -2,6 +2,7 @@
   "fantazia.creativetab.artifacts" : "Fantazic Artifacts",
   "fantazia.creativetab.weapons" : "Fantazic Weapons",
   "fantazia.creativetab.expendables" : "Fantazic Expendables",
+  "fantazia.creativetab.blocks" : "Fantazic Blocks",
 
   "entity.fantazia.shockwave" : "Shockwave",
   "entity.fantazia.hatchet" : "Hatchet",
@@ -39,6 +40,9 @@
   "commands.spellcast.targeted.failure" : "Unable to find any targets",
   "commands.advancedheal.invulnerable" : "Target can not be healed by the given healing type",
   "commands.advancedheal.success" : "Applied %1$s heal to %2$s",
+
+  "painting.fantazia.fantazia.author": "ArkadiyHimself",
+  "painting.fantazia.fantazia.title": "Fantazia",
 
   "enchantment.fantazia.ice_aspect" : "Ice Aspect",
   "enchantment.fantazia.freeze" : "Freeze",
@@ -183,6 +187,37 @@
   "item.minecraft.tipped_arrow.effect.fury" : "Arrow of Fury",
   "item.minecraft.tipped_arrow.effect.corrosion" : "Arrow of Corrosion",
 
+  "block.fantazia.obscure_button": "Obscure Button",
+  "block.fantazia.obscure_door": "Obscure Door",
+  "block.fantazia.obscure_fence": "Obscure Fence",
+  "block.fantazia.obscure_fence_gate": "Obscure Fence Gate",
+  "block.fantazia.obscure_hanging_sign": "Obscure Hanging Sign",
+  "block.fantazia.obscure_leaves": "Obscure Leaves",
+  "block.fantazia.obscure_log": "Obscure Log",
+  "block.fantazia.obscure_planks": "Obscure Planks",
+  "block.fantazia.obscure_pressure_plate": "Obscure Pressure Plate",
+  "block.fantazia.obscure_sapling": "Obscure Sapling",
+  "block.fantazia.obscure_sign": "Obscure Sign",
+  "block.fantazia.obscure_slab": "Obscure Slab",
+  "block.fantazia.obscure_stairs": "Obscure Stairs",
+  "block.fantazia.obscure_trapdoor": "Obscure Trapdoor",
+  "block.fantazia.obscure_wall_hanging_sign": "Obscure Wall Hanging Sign",
+  "block.fantazia.obscure_wall_sign": "Obscure Wall Sign",
+  "block.fantazia.obscure_wood": "Obscure Wood",
+  "block.fantazia.potted_obscure_sapling": "Potted Obscure Sapling",
+  "block.fantazia.stripped_obscure_log": "Stripped Obscure Log",
+  "block.fantazia.stripped_obscure_wood": "Stripped Obscure Wood",
+  "block.fantazia.fantazium_ore": "Fantazium Ore",
+  "block.fantazia.deepslate_fantazium_ore": "Deepslate Fantazium Ore",
+  "block.fantazia.fantazium_block": "Block of Fantazium",
+  "block.fantazia.raw_fantazium_block": "Block of Raw Fantazium",
+  "item.fantazia.raw_fantazium": "Raw Fantazium",
+  "item.fantazia.fantazium_ingot": "Fantazium Ingot",
+  "item.fantazia.wisdom_catcher" : "Wisdom Catcher",
+  "item.fantazia.obscure_boat": "Obscure Boat",
+  "item.fantazia.obscure_chest_boat": "Obscure Boat with Chest",
+  "item.fantazia.fantazic_painting" : "Fantazic Painting",
+
   "item.fantazia.wooden_hatchet" : "Wooden Hatchet",
   "item.fantazia.stone_hatchet" : "Stone Hatchet",
   "item.fantazia.iron_hatchet" : "Iron Hatchet",
@@ -284,6 +319,10 @@
   "aura.icon.fantazia.diffraction" : "Diffraction",
   "aura_tooltip.fantazia.diffraction.lines" : "1",
   "aura_tooltip.fantazia.diffraction.1" : "Redirects the harm taken by owner",
+
+  "aura.icon.fantazia.uncover" : "Uncover",
+  "aura_tooltip.fantazia.uncover.lines" : "1",
+  "aura_tooltip.fantazia.uncover.1" : "Reveals the monsters to owner",
 
   "tooltip.fantazia.common.active" : "Active spell: %s",
   "tooltip.fantazia.common.active.passive" : "Alterations from the spell:",
@@ -514,9 +553,10 @@
   "spell.fantazia.sustain.2" : "the spell stretches user's life by regenerating",
   "spell.fantazia.sustain.3" : "a part of their health and providing several",
   "spell.fantazia.sustain.4" : "layers of a barrier.",
-  "spell.fantazia.sustain.passive.lines" : "2",
+  "spell.fantazia.sustain.passive.lines" : "3",
   "spell.fantazia.sustain.passive.1" : "§5 * Attacked creatures suffer from the Wither effect",
-  "spell.fantazia.sustain.passive.2" : "§4 * Constantly drains user's vitality",
+  "spell.fantazia.sustain.passive.2" : "§5 * Grants immunity to Wither effect",
+  "spell.fantazia.sustain.passive.3" : "§4 * Constantly drains user's vitality",
 
   "item.fantazia.sandmans_dust" : "§eSandman's Dust",
   "spell.fantazia.vanish.desc.lines" : "1",
@@ -545,7 +585,7 @@
 
   "item.fantazia.card_deck" : "§2Card Deck",
   "spell.fantazia.all_in.desc.lines" : "1",
-  "spell.fantazia.all_in.desc.1" : "§5§oTest your luck",
+  "spell.fantazia.all_in.desc.1" : "§5§oTest your luck!",
   "spell.fantazia.all_in.name" : "All In",
   "spell.fantazia.all_in.lines" : "8",
   "spell.fantazia.all_in.1" : "Pull out a random card from the deck to get",
@@ -560,6 +600,16 @@
   "spell.fantazia.all_in.passive.1" : "§5The recharge of spell depends on owner's luck,",
   "spell.fantazia.all_in.passive.2" : "§5changing by 1 second per luck, decreasing down",
   "spell.fantazia.all_in.passive.3" : "§5to 5 seconds or increasing up to 20 seconds",
+
+  "item.fantazia.rusty_ring" : "§1Rusty Ring",
+  "spell.fantazia.reinforce.desc.lines" : "1",
+  "spell.fantazia.reinforce.desc.1" : "§5§oOld trinket",
+  "spell.fantazia.reinforce.name" : "Reinforce",
+  "spell.fantazia.reinforce.lines" : "2",
+  "spell.fantazia.reinforce.1" : "Reduces any incoming harm by",
+  "spell.fantazia.reinforce.2" : "a small but fixed fixed amount",
+  "spell.fantazia.reinforce.passive.lines" : "1",
+  "spell.fantazia.reinforce.passive.1" : "§5 * Decreases all damage by 0.75",
 
   "item.fantazia.leaders_horn" : "§5Leader's Horn",
   "aura.fantazia.leadership.desc.lines" : "1",
@@ -642,6 +692,14 @@
   "aura.fantazia.diffraction.stats.lines" : "2",
   "aura.fantazia.diffraction.stats.1" : "§c * Redirects 35% of taken damage",
   "aura.fantazia.diffraction.stats.2" : "§c * Redirected damage is still dealt to owner",
+
+  "item.fantazia.necklace_of_clairvoyance" : "§bNecklace of Clairvoyance",
+  "aura.fantazia.uncover.desc.lines" : "1",
+  "aura.fantazia.uncover.desc.1" : "§5§oSee the invisible",
+  "aura.fantazia.uncover.name" : "Uncover",
+  "aura.fantazia.uncover.lines" : "2",
+  "aura.fantazia.uncover.1" : "All monsters within aura are",
+  "aura.fantazia.uncover.2" : "constantly revealed to its owner",
 
   "item.fantazia.obscure_substance" : "§5Obscure Substance",
   "item.fantazia.unfinished_wings" : "§cUnfinished Wings",
@@ -880,6 +938,8 @@
 
   "book.fantazia.heading.artifacts.spellcaster" : "Spell Caster",
   "book.fantazia.heading.artifacts.auracaster" : "Aura Caster",
+  "book.fantazia.heading.artifacts.expendable" : "Expendable",
+  "book.fantazia.heading.artifacts.appliance" : "Appliance",
 
   "book.fantazia.entry.artifacts.entangler.page.1" : "For a long time already, mortality has been portrayed as natural part of our lives. People have been convinced to accept their inevitable demise and use it as a motivation to live own live to its fullest. But is it actually a natural part of what we are, or is it a decease, a sickness that plagues all living creatures that we simply feel to helpless to fight due to our inability to prevent it?",
   "book.fantazia.entry.artifacts.entangler.page.2" : "Using the power of a totem which allows to bypass our own demise, we can create an artifact which allows to stand on a fine line life and death",
@@ -964,6 +1024,18 @@
   "book.fantazia.entry.artifacts.optical_lens.page.1" : "Diffraction is a phenomenon of light waves deviating from straight trajectory and standard laws of geometrical optics due to an obstacle or a very small hole on their way. What diffraction can lead to is a distortion of an image that would be the result of those photons bouncing of a wall or other surface; and as it turns out, sometimes distorting light leads to more than mere optical illusions",
   "book.fantazia.entry.artifacts.optical_lens.page.2" : "Combining a very thin pane of glass with the substance gives us a lens with magic properties, allowing to redirect more than just light",
   "book.fantazia.entry.artifacts.optical_lens.page.3" : "Whenever the user of this artifact is to be harmed by another creature, part of that harm will be redirected to all other creatures nearby, draining their health",
+
+  "book.fantazia.entry.artifacts.rusty_ring.page.1" : "Who knows what history could have any little thing you can get your hands on? Maybe an old rusty dagger you find somewhere had been used for the murder of someone of great importance, or a tree you pass without thinking about it had witnessed some things most people would never even believe...",
+  "book.fantazia.entry.artifacts.rusty_ring.page.2" : "The little amount of iron is turned into a ring, that is then infused with magic, creating a regular looking accessory with some mysterious defensive properties",
+  "book.fantazia.entry.artifacts.rusty_ring.page.3" : "Any injury that the owner of this artifact gets will be slightly eased, making it great in situations when the user is attacked by a great amount of weaker foes",
+
+  "book.fantazia.entry.artifacts.necklace_of_clairvoyance.page.1" : "Being aware of your surroundings is an incredibly important thing whenever you travel in any dangerous and unfamiliar places; knowing where are the enemies can prevent most surprise attacks which would devastating, so no wonder an artifact which allows to literally see your foes has been invented",
+  "book.fantazia.entry.artifacts.necklace_of_clairvoyance.page.2" : "Out of small iron parts a chain is made, which is then connected to a small piece of fantazium, creating a necklace with supernatural properties",
+  "book.fantazia.entry.artifacts.necklace_of_clairvoyance.page.3" : "The piece of fantazium carried on one's neck becomes much more durable and grants a sort of 'sixth sense', which makes them see all the creatures within certain distance",
+
+  "book.fantazia.entry.artifacts.wisdom_catcher.page.1" : "Although experience from deceased creatures seems like just a magical essence that only enchanting, it can also be used to artificially extend one's innate capacities and accelerate the learning of new skills",
+  "book.fantazia.entry.artifacts.wisdom_catcher.page.2" : "Fantazium is mixed with gold, and then applied on top of a regular bottle, turning into a magical vessel",
+  "book.fantazia.entry.artifacts.wisdom_catcher.page.3" : "Mixing fantazium with gold changes its metal electromagnetic properties, making it attract experience to itself instead of the person who holds it, and then convert the experience to wisdom",
 
   "book.fantazia.entry.mob_effects.absolute_barrier.name" : "§dAbsolute Barrier",
   "book.fantazia.entry.mob_effects.absolute_barrier.page.1" : "Among different kinds of barrier this one is the most powerful, protecting its host unconditionally from almost all sources of harm. Not only that, but this barrier will also stay on the creature as long as the effect is there, unlike other barrier types which can wear off after taking damage too much",
@@ -1130,5 +1202,15 @@
   "book.fantazia.entry.world.concept_of_consistency.name" : "§5Concept of Consistency",
   "book.fantazia.entry.world.concept_of_consistency.page.1" : "With how chaotic the events in the world may be, one probably thinks that they are not connected and do not affect each other; and if it might be the case for other worlds and their rules, it is not true for this one. All the events, objects and living creatures are linked to each other on a deep level throughout past, present and future, and even transcending space-time itself",
   "book.fantazia.entry.world.concept_of_consistency.page.2" : "Same goes for seemingly random things; even those which have a clear chance of happening, without any particular patterns for them taking place, are connected to each other. Every time something that can randomly happen fails to do so, it is more and more likely to happen next time, and vice versa: whenever something random does successfully happen, its chance to happen the very next time is quite low",
-  "book.fantazia.entry.world.concept_of_consistency.page.3" : "If someone fails to find a certain artifact inside a treasure, they will be more likely to be successful next time, for the relics will inevitably be found and used, such is their purpose. Same can be said for something like a random chance to evade a blow from your foe, etc. This makes those occurrences more consistent and controllable by people, thus the name of the phenomenon: The Concept of Consistency"
+  "book.fantazia.entry.world.concept_of_consistency.page.3" : "If someone fails to find a certain artifact inside a treasure, they will be more likely to be successful next time, for the relics will inevitably be found and used, such is their purpose. Same can be said for something like a random chance to evade a blow from your foe, etc. This makes those occurrences more consistent and controllable by people, thus the name of the phenomenon: The Concept of Consistency",
+
+  "book.fantazia.entry.world.obscure_tree.name" : "Obscure Trees",
+  "book.fantazia.entry.world.obscure_tree.page.1" : "In this world exist many different things which we consider anomalous; whatever does not fit into our conventional view of things will always be center of attention of people, no matter whether the thing is question is actually useful or harmful; among those things are Obscure Trees. No one knows where does this unordinary purple-blue flora originate from, or if it is even from our world",
+  "book.fantazia.entry.world.obscure_tree.page.2" : "Majestic, are they not?",
+  "book.fantazia.entry.world.obscure_tree.page.3" : "Such trees are exceptionally rare, and can only be found in forests among many, many regular ones, like a parrot among ravens. A sapling of those trees can be obtained from wandering traders, albeit the chance is not to high",
+
+  "book.fantazia.entry.world.fantazium.name" : "Fantazium",
+  "book.fantazia.entry.world.fantazium.page.1" : "All materials vary in properties such as hardness, durability, plasticity, color, and so on; and usually, those properties predictably change from obvious internal and external factors; changing temperature rapidly or slowly, deforming at either low temperatures or those close to melting, mixing with different amounts other elements, etc. - all that leads to different, yet predictable modifications",
+  "book.fantazia.entry.world.fantazium.page.2" : "There exists, however, a bizarre material - fantazium - that alters not from mechanical or chemical factors, but from how it is used; usually being a softer metal, it can get hard as diamond given the right purpose, or it becomes as stretchy as plasticine when it needs to despite usually breaking from much smaller deformations",
+  "book.fantazia.entry.world.fantazium.page.3" : "Fantazium ore can be found underground among many other ores, but unless one gets rid of all the stone and other unwanted impurities in it, the ore is not of much use, as most other elements make it unable to change and adapt to its current purpose"
 }

@@ -2,13 +2,13 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_data;
 
 
 import com.google.common.collect.Maps;
+import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
+import net.arkadiyhimself.fantazia.api.attachment.IHolderManager;
+import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.StuckHatchetHolder;
-import net.arkadiyhimself.fantazia.api.type.entity.IBasicHolder;
-import net.arkadiyhimself.fantazia.api.type.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.api.type.entity.IHolderManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;

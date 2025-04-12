@@ -4,9 +4,9 @@ import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellInstance;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
-import net.arkadiyhimself.fantazia.api.FantazicRegistries;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ICurioListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.api.type.entity.ICurioListener;
+import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.core.Holder;
@@ -100,6 +100,11 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
 
     public boolean tryToUse(Holder<AbstractSpell> spellHolder) {
         return getOrCreate(spellHolder).attemptCast();
+    }
+
+    public boolean tryToCast(Holder<AbstractSpell> spellHolder) {
+        SpellInstance instance = getOrCreate(spellHolder);
+        return instance.isAvailable() && instance.attemptCast();
     }
 
     public boolean hasSpell(Holder<AbstractSpell> spellHolder) {

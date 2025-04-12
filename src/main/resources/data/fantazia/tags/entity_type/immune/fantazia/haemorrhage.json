@@ -1,18 +1,5 @@
 {
   "values": [
-    "minecraft:skeleton",
-    "minecraft:skeleton_horse",
-    "minecraft:warden",
-    "minecraft:wither_skeleton",
-    "minecraft:slime",
-    "minecraft:magma_cube",
-    "minecraft:stray",
-    "minecraft:iron_golem",
-    "minecraft:snow_golem",
-    "minecraft:vex",
-    "minecraft:allay",
-    "minecraft:slime",
-    "minecraft:magma_cube",
     "minecraft:shulker",
     "minecraft:guardian",
     "minecraft:elder_guardian"

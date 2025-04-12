@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "corail_woodcutter"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "fantazia"
+    },
+    {
+      "type": "neoforge:item_exists",
+      "item": "fantazia:wooden_hatchet"
+    }
+  ],
+  "type": "corail_woodcutter:woodcutting",
+  "ingredient": {
+    "tag": "minecraft:logs"
+  },
+  "result": {
+    "id": "fantazia:wooden_hatchet",
+    "count": 4
+  }
+}

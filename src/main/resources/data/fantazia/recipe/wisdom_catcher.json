@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:gold_ingot"
+    },
+    "B": {
+      "item": "fantazia:fantazium_ingot"
+    },
+    "H": {
+      "item": "minecraft:glass_bottle"
+    }
+  },
+  "pattern": [
+    "#B#",
+    "#B#",
+    " H "
+  ],
+  "result": {
+    "count": 1,
+    "id": "fantazia:wisdom_catcher"
+  }
+}

@@ -42,7 +42,7 @@ public class StaminaHolder extends PlayerAbilityHolder {
     @Override
     public void tick() {
         if (!getPlayer().isSprinting()) delay = Math.max(0, delay - 1);
-        else wasteStamina(0.0125f, true, 10);
+        else wasteStamina(0.00625f, true, 10);
         if (delay <= 0) stamina = Math.min(getMaxStamina(), stamina + getStaminaRegen());
     }
 

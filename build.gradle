@@ -92,9 +92,7 @@ configurations {
 }
 
 dependencies {
- //   implementation "software.bernie.geckolib:geckolib-forge-${minecraft_version}:${gecko_lib_version}"
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_anim}"
- //   runtimeOnly "io.github.kosmx.bendy-lib:bendy-lib-forge:${bendy_lib_version}"
     compileOnly "vazkii.patchouli:Patchouli:${patchouly_version}:api"
     runtimeOnly "vazkii.patchouli:Patchouli:${patchouly_version}"
     runtimeOnly "curse.maven:adorned-1036809:${adorned_version}"

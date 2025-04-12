@@ -57,6 +57,7 @@ public class AncientFlameBlock extends BaseFireBlock {
     private static final VoxelShape DOWN_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
     private final float DAMAGE;
     private final Map<BlockState, VoxelShape> shapesCache;
+
     public AncientFlameBlock(Properties properties) {
         super(properties, 3f);
         this.DAMAGE = 3f;
@@ -74,12 +75,12 @@ public class AncientFlameBlock extends BaseFireBlock {
         int i = state.getValue(AGE);
         state.setValue(AGE, i + 1);
 
-        this.checkBurnOut(level, pos.east(), 300 + k, random, i, Direction.WEST);
-        this.checkBurnOut(level, pos.west(), 300 + k, random, i, Direction.EAST);
-        this.checkBurnOut(level, pos.below(), 250 + k, random, i, Direction.UP);
-        this.checkBurnOut(level, pos.above(), 250 + k, random, i, Direction.DOWN);
-        this.checkBurnOut(level, pos.north(), 300 + k, random, i, Direction.SOUTH);
-        this.checkBurnOut(level, pos.south(), 300 + k, random, i, Direction.NORTH);
+        this.checkBurnOut(level, pos.east(),300 + k, random, i, Direction.WEST);
+        this.checkBurnOut(level, pos.west(),300 + k, random, i, Direction.EAST);
+        this.checkBurnOut(level, pos.below(),250 + k, random, i, Direction.UP);
+        this.checkBurnOut(level, pos.above(),250 + k, random, i, Direction.DOWN);
+        this.checkBurnOut(level, pos.north(),300 + k, random, i, Direction.SOUTH);
+        this.checkBurnOut(level, pos.south(),300 + k, random, i, Direction.NORTH);
     }
 
     @Override
@@ -136,6 +137,7 @@ public class AncientFlameBlock extends BaseFireBlock {
         if (blockState.getValue(WEST)) voxelshape = Shapes.or(voxelshape, WEST_AABB);
         return voxelshape.isEmpty() ? DOWN_AABB : voxelshape;
     }
+
     public BlockState getStateForPlacement(BlockGetter pLevel, BlockPos pPos) {
         BlockPos blockpos = pPos.below();
         BlockState blockstate = pLevel.getBlockState(blockpos);
@@ -160,8 +162,6 @@ public class AncientFlameBlock extends BaseFireBlock {
             BlockState blockstate = level.getBlockState(pos);
             blockstate.onCaughtFire(level, pos, face, null);
             if (random.nextInt(age + 10) > 5) level.removeBlock(pos, false);
-
         }
-
     }
 }

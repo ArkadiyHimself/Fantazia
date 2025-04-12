@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.data.spawn;
 
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
-import net.arkadiyhimself.fantazia.api.FantazicRegistries;
+import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.util.library.pseudorandom.PSERANInstance;
 import net.minecraft.core.Holder;

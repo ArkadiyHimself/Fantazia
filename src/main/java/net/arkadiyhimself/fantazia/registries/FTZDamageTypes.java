@@ -19,4 +19,5 @@ public interface FTZDamageTypes {
 
     private static ResourceKey<DamageType> register(String name) {
         return ResourceKey.create(Registries.DAMAGE_TYPE, Fantazia.res(name));
-    }}
+    }
+}

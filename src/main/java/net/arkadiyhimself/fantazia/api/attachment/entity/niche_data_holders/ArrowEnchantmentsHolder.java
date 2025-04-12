@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.type.entity.IBasicHolder;
+import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;

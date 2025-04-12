@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "fantazia:obscure_planks"
+    },
+    "B": {
+      "item": "minecraft:paper"
+    },
+    "Y": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "Y#Y",
+    "#B#",
+    "Y#Y"
+  ],
+  "result": {
+    "count": 1,
+    "id": "fantazia:fantazic_painting"
+  }
+}

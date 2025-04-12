@@ -39,20 +39,24 @@ public class ComplexHierarchy<T> extends MonoHierarchy<T> {
      * The index of a sub-list contained by this list is a «rank» of all elements the sub-list contains
      */
     private final List<List<T>> Ranks = Lists.newArrayList();
+
     public ComplexHierarchy(@NotNull T MAIN) {
         super(MAIN);
         ALL.add(MAIN);
         getOrCreateRanks(0).add(MAIN);
         getOrCreateChildren(MAIN);
     }
+
     @Override
     public @Nullable T getParent(T t) {
         return ChildToParent.get(t);
     }
+
     @Override
     public boolean contains(T t) {
         return ALL.contains(t);
     }
+
     @Override
     public <M> ComplexHierarchy<M> transform(@NotNull Function<T, M> transformer) throws HierarchyException {
         M main = transformer.apply(getMainElement());
@@ -106,6 +110,7 @@ public class ComplexHierarchy<T> extends MonoHierarchy<T> {
         if (Ranks.size() - 1 < i) Ranks.add(Lists.newArrayList());
         return Ranks.get(i);
     }
+
     public void addElement(T parent, T element) {
         if (!contains(parent)) throw new HierarchyException("The hierarchy does not contain this element");
         if (contains(element)) throw new HierarchyException("The hierarchy already contains this element");
@@ -114,17 +119,21 @@ public class ComplexHierarchy<T> extends MonoHierarchy<T> {
         getOrCreateRanks(getRank(parent) + 1).add(element);
         getOrCreateChildren(parent).add(element);
     }
+
     public int getRanks() {
         return Ranks.size();
     }
+
     public int getRank(T element) {
         if (!contains(element)) throw new HierarchyException("The hierarchy does not contain this element");
         for (int i = 0; i < Ranks.size(); i++) if (Ranks.get(i).contains(element)) return i;
         throw new HierarchyException("The element is not ranked...");
     }
+
     public ImmutableList<T> getRankedList(int rank) {
         return ImmutableList.copyOf(Ranks.get(rank));
     }
+
     public int size() {
         return ALL.size();
     }

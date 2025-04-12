@@ -1,0 +1,13 @@
+// 1.21.1	2025-04-12T18:24:54.138764	Tags for minecraft:item mod id fantazia
+5e10c2ee0e01cd4d0d7921acd051904303e11432 data/curios/tags/item/dashstone.json
+81fdfc10440c465b0a77577f0f19ac96df7ab340 data/curios/tags/item/passivecaster.json
+51eb7b927bc228839c7ca872e0e5bba458855cb8 data/curios/tags/item/spellcaster.json
+5d5c47cc045d34f55ef726601450d7a9aad56035 data/fantazia/tags/item/enchantable/hatchet.json
+07a11b431402424368fa5351f5e9f7f763727316 data/fantazia/tags/item/fantazium_ores.json
+af65634e9e2e47b165480a6f2a8dad34c406653f data/fantazia/tags/item/hatchets.json
+4baeccdc9cf5331d0de93887d1e03910cb815bf2 data/fantazia/tags/item/melee_block.json
+d9fa8492b3cf95f697b9823051abd6f56771b81b data/fantazia/tags/item/no_disintegration.json
+5805ba3d0e150b94b847c5564da562de572f303e data/fantazia/tags/item/obscure_logs.json
+4945fdd99f77a0fd74762ab4d49e8f26e7c1a593 data/minecraft/tags/item/beacon_payment_items.json
+6ed38f069bed35d7b9c4b2edbd32f5c7d18d7c3c data/minecraft/tags/item/boats.json
+1020eec7504d2b15166d785e840a59a48dfa26d6 data/minecraft/tags/item/chest_boats.json

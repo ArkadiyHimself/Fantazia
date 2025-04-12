@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "fantazium_ingot",
+  "ingredients": [
+    {
+      "item": "fantazia:fantazium_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "fantazia:fantazium_ingot"
+  }
+}

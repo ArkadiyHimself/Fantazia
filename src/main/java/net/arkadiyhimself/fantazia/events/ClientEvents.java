@@ -64,7 +64,6 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Quaternionf;
-import top.theillusivec4.curios.api.event.SlotModifiersUpdatedEvent;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -95,7 +94,6 @@ public class ClientEvents {
         GuiGraphics guiGraphics = event.getGuiGraphics();
         PoseStack poseStack = event.getGuiGraphics().pose();
         ResourceLocation overlay = event.getName();
-
 
         FrozenEffect frozenEffect = LivingEffectGetter.takeHolder(player, FrozenEffect.class);
         if (frozenEffect != null) {
@@ -313,7 +311,6 @@ public class ClientEvents {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(FTZMobEffects.DEAFENED)) {
             Optional<Holder.Reference<SoundEvent>> soundEvent = BuiltInRegistries.SOUND_EVENT.getHolder(event.getOriginalSound().getLocation());
             if (soundEvent.isEmpty()) return;
-
             if (!FTZSoundEventTags.hasTag(soundEvent.get(), FTZSoundEventTags.NOT_MUTED)) event.setSound(null);
         }
     }

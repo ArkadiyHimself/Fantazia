@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.tags;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
-import net.arkadiyhimself.fantazia.api.FantazicRegistries;
+import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.minecraft.tags.TagKey;
 
 public interface FTZHealingTypeTags {

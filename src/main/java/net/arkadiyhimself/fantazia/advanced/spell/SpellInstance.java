@@ -4,17 +4,13 @@ import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
-import net.arkadiyhimself.fantazia.registries.FTZAttributes;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.NotNull;
@@ -87,13 +83,13 @@ public class SpellInstance implements INBTSerializable<CompoundTag> {
     }
 
     public boolean attemptCast() {
-        if (this.recharge > 0) return false;
+        if (this.recharge > 0 || livingEntity instanceof Player player && !PlayerAbilityGetter.wasteMana(player, spell.value().getManacost())) return false;
 
         boolean flag = false;
 
         if (this.getSpell().value() instanceof SelfSpell selfSpell) flag = SpellHelper.trySelfSpell(livingEntity, selfSpell, false);
         else if (this.getSpell().value() instanceof TargetedSpell<?> targetedSpell) flag = SpellHelper.tryTargetedSpell(livingEntity, targetedSpell);
-        else if (this.getSpell().value() instanceof PassiveSpell) flag = !(livingEntity instanceof Player player) || PlayerAbilityGetter.wasteMana(player, spell.value().getManacost());
+        else if (this.getSpell().value() instanceof PassiveSpell passiveSpell) flag = SpellHelper.tryPassiveSpell(livingEntity, passiveSpell);
 
         if (flag) putOnRecharge();
 

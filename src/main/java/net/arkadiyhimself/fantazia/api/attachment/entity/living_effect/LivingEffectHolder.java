@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect;
 
-import net.arkadiyhimself.fantazia.api.type.entity.ILivingEffect;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

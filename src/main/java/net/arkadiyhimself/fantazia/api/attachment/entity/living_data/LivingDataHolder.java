@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.living_data;
 
-import net.arkadiyhimself.fantazia.api.type.entity.IBasicHolder;
+import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;

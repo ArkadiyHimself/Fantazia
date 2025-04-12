@@ -24,7 +24,7 @@ public class Fantazia {
     public static final Logger LOGGER = LogUtils.getLogger();
     public static final Random RANDOM = new Random();
     public static final boolean DEVELOPER_MODE = false;
-    private static final CustomItemRenderer CUSTOM_RENDERER = new CustomItemRenderer();
+    private static CustomItemRenderer CUSTOM_RENDERER = null;
 
     public Fantazia(IEventBus modEventBus, ModContainer modContainer) {
         FantazicConfig.setup(modContainer);
@@ -48,9 +48,11 @@ public class Fantazia {
         FTZSoundEvents.register(modEventBus);
         FTZStructureTypes.register(modEventBus);
         FTZPotions.register(modEventBus);
+        FTZBlockEntityTypes.register(modEventBus);
     }
 
     public static BlockEntityWithoutLevelRenderer getItemsRenderer() {
+        if (CUSTOM_RENDERER == null) CUSTOM_RENDERER = new CustomItemRenderer();
         return CUSTOM_RENDERER;
     }
 

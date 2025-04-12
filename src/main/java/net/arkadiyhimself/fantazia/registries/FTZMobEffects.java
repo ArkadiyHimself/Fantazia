@@ -60,7 +60,7 @@ public class FTZMobEffects {
 
     private static final BiConsumer<LivingEntity, Integer> electrocutedTick = ((livingEntity, integer) -> {
         DamageSourcesHolder damageSourcesHolder = LevelAttributesHelper.getDamageSources(livingEntity.level());
-        if (damageSourcesHolder != null && (livingEntity.tickCount & 10) == 0) livingEntity.hurt(damageSourcesHolder.electric(), 1.5f + integer * 0.75f);
+        if (damageSourcesHolder != null && (livingEntity.tickCount & 10) == 0) livingEntity.hurt(damageSourcesHolder.electric(), 1f + integer * 0.25f);
         for (int i = 0; i < Math.sqrt(integer * 1.5 + 3); i++) VisualHelper.randomEntityChasingParticle(livingEntity, ((entity, vec3) -> new EntityChasingParticleOption<>(entity.getId(), vec3, FTZParticleTypes.ELECTRO.random())), 0.65f);
     });
 
@@ -115,14 +115,14 @@ public class FTZMobEffects {
         }
 
         @NotNull
-        private static TagKey<EntityType<?>> getWhiteList(Holder<MobEffect> mobEffect) {
+        public static TagKey<EntityType<?>> getWhiteList(Holder<MobEffect> mobEffect) {
             ResourceLocation resLoc = BuiltInRegistries.MOB_EFFECT.getKey(mobEffect.value());
             if (resLoc == null) return create("empty");
             return create("affected/" + resLoc.getNamespace() + "/" + resLoc.getPath());
         }
 
         @NotNull
-        private static TagKey<EntityType<?>> getBlackList(Holder<MobEffect> mobEffect) {
+        public static TagKey<EntityType<?>> getBlackList(Holder<MobEffect> mobEffect) {
             ResourceLocation resLoc = BuiltInRegistries.MOB_EFFECT.getKey(mobEffect.value());
             if (resLoc == null) return create("empty");
             return create("immune/" + resLoc.getNamespace() + "/" + resLoc.getPath());

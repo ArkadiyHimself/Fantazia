@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.LootTableModifiersHolder;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.PlayerData;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.StuffHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -42,8 +42,8 @@ public class FantazicLootModifier extends LootModifier {
         if (!(entity instanceof Player player)) return generatedLoot;
 
         PlayerAbilityGetter.acceptConsumer(player, LootTableModifiersHolder.class, lootTableModifiersHolder -> lootTableModifiersHolder.attemptLoot(generatedLoot, id));
-        if (!PlayerData.hasPersistentTag(player, "LootedFirstDashstone") && chest) {
-            PlayerData.setPersistentBoolean(player, "LootedFirstDashstone");
+        if (!StuffHelper.hasPersistentTag(player, "LootedFirstDashstone") && chest) {
+            StuffHelper.setPersistentBoolean(player, "LootedFirstDashstone");
             generatedLoot.add(new ItemStack(FTZItems.DASHSTONE1.get()));
         }
 

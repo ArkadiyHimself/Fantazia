@@ -1,16 +1,18 @@
 {
-  "replace": false,
+  "replace": true,
   "values": [
-    "fantazia:mystic_mirror",
-    "fantazia:leaders_horn",
-    "fantazia:tranquil_herb",
-    "fantazia:spiral_nemesis",
-    "fantazia:bloodlust_amulet",
     "fantazia:acid_bottle",
-    "fantazia:contained_sound",
-    "fantazia:nether_heart",
     "fantazia:amplified_ice",
-    "fantazia:withers_quintessence",
-    "fantazia:optical_lens"
+    "fantazia:bloodlust_amulet",
+    "fantazia:contained_sound",
+    "fantazia:leaders_horn",
+    "fantazia:mystic_mirror",
+    "fantazia:necklace_of_clairvoyance",
+    "fantazia:nether_heart",
+    "fantazia:optical_lens",
+    "fantazia:rusty_ring",
+    "fantazia:spiral_nemesis",
+    "fantazia:tranquil_herb",
+    "fantazia:withers_quintessence"
   ]
 }

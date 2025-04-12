@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category" : "misc",
+  "pattern": [
+    "XXX",
+    "X X",
+    " H "
+  ],
+  "key": {
+    "H": {
+      "item": "fantazia:fantazium_ingot"
+    },
+    "X" : {
+      "item": "minecraft:iron_nugget"
+    }
+  },
+  "result": {
+    "id": "fantazia:necklace_of_clairvoyance"
+  },
+  "show_notification": true
+}

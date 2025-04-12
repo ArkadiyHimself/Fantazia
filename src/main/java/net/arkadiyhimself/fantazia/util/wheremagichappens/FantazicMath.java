@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 

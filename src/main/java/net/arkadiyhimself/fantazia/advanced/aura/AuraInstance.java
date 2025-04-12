@@ -2,13 +2,13 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.dynamicattributemodifying.DynamicAttributeModifier;
-import net.arkadiyhimself.fantazia.api.FantazicRegistries;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributes;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesGetter;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
-import net.arkadiyhimself.fantazia.events.FTZHooks;
+import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
 import net.minecraft.core.BlockPos;
@@ -23,7 +23,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.compress.utils.Lists;
@@ -70,7 +69,7 @@ public class AuraInstance<T extends Entity> {
         if (owner == null || !owner.isAlive()) removed = true;
         if (removed) return;
 
-        FTZHooks.onAuraTick(this);
+        FantazicHooks.onAuraTick(this);
         this.center = owner.position();
 
         for (T entity : entitiesInside()) if (!supposedlyInside.contains(entity)) enterAura(entity);
@@ -109,7 +108,7 @@ public class AuraInstance<T extends Entity> {
     }
 
     public void enterAura(T entity) {
-        FTZHooks.onAuraEnter(this, entity);
+        FantazicHooks.onAuraEnter(this, entity);
         if (getOwner() instanceof ServerPlayer player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.literal("entered"));
         supposedlyInside.add(entity);
         if (!aura.canAffect(entity, getOwner())) return;
@@ -118,15 +117,15 @@ public class AuraInstance<T extends Entity> {
     }
 
     public void exitAura(T entity) {
-        FTZHooks.onAuraExit(this, entity);
+        FantazicHooks.onAuraExit(this, entity);
         if (getOwner() instanceof ServerPlayer player && Fantazia.DEVELOPER_MODE) player.sendSystemMessage(Component.literal("left"));
         if (!(entity instanceof LivingEntity livingEntity)) return;
         removeModifiers(livingEntity);
     }
 
-    public boolean notInside(Entity entity) {
-        if (!aura.affectedClass().isInstance(entity) || !Fantazia.DEVELOPER_MODE) return true;
-        return !supposedlyInside.contains(aura.affectedClass().cast(entity));
+    public boolean isInside(Entity entity) {
+        if (!aura.affectedClass().isInstance(entity)) return false;
+        return supposedlyInside.contains(aura.affectedClass().cast(entity));
     }
 
     public void discard() {
