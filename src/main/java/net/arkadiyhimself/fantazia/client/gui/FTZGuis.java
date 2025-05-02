@@ -9,15 +9,15 @@ import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FrozenEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FuryEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.DurationHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffectHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
+import net.arkadiyhimself.fantazia.events.ClientEvents;
 import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -33,7 +33,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -50,7 +49,6 @@ public class FTZGuis {
     private static final ResourceLocation PASSIVECASTER = Fantazia.res("textures/gui/curioslots/passivecaster.png");
     private static final ResourceLocation RECHARGE_BAR = Fantazia.res("textures/gui/curioslots/recharge_bar.png");
     private static final ResourceLocation RECHARGE_BAR_FILLING = Fantazia.res("textures/gui/curioslots/recharge_bar_filling.png");
-
 
     // aura
     private static final ResourceLocation AURA_POSITIVE = Fantazia.res("textures/gui/aura_icon/positive.png");
@@ -80,43 +78,41 @@ public class FTZGuis {
         // draw mana bar
         int x0mn = FantazicConfig.manaBarXoff.get() + 10;
         int y0mn = guiGraphics.guiHeight() + FantazicConfig.manaBarYoff.get() - 10;
-        ManaHolder manaHolder = PlayerAbilityGetter.takeHolder(player, ManaHolder.class);
+        ManaHolder manaHolder = PlayerAbilityHelper.takeHolder(player, ManaHolder.class);
         if (manaHolder != null) y0mn = FantazicGui.renderMana(manaHolder, guiGraphics, x0mn, y0mn);
 
         // draw stamina bar
         int x0st = guiGraphics.guiWidth() - 91 + FantazicConfig.staminaBarXoff.get() - 10;
         int y0st = guiGraphics.guiHeight() + FantazicConfig.staminaBarYoff.get() - 10;
-        StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(player, StaminaHolder.class);
+        StaminaHolder staminaHolder = PlayerAbilityHelper.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null) y0st = FantazicGui.renderStamina(staminaHolder, guiGraphics, x0st, y0st);
 
 
         // draw dash and double jump
         x0st += 3;
-        DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+        DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
         if (dashHolder != null && dashHolder.isAvailable()) x0st = FantazicGui.renderDashIcon(dashHolder, guiGraphics, x0st, y0st);
-        DoubleJumpHolder doubleJumpHolder = PlayerAbilityGetter.takeHolder(player, DoubleJumpHolder.class);
+        DoubleJumpHolder doubleJumpHolder = PlayerAbilityHelper.takeHolder(player, DoubleJumpHolder.class);
         if (doubleJumpHolder != null && doubleJumpHolder.isUnlocked()) FantazicGui.renderDoubleJumpIcon(doubleJumpHolder, guiGraphics, x0st, y0st);
 
         // layered barrier
         int x0 = guiGraphics.guiWidth() / 2;
         int y0 = guiGraphics.guiHeight() - 14;
-        LayeredBarrierEffect layeredBarrierEffect = LivingEffectGetter.takeHolder(player, LayeredBarrierEffect.class);
+        LayeredBarrierEffectHolder layeredBarrierEffect = LivingEffectHelper.takeHolder(player, LayeredBarrierEffectHolder.class);
         if (layeredBarrierEffect != null && layeredBarrierEffect.hasBarrier()) FantazicGui.renderBarrierLayers(layeredBarrierEffect, guiGraphics, x0, y0);
 
         // euphoria
         int x0eu = 10 + FantazicConfig.euphoriaIconXoff.get();
         int y0eu = 40 + FantazicConfig.euphoriaIconYoff.get();
-        EuphoriaHolder euphoriaHolder = PlayerAbilityGetter.takeHolder(player, EuphoriaHolder.class);
+        EuphoriaHolder euphoriaHolder = PlayerAbilityHelper.takeHolder(player, EuphoriaHolder.class);
         if (euphoriaHolder != null) FantazicGui.renderEuphoriaBar(euphoriaHolder, guiGraphics, x0eu, y0eu);
     });
 
     public static final LayeredDraw.Layer OBTAINED_WISDOM = ((guiGraphics, deltaTracker) -> {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
-        ClientValuesHolder clientValuesHolder = PlayerAbilityGetter.takeHolder(player, ClientValuesHolder.class);
-        if (clientValuesHolder == null) return;
-        int wisdom = clientValuesHolder.getLastWisdom();
-        int ticks = clientValuesHolder.getWisdomTick();
+        int wisdom = ClientEvents.lastWisdom;
+        int ticks = ClientEvents.wisdomTick;
         if (ticks <= 0 || wisdom <= 0) return;
         Component component = GuiHelper.bakeComponent("fantazia.gui.talent.wisdom_granted", new ChatFormatting[]{ChatFormatting.BLUE}, new ChatFormatting[]{ChatFormatting.DARK_BLUE}, wisdom);
         int x0 = (guiGraphics.guiWidth()) / 2;
@@ -149,7 +145,7 @@ public class FTZGuis {
         int allSlots = num1 + num2;
         for (int i = 0; i < allSlots; i++) guiGraphics.blit(CURIOSLOT, x,y + i * 20,0,0,20,20,20,20);
 
-        SpellInstancesHolder spellInstancesHolder = PlayerAbilityGetter.takeHolder(player, SpellInstancesHolder.class);
+        SpellInstancesHolder spellInstancesHolder = PlayerAbilityHelper.takeHolder(player, SpellInstancesHolder.class);
         for (int j = 0; j < num1; j++) {
             ItemStack item = spellcasters.get(j).stack();
             if (item.isEmpty()) guiGraphics.blit(SPELLCASTER, x,y + j * 20,0,0,20,20,20,20);
@@ -196,12 +192,11 @@ public class FTZGuis {
         }
     });
 
-    public static final LayeredDraw.Layer ANCIENT_FLAME = ((guiGraphics, deltaTracker) -> {
+    public static final LayeredDraw.Layer ANCIENT_FLAME = (guiGraphics, deltaTracker) -> {
         if (!Minecraft.getInstance().options.getCameraType().isFirstPerson()) return;
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null) return;
-        AncientFlameTicksHolder ancientFlameTicksHolder = LivingDataGetter.takeHolder(player, AncientFlameTicksHolder.class);
-        if (ancientFlameTicksHolder == null || !ancientFlameTicksHolder.isBurning()) return;
+        int flameTicks;
+        if (player == null || (flameTicks = player.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS).value()) <= 0) return;
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.depthFunc(519);
@@ -228,8 +223,10 @@ public class FTZGuis {
         float x2 = Mth.lerp(ratio, u1, u01);
         float y1 = Mth.lerp(ratio, v0, v01);
         float y2 = Mth.lerp(ratio, v1, v01);
+
+        float yOff = 1.25f - Math.min(1f, (flameTicks - deltaTracker.getGameTimeDeltaTicks()) / 100) * 0.15f;
         poseStack.pushPose();
-        poseStack.translate((float) guiGraphics.guiWidth() / 2, (float) guiGraphics.guiHeight(), 0);
+        poseStack.translate((float) guiGraphics.guiWidth() / 2, (float) guiGraphics.guiHeight() * yOff, 0);
         for (int i = 0; i < 2; i++) {
             poseStack.pushPose();
             poseStack.translate((float)(-(i * 2 - 1)) * guiGraphics.guiWidth() * 0.25f, 0, 0.0F);
@@ -237,10 +234,10 @@ public class FTZGuis {
             Matrix4f matrix4f = poseStack.last().pose();
 
             BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-            bufferbuilder.addVertex(matrix4f, pX1, pY1, 0f).setUv(x1, y1).setColor(1.0F, 1.0F, 1.0F, 0.9F);
-            bufferbuilder.addVertex(matrix4f, pX1, pY2, 0f).setUv(x1, y2).setColor(1.0F, 1.0F, 1.0F, 0.9F);
-            bufferbuilder.addVertex(matrix4f, pX2, pY2, 0f).setUv(x2, y2).setColor(1.0F, 1.0F, 1.0F, 0.9F);
-            bufferbuilder.addVertex(matrix4f, pX2, pY1, 0f).setUv(x2, y1).setColor(1.0F, 1.0F, 1.0F, 0.9F);
+            bufferbuilder.addVertex(matrix4f, pX1, pY1, 0f).setUv(x1, y1).setColor(1.0F, 1.0F, 1.0F, 0.2F);
+            bufferbuilder.addVertex(matrix4f, pX1, pY2, 0f).setUv(x1, y2).setColor(1.0F, 1.0F, 1.0F, 0.2F);
+            bufferbuilder.addVertex(matrix4f, pX2, pY2, 0f).setUv(x2, y2).setColor(1.0F, 1.0F, 1.0F, 0.2F);
+            bufferbuilder.addVertex(matrix4f, pX2, pY1, 0f).setUv(x2, y1).setColor(1.0F, 1.0F, 1.0F, 0.2F);
             MeshData meshData = bufferbuilder.build();
             if (meshData != null) BufferUploader.drawWithShader(meshData);
             poseStack.popPose();
@@ -250,30 +247,30 @@ public class FTZGuis {
         RenderSystem.disableBlend();
         RenderSystem.depthMask(true);
         RenderSystem.depthFunc(515);
-    });
+    };
 
     public static final LayeredDraw.Layer AURAS = ((guiGraphics, deltaTracker) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         if (Minecraft.getInstance().screen != null && !(Minecraft.getInstance().screen instanceof ChatScreen)) return;
-        List<AuraInstance<? extends Entity>> auras = AuraHelper.getAllAffectingAuras(player);
+        List<AuraInstance> auras = AuraHelper.getAllAffectingAuras(player);
         for (int i = 0; i < Math.min(auras.size(), 6); i++) {
-            AuraInstance<? extends Entity> auraInstance = auras.get(i);
-            BasicAura<? extends Entity> aura = auraInstance.getAura();
+            AuraInstance auraInstance = auras.get(i);
+            Holder<BasicAura> aura = auraInstance.getAura();
 
             boolean owned = auraInstance.getOwner() == player;
 
             int x = 2 + i * 22;
             int y = 2;
-            ResourceLocation location = owned ? AURA_OWNED : switch (aura.getType()) {
+            ResourceLocation location = owned ? AURA_OWNED : switch (aura.value().getType()) {
                 case POSITIVE -> AURA_POSITIVE;
                 case NEGATIVE -> AURA_NEGATIVE;
                 case MIXED -> AURA_MIXED;
             };
 
             guiGraphics.blit(location, x, y, 0,0,20,20,20,20);
-            ResourceLocation icon = aura.getIcon();
-            if (!aura.secondary(player, auraInstance.getOwner())) RenderSystem.setShaderColor(0.65f,0.65f,0.65f,0.65f);
+            ResourceLocation icon = BasicAura.getIcon(aura);
+            if (!aura.value().secondary(player, auraInstance.getOwner())) RenderSystem.setShaderColor(0.65f,0.65f,0.65f,0.65f);
             guiGraphics.blit(icon, x + 2, y + 2, 0,0,16,16,16,16);
             RenderSystem.setShaderColor(1f,1f,1f,1f);
         }
@@ -290,27 +287,44 @@ public class FTZGuis {
         guiGraphics.drawString(font, string1, guiGraphics.guiWidth() - width1, 0, 16755200);
         guiGraphics.drawString(font, "Tick count: " + player.tickCount, guiGraphics.guiWidth() - width1, 10, 16755200);
         guiGraphics.drawString(font, "Inv: " + player.invulnerableTime, guiGraphics.guiWidth() - width1, 20, 16755200);
+
+        MeleeBlockHolder meleeBlockHolder = PlayerAbilityHelper.takeHolder(player, MeleeBlockHolder.class);
+        if (meleeBlockHolder != null) {
+            guiGraphics.drawString(font, "Melee block: ", guiGraphics.guiWidth() - width1, 30, 16755200);
+            guiGraphics.drawString(font, "Anim: " + meleeBlockHolder.anim(), guiGraphics.guiWidth() - width1, 40, 16755200);
+            guiGraphics.drawString(font, "Cooldown: " + meleeBlockHolder.blockCooldown(), guiGraphics.guiWidth() - width1, 50, 16755200);
+            guiGraphics.drawString(font, "Block ticks: " + meleeBlockHolder.blockTicks(), guiGraphics.guiWidth() - width1, 60, 16755200);
+            guiGraphics.drawString(font, "Parry ticks: " + meleeBlockHolder.parryTicks(), guiGraphics.guiWidth() - width1, 70, 16755200);
+        }
     });
 
     public static final LayeredDraw.Layer FURY_VEINS = ((guiGraphics, deltaTracker) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
-        FuryEffect furyEffect = LivingEffectGetter.takeHolder(player, FuryEffect.class);
-        if (furyEffect == null || !furyEffect.isFurious()) return;
 
-        float veinTR = (float) furyEffect.getVeinTR() / 15;
-        float allTR = (float) furyEffect.getBackTR() / 20;
-        GuiHelper.wholeScreen(guiGraphics, VEINS, 1.0F, 0, 0, 0.4F * allTR);
-        GuiHelper.wholeScreen(guiGraphics, VEINS_BRIGHT, 1.0F, 0, 0, veinTR * allTR);
-        GuiHelper.wholeScreen(guiGraphics, FILLING, 1.0F, 0, 0, 0.45F * allTR);
-        GuiHelper.wholeScreen(guiGraphics, EDGES, 1.0F, 0, 0, 0.925F * allTR);
+        DurationHolder holder = LivingEffectHelper.getDurationHolder(player, FTZMobEffects.FURY.value());
+        if (holder == null) return;
+        int dur = holder.dur();
+        if (!holder.present()) return;
+        int value = player.tickCount % 21;
+
+        float veinTr;
+        if (value > 10) veinTr = 1f - (float) (value - 10) / 10;
+        else veinTr = 1f - (float) value / 10;
+
+        float allTR = (float) Math.min(20, dur == -1 ? 20 : dur) / 20;
+
+        GuiHelper.wholeScreen(guiGraphics, VEINS,1.0F,0,0,0.4F * allTR);
+        GuiHelper.wholeScreen(guiGraphics, VEINS_BRIGHT,1.0F,0,0,veinTr * allTR);
+        GuiHelper.wholeScreen(guiGraphics, FILLING,1.0F,0,0,0.45F * allTR);
+        GuiHelper.wholeScreen(guiGraphics, EDGES,1.0F,0,0,0.925F * allTR);
     });
 
     public static final LayeredDraw.Layer FROZEN_EFFECT = ((guiGraphics, deltaTracker) -> {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
-        FrozenEffect frozenEffect = LivingEffectGetter.takeHolder(player, FrozenEffect.class);
-        if (frozenEffect == null || frozenEffect.effectPercent() <= 0 || frozenEffect.effectPercent() < player.getPercentFrozen()) return;
-        GuiHelper.wholeScreen(guiGraphics, POWDER_SNOW_OUTLINE_LOCATION, 1f,1f,1f, frozenEffect.effectPercent());
+        DurationHolder holder = LivingEffectHelper.getDurationHolder(player, FTZMobEffects.FROZEN.value());
+        if (holder == null || holder.dur() <= 0 || holder.percent() < player.getPercentFrozen()) return;
+        GuiHelper.wholeScreen(guiGraphics, POWDER_SNOW_OUTLINE_LOCATION, 1f,1f,1f, holder.percent());
     });
 }

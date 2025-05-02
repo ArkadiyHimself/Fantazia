@@ -5,9 +5,9 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.BarrierEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.BarrierEffectHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffectHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.ChatFormatting;
@@ -18,10 +18,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -74,7 +74,7 @@ public class FantazicGui {
     private static final ResourceLocation EUPHORIA = Fantazia.res("textures/gui/euphoria/icon.png");
     private static final ResourceLocation EUPHORIA_EMPTY = Fantazia.res("textures/gui/euphoria/empty.png");
 
-    public static boolean renderStunBar(@Nullable StunEffect stunEffect, GuiGraphics guiGraphics, int x, int y) {
+    public static boolean renderStunBar(@Nullable StunEffectHolder stunEffect, GuiGraphics guiGraphics, int x, int y) {
         if (stunEffect == null || !stunEffect.renderBar()) return false;
         if (stunEffect.stunned()) {
             int filling = (int) ((float) stunEffect.duration() / (float) stunEffect.initialDuration() * 182);
@@ -88,7 +88,7 @@ public class FantazicGui {
         return true;
     }
 
-    public static boolean renderBarrierBar(@Nullable BarrierEffect barrierEffect, GuiGraphics guiGraphics, int x, int y) {
+    public static boolean renderBarrierBar(@Nullable BarrierEffectHolder barrierEffect, GuiGraphics guiGraphics, int x, int y) {
         if (barrierEffect == null || !barrierEffect.hasBarrier()) return false;
         int percent = (int) (barrierEffect.getHealth() / barrierEffect.getInitial() * 182);
         guiGraphics.blit(FantazicGui.BARS, x, y, 0, 40F, 182, 5, 182, 182);
@@ -116,42 +116,46 @@ public class FantazicGui {
         int x = leftPos - 82;
         int topPos = (screen.height - imgHGT) / 2;
 
-        List<AuraInstance<? extends Entity>> playerAuras = AuraHelper.getAllAffectingAuras(player);
+        List<AuraInstance> playerAuras = AuraHelper.getAllAffectingAuras(player);
         if (playerAuras.isEmpty()) return;
 
         if (Fantazia.DEVELOPER_MODE) guiGraphics.drawString(font, "Affecting auras: " + playerAuras.size(), 0, 180, 16777215);
         for (int i = 0; i < Math.min(playerAuras.size(), 9); i++) {
-            AuraInstance<? extends Entity> instance = playerAuras.get(i);
-            BasicAura<? extends Entity> aura = instance.getAura();
+            AuraInstance instance = playerAuras.get(i);
+            Holder<BasicAura> aura = instance.getAura();
 
             boolean owned = instance.getOwner() == player;
 
             int y = topPos + i * 22;
-            ResourceLocation location = owned ? AURA_OWNED_COMPONENT : switch (aura.getType()) {
+            ResourceLocation location = owned ? AURA_OWNED_COMPONENT : switch (aura.value().getType()) {
                 case POSITIVE -> AURA_POSITIVE_COMPONENT;
                 case NEGATIVE -> AURA_NEGATIVE_COMPONENT;
                 case MIXED -> AURA_MIXED_COMPONENT;
             };
             guiGraphics.blit(location, x, y, 0,0,80,20,80,20);
-            ResourceLocation icon = aura.getIcon();
+            ResourceLocation icon = BasicAura.getIcon(aura);
 
-            MutableComponent name = aura.getAuraComponent();
-            name.withStyle(aura.tooltipFormatting());
-            if (owned) name.withStyle(ChatFormatting.GOLD);
+            MutableComponent name = BasicAura.getAuraComponent(aura);
+            if (name != null) {
+                name.withStyle(aura.value().tooltipFormatting());
 
-            int length = font.width(name);
-            if (!instance.getAura().secondary(player, instance.getOwner())) RenderSystem.setShaderColor(0.65f,0.65f,0.65f,0.65f);
-            guiGraphics.blit(icon, x + 2, y + 2, 0,0,16,16,16,16);
-            RenderSystem.setShaderColor(1f,1f,1f,1f);
+                if (owned) name.withStyle(ChatFormatting.GOLD);
 
-            if (length > 60) guiGraphics.drawString(Minecraft.getInstance().font, name,x + 20,y + 6,0);
-            else guiGraphics.drawCenteredString(Minecraft.getInstance().font, name,x + 48,y + 6,0);
+                int length = font.width(name);
+                if (!aura.value().secondary(player, instance.getOwner()))
+                    RenderSystem.setShaderColor(0.65f, 0.65f, 0.65f, 0.65f);
+                guiGraphics.blit(icon, x + 2, y + 2, 0, 0, 16, 16, 16, 16);
+                RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
+                if (length > 60) guiGraphics.drawString(Minecraft.getInstance().font, name, x + 20, y + 6, 0);
+                else guiGraphics.drawCenteredString(Minecraft.getInstance().font, name, x + 48, y + 6, 0);
+            }
 
 
-            if (!aura.buildIconTooltip().isEmpty()) {
+            if (!BasicAura.buildIconTooltip(aura).isEmpty()) {
                 int mouseX = (int)(Minecraft.getInstance().mouseHandler.xpos() * (double)guiGraphics.guiWidth() / (double)Minecraft.getInstance().getWindow().getScreenWidth());
                 int mouseY = (int)(Minecraft.getInstance().mouseHandler.ypos() * (double)guiGraphics.guiHeight() / (double)Minecraft.getInstance().getWindow().getScreenHeight());
-                if (FantazicMath.within(x,x + 80, mouseX) && FantazicMath.within(y,y + 20, mouseY)) guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, aura.buildIconTooltip(), mouseX, mouseY);
+                if (FantazicMath.within(x,x + 80, mouseX) && FantazicMath.within(y,y + 20, mouseY)) guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, BasicAura.buildIconTooltip(aura), mouseX, mouseY);
             }
         }
     }
@@ -271,7 +275,7 @@ public class FantazicGui {
         guiGraphics.blit(icon, x0, y0,0,0,20,20,20,20);
     }
 
-    public static void renderBarrierLayers(@NotNull LayeredBarrierEffect layeredBarrierEffect, GuiGraphics guiGraphics, int x0, int y0) {
+    public static void renderBarrierLayers(@NotNull LayeredBarrierEffectHolder layeredBarrierEffect, GuiGraphics guiGraphics, int x0, int y0) {
         String amo = "×" + layeredBarrierEffect.getLayers();
         int offset = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? 92 : -120;
         guiGraphics.blit(LAYERS, x0 + offset, y0,0,0,9,9,9,9);

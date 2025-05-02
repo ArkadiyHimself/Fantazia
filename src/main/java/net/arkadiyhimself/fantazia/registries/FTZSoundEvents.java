@@ -38,6 +38,8 @@ public class FTZSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH1_RECHARGE = fixedRange("dash.dash1_recharge",1f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH2_RECHARGE = fixedRange("dash.dash2_recharge",1f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH3_RECHARGE = fixedRange("dash.dash3_recharge",1f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> DOUBLE_JUMP = fixedRange("double_jump.jump",8f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> DOUBLE_JUMP_UNLOCKED = fixedRange("double_jump.unlocked",4f);
     
     public static final DeferredHolder<SoundEvent, SoundEvent> FRAGILE_SWORD_BEGIN = fixedRange("fragile_sword.begin",8f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> FRAGILE_SWORD_LOW = fixedRange("fragile_sword.low",8f); // implemented
@@ -49,8 +51,10 @@ public class FTZSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> COMBAT_MELEE_BLOCK = fixedRange("combat.melee_block",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> COMBAT_ATTACK_STUNNED = fixedRange("combat.attack_stunned",8f); // implemented
 
-    public static final DeferredHolder<SoundEvent, SoundEvent> EFFECT_BARRIER_DAMAGE = fixedRange("effect.barrier.damage", 12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> EFFECT_BARRIER_DAMAGE = fixedRange("effect.barrier.hit",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> EFFECT_BARRIER_BREAK = fixedRange("effect.barrier.break",16f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> EFFECT_LAYERED_BARRIER_DAMAGE = fixedRange("effect.layered_barrier.hit", 12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> EFFECT_LAYERED_BARRIER_BREAK = fixedRange("effect.layered_barrier.break",16f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> EFFECT_HAEMORRHAGE_BLOODLOSS = fixedRange("effect.haemorrhage.bloodloss",8f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> EFFECT_HAEMORRHAGE_FLESH_RIPPING = fixedRange("effect.haemorrhage.flesh_ripping",10f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> EFFECT_REFLECT = fixedRange("effect.reflect",20f); // implemented
@@ -64,12 +68,24 @@ public class FTZSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> VANISH_CAST = fixedRange("spell.vanish.cast", 12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> PUPPETEER_CAST = fixedRange("spell.puppeteer.cast", 16f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> ALL_IN_CAST = fixedRange("spell.all_in.cast", 12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> ALL_IN_RECHARGE = fixedRange("spell.all_in.recharge", 8f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> KNOCK_OUT_CAST = fixedRange("spell.knock_out.cast",12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> KNOCK_OUT_IMPACT = fixedRange("spell.knock_out.impact",12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> KNOCK_OUT_RECHARGE = fixedRange("spell.knock_out.recharge",4f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> REINFORCE_BLOCK = fixedRange("spell.reinforce.block",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> BOUNCE_RECHARGE = fixedRange("spell.bounce.recharge", 8f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> LIGHTNING_STRIKE_TICK = fixedRange("spell.lightning_strike.tick", 4f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> LIGHTNING_STRIKE_RECHARGE = fixedRange("spell.lightning_strike.recharge", 8f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> REWIND_RECHARGE = fixedRange("spell.rewind.recharge",8f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> WANDERERS_SPIRIT_MARKED = fixedRange("spell.wanderers_spirit.marked",4f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> WANDERERS_SPIRIT_CAST = fixedRange("spell.wanderers_spirit.cast",4f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> SONIC_BOOM_CAST = fixedRange("spell.sonic_boom.cast",16f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> SONIC_BOOM_RECHARGE = fixedRange("spell.sonic_boom.recharge",4f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> SONIC_BOOM_CLICKING = fixedRange("spell.sonic_boom.clicking",12f);
 
     public static final DeferredHolder<SoundEvent, SoundEvent> ENTITY_FALLEN_BREATH = fixedRange("entity.fallen_breath",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> ENTITY_EVADE = fixedRange("entity.evade",8f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_APPEARED = fixedRange("entity.dashstone.appear",32f);
     public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_WIND = variableRange("entity.dashstone.wind"); // implemented
 
     public static final DeferredHolder<SoundEvent, SoundEvent> HATCHET_THROW = fixedRange("item.hatchet.throw",12f); // implemented

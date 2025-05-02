@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
+import net.arkadiyhimself.fantazia.events.ClientEvents;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -38,12 +38,13 @@ public class MixinModelBlockRenderer {
         Runnable blueRun = () -> instance.putBulkData(pose, f8, brightness, 0.55f, 0.45f, 1f, f1, f2, f3, f4); // additional aura range, if it is present
 
         LocalPlayer localPlayer = Minecraft.getInstance().player;
-        if (localPlayer == null || fantazia$cachedPos == null || !(localPlayer.getMainHandItem().getItem() instanceof AuraCasterItem auraCasterItem)) {
+
+        if (localPlayer == null || fantazia$cachedPos == null || ClientEvents.heldAuraCaster == null) {
             defaulted.run();
             return;
         }
 
-        float basicRange = auraCasterItem.getBasicAura().getRadius();
+        float basicRange = ClientEvents.heldAuraCaster.getAura().value().getRadius();
 
         AttributeInstance attributeInstance = localPlayer.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
         float add = attributeInstance == null ? 0 : (float) attributeInstance.getValue();

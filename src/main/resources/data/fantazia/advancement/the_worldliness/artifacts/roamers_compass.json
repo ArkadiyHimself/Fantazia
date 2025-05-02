@@ -1,0 +1,33 @@
+{
+  "parent": "fantazia:the_worldliness/root",
+  "criteria": {
+    "redstone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["minecraft:redstone"]
+          }
+        ]
+      }
+    },
+    "substance" : {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["fantazia:obscure_substance"]
+          }
+        ]
+      }
+    }
+  },
+  "requirements" : [
+    [
+      "redstone"
+    ],
+    [
+      "substance"
+    ]
+  ]
+}

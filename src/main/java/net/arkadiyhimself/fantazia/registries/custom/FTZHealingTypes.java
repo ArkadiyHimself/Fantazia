@@ -21,7 +21,7 @@ public interface FTZHealingTypes {
         return ResourceKey.create(FantazicRegistries.Keys.HEALING_TYPE, Fantazia.res(string));
     }
 
-    static void bootstrap(BootstrapContext<HealingType> context) {
+    static void bootStrap(BootstrapContext<HealingType> context) {
         context.register(DEVOUR, new HealingType("devour"));
         context.register(GENERIC, new HealingType("generic"));
         context.register(LIFESTEAL, new HealingType("lifesteal",0f, FTZParticleTypes.LIFESTEAL1.getId(), FTZParticleTypes.LIFESTEAL2.getId(), FTZParticleTypes.LIFESTEAL3.getId(), FTZParticleTypes.LIFESTEAL4.getId(), FTZParticleTypes.LIFESTEAL5.getId()));

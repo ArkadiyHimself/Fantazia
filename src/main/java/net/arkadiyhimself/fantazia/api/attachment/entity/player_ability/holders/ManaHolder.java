@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class ManaHolder extends PlayerAbilityHolder  {
+
     private static final float basicRegen = 0.00575f;
     private float mana = getMaxMana();
     private boolean philStone = false;
@@ -47,16 +48,15 @@ public class ManaHolder extends PlayerAbilityHolder  {
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         mana = Math.min(getMaxMana(), mana + getManaRegen());
     }
 
-    public boolean wasteMana(float amount) {
-        if (getPlayer().hasInfiniteMaterials() || philStone) return true;
-        float newAmount = mana - amount;
-        if (newAmount < 0) return false;
-        mana = newAmount;
-        return true;
+    @Override
+    public void clientTick() {}
+
+    public void wasteMana(float amount) {
+        if (!philStone) this.mana = Math.max(0, this.mana - amount);
     }
 
     public float getMana() {

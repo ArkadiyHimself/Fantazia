@@ -5,8 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.packets.stuff.AddParticleS2C;
-import net.arkadiyhimself.fantazia.packets.stuff.ChasingParticleS2C;
+import net.arkadiyhimself.fantazia.packets.stuff.AddParticlesOnEntitySC2;
+import net.arkadiyhimself.fantazia.packets.stuff.AddChasingParticlesS2C;
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -28,44 +29,33 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
+import java.util.List;
+import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
 public class VisualHelper {
 
-    public static void randomParticleOnModel(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type) {
-        randomParticleOnModel(entity, particle, type, 1f);
+    public static void particleOnEntityServer(Entity entity, @Nullable ParticleOptions particle, ParticleMovement movement, int amount, float range) {
+        if (particle == null || entity.level().isClientSide()) return;
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new AddParticlesOnEntitySC2(entity.getId(), particle, movement, amount, range));
     }
 
-    public static void randomParticleOnModel(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type, float range) {
-        if (particle == null) return;
-
-        // getting entity's height and width
-        float radius = entity.getBbWidth() * (float) 0.7;
-        float height = entity.getBbHeight();
-
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(range);
-        double x = vec3.x();
-        double z = vec3.z();
-        double y = Fantazia.RANDOM.nextDouble(height * 0.1,height * 0.8);
-
-        double x0 = entity.getX() + x;
-        double y0 = entity.getY() + y;
-        double z0 = entity.getZ() + z;
-
-        Vec3 delta = type.modify(new Vec3(x0, y0, z0), entity.getDeltaMovement());
-
-        PacketDistributor.sendToAllPlayers(new AddParticleS2C(new Vec3(x0, y0, z0).toVector3f(), delta.toVector3f(), particle));
+    public static void particleOnEntityServer(Entity entity, @Nullable ParticleOptions particle, ParticleMovement movement, int amount) {
+        particleOnEntityServer(entity, particle, movement, amount, 1f);
     }
 
-    public static void randomParticleOnModelClient(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type) {
-        randomParticleOnModelClient(entity, particle, type, 1f);
+    public static void particleOnEntityServer(Entity entity, @Nullable ParticleOptions particle, ParticleMovement movement) {
+        particleOnEntityServer(entity, particle, movement, 1, 1f);
     }
 
-    public static void randomParticleOnModelClient(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type, float range) {
+    public static void particleOnEntityClient(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type) {
+        particleOnEntityClient(entity, particle, type, 1f);
+    }
+
+    public static void particleOnEntityClient(Entity entity, @Nullable ParticleOptions particle, ParticleMovement type, float range) {
         ClientLevel clientLevel = Minecraft.getInstance().level;
         if (particle == null || clientLevel == null) return;
 
@@ -73,6 +63,7 @@ public class VisualHelper {
         float radius = entity.getBbWidth() * (float) 0.7;
         float height = entity.getBbHeight();
 
+        // the resulting position is supposed to be on a "cylinder" around entity, not sphere, which is why y coordinate is taken separately
         Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(range);
         double x = vec3.x();
         double z = vec3.z();
@@ -87,22 +78,18 @@ public class VisualHelper {
         clientLevel.addParticle(particle, x0, y0, z0, delta.x, delta.y, delta.z);
     }
 
-    public static void randomEntityChasingParticle(Entity entity, BiFunction<Entity, Vec3, EntityChasingParticleOption<?>> factory) {
-        randomEntityChasingParticle(entity, factory, 1f);
+    public static void entityChasingParticle(Supplier<EntityChasingParticleOption<?>> factory, int amount) {
+        List<ParticleOptions> options = Lists.newArrayList();
+        for (int i = 0; i < amount; i++) options.add(factory.get());
+        if (factory != null) PacketDistributor.sendToAllPlayers(new AddChasingParticlesS2C(options));
     }
 
-    public static void randomEntityChasingParticle(Entity entity, BiFunction<Entity, Vec3, EntityChasingParticleOption<?>> factory, float width) {
-        // getting entity's height and width
-        float radius = entity.getBbWidth() * (float) 0.7;
-        float height = entity.getBbHeight();
+    public static void entityChasingParticle(Entity entity, ParticleType<EntityChasingParticleOption<?>> type, int amount) {
+        entityChasingParticle(() -> new EntityChasingParticleOption<>(entity.getId(), type, entity.getBbWidth() * 0.7f, entity.getBbHeight()), amount);
+    }
 
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(width);
-        double x = vec3.x();
-        double z = vec3.z();
-        double y = Fantazia.RANDOM.nextDouble(height * 0.1, height * 0.8);
-
-        EntityChasingParticleOption<?> particleOption = factory.apply(entity, new Vec3(x, y, z));
-        PacketDistributor.sendToAllPlayers(new ChasingParticleS2C(particleOption));
+    public static void entityChasingParticle(Entity entity, ParticleType<EntityChasingParticleOption<?>> type, int amount, float width) {
+        entityChasingParticle(() -> new EntityChasingParticleOption<>(entity.getId(), type, entity.getBbWidth() * 0.7f * width, entity.getBbHeight()), amount);
     }
 
     public static <T extends ParticleOptions> void rayOfParticles(LivingEntity caster, LivingEntity target, T type) {
@@ -243,26 +230,4 @@ public class VisualHelper {
         }
     }
 
-    public enum ParticleMovement {
-        REGULAR(new Vec3(0,0,0)),
-        FALL(new Vec3(0,-0.15,0)),
-        ASCEND(new Vec3(0,0.15,0)),
-        CHASE_AND_FALL((pos, delta) -> new Vec3(delta.x() * 1.5, 0.15, delta.z() * 1.5)),
-        AWAY((pos, delta) -> new Vec3(delta.x() * (-1.5), delta.y() * -0.2 - 0.1, delta.z() * (-1.5))),
-        AWAY_AND_FALL((pos, delta) -> new Vec3(delta.x() *(-1.5), -0.15, delta.z() *(-1.5)));
-
-        private final BiFunction<Vec3, Vec3, Vec3> modifier;
-
-        ParticleMovement(BinaryOperator<Vec3> modifier) {
-            this.modifier = modifier;
-        }
-
-        ParticleMovement(Vec3 vec3) {
-            this.modifier = (pos, delta) -> vec3;
-        }
-
-        public Vec3 modify(Vec3 position, Vec3 delta) {
-            return modifier.apply(position, delta);
-        }
-    }
 }

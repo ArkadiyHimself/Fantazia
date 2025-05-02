@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.particless.particles;
 
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FuryEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -20,7 +20,7 @@ public class EntityChasingParticle extends TextureSheetParticle {
     private final Vec3 relative;
 
     public EntityChasingParticle(ClientLevel level, SpriteSet spriteSet, int id, Vec3 relative) {
-        super(level,0,0,0,0,0,0);
+        super(level,0,-128,0);
         this.spriteSet = spriteSet;
         this.xd = 0;
         this.yd = 0;
@@ -43,8 +43,7 @@ public class EntityChasingParticle extends TextureSheetParticle {
         this.zo = finalPos.z;
 
         if (!(entity instanceof LivingEntity livingEntity)) return;
-        FuryEffect furyEffect = LivingEffectGetter.takeHolder(livingEntity, FuryEffect.class);
-        if (furyEffect != null && furyEffect.isFurious()) {
+        if (LivingEffectHelper.hasEffect(livingEntity, FTZMobEffects.FURY.value())) {
             this.rCol = 1f;
             this.gCol = 0.15f;
             this.bCol = 0.15f;
@@ -54,11 +53,11 @@ public class EntityChasingParticle extends TextureSheetParticle {
 
     @Override
     public void tick() {
-        super.tick();
         this.setSpriteFromAge(spriteSet);
         if (entity == null) return;
         Vec3 pos = entity.position().add(relative);
         this.setPos(pos.x, pos.y, pos.z);
+        super.tick();
     }
 
     @Override

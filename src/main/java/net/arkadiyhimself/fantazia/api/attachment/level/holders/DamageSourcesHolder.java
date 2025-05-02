@@ -2,8 +2,9 @@ package net.arkadiyhimself.fantazia.api.attachment.level.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributeHolder;
-import net.arkadiyhimself.fantazia.entities.ShockwaveEntity;
+import net.arkadiyhimself.fantazia.entities.Shockwave;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
+import net.arkadiyhimself.fantazia.entities.magic_projectile.SimpleChasingProjectile;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -56,18 +57,23 @@ public class DamageSourcesHolder extends LevelAttributeHolder {
     public DamageSource removal() {
         return removal;
     }
+
     public DamageSource bleeding() {
         return bleeding;
     }
+
     public DamageSource frozen() {
         return frozen;
     }
+
     public DamageSource ancientFlame() {
         return ancientFlame;
     }
+
     public DamageSource ancientBurning() {
         return ancientBurning;
     }
+
     public DamageSource electric() {
         return electric;
     }
@@ -75,11 +81,17 @@ public class DamageSourcesHolder extends LevelAttributeHolder {
     public DamageSource parry(Player player) {
         return this.source(FTZDamageTypes.PARRY, player);
     }
-    public DamageSource hatchet(ThrownHatchet hatchet, @Nullable Entity owner) {
-        return this.source(FTZDamageTypes.HATCHET, hatchet, owner);
+
+    public DamageSource hatchet(ThrownHatchet hatchet) {
+        return this.source(FTZDamageTypes.HATCHET, hatchet, hatchet.getOwner());
     }
-    public DamageSource shockWave(ShockwaveEntity entity) {
+
+    public DamageSource shockWave(Shockwave entity) {
         return this.source(FTZDamageTypes.SHOCKWAVE, entity, entity.getOwner());
+    }
+
+    public DamageSource simpleChasingProjectile(SimpleChasingProjectile entity) {
+        return this.source(FTZDamageTypes.SIMPLE_CHASING_PROJECTILE, entity, entity.getOwner());
     }
 
     @Override

@@ -3,45 +3,40 @@ package net.arkadiyhimself.fantazia.advanced.spell;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
-import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.PuppeteeredEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ManaHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.PuppeteeredEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
+import net.arkadiyhimself.fantazia.entities.magic_projectile.SimpleChasingProjectile;
+import net.arkadiyhimself.fantazia.packets.IPacket;
+import net.arkadiyhimself.fantazia.packets.attachment_modify.AllInPreviousOutcomeS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_modify.WanderersSpiritLocationS2C;
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.Holder;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectCategory;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -49,11 +44,13 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.apache.commons.compress.utils.Lists;
 
-import java.util.Map;
+import java.util.List;
 
 public class Spells {
 
@@ -62,22 +59,18 @@ public class Spells {
     public static final class Self {
         private Self() {}
 
-        public static final SelfSpell ENTANGLE = new SelfSpell.Builder(0f, 50, FTZSoundEvents.ENTANGLE_CAST, null)
+        public static final SelfSpell ENTANGLE = new SelfSpell.Builder(0f, 50, FTZSoundEvents.ENTANGLE_CAST,null)
                 .conditions(entity -> entity.getHealth() <= entity.getMaxHealth() * 0.15f)
-                .onCast(entity -> LivingEffectHelper.giveBarrier(entity, 10))
+                .onCast(entity -> LivingEffectHelper.giveBarrier(entity,10))
                 .build();
 
-        public static final SelfSpell REWIND = new SelfSpell.Builder(2f, 300, FTZSoundEvents.REWIND_CAST, null)
-                .conditions(entity -> {
-                    CommonDataHolder data = LivingDataGetter.takeHolder(entity, CommonDataHolder.class);
-                    return data != null && data.writtenParameters();
-                })
+        public static final SelfSpell REWIND = new SelfSpell.Builder(2f, 300, FTZSoundEvents.REWIND_CAST, FTZSoundEvents.REWIND_RECHARGE)
+                .conditions(entity -> entity.getData(FTZAttachmentTypes.REWIND_PARAMETERS).writtenParameters())
                 .onCast(entity -> {
-                    CommonDataHolder data = LivingDataGetter.takeHolder(entity, CommonDataHolder.class);
-                    if (data == null || !data.tryReadParameters(0, entity)) return;
+                    if (entity.getData(FTZAttachmentTypes.REWIND_PARAMETERS).tryReadParameters(0, entity)) return;
                     EffectCleansing.tryCleanseAll(entity, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
                     if (!(entity.level() instanceof ServerLevel)) return;
-                    for (int i = 0; i < 12; i++) VisualHelper.randomParticleOnModel(entity, FTZParticleTypes.TIME_TRAVEL.get(), VisualHelper.ParticleMovement.REGULAR);
+                    VisualHelper.particleOnEntityServer(entity, FTZParticleTypes.TIME_TRAVEL.get(), ParticleMovement.REGULAR, 12);
                 })
                 .cleanse()
                 .build();
@@ -100,11 +93,7 @@ public class Spells {
                 .build();
 
         public static final SelfSpell VANISH = new SelfSpell.Builder(2f, 800, FTZSoundEvents.VANISH_CAST, null)
-                .conditions(owner -> {
-                    if (owner.isOnFire()) return false;
-                    AncientFlameTicksHolder holder = LivingDataGetter.takeHolder(owner, AncientFlameTicksHolder.class);
-                    return holder == null || !holder.isBurning();
-                })
+                .conditions(owner -> !owner.isOnFire() && owner.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS).value() <= 0)
                 .recharge(livingEntity -> livingEntity.level().isNight() ? 400 : 800)
                 .onCast(owner -> {
                     LivingEffectHelper.makeDisguised(owner, 300);
@@ -119,7 +108,7 @@ public class Spells {
                 })
                 .build();
 
-        public static final SelfSpell ALL_IN = new SelfSpell.Builder(1.5f, 300, FTZSoundEvents.ALL_IN_CAST, null)
+        public static final SelfSpell ALL_IN = new SelfSpell.Builder(1.5f, 300, FTZSoundEvents.ALL_IN_CAST, FTZSoundEvents.ALL_IN_RECHARGE)
                 .recharge(livingEntity -> {
                     AttributeInstance luck = livingEntity.getAttribute(Attributes.LUCK);
                     if (luck == null) return 300; // default value
@@ -131,61 +120,96 @@ public class Spells {
                     return Mth.clamp(recharge, 100, 400);
                 })
                 .onCast(owner -> {
-                    int random = Fantazia.RANDOM.nextInt(0, 4);
+                    int prev = owner.getData(FTZAttachmentTypes.ALL_IN_PREVIOUS_OUTCOME);
+                    int outcome;
 
-                    if (random == 0) {
-                        // fireworks
-                        for (int i = 0; i < 5; i++) FantazicCombat.summonRandomFirework(owner); // copied this from villager celebration code
-                    } else if (random == 1) {
-                        // yay
-                        LivingEffectHelper.effectWithoutParticles(owner, FTZMobEffects.LAYERED_BARRIER, 200, 6);
-                        LivingEffectHelper.effectWithoutParticles(owner, FTZMobEffects.MIGHT, 200, 3);
-                        EffectCleansing.tryCleanseAll(owner, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
-                    } else if (random == 2) {
-                        if (!(owner instanceof Player player)) return;
-                        PlayerAbilityGetter.acceptConsumer(player, ManaHolder.class, manaHolder -> manaHolder.regenerate(1.5f));
-
-                        SpellInstancesHolder holder = PlayerAbilityGetter.takeHolder(player, SpellInstancesHolder.class);
-                        if (holder == null) return;
-                        Map<Holder<AbstractSpell>, SpellInstance> availableSpells = holder.availableSpells();
-                        availableSpells.remove(FTZSpells.ALL_IN);
-                        RandomList<SpellInstance> spellInstances = RandomList.emptyRandomList();
-                        for (SpellInstance instance : availableSpells.values()) if (instance.recharge() > 0) spellInstances.add(instance);
-
-                        spellInstances.performOnRandom(SpellInstance::resetRecharge);
-                    } else {
-                        // oops!
-                        owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2));
-                        owner.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 100));
-                        owner.addEffect(new MobEffectInstance(FTZMobEffects.CORROSION, 100, 2));
+                    if (prev == 0) outcome = Fantazia.RANDOM.nextInt(1,5);
+                    else {
+                        RandomList<Integer> outcomes = RandomList.emptyRandomList();
+                        for (int i = 1; i < 5; i++) if (i != prev) outcomes.add(i);
+                        Integer random = outcomes.random();
+                        outcome = random == null ? 0 : random;
                     }
+
+                    if (outcome == 1) SpellHelper.allIn1(owner);
+                    else if (outcome == 2) SpellHelper.allIn2(owner);
+                    else if (outcome == 3) SpellHelper.allIn3(owner);
+                    else if (outcome == 4) SpellHelper.allIn4(owner);
+
+                    owner.setData(FTZAttachmentTypes.ALL_IN_PREVIOUS_OUTCOME, outcome);
+                    if (owner instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new AllInPreviousOutcomeS2C(outcome));
+                })
+                .extendTooltip(owner -> {
+                    List<Component> components = Lists.newArrayList();
+
+                    int prev = owner.getData(FTZAttachmentTypes.ALL_IN_PREVIOUS_OUTCOME);
+                    if (prev == 0) {
+                        ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.RED};
+                        components.add(GuiHelper.bakeComponent("spell.fantazia.all_in.extended.no_previous_outcome", text, null));
+                    } else {
+                        ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.BLUE};
+                        ChatFormatting[] pos = new ChatFormatting[]{ChatFormatting.DARK_BLUE};
+                        components.add(GuiHelper.bakeComponent("spell.fantazia.all_in.extended.previous_outcome", text, pos, prev));
+                    }
+
+                    return components;
+                })
+                .build();
+
+        public static final SelfSpell WANDERERS_SPIRIT = new SelfSpell.Builder(3f,600,null,null)
+                .conditions(owner -> owner.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION).length() > 0 || owner.isShiftKeyDown())
+                .recharge(owner -> owner.isShiftKeyDown() ? 0 : 600)
+                .onCast(owner -> {
+                    if (owner.isShiftKeyDown()) {
+                        owner.setData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION, owner.position());
+                        if (owner instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new WanderersSpiritLocationS2C(owner.position().toVector3f()));
+                    } else {
+                        Vec3 pos = owner.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION);
+                        owner.teleportTo(pos.x, pos.y, pos.z);
+                        owner.level().playSound(null, owner.blockPosition(), FTZSoundEvents.WANDERERS_SPIRIT_CAST.value(), SoundSource.PLAYERS);
+                        VisualHelper.particleOnEntityServer(owner, ParticleTypes.PORTAL, ParticleMovement.REGULAR, 16);
+                    }
+                })
+                .extendTooltip(owner -> {
+                    List<Component> extended = Lists.newArrayList();
+                    Vec3 location = owner.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION);
+                    if (location == Vec3.ZERO) {
+                        ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.RED};
+                        extended.add(GuiHelper.bakeComponent("spell.fantazia.wanderers_spirit.extended.unready", text, null));
+                    } else {
+                        ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.BLUE};
+                        ChatFormatting[] pos = new ChatFormatting[]{ChatFormatting.DARK_BLUE};
+                        extended.add(GuiHelper.bakeComponent("spell.fantazia.wanderers_spirit.extended.ready", text, pos, (int) location.x, (int) location.y, (int) location.z));
+                    }
+
+                    return extended;
                 })
                 .build();
     }
     public static final class Targeted {
+
         private Targeted() {}
 
-        public static final TargetedSpell<LivingEntity> SONIC_BOOM = new TargetedSpell.Builder<>(4.5f, 240, Holder.direct(SoundEvents.WARDEN_SONIC_BOOM), null, LivingEntity.class, 12f)
-                .conditions((caster, target) -> !(target instanceof ArmorStand))
+        public static final TargetedSpell<LivingEntity> SONIC_BOOM = new TargetedSpell.Builder<>(4.5f, 240, null, FTZSoundEvents.SONIC_BOOM_RECHARGE, LivingEntity.class,12f)
+                .conditions((caster, target) -> !(target instanceof ArmorStand) && !target.isDeadOrDying())
                 .beforeBlockChecking((caster, target) -> {
                     VisualHelper.rayOfParticles(caster, target, ParticleTypes.SONIC_BOOM);
-                    caster.level().playSound(null, caster.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.NEUTRAL);
+                    caster.level().playSound(null, caster.blockPosition(), FTZSoundEvents.SONIC_BOOM_CAST.value(), SoundSource.NEUTRAL);
                 })
                 .afterBlockChecking((caster, target) -> target.hurt(caster.level().damageSources().sonicBoom(caster), 15f))
                 .build();
 
         public static final TargetedSpell<Mob> DEVOUR = new TargetedSpell.Builder<>(5f, 2000, FTZSoundEvents.DEVOUR_CAST, null, Mob.class, 8f)
-                .conditions((caster, entity) -> entity.getMaxHealth() <= 100)
+                .conditions((caster, target) -> target.getMaxHealth() <= 100 && !target.isDeadOrDying())
                 .afterBlockChecking((caster, target) -> {
                     float healing = target.getType().is(EntityTypeTags.INVERTED_HEALING_AND_HARM) ? target.getHealth() / 8 : target.getHealth() / 4;
-                    HealingSourcesHolder healingSources = LevelAttributesHelper.getHealingSources(target.level());
-                    if (healingSources != null) AdvancedHealing.tryHeal(caster, healingSources.devour(target), healing);
+                    LevelAttributesHelper.healEntityByOther(caster, target, healing, HealingSourcesHolder::devour);
                     LivingEffectHelper.effectWithoutParticles(caster, FTZMobEffects.BARRIER,  500, (int) target.getHealth() / 4 - 1);
                     LivingEffectHelper.effectWithoutParticles(caster, FTZMobEffects.MIGHT, 500, (int) target.getHealth() / 4 - 1);
                     FantazicCombat.dropExperience(target, 5, caster);
 
-                    for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() * 15 + 15; ++i) VisualHelper.randomParticleOnModel(target, ParticleTypes.SMOKE, VisualHelper.ParticleMovement.REGULAR);
-                    for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() * 5 + 15; ++i) VisualHelper.randomParticleOnModel(target, ParticleTypes.FLAME, VisualHelper.ParticleMovement.REGULAR);
+                    VisualHelper.particleOnEntityServer(target, ParticleTypes.SMOKE, ParticleMovement.REGULAR, 15);
+                    VisualHelper.particleOnEntityServer(target, ParticleTypes.FLAME, ParticleMovement.REGULAR, 15);
 
                     target.playSound(FTZSoundEvents.DEVOUR_CAST.get());
                     target.remove(Entity.RemovalReason.KILLED);
@@ -213,9 +237,9 @@ public class Spells {
                 .build();
 
         public static final TargetedSpell<LivingEntity> BOUNCE = new TargetedSpell.Builder<>(3.5f,160, FTZSoundEvents.BOUNCE_CAST, FTZSoundEvents.BOUNCE_RECHARGE, LivingEntity.class,16f)
-                .conditions((caster, entity) -> !FantazicCombat.isInvulnerable(entity))
+                .conditions((caster, target) -> !FantazicCombat.isInvulnerable(target) && !target.isDeadOrDying())
                 .beforeBlockChecking((caster, entity) -> {
-                    for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() * 8 + 16; i++) VisualHelper.randomParticleOnModel(caster, ParticleTypes.PORTAL, VisualHelper.ParticleMovement.REGULAR);
+                    VisualHelper.particleOnEntityServer(caster, ParticleTypes.PORTAL, ParticleMovement.REGULAR, 20);
                     caster.level().playSound(null, caster.blockPosition(), FTZSoundEvents.BOUNCE_CAST.get(), SoundSource.NEUTRAL);
                 })
                 .afterBlockChecking((caster, entity) -> {
@@ -229,14 +253,14 @@ public class Spells {
                 })
                 .tickingConditions(AbstractSpell.TickingConditions.NOT_ON_COOLDOWN)
                 .ownerTick(livingEntity -> {
-                    if ((livingEntity.tickCount & 2) == 0) VisualHelper.randomParticleOnModel(livingEntity, ParticleTypes.PORTAL, VisualHelper.ParticleMovement.REGULAR);
+                    if ((livingEntity.tickCount & 2) == 0) VisualHelper.particleOnEntityServer(livingEntity, ParticleTypes.PORTAL, ParticleMovement.REGULAR);
                 })
                 .cleanse(Cleanse.MEDIUM)
                 .build();
 
         public static final TargetedSpell<LivingEntity> LIGHTNING_STRIKE = new TargetedSpell.Builder<>(5.5f, 400, null, FTZSoundEvents.LIGHTNING_STRIKE_RECHARGE, LivingEntity.class, 12f)
-                .conditions((owner, entity) -> entity.level().canSeeSky(entity.blockPosition()))
-                .afterBlockChecking((caster, entity) -> {
+                .conditions((caster,target) -> target.level().canSeeSky(target.blockPosition()) && !target.isDeadOrDying())
+                .afterBlockChecking((caster,entity) -> {
                     LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(caster.level());
                     if (lightningBolt == null) return;
                     lightningBolt.moveTo(entity.position());
@@ -246,15 +270,15 @@ public class Spells {
                 .recharge(livingEntity -> livingEntity.level().isThundering() ? 240 : 400)
                 .tickingConditions(AbstractSpell.TickingConditions.NOT_ON_COOLDOWN)
                 .ownerTick(livingEntity -> {
-                    if (livingEntity.tickCount % 3 == 0) for (int i = 0; i < 2; i++) VisualHelper.randomEntityChasingParticle(livingEntity, (entity, vec3) -> new EntityChasingParticleOption<>(entity.getId(), vec3, FTZParticleTypes.ELECTRO.random()), 0.65f);
+                    if (livingEntity.tickCount % 3 == 0) VisualHelper.entityChasingParticle(livingEntity, FTZParticleTypes.ELECTRO.random(), 2, 0.65f);
                     if (livingEntity.tickCount % 16 == 0) livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.LIGHTNING_STRIKE_TICK.get(), SoundSource.PLAYERS, 0.115f,1.05f);
                 })
                 .build();
 
-        public static final TargetedSpell<Monster> PUPPETEER = new TargetedSpell.Builder<>(6f, 1200, FTZSoundEvents.PUPPETEER_CAST, null, Monster.class, 10f)
-                .conditions((livingEntity, monster) -> monster.isInvertedHealAndHarm())
-                .afterBlockChecking((caster, monster) -> {
-                    PuppeteeredEffect puppetHolder = LivingEffectGetter.takeHolder(monster, PuppeteeredEffect.class);
+        public static final TargetedSpell<Monster> PUPPETEER = new TargetedSpell.Builder<>(6f,1200, FTZSoundEvents.PUPPETEER_CAST, null, Monster.class, 10f)
+                .conditions((caster,target) -> target.isInvertedHealAndHarm() && !target.isDeadOrDying())
+                .afterBlockChecking((caster,monster) -> {
+                    PuppeteeredEffectHolder puppetHolder = LivingEffectHelper.takeHolder(monster, PuppeteeredEffectHolder.class);
                     if (puppetHolder == null) return;
                     puppetHolder.enslave(caster);
 
@@ -264,38 +288,59 @@ public class Spells {
                     FantazicCombat.clearTarget(monster, caster);
                     caster.level().playSound(null, caster.blockPosition(), FTZSoundEvents.PUPPETEER_CAST.value(), SoundSource.NEUTRAL);
 
-                    PuppeteeredEffect masterHolder = LivingEffectGetter.takeHolder(caster, PuppeteeredEffect.class);
+                    PuppeteeredEffectHolder masterHolder = LivingEffectHelper.takeHolder(caster, PuppeteeredEffectHolder.class);
                     if (masterHolder != null) masterHolder.givePuppet(monster.getUUID());
+                })
+                .build();
+
+        public static final TargetedSpell<LivingEntity> KNOCK_OUT = new TargetedSpell.Builder<>(4f,300, null, FTZSoundEvents.KNOCK_OUT_RECHARGE, LivingEntity.class, 12f)
+                .conditions((caster, target) -> !target.isDeadOrDying())
+                .beforeBlockChecking((owner, target) -> owner.level().playSound(null, owner.blockPosition(), FTZSoundEvents.KNOCK_OUT_CAST.value(), SoundSource.AMBIENT))
+                .afterBlockChecking((caster,target) -> {
+                    Level level = caster.level();
+                    SimpleChasingProjectile projectile = new SimpleChasingProjectile(level, caster,"knock_out",100,6f / 20,12785985);
+                    projectile.addParticle(ParticleTypes.CRIT);
+                    projectile.setNeedsTarget(true);
+                    projectile.setTarget(target);
+                    projectile.setPos(caster.getEyePosition());
+                    projectile.setDestroyedByCollision(true);
+                    projectile.setCanBeDeflected(true);
+                    projectile.setMeleeBlocked(true);
+                    level.addFreshEntity(projectile);
                 })
                 .build();
     }
 
     public static final class Passive {
 
-        private Passive() {
-        }
+        private Passive() {}
 
-        public static final PassiveSpell REFLECT = new PassiveSpell.Builder(1.5f, 200, FTZSoundEvents.EFFECT_REFLECT, null).build();
-        public static final PassiveSpell DAMNED_WRATH = new PassiveSpell.Builder(0f, 600, FTZSoundEvents.DAMNED_WRATH, null)
+        public static final PassiveSpell REFLECT = new PassiveSpell.Builder(1.5f,200, FTZSoundEvents.EFFECT_REFLECT, null)
+                .onActivation(owner -> {
+                    if (owner instanceof ServerPlayer serverPlayer) IPacket.mirrorReflect(serverPlayer);
+                })
+                .build();
+        public static final PassiveSpell DAMNED_WRATH = new PassiveSpell.Builder(0f,600, FTZSoundEvents.DAMNED_WRATH, null)
                 .onActivation(owner -> {
                     EffectCleansing.tryCleanseAll(owner, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
-                    LivingEffectHelper.makeFurious(owner, 200);
-                    LivingEffectHelper.giveBarrier(owner, 20);
-                    if (owner instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(FTZSoundEvents.DAMNED_WRATH.get()));
+                    LivingEffectHelper.makeFurious(owner,200);
+                    LivingEffectHelper.giveBarrier(owner,20);
+                    if (owner instanceof ServerPlayer serverPlayer) IPacket.soundForUI(serverPlayer, FTZSoundEvents.DAMNED_WRATH.value());
                 })
                 .cleanse(Cleanse.MEDIUM).build();
         public static final PassiveSpell SHOCKWAVE = new PassiveSpell.Builder(0.8f, 0, null, null).build();
         public static final PassiveSpell SUSTAIN = new PassiveSpell.Builder(0f, 0, null, null)
+                .uponEquipping(owner -> owner.removeEffect(MobEffects.WITHER))
                 .ownerTick(owner -> {
                     DamageSourcesHolder holder = LevelAttributesHelper.getDamageSources(owner.level());
                     if (holder == null || owner instanceof Player player && player.getAbilities().invulnerable) return;
-                    owner.hurt(holder.removal(), 0.125f / 20);
-                    if ((owner.tickCount & 2) == 0)
-                        VisualHelper.randomEntityChasingParticle(owner, (entity, vec3) -> new EntityChasingParticleOption<>(entity.getId(), vec3, FTZParticleTypes.WITHER.value()), 0.65f);
+                    owner.hurt(holder.removal(),0.125f / 20);
+                    if ((owner.tickCount & 2) == 0) VisualHelper.entityChasingParticle(owner, FTZParticleTypes.WITHER.value(), 1,0.75f);
                 }).cleanse().build();
         public static final PassiveSpell REINFORCE = new PassiveSpell.Builder(0.25f, 0, null, null)
                 .onActivation(owner -> {
-                    for (int i = 0; i < 10; i++) VisualHelper.randomParticleOnModelClient(owner, ParticleTypes.DAMAGE_INDICATOR, VisualHelper.ParticleMovement.REGULAR);
+                    VisualHelper.particleOnEntityServer(owner, ParticleTypes.SMOKE, ParticleMovement.REGULAR, 10);
+                    owner.level().playSound(null, owner.blockPosition(), FTZSoundEvents.REINFORCE_BLOCK.value(), SoundSource.AMBIENT);
                 })
                 .build();
     }

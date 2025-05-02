@@ -9,7 +9,6 @@ import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +18,7 @@ import java.util.Map;
 
 public class OwnedAurasHolder extends PlayerAbilityHolder implements ICurioListener {
 
-    private final Map<AuraCasterItem, AuraInstance<? extends Entity>> curioAuras = Maps.newHashMap();
+    private final Map<AuraCasterItem, AuraInstance> curioAuras = Maps.newHashMap();
 
     public OwnedAurasHolder(Player player) {
         super(player, Fantazia.res("owned_auras"));
@@ -36,7 +35,7 @@ public class OwnedAurasHolder extends PlayerAbilityHolder implements ICurioListe
 
     @Override
     public void onCurioEquip(ItemStack stack) {
-        if (stack.getItem() instanceof AuraCasterItem caster && !curioAuras.containsKey(caster)) curioAuras.put(caster, new AuraInstance<>(getPlayer(), caster.getBasicAura()));
+        if (stack.getItem() instanceof AuraCasterItem caster && !curioAuras.containsKey(caster)) curioAuras.put(caster, new AuraInstance(getPlayer(), caster.getAura()));
     }
 
     @Override

@@ -1,7 +1,8 @@
 package net.arkadiyhimself.fantazia.items.casters;
 
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -23,7 +24,7 @@ public class SpellCasterItem extends Item {
     }
 
     public boolean tryCast(@NotNull ServerPlayer serverPlayer) {
-        SpellInstancesHolder spellInstancesHolder = PlayerAbilityGetter.takeHolder(serverPlayer, SpellInstancesHolder.class);
+        SpellInstancesHolder spellInstancesHolder = PlayerAbilityHelper.takeHolder(serverPlayer, SpellInstancesHolder.class);
         return spellInstancesHolder != null && spellInstancesHolder.tryToUse(getSpell());
     }
 
@@ -33,7 +34,10 @@ public class SpellCasterItem extends Item {
 
     public List<Component> buildTooltip() {
         List<Component> components = Lists.newArrayList();
-        components.addAll(getSpell().value().itemTooltip(null));
+
+        if (spell.value() instanceof SelfSpell) components.addAll(SelfSpell.itemTooltip(spell));
+        else components.addAll(getSpell().value().itemTooltip(null));
+
         return components;
     }
 }

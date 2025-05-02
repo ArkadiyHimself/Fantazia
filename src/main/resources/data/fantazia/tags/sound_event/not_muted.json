@@ -14,6 +14,7 @@
     "fantazia:ui.damned_wrath",
     "fantazia:ui.doomed",
     "fantazia:ui.undoomed",
-    "fantazia:ui.denied"
+    "fantazia:ui.denied",
+    "fantazia:spell.sonic_boom.cast"
   ]
 }

@@ -160,7 +160,24 @@
       }
     ]
   },
-
+  "double_jump.jump": {
+    "subtitle" : "fantazia.subtitles.double_jump.jump",
+    "sounds" : [
+      {
+        "name" : "fantazia:double_jump/jump",
+        "stream" : false
+      }
+    ]
+  },
+  "double_jump.unlocked": {
+    "subtitle" : "fantazia.subtitles.double_jump.unlocked",
+    "sounds" : [
+      {
+        "name" : "fantazia:double_jump/unlocked",
+        "stream" : false
+      }
+    ]
+  },
   "fragile_sword.begin": {
     "subtitle" : "fantazia.subtitles.fragile_blade.begin",
     "sounds": [
@@ -234,20 +251,19 @@
       }
     ]
   },
-
-  "effect.barrier.damage" : {
-    "subtitle": "fantazia.subtitles.effect.barrier.damage",
+  "effect.barrier.hit" : {
+    "subtitle": "fantazia.subtitles.effect.barrier.hit",
     "sounds": [
       {
-        "name" : "fantazia:mob_effect/barrier/barrier_hit1",
+        "name" : "fantazia:mob_effect/barrier/hit1",
         "stream" : false
       },
       {
-        "name" : "fantazia:mob_effect/barrier/barrier_hit2",
+        "name" : "fantazia:mob_effect/barrier/hit2",
         "stream" : false
       },
       {
-        "name" : "fantazia:mob_effect/barrier/barrier_hit3",
+        "name" : "fantazia:mob_effect/barrier/hit3",
         "stream" : false
       }
     ]
@@ -256,7 +272,29 @@
     "subtitle": "fantazia.subtitles.effect.barrier.break",
     "sounds": [
       {
-        "name" : "fantazia:mob_effect/barrier/barrier_break",
+        "name" : "fantazia:mob_effect/barrier/break",
+        "stream" : false
+      }
+    ]
+  },
+  "effect.layered_barrier.hit" : {
+    "subtitle": "fantazia.subtitles.effect.layered_barrier.hit",
+    "sounds": [
+      {
+        "name" : "fantazia:mob_effect/layered_barrier/hit1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:mob_effect/layered_barrier/hit2",
+        "stream" : false
+      }
+    ]
+  },
+  "effect.layered_barrier.break" : {
+    "subtitle": "fantazia.subtitles.effect.layered_barrier.break",
+    "sounds": [
+      {
+        "name" : "fantazia:mob_effect/layered_barrier/break",
         "stream" : false
       }
     ]
@@ -345,7 +383,16 @@
     "subtitle": "fantazia.subtitles.spell.rewind.cast",
     "sounds": [
       {
-        "name" : "fantazia:spell/rewind",
+        "name" : "fantazia:spell/rewind/cast",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.rewind.recharge" : {
+    "subtitle" : "fantazia.subtitles.spell.rewind.recharge",
+    "sounds" : [
+      {
+        "name": "fantazia:spell/rewind/recharge",
         "stream" : false
       }
     ]
@@ -428,7 +475,129 @@
     "subtitle" : "fantazia.subtitles.spell.all_in.cast",
     "sounds" : [
       {
-        "name" : "fantazia:spell/all_in",
+        "name" : "fantazia:spell/all_in/cast",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.all_in.recharge" : {
+    "subtitle" : "fantazia.subtitles.spell.all_in.recharge",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/all_in/recharge",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.knock_out.cast" : {
+    "subtitle" : "fantazia.subtitles.spell.knock_out.cast",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/knock_out/cast",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.knock_out.impact" : {
+    "subtitle" : "fantazia.subtitles.spell.knock_out.impact",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/knock_out/impact",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.knock_out.recharge" : {
+    "subtitle" : "fantazia.subtitles.spell.knock_out.recharge",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/knock_out/recharge",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.reinforce.block" : {
+    "subtitle" : "fantazia.subtitles.spell.reinforce.block",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/reinforce_block",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.wanderers_spirit.marked": {
+    "subtitle" : "fantazia.subtitles.spell.wanderers_spirit.marked",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/wanderers_spirit/marked",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.wanderers_spirit.cast": {
+    "subtitle" : "fantazia.subtitles.spell.wanderers_spirit.cast",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/wanderers_spirit/cast",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.sonic_boom.cast" : {
+    "subtitle" : "fantazia.subtitles.spell.sonic_boom.cast",
+    "sounds" : [
+      {
+        "name" : "minecraft:mob/warden/sonic_boom1",
+        "stream" : false
+      },
+      {
+        "name" : "minecraft:mob/warden/sonic_boom2",
+        "stream" : false
+      },
+      {
+        "name" : "minecraft:mob/warden/sonic_boom3",
+        "stream" : false
+      },
+      {
+        "name" : "minecraft:mob/warden/sonic_boom4",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.sonic_boom.recharge" : {
+    "subtitle" : "fantazia.subtitles.spell.sonic_boom.recharge",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/sonic_boom_recharge",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.sonic_boom.clicking" : {
+    "subtitle" : "fantazia.subtitles.spell.sonic_boom.clicking",
+    "sounds" : [
+      {
+        "name" : "minecraft:block/sculk_sensor/sculk_clicking1",
+        "stream" : false
+      },
+      {
+        "name" : "minecraft:block/sculk_sensor/sculk_clicking2",
+        "stream" : false
+      },
+      {
+        "name" : "minecraft:block/sculk_sensor/sculk_clicking3",
+        "stream" : false
+      },
+      {
+        "name" : "minecraft:block/sculk_sensor/sculk_clicking4",
+        "stream" : false
+      },
+      {
+        "name" : "minecraft:block/sculk_sensor/sculk_clicking5",
+        "stream" : false
+      },
+      {
+        "name" : "minecraft:block/sculk_sensor/sculk_clicking6",
         "stream" : false
       }
     ]
@@ -451,6 +620,15 @@
       }
     ]
   },
+  "entity.dashstone.appear" : {
+    "subtitle": "fantazia.subtitles.entity.dashstone.appear",
+    "sounds": [
+      {
+        "name" : "fantazia:entity/dashstone/appear",
+        "stream" : false
+      }
+    ]
+  },
   "entity.dashstone.wind" : {
     "subtitle": "fantazia.subtitles.entity.dashstone.wind",
     "sounds": [
@@ -460,7 +638,6 @@
       }
     ]
   },
-
   "item.hatchet.throw" : {
     "subtitle": "fantazia.subtitles.item.hatchet_throw",
     "sounds": [

@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.DisarmEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.warden.Warden;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,8 +17,7 @@ public class MixinWarden {
     private final Warden fantazia$warden = (Warden) (Object) this;
     @Inject(at = @At("HEAD"), method = "doHurtTarget", cancellable = true)
     private void cancelAttack(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
-        DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(fantazia$warden, DisarmEffect.class);
-        StunEffect stunEffect = LivingEffectGetter.takeHolder(fantazia$warden, StunEffect.class);
-        if (disarmEffect != null && disarmEffect.renderDisarm() || stunEffect != null && stunEffect.stunned()) cir.setReturnValue(false);
+        StunEffectHolder stunEffect = LivingEffectHelper.takeHolder(fantazia$warden, StunEffectHolder.class);
+        if (LivingEffectHelper.hasEffectSimple(fantazia$warden, FTZMobEffects.DISARM.value()) || stunEffect != null && stunEffect.stunned()) cir.setReturnValue(false);
     }
 }

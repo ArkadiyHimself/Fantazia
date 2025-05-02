@@ -52,7 +52,7 @@ public record HiddenPotentialHolder(float damage, int delay) {
     }
 
     public HiddenPotentialHolder onHit(LivingDamageEvent.Post event) {
-        return event.getSource().is(FTZDamageTypes.REMOVAL) ? this : reset();
+        return event.getSource().is(FTZDamageTypes.REMOVAL) && event.getNewDamage() <= 0 ? this : reset();
     }
 
     public DAMAGE damageLevel() {
@@ -69,8 +69,6 @@ public record HiddenPotentialHolder(float damage, int delay) {
     }
 
     public HiddenPotentialHolder onAttack(boolean parry, LivingEntity victim) {
-
-
         int bonus = parry ? 2 : 1;
         DAMAGE old = damageLevel();
 

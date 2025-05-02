@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -32,7 +32,7 @@ public abstract class MixinPlayer extends LivingEntity {
 
     @Inject(at = @At(value = "HEAD"), method = "jumpFromGround", cancellable = true)
     protected void jumpFromGround(CallbackInfo ci) {
-        StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(neoForgeFantazia$player, StaminaHolder.class);
+        StaminaHolder staminaHolder = PlayerAbilityHelper.takeHolder(neoForgeFantazia$player, StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(0.35f, true)) ci.cancel();
     }
 

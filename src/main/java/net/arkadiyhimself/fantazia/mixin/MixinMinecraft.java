@@ -2,16 +2,18 @@ package net.arkadiyhimself.fantazia.mixin;
 
 import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FuryEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.VibrationListenerHolder;
-import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
+import net.arkadiyhimself.fantazia.entities.DashStone;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
+import net.arkadiyhimself.fantazia.entities.magic_projectile.AbstractMagicProjectile;
 import net.arkadiyhimself.fantazia.events.ClientEvents;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -50,18 +52,18 @@ public abstract class MixinMinecraft {
 
     @Inject(at = @At("HEAD"), method = "shouldEntityAppearGlowing", cancellable = true)
     private void glowing(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
-        if (player == null) return;
+        if (player == null || pEntity == player) return;
         if (pEntity instanceof ThrownHatchet hatchet && hatchet.getOwner() == player) cir.setReturnValue(true);
+        if (pEntity instanceof AbstractMagicProjectile projectile && projectile.getOwnerClient() == player) cir.setReturnValue(true);
         else if (pEntity instanceof LivingEntity livingEntity) {
-            FuryEffect furyEffect = LivingEffectGetter.takeHolder(livingEntity, FuryEffect.class);
-            if (furyEffect != null && furyEffect.isFurious() && player.hasLineOfSight(pEntity)) cir.setReturnValue(true);
+            if (LivingEffectHelper.hasEffect(livingEntity, FTZMobEffects.FURY.value()) && player.hasLineOfSight(pEntity)) cir.setReturnValue(true);
 
-            VibrationListenerHolder vibrationListenerHolder = PlayerAbilityGetter.takeHolder(player, VibrationListenerHolder.class);
+            VibrationListenerHolder vibrationListenerHolder = PlayerAbilityHelper.takeHolder(player, VibrationListenerHolder.class);
             if (vibrationListenerHolder != null && vibrationListenerHolder.revealed().contains(livingEntity)) cir.setReturnValue(true);
 
-            if (pEntity == ClientEvents.suitableTarget) cir.setReturnValue(true);
-        } else if (pEntity instanceof DashStoneEntity) cir.setReturnValue(true);
-        AuraInstance<? extends Entity> uncover = AuraHelper.ownedAuraInstance(player, FTZAuras.UNCOVER.value());
+            if (pEntity == ClientEvents.suitableTarget && Screen.hasShiftDown()) cir.setReturnValue(true);
+        } else if (pEntity instanceof DashStone) cir.setReturnValue(true);
+        AuraInstance uncover = AuraHelper.ownedAuraInstance(player, FTZAuras.UNCOVER);
         if (uncover != null && uncover.isInside(pEntity)) cir.setReturnValue(true);
     }
 }

@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.data.talent;
 
 import com.google.common.collect.ImmutableList;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
@@ -45,7 +45,7 @@ public class TalentHelper {
     }
 
     public static ImmutableList<ITalent> getTalents(@NotNull Player player) {
-        TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
+        TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
         return talentsHolder == null ? ImmutableList.of() : talentsHolder.getTalents();
     }
 
@@ -62,7 +62,7 @@ public class TalentHelper {
         ResourceLocation id = advancement.id();
         List<IHierarchy<ITalent>> upgradedHierarchies = Lists.newArrayList();
 
-        TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
+        TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
         if (talentsHolder == null) return;
         for (ITalent talent : TalentManager.getTalents().values()) {
             IHierarchy<ITalent> hierarchy = talent.getHierarchy();
@@ -75,7 +75,7 @@ public class TalentHelper {
     }
 
     public static int getUnlockLevel(@NotNull Player player, @NotNull ResourceLocation hierarchyLocation) {
-        TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
+        TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
         return talentsHolder == null ? 0 : talentsHolder.upgradeLevel(hierarchyLocation);
     }
 }

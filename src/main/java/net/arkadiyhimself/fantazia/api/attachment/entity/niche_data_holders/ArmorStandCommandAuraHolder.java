@@ -5,10 +5,11 @@ import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
@@ -16,10 +17,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.Optional;
+
 public class ArmorStandCommandAuraHolder implements IBasicHolder {
 
     private final ArmorStand armorStand;
-    private @Nullable AuraInstance<? extends Entity> auraInstance = null;
+    private @Nullable AuraInstance auraInstance = null;
 
     public ArmorStandCommandAuraHolder(IAttachmentHolder iAttachmentHolder) {
         this.armorStand = iAttachmentHolder instanceof ArmorStand entity ? entity : null;
@@ -33,8 +36,9 @@ public class ArmorStandCommandAuraHolder implements IBasicHolder {
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
-        if (auraInstance == null || auraInstance.getAura().getID() == null) return tag;
-        tag.putString("aura", auraInstance.getAura().getID().toString());
+        ResourceKey<? extends BasicAura> key = auraInstance == null ? null : auraInstance.getAura().getKey();
+        if (key == null) return tag;
+        tag.putString("aura", key.location().toString());
         return tag;
     }
 
@@ -42,7 +46,9 @@ public class ArmorStandCommandAuraHolder implements IBasicHolder {
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         if (!compoundTag.contains("aura") || armorStand == null) return;
         ResourceLocation resourceLocation = ResourceLocation.parse(compoundTag.getString("aura"));
-        auraInstance = new AuraInstance<>(armorStand, FantazicRegistries.AURAS.get(resourceLocation));
+        Optional<Holder.Reference<BasicAura>> holder = FantazicRegistries.AURAS.getHolder(resourceLocation);
+        if (holder.isEmpty()) return;
+        auraInstance = new AuraInstance(armorStand, holder.get().getDelegate());
     }
 
     @Override
@@ -57,9 +63,11 @@ public class ArmorStandCommandAuraHolder implements IBasicHolder {
     public void onDeath() {
         if (auraInstance != null) auraInstance.discard();
     }
-    public void setAura(BasicAura<? extends Entity> basicAura) {
-        if (armorStand != null) this.auraInstance = new AuraInstance<>(armorStand, basicAura);
+
+    public void setAura(Holder<BasicAura> basicAura) {
+        if (armorStand != null) this.auraInstance = new AuraInstance(armorStand, basicAura);
     }
+
     public static class Serializer implements IAttachmentSerializer<CompoundTag, ArmorStandCommandAuraHolder> {
 
         @Override

@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability;
 
 import com.google.common.collect.Maps;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
 import net.arkadiyhimself.fantazia.api.attachment.IHolderManager;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
@@ -46,7 +47,13 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-        for (IPlayerAbility holder : holders.values()) if (compoundTag.contains(holder.id().toString())) holder.deserializeNBT(provider, compoundTag.getCompound(holder.id().toString()));
+        try {
+            for (IPlayerAbility holder : holders.values()) {
+                if (compoundTag.contains(holder.id().toString())) holder.deserializeNBT(provider, compoundTag.getCompound(holder.id().toString()));
+            }
+        } catch (Exception e) {
+            Fantazia.LOGGER.info("Caught exception: " + e);
+        }
     }
 
     @Override
@@ -74,20 +81,19 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
         return holders.containsKey(iClass);
     }
 
-    @Override
     public CompoundTag syncSerialize() {
         CompoundTag tag = new CompoundTag();
         for (IPlayerAbility holder : holders.values()) tag.put(holder.id().toString(), holder.syncSerialize());
         return tag;
     }
 
-    @Override
     public void syncDeserialize(CompoundTag tag) {
         for (IPlayerAbility holder : holders.values()) if (tag.contains(holder.id().toString())) holder.syncDeserialize(tag.getCompound(holder.id().toString()));
     }
 
     public void tick() {
-        holders.values().forEach(IBasicHolder::tick);
+        if (getOwner().level().isClientSide()) holders.values().forEach(IBasicHolder::clientTick);
+        else holders.values().forEach(IBasicHolder::serverTick);
     }
 
     public void onHit(LivingIncomingDamageEvent event) {
@@ -126,7 +132,6 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
         putHolder(DashHolder::new);
         putHolder(DoubleJumpHolder::new);
         putHolder(MeleeBlockHolder::new);
-        putHolder(ClientValuesHolder::new);
         putHolder(ManaHolder::new);
         putHolder(StaminaHolder::new);
         putHolder(VibrationListenerHolder::new);

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -28,14 +28,14 @@ public class StunBarType extends RenderStateShard {
     private static RenderType createStunBar(RenderType.CompositeState glState) {
         return RenderType.create("stun_bar", com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, true, glState);
     }
-    public static void render(@NotNull StunEffect stunEffect, PoseStack poseStack, MultiBufferSource buffers) {
+    public static void render(@NotNull StunEffectHolder stunEffect, PoseStack poseStack, MultiBufferSource buffers) {
         float stunPercent;
         VertexConsumer stunBar = buffers.getBuffer(BAR_TEXTURE_TYPE);
         final int light = 0xF000F0;
 
         if (stunEffect.stunned()) {
             stunPercent = (float) stunEffect.duration() / (float) stunEffect.initialDuration();
-            int redColor = 160 + (int) (FantazicMath.intoSin(stunEffect.getEntity().tickCount, 12) * 45);
+            int redColor = 160 + (int) (FantazicMath.intoSin(stunEffect.getEntity().tickCount,12) * 45);
 
             // empty bar
             stunBar.addVertex(poseStack.last().pose(), -1, -0.25f, 0.003F).setColor(redColor, 255, 255, 255).setUv(0.0F, 0.5F).setLight(light);

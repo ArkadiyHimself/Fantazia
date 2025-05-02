@@ -5,13 +5,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.AbsoluteBarrierEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FuryEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class AbsoluteBarrier {
+
     public static final ResourceLocation BARRIER_LAYER = Fantazia.res("textures/entity_layers/absolute_barrier/barrier_armor.png");
     public static final ResourceLocation BARRIER_BG = Fantazia.res("textures/entity_layers/absolute_barrier/barrier_bg.png");
     public static final ResourceLocation BARRIER_LAYER_FURY = Fantazia.res("textures/entity_layers/absolute_barrier/barrier_armor_fury.png");
@@ -53,19 +53,17 @@ public class AbsoluteBarrier {
         public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
             if (pLivingEntity.isInvisible()) return;
 
-            EvasionHolder evasionHolder = LivingDataGetter.takeHolder(pLivingEntity, EvasionHolder.class);
+            EvasionHolder evasionHolder = LivingDataHelper.takeHolder(pLivingEntity, EvasionHolder.class);
             if (evasionHolder != null && evasionHolder.getIFrames() > 0) return;
 
-            AbsoluteBarrierEffect absoluteBarrierEffect = LivingEffectGetter.takeHolder(pLivingEntity, AbsoluteBarrierEffect.class);
-            if (absoluteBarrierEffect == null || !absoluteBarrierEffect.hasBarrier()) return;
+            if (!LivingEffectHelper.hasEffectSimple(pLivingEntity, FTZMobEffects.ABSOLUTE_BARRIER.value())) return;
 
             if (pLivingEntity instanceof Player player) {
-                DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+                DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
                 if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() > 2) return;
             }
 
-            FuryEffect furyEffect = LivingEffectGetter.takeHolder(pLivingEntity, FuryEffect.class);
-            boolean furious = furyEffect != null && furyEffect.isFurious();
+            boolean furious = LivingEffectHelper.hasEffect(pLivingEntity, FTZMobEffects.FURY.value());
 
             float f = (float)pLivingEntity.tickCount + pPartialTick;
             M entityModel = this.renderer.getModel();

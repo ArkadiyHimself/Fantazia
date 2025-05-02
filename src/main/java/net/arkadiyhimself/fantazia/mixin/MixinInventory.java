@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
+import net.arkadiyhimself.fantazia.events.ClientEvents;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -8,7 +8,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,15 +27,13 @@ public abstract class MixinInventory {
 
     @Inject(at = @At("HEAD"), method = "swapPaint")
     private void updateBlocks(double direction, CallbackInfo ci) {
-        Item select = getSelected().getItem();
-
         BlockPos blockPos = player.blockPosition();
         int x0 = blockPos.getX();
         int y0 = blockPos.getY();
         int z0 = blockPos.getZ();
 
-        if (select instanceof AuraCasterItem auraCasterItem) {
-            float radius = auraCasterItem.getBasicAura().getRadius();
+        if (ClientEvents.heldAuraCaster != null) {
+            float radius = ClientEvents.heldAuraCaster.getAura().value().getRadius();
 
             AttributeInstance instance = player.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
             float range = instance == null ? 0 : (float) instance.getValue();

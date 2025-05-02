@@ -5,6 +5,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.registries.FTZBlocks;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
@@ -28,7 +29,14 @@ public class FantazicRecipeProvider extends RecipeProvider {
         oreSmelting(recipeOutput, FANTAZIUM_SMELTABLES, RecipeCategory.MISC, FTZItems.FANTAZIUM_INGOT,1.5f,200,"fantazium_ingot");
         oreBlasting(recipeOutput, FANTAZIUM_SMELTABLES, RecipeCategory.MISC, FTZItems.FANTAZIUM_INGOT,2F,100,"fantazium_ingot");
         nineBlockStorageRecipes(recipeOutput, RecipeCategory.MISC, FTZItems.RAW_FANTAZIUM, RecipeCategory.BUILDING_BLOCKS, FTZBlocks.RAW_FANTAZIUM_BLOCK);
-        nineBlockStorageRecipesRecipesWithCustomUnpacking(recipeOutput, RecipeCategory.MISC, FTZItems.FANTAZIUM_INGOT, RecipeCategory.BUILDING_BLOCKS, FTZBlocks.FANTAZIUM_BLOCK, "fantazium_ingot_from_fantazium_block", "fantazium_ingot");
+        nineBlockStorageRecipesRecipesWithCustomUnpacking(
+                recipeOutput,
+                RecipeCategory.MISC,
+                FTZItems.FANTAZIUM_INGOT,
+                RecipeCategory.BUILDING_BLOCKS,
+                FTZBlocks.FANTAZIUM_BLOCK,
+                "fantazium_ingot_from_fantazium_block",
+                "fantazium_ingot");
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, FTZItems.WISDOM_CATCHER)
                 .pattern("#B#")
@@ -69,6 +77,18 @@ public class FantazicRecipeProvider extends RecipeProvider {
             SimpleCookingRecipeBuilder.generic(Ingredient.of(itemlike), pCategory, pResult, pExperience, pCookingTime, pCookingSerializer, factory).group(pGroup).unlockedBy(getHasName(itemlike), has(itemlike))
                     .save(recipeOutput, Fantazia.MODID + ":" + getItemName(pResult) + pRecipeName + "_" + getItemName(itemlike));
         }
+    }
+
+    protected static void nineBlockStorageRecipes(@NotNull RecipeOutput recipeOutput, @NotNull RecipeCategory unpackedCategory, ItemLike unpacked, @NotNull RecipeCategory packedCategory, ItemLike packed) {
+        nineBlockStorageRecipes(recipeOutput, unpackedCategory, unpacked, packedCategory, packed, getSimpleName(packed), null, getSimpleName(unpacked), null);
+    }
+
+    protected static void nineBlockStorageRecipesRecipesWithCustomUnpacking(@NotNull RecipeOutput recipeOutput, @NotNull RecipeCategory unpackedCategory, ItemLike unpacked, @NotNull RecipeCategory packedCategory, ItemLike packed, String unpackedName, @NotNull String unpackedGroup) {
+        nineBlockStorageRecipes(recipeOutput, unpackedCategory, unpacked, packedCategory, packed, getSimpleName(packed), getSimpleName(packed) ,Fantazia.MODID + ":" + unpackedName,Fantazia.MODID + ":" + unpackedGroup);
+    }
+
+    private static String getSimpleName(ItemLike itemLike) {
+        return BuiltInRegistries.ITEM.getKey(itemLike.asItem()).toString();
     }
 
     static {

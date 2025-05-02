@@ -11,7 +11,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-public class SoulParticle extends ChasingEntityParticle {
+public class SoulParticle extends MovingEntityChasingParticle {
 
     public SoulParticle(ClientLevel pLevel, SpriteSet spriteSet, int id, Vec3 relative)  {
         super(pLevel, spriteSet, id, relative);
@@ -29,10 +29,9 @@ public class SoulParticle extends ChasingEntityParticle {
 
     @Override
     public void tick() {
+        super.tick();
         fadeOut();
         rise();
-        super.tick();
-
     }
 
     private void fadeOut() {

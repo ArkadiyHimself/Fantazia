@@ -59,7 +59,7 @@ public class EffectsOnSpawnManager extends SimpleJsonResourceReloadListener {
 
         if (object.has("aura_instances")) for (Map.Entry<String, JsonElement> entry : object.getAsJsonObject("aura_instances").entrySet()) {
             ResourceLocation effectID = ResourceLocation.parse(entry.getKey());
-            Optional<Holder.Reference<BasicAura<?>>> basicAuraReference = FantazicRegistries.AURAS.getHolder(effectID);
+            Optional<Holder.Reference<BasicAura>> basicAuraReference = FantazicRegistries.AURAS.getHolder(effectID);
             if (basicAuraReference.isEmpty()) continue;
 
             double chance = entry.getValue().getAsDouble();

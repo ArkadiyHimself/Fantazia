@@ -5,14 +5,13 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ITalentL
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
-import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
+import net.arkadiyhimself.fantazia.packets.IPacket;
+import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -65,7 +64,7 @@ public class DoubleJumpHolder extends PlayerAbilityHolder implements ITalentList
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         if (recharge > 0) recharge--;
 
         if (getPlayer().isFallFlying()) {
@@ -127,7 +126,11 @@ public class DoubleJumpHolder extends PlayerAbilityHolder implements ITalentList
 
     public void unlock() {
         unlocked = true;
-        if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(SoundEvents.ZOMBIE_VILLAGER_CURE));
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.soundForUI(serverPlayer, FTZSoundEvents.DOUBLE_JUMP_UNLOCKED.value());
+    }
+
+    public void pogo() {
+        canJump = true;
     }
 
     public int getRecharge() {

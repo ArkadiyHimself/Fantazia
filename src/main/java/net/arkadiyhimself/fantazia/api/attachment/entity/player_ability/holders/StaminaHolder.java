@@ -12,8 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class StaminaHolder extends PlayerAbilityHolder {
+
     private static final float DEFAULT_DELAY = 40;
-    private static final float defaultRegen = 0.1125f;
+    private static final float DEFAULT_REGEN = 0.1125f;
+
     private float stamina = 20;
     private float delay = 0;
 
@@ -40,11 +42,14 @@ public class StaminaHolder extends PlayerAbilityHolder {
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         if (!getPlayer().isSprinting()) delay = Math.max(0, delay - 1);
         else wasteStamina(0.00625f, true, 10);
         if (delay <= 0) stamina = Math.min(getMaxStamina(), stamina + getStaminaRegen());
     }
+
+    @Override
+    public void clientTick() {}
 
     public float getMaxStamina() {
         return (float) getPlayer().getAttributeValue(FTZAttributes.MAX_STAMINA);
@@ -72,7 +77,7 @@ public class StaminaHolder extends PlayerAbilityHolder {
     }
 
     public float getStaminaRegen() {
-        float stRegen = defaultRegen;
+        float stRegen = DEFAULT_REGEN;
         FoodData data = getPlayer().getFoodData();
         if (data.getFoodLevel() >= 17.5f) {
             if (data.getSaturationLevel() >= 10) stRegen *= 1.45f;

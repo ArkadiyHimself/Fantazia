@@ -2,18 +2,16 @@ package net.arkadiyhimself.fantazia.packets.attachment_modify;
 
 import io.netty.buffer.ByteBuf;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.arkadiyhimself.fantazia.packets.IPacket;
-import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,14 +30,13 @@ public record TalentBuyingC2S(ResourceLocation location) implements IPacket {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
 
-            TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(serverPlayer, TalentsHolder.class);
+            TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(serverPlayer, TalentsHolder.class);
             if (talentsHolder == null) return;
 
             ITalent talent = TalentManager.getTalents().get(location);
             if (talent == null) return;
 
-            if (!talentsHolder.buyTalent(talent)) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(FTZSoundEvents.DENIED.get()));
-
+            if (!talentsHolder.buyTalent(talent)) IPacket.soundForUI(serverPlayer, FTZSoundEvents.DENIED.get());
         });
     }
 }

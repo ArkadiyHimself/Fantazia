@@ -55,7 +55,7 @@ public class EvasionHolder extends LivingDataHolder {
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         if (cooldown > 0) cooldown--;
         if (iFrames > 0) iFrames--;
     }

@@ -1,16 +1,14 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.FuryEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.events.ClientEvents;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -46,24 +44,22 @@ public class MixinEntity {
     private void cancelRenderFire(CallbackInfoReturnable<Boolean> cir) {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof LivingEntity livingEntity) {
-            AncientFlameTicksHolder ancientFlameTicksHolder = LivingDataGetter.takeHolder(livingEntity, AncientFlameTicksHolder.class);
-            if (ancientFlameTicksHolder != null && ancientFlameTicksHolder.isBurning()) cir.setReturnValue(false);
+            if (livingEntity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS).value() > 0) cir.setReturnValue(false);
         }
     }
 
     @Inject(at = @At("HEAD"), method = "getTeamColor", cancellable = true)
     private void teamColor(CallbackInfoReturnable<Integer> cir) {
         if (!(fantazia$entity instanceof LivingEntity livingEntity)) return;
-        FuryEffect furyEffect = LivingEffectGetter.takeHolder(livingEntity, FuryEffect.class);
-        if (furyEffect != null && furyEffect.isFurious()) cir.setReturnValue(12586510);
-        if (livingEntity == ClientEvents.suitableTarget) cir.setReturnValue(13788415);
+        if (LivingEffectHelper.hasEffect(livingEntity, FTZMobEffects.FURY.value())) cir.setReturnValue(12586510);
+        if (livingEntity == ClientEvents.suitableTarget && Screen.hasShiftDown()) cir.setReturnValue(13788415);
     }
 
-    @Inject(at = @At("HEAD"), method = "isNoGravity", cancellable = true)
-    private void setNogravity(CallbackInfoReturnable<Boolean> cir) {
+    @Inject(at = @At("HEAD"), method = "getGravity", cancellable = true)
+    private void noGravity(CallbackInfoReturnable<Double> cir) {
         if (fantazia$entity instanceof Player player) {
-            DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
-            if (dashHolder != null && dashHolder.isDashing()) cir.setReturnValue(true);
+            DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
+            if (dashHolder != null && dashHolder.isDashing()) cir.setReturnValue(0.0);
         }
     }
 }

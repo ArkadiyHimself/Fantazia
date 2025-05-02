@@ -5,6 +5,7 @@ import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -18,11 +19,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AddedAurasHolder implements IBasicHolder {
 
     private final Entity owner;
-    private final List<AuraInstance<?>> addedAuras = Lists.newArrayList();
+    private final List<AuraInstance> addedAuras = Lists.newArrayList();
 
     public AddedAurasHolder(IAttachmentHolder holder) {
         this.owner = holder instanceof Entity entity ? entity : null;
@@ -38,8 +40,8 @@ public class AddedAurasHolder implements IBasicHolder {
         CompoundTag tag = new CompoundTag();
 
         ListTag listTag = new ListTag();
-        for (AuraInstance<? extends Entity> auraInstance : addedAuras) {
-            ResourceLocation auraID = FantazicRegistries.AURAS.getKey(auraInstance.getAura());
+        for (AuraInstance auraInstance : addedAuras) {
+            ResourceLocation auraID = FantazicRegistries.AURAS.getKey(auraInstance.getAura().value());
             if (auraID == null) continue;
             listTag.add(StringTag.valueOf(auraID.toString()));
         }
@@ -54,8 +56,8 @@ public class AddedAurasHolder implements IBasicHolder {
         addedAuras.clear();
         ListTag listTag = tag.getList("added_auras", Tag.TAG_STRING);
         for (int i = 0; i < listTag.size(); i++) {
-            BasicAura<?> basicAura = FantazicRegistries.AURAS.get(ResourceLocation.parse(listTag.getString(i)));
-            if (basicAura != null) addedAuras.add(new AuraInstance<>(owner, basicAura));
+            Optional<Holder.Reference<BasicAura>> basicAura = FantazicRegistries.AURAS.getHolder(ResourceLocation.parse(listTag.getString(i)));
+            basicAura.ifPresent(basicAuraReference -> addedAuras.add(new AuraInstance(owner, basicAuraReference.getDelegate())));
         }
     }
 
@@ -68,14 +70,9 @@ public class AddedAurasHolder implements IBasicHolder {
     public void syncDeserialize(CompoundTag tag) {
     }
 
-    public void addAura(BasicAura<?> aura) {
+    public void addAura(Holder<BasicAura> aura) {
         if (owner == null) return;
-        for (AuraInstance<?> auraInstance : addedAuras) if (auraInstance.getAura() == aura) return;
-        addedAuras.add(new AuraInstance<>(owner, aura));
-    }
-
-    public void discard() {
-        addedAuras.forEach(AuraInstance::discard);
-        addedAuras.clear();
+        for (AuraInstance auraInstance : addedAuras) if (auraInstance.getAura() == aura.value()) return;
+        addedAuras.add(new AuraInstance(owner, aura));
     }
 }

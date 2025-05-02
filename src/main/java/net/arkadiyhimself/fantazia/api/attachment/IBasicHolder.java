@@ -6,7 +6,8 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 
 public interface IBasicHolder extends INBTSerializable<CompoundTag> {
     ResourceLocation id();
-    default void tick() {}
+    default void serverTick() {}
+    default void clientTick() {}
     CompoundTag syncSerialize();
     void syncDeserialize(CompoundTag tag);
 }

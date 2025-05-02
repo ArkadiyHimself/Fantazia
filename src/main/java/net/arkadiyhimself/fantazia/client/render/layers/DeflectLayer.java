@@ -5,12 +5,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.DeflectEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -49,14 +49,13 @@ public class DeflectLayer {
         public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
             if (pLivingEntity.isInvisible()) return;
 
-            EvasionHolder evasionHolder = LivingDataGetter.takeHolder(pLivingEntity, EvasionHolder.class);
+            EvasionHolder evasionHolder = LivingDataHelper.takeHolder(pLivingEntity, EvasionHolder.class);
             if (evasionHolder != null && evasionHolder.getIFrames() > 0) return;
 
-            DeflectEffect deflectEffect = LivingEffectGetter.takeHolder(pLivingEntity, DeflectEffect.class);
-            if (deflectEffect == null || !deflectEffect.hasDeflect()) return;
+            if (!LivingEffectHelper.hasEffectSimple(pLivingEntity, FTZMobEffects.DEFLECT.value())) return;
 
             if (pLivingEntity instanceof Player player) {
-                DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+                DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
                 if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() > 2) return;
             }
 

@@ -24,6 +24,6 @@ public class FantazicSoundEventTagsProvider extends IntrinsicHolderTagsProvider<
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
-        tag(FTZSoundEventTags.NOT_MUTED).add(SoundEvents.GENERIC_EXPLODE.value(), SoundEvents.WARDEN_SONIC_BOOM, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, FTZSoundEvents.HEART_BEAT1.value(), FTZSoundEvents.HEART_BEAT2.get(), FTZSoundEvents.DASH1_RECHARGE.value(), FTZSoundEvents.DASH2_RECHARGE.get(), FTZSoundEvents.DASH3_RECHARGE.value(), FTZSoundEvents.RINGING.get(), FTZSoundEvents.FURY_DISPEL.get(), FTZSoundEvents.FURY_PROLONG.get(), FTZSoundEvents.DAMNED_WRATH.get(), FTZSoundEvents.DOOMED.get(), FTZSoundEvents.UNDOOMED.get(), FTZSoundEvents.DENIED.get());
+        tag(FTZSoundEventTags.NOT_MUTED).add(SoundEvents.GENERIC_EXPLODE.value(), SoundEvents.WARDEN_SONIC_BOOM, SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, FTZSoundEvents.HEART_BEAT1.value(), FTZSoundEvents.HEART_BEAT2.get(), FTZSoundEvents.DASH1_RECHARGE.value(), FTZSoundEvents.DASH2_RECHARGE.get(), FTZSoundEvents.DASH3_RECHARGE.value(), FTZSoundEvents.RINGING.get(), FTZSoundEvents.FURY_DISPEL.get(), FTZSoundEvents.FURY_PROLONG.get(), FTZSoundEvents.DAMNED_WRATH.get(), FTZSoundEvents.DOOMED.get(), FTZSoundEvents.UNDOOMED.get(), FTZSoundEvents.DENIED.get(), FTZSoundEvents.SONIC_BOOM_CAST.get());
     }
 }

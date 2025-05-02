@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.entities;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.StuckHatchetHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
@@ -47,22 +47,13 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class ThrownHatchet extends AbstractArrow {
-    private enum FancyDirection {
-        ONLY$X, ONLY$Y, ONLY$Z, X$Y, X$Z, Y$Z, XYZ
-    }
 
     public static final EntityDataAccessor<Byte> ID_PHASING = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BYTE);
-
     public static final EntityDataAccessor<Byte> ID_RICOCHET = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BYTE);
-
     public static final EntityDataAccessor<Byte> ID_HEADSHOT = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BYTE);
-
     public static final EntityDataAccessor<Boolean> ID_FOIL = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.BOOLEAN);
-
     public static final EntityDataAccessor<ItemStack> STACK = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.ITEM_STACK);
-
     public static final EntityDataAccessor<Float> VISUAL_ROT0 = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.FLOAT);
-
     public static final EntityDataAccessor<Float> VISUAL_ROT1 = SynchedEntityData.defineId(ThrownHatchet.class, EntityDataSerializers.FLOAT);
 
     private float rotSpeed;
@@ -223,7 +214,7 @@ public class ThrownHatchet extends AbstractArrow {
         if (headDist <= 0.3) dmg += entityData.get(ID_HEADSHOT);
 
         DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(level());
-        if (sources != null) livingEntity.hurt(sources.hatchet(this, getOwner() == null ? null : getOwner()), dmg);
+        if (sources != null) livingEntity.hurt(sources.hatchet(this), dmg);
 
         Optional<Holder.Reference<Enchantment>> projProt = enchantmentRegistry.getHolder(Enchantments.PROJECTILE_PROTECTION);
         int projProtect = projProt.map(enchantmentReference -> EnchantmentHelper.getEnchantmentLevel(enchantmentReference, livingEntity)).orElse(0);
@@ -301,7 +292,7 @@ public class ThrownHatchet extends AbstractArrow {
         return delta.normalize().scale(multiplier);
     }
     public boolean tryStuck(LivingEntity entity) {
-        StuckHatchetHolder stuckHatchetHolder = LivingDataGetter.takeHolder(entity, StuckHatchetHolder.class);
+        StuckHatchetHolder stuckHatchetHolder = LivingDataHelper.takeHolder(entity, StuckHatchetHolder.class);
         if (stuckHatchetHolder == null) return false;
         return stuckHatchetHolder.stuck(this);
     }
@@ -348,6 +339,7 @@ public class ThrownHatchet extends AbstractArrow {
     public boolean isBlockDestroyable(BlockState state) {
         return (state.getBlock() instanceof StainedGlassPaneBlock || state.getBlock() == Blocks.GLASS_PANE || state.getBlock() instanceof LeavesBlock);
     }
+
     public FancyDirection direction(BlockPos pos) {
         BlockPos blockPos = blockPosition().subtract(pos);
         // reminder: x is for West and East, z is for North and South
@@ -381,5 +373,9 @@ public class ThrownHatchet extends AbstractArrow {
                 }
             }
         }
+    }
+
+    public enum FancyDirection {
+        ONLY$X, ONLY$Y, ONLY$Z, X$Y, X$Z, Y$Z, XYZ
     }
 }

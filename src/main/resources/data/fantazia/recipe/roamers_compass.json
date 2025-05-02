@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:compass"
+    },
+    {
+      "item": "fantazia:obscure_substance"
+    }
+  ],
+  "result": {
+    "id": "fantazia:roamers_compass"
+  }
+}

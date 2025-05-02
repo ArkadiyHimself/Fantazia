@@ -46,7 +46,7 @@ public class ArrowEnchantmentsHolder implements IBasicHolder {
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         if (arrow == null) return;
         if (arrow.isInPowderSnow) frozen = true;
         double X = arrow.position().x();
@@ -88,6 +88,7 @@ public class ArrowEnchantmentsHolder implements IBasicHolder {
     public int getBallista() {
         return ballista;
     }
+
     public static class Serializer implements IAttachmentSerializer<CompoundTag, ArrowEnchantmentsHolder> {
 
         @Override

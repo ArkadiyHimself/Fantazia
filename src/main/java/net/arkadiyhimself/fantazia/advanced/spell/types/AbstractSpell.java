@@ -31,11 +31,13 @@ public abstract class AbstractSpell implements ITooltipBuilder {
     private final @Nullable Holder<SoundEvent> rechargeSound;
     private final TickingConditions tickingConditions;
     private final Consumer<LivingEntity> ownerTick;
+    private final Consumer<LivingEntity> uponEquipping;
     private final Cleanse cleanse;
     private final boolean doCleanse;
     private final Function<LivingEntity, Integer> recharge;
+    private final Function<LivingEntity, List<Component>> extendTooltip;
 
-    protected AbstractSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge) {
+    protected AbstractSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Function<LivingEntity, List<Component>> extendTooltip) {
         this.manacost = manacost;
         this.defaultRecharge = defaultRecharge;
 
@@ -44,9 +46,12 @@ public abstract class AbstractSpell implements ITooltipBuilder {
 
         this.tickingConditions = tickingConditions;
         this.ownerTick = ownerTick;
+        this.uponEquipping = uponEquipping;
         this.cleanse = cleanse;
         this.doCleanse = doCleanse;
         this.recharge = recharge;
+
+        this.extendTooltip = extendTooltip;
     }
 
     public final float getManacost() {
@@ -77,13 +82,16 @@ public abstract class AbstractSpell implements ITooltipBuilder {
         this.ownerTick.accept(livingEntity);
     }
 
+    public void uponEquipping(LivingEntity livingEntity) {
+        this.uponEquipping.accept(livingEntity);
+    }
+
     public final ResourceLocation getID() {
         return FantazicRegistries.SPELLS.getKey(this);
     }
 
-    public final Component getName() {
-        if (getID() == null) return null;
-        return Component.translatable("spell." + getID().getNamespace() + "." + getID().getPath() + ".name");
+    public static Component getName(ResourceLocation location) {
+        return Component.translatable("spell." + location.getNamespace() + "." + location.getPath() + ".name");
     }
 
     protected Component bakeRechargeComponent(ChatFormatting[] heading, ChatFormatting[] ability) {
@@ -104,7 +112,9 @@ public abstract class AbstractSpell implements ITooltipBuilder {
         else return Component.literal("- " + Math.min(getRecharge(Minecraft.getInstance().player), Math.abs(delta))).withStyle(ChatFormatting.BLUE, ChatFormatting.BOLD, ChatFormatting.ITALIC);
     }
 
-
+    public List<Component> extendTooltip(LivingEntity owner) {
+        return extendTooltip.apply(owner);
+    }
 
     public Cleanse getCleanse() {
         return cleanse;

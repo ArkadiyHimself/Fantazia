@@ -19,6 +19,7 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.List;
 
 public class LootTableModifiersHolder extends PlayerAbilityHolder {
+
     private final List<LootModifierHolder> lootModifierHolders = LootInstancesManager.createModifiers();
 
     public LootTableModifiersHolder(Player player) {

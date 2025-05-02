@@ -67,9 +67,12 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         spellInstances.values().forEach(SpellInstance::tick);
     }
+
+    @Override
+    public void clientTick() {}
 
     @Override
     public void respawn() {
@@ -82,6 +85,7 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
             Holder<AbstractSpell> spell = caster.getSpell();
             getOrCreate(spell).setAvailable(true);
             curioSpells.put(caster, spell);
+            spell.value().uponEquipping(getPlayer());
         }
     }
 

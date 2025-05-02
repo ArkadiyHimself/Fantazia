@@ -38,5 +38,6 @@ public class FantazicDamageTypeTagsProvider extends DamageTypeTagsProvider {
         tag(DamageTypeTags.BYPASSES_INVULNERABILITY).add(FTZDamageTypes.REMOVAL);
         tag(DamageTypeTags.NO_IMPACT).add(FTZDamageTypes.REMOVAL, FTZDamageTypes.ANCIENT_FLAME, FTZDamageTypes.ANCIENT_BURNING, FTZDamageTypes.BLEEDING, FTZDamageTypes.FROZEN, FTZDamageTypes.ELECTRIC);
         tag(DamageTypeTags.NO_KNOCKBACK).add(FTZDamageTypes.REMOVAL, FTZDamageTypes.ANCIENT_FLAME, FTZDamageTypes.ANCIENT_BURNING, FTZDamageTypes.BLEEDING, FTZDamageTypes.FROZEN, FTZDamageTypes.ELECTRIC);
+        tag(DamageTypeTags.IS_PROJECTILE).add(FTZDamageTypes.HATCHET, FTZDamageTypes.SIMPLE_CHASING_PROJECTILE);
     }
 }

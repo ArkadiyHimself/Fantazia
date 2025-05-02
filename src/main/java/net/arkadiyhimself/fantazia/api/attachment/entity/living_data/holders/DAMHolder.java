@@ -38,7 +38,7 @@ public class DAMHolder extends LivingDataHolder {
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         modifierMap.values().forEach(dynamicAttributeModifier -> dynamicAttributeModifier.tick(getEntity()));
     }
 

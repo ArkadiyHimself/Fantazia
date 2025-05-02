@@ -43,7 +43,7 @@ public class StuckHatchetHolder extends LivingDataHolder {
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         if (delay > 0) delay--;
         else dropHatchet();
     }

@@ -6,13 +6,13 @@ import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.packets.attachment_modify.EntityMadeSoundS2C;
 import net.arkadiyhimself.fantazia.packets.attachment_modify.SoundExpiredS2C;
+import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.VibrationParticleOption;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class VibrationListenerHolder extends PlayerAbilityHolder {
+
     private final HashMap<LivingEntity, Integer> REVEAL = Maps.newHashMap();
     private int delay = 0;
     public VibrationListenerHolder(Player player) {
@@ -51,7 +52,7 @@ public class VibrationListenerHolder extends PlayerAbilityHolder {
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         REVEAL.forEach((livingEntity, integer) -> REVEAL.replace(livingEntity, Math.max(0, integer - 1)));
         if (REVEAL.containsValue(0)) {
             HashMap<LivingEntity, Integer> newMap = Maps.newHashMap();
@@ -65,8 +66,6 @@ public class VibrationListenerHolder extends PlayerAbilityHolder {
         if (delay > 0) delay--;
     }
 
-
-
     public void madeSound(LivingEntity entity) {
         REVEAL.put(entity, 80);
         delay = 40;
@@ -76,7 +75,7 @@ public class VibrationListenerHolder extends PlayerAbilityHolder {
         int travelTimeInTicks = Mth.floor(getPlayer().distanceToSqr(pPos)) / 4;
         if (!(getPlayer().level() instanceof ServerLevel pLevel)) return;
         pLevel.sendParticles(new VibrationParticleOption(listenerSource, travelTimeInTicks), pPos.x, pPos.y, pPos.z, 3, 0.0D, 0.0D, 0.0D, 0.0D);
-        pLevel.playSound(null, pPos.x() + 0.5D, pPos.y() + 0.5D, pPos.z() + 0.5D, SoundEvents.SCULK_CLICKING, SoundSource.BLOCKS, 1.0F, pLevel.random.nextFloat() * 0.2F + 0.8F);
+        pLevel.playSound(null, pPos.x() + 0.5D, pPos.y() + 0.5D, pPos.z() + 0.5D, FTZSoundEvents.SONIC_BOOM_CLICKING.value(), SoundSource.BLOCKS, 1.0F, pLevel.random.nextFloat() * 0.2F + 0.8F);
 
         if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new EntityMadeSoundS2C(entity.getId()));
     }
@@ -88,7 +87,7 @@ public class VibrationListenerHolder extends PlayerAbilityHolder {
     }
     public boolean listen() {
         if (delay > 0) return false;
-        return SpellHelper.hasSpell(getPlayer(), FTZSpells.SONIC_BOOM);
+        return SpellHelper.spellAvailable(getPlayer(), FTZSpells.SONIC_BOOM);
     }
     public void soundExpired(LivingEntity entity) {
         REVEAL.remove(entity);

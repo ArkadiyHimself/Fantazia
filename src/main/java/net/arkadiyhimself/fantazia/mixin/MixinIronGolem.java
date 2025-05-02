@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.DisarmEffect;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,13 +23,11 @@ public abstract class MixinIronGolem extends LivingEntity {
     @Shadow private int attackAnimationTick;
     @Inject(at = @At("HEAD"), method = "doHurtTarget", cancellable = true)
     private void cancelAnim(CallbackInfoReturnable<Boolean> cir) {
-        DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(this, DisarmEffect.class);
-        if (disarmEffect != null && disarmEffect.renderDisarm()) cir.setReturnValue(false);
+        if (LivingEffectHelper.hasEffectSimple(this, FTZMobEffects.DISARM.value())) cir.setReturnValue(false);
     }
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/animal/IronGolem;playSound(Lnet/minecraft/sounds/SoundEvent;FF)V"), method = "doHurtTarget")
     private void cancelSound(IronGolem instance, SoundEvent soundEvent, float v, float p) {
-        DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(this, DisarmEffect.class);
-        if (disarmEffect == null || !disarmEffect.renderDisarm()) instance.playSound(soundEvent,v,p);
+        if (!LivingEffectHelper.hasEffectSimple(this, FTZMobEffects.DISARM.value())) instance.playSound(soundEvent,v,p);
     }
 
 }

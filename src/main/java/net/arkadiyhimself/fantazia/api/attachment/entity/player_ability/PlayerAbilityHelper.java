@@ -1,22 +1,22 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability;
 
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.VibrationListenerHolder;
+import net.arkadiyhimself.fantazia.advanced.spell.SpellInstance;
+import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipBlockStateContext;
@@ -25,8 +25,20 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nullable;
+import java.util.function.Consumer;
+
 public class PlayerAbilityHelper {
     private PlayerAbilityHelper() {}
+
+    public static <T extends IPlayerAbility> @Nullable T takeHolder(Player player, Class<T> tClass) {
+        return player == null ? null : player.getData(FTZAttachmentTypes.ABILITY_MANAGER).actualHolder(tClass);
+    }
+
+    public static <T extends IPlayerAbility> void acceptConsumer(Player player, Class<T> tClass, Consumer<T> consumer) {
+        player.getData(FTZAttachmentTypes.ABILITY_MANAGER).optionalHolder(tClass).ifPresent(consumer);
+    }
+
     public static Vec3 calculateViewVector(float pXRot, float pYRot) {
         float f = pXRot * ((float)Math.PI / 180F);
         float f1 = -pYRot * ((float)Math.PI / 180F);
@@ -45,11 +57,11 @@ public class PlayerAbilityHelper {
         return dashDeltaMovement(calculateViewVector(horizontal ? 0 : entity.getXRot(), entity.getYRot()), velocity, horizontal);
     }
     public static boolean doubleJump(Player player) {
-        StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(player, StaminaHolder.class);
+        StaminaHolder staminaHolder = PlayerAbilityHelper.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(1.75f, true)) return false;
 
         if (FantazicHooks.onDoubleJump(player)) return false;
-        player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS);
+        player.level().playSound(null, player.blockPosition(), FTZSoundEvents.DOUBLE_JUMP.value(), SoundSource.PLAYERS);
         Vec3 vec3 = player.getDeltaMovement();
         player.setDeltaMovement(vec3.x, 0.64 + player.getJumpBoostPower(), vec3.z);
         player.fallDistance = -2f;
@@ -57,11 +69,11 @@ public class PlayerAbilityHelper {
         return true;
     }
     public static boolean accelerateFlying(Player player) {
-        StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(player, StaminaHolder.class);
+        StaminaHolder staminaHolder = PlayerAbilityHelper.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(3f, true)) return false;
 
         if (FantazicHooks.onDoubleJump(player)) return false;
-        player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_EYE_LAUNCH, SoundSource.PLAYERS);
+        player.level().playSound(null, player.blockPosition(), FTZSoundEvents.DOUBLE_JUMP.value(), SoundSource.PLAYERS);
 
         Vec3 vec31 = player.getLookAngle();
         Vec3 vec32 = player.getDeltaMovement();
@@ -70,11 +82,9 @@ public class PlayerAbilityHelper {
         player.hurtMarked = true;
         return true;
     }
-    public static boolean facesAttack(LivingEntity blocker, DamageSource source) {
-        Vec3 vec32 = source.getSourcePosition();
-        if (vec32 == null) return false;
+    public static boolean facesAttack(LivingEntity blocker, Vec3 position) {
         Vec3 vec3 = blocker.getViewVector(1.0F);
-        Vec3 vec31 = vec32.vectorTo(blocker.position()).normalize();
+        Vec3 vec31 = position.vectorTo(blocker.position()).normalize();
         vec31 = new Vec3(vec31.x, 0.0D, vec31.z);
         return vec31.dot(vec3) < 0.0D;
     }
@@ -97,15 +107,22 @@ public class PlayerAbilityHelper {
         if (pContext.sourceEntity() == null || !(pContext.sourceEntity() instanceof LivingEntity livingEntity)) return;
         Vec3 vec3 = player.getPosition(1f);
         if (PlayerAbilityHelper.shouldListen(pLevel, BlockPos.containing(pPos), pContext, player) && !PlayerAbilityHelper.isOccluded(pLevel, pPos, vec3)) {
-            VibrationListenerHolder vibrationListenerHolder = PlayerAbilityGetter.takeHolder(player, VibrationListenerHolder.class);
+            VibrationListenerHolder vibrationListenerHolder = PlayerAbilityHelper.takeHolder(player, VibrationListenerHolder.class);
             if (vibrationListenerHolder == null || !vibrationListenerHolder.listen()) return;
             vibrationListenerHolder.madeSound(livingEntity);
-            PlayerAbilityGetter.acceptConsumer(player, SpellInstancesHolder.class, spellInstancesHolder -> spellInstancesHolder.getOrCreate(FTZSpells.SONIC_BOOM).reduceRecharge(25));
+            reduceRecharge(player, FTZSpells.SONIC_BOOM,25);
         }
     }
 
+    public boolean tryMeleeBlock(Player player) {
+        MeleeBlockHolder holder = takeHolder(player, MeleeBlockHolder.class);
+        if (holder == null) return false;
+
+        return holder.blockAttack();
+    }
+
     public static TalentsHolder.ProgressHolder getProgressHolder(Player player) {
-        TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
+        TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
         return talentsHolder == null ? null : talentsHolder.getProgressHolder();
     }
 
@@ -119,5 +136,27 @@ public class PlayerAbilityHelper {
         TalentsHolder.ProgressHolder progressHolder = getProgressHolder(player);
         if (progressHolder == null) return;
         progressHolder.award(action, amount);
+    }
+
+    public static void wasteMana(Player player, float amount) {
+        acceptConsumer(player, ManaHolder.class, manaHolder -> manaHolder.wasteMana(amount));
+    }
+
+    public static boolean enoughMana(Player player, float amount) {
+        ManaHolder manaHolder = takeHolder(player, ManaHolder.class);
+        return manaHolder != null && manaHolder.getMana() >= amount;
+    }
+
+    public static @Nullable SpellInstance spellInstance(Player player, Holder<AbstractSpell> holder) {
+        SpellInstancesHolder spellInstancesHolder = takeHolder(player, SpellInstancesHolder.class);
+        return spellInstancesHolder == null ? null : spellInstancesHolder.getOrCreate(holder);
+    }
+
+    public static void spellInstance(Player player, Holder<AbstractSpell> holder, Consumer<SpellInstance> consumer) {
+        acceptConsumer(player, SpellInstancesHolder.class, spellInstancesHolder -> consumer.accept(spellInstancesHolder.getOrCreate(holder)));
+    }
+
+    public static void reduceRecharge(Player player, Holder<AbstractSpell> holder, int value) {
+        spellInstance(player, holder, spellInstance -> spellInstance.reduceRecharge(value));
     }
 }

@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.packets.stuff;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.packets.IPacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -24,7 +23,6 @@ public record SwingHandS2C(InteractionHand hand) implements IPacket {
 
     @Override
     public void handle(IPayloadContext context) {
-        if (Minecraft.getInstance().player == null) return;
-        context.enqueueWork(() -> Minecraft.getInstance().player.swing(hand));
+        context.enqueueWork(() -> StuffHandlers.swingHand(hand));
     }
 }

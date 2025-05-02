@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -24,11 +24,11 @@ public abstract class MixinElytraLayer<T extends LivingEntity, M extends EntityM
     }
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true, remap = false)
     private void melding(ItemStack stack, T entity, CallbackInfoReturnable<Boolean> cir) {
-        EvasionHolder evasionHolder = LivingDataGetter.takeHolder(entity, EvasionHolder.class);
+        EvasionHolder evasionHolder = LivingDataHelper.takeHolder(entity, EvasionHolder.class);
         if (evasionHolder != null && evasionHolder.getIFrames() > 0) cir.setReturnValue(false);
 
         if (!(entity instanceof Player player)) return;
-        DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+        DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
         if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() >= 3) cir.setReturnValue(false);
     }
 

@@ -16,12 +16,15 @@ import net.neoforged.bus.api.Event;
  * <br>
  * The events are fired on the {@link net.neoforged.neoforge.common.NeoForge#EVENT_BUS}.
  */
-public abstract class AuraEvent<T extends Entity> extends Event {
-    private final AuraInstance<T> aura;
-    public AuraEvent(AuraInstance<T> aura) {
+public abstract class AuraEvent extends Event {
+
+    private final AuraInstance aura;
+
+    public AuraEvent(AuraInstance aura) {
         this.aura = aura;
     }
-    public AuraInstance<T> getAura() {
+
+    public AuraInstance getAura() {
         return aura;
     }
 
@@ -31,8 +34,9 @@ public abstract class AuraEvent<T extends Entity> extends Event {
      * <br>
      *  This event is not {@link net.neoforged.bus.api.ICancellableEvent}
      */
-    public static class Tick<T extends Entity> extends AuraEvent<T> {
-        public Tick(AuraInstance<T> aura) {
+    public static class Tick extends AuraEvent {
+
+        public Tick(AuraInstance aura) {
             super(aura);
         }
     }
@@ -45,13 +49,16 @@ public abstract class AuraEvent<T extends Entity> extends Event {
      * <br>
      *  This event is not {@link net.neoforged.bus.api.ICancellableEvent}
      */
-    public static class Enter<T extends Entity> extends AuraEvent<T> {
-        private final T entity;
-        public Enter(AuraInstance<T> aura, T entity) {
+    public static class Enter extends AuraEvent {
+
+        private final Entity entity;
+
+        public Enter(AuraInstance aura, Entity entity) {
             super(aura);
             this.entity = entity;
         }
-        public T getEntity() {
+
+        public Entity getEntity() {
             return entity;
         }
     }
@@ -65,13 +72,16 @@ public abstract class AuraEvent<T extends Entity> extends Event {
      * <br>
      *  This event is not {@link net.neoforged.bus.api.ICancellableEvent}
      */
-    public static class Exit<T extends Entity> extends AuraEvent<T> {
-        private final T entity;
-        public Exit(AuraInstance<T> aura, T entity) {
+    public static class Exit extends AuraEvent {
+
+        private final Entity entity;
+
+        public Exit(AuraInstance aura, Entity entity) {
             super(aura);
             this.entity = entity;
         }
-        public T getEntity() {
+
+        public Entity getEntity() {
             return entity;
         }
     }

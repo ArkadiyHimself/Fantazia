@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.particless.options;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -18,28 +19,32 @@ public class EntityChasingParticleOption<T extends ParticleType<?>> implements P
         return RecordCodecBuilder.mapCodec(instance -> instance.group(
                         Codec.INT.fieldOf("id").forGetter(EntityChasingParticleOption::getEntityId),
                         Vec3.CODEC.fieldOf("relative").forGetter(EntityChasingParticleOption::getRelative)
-                ).apply(instance, (var1, var2) -> new EntityChasingParticleOption<>(var1, var2, particleType))
+                ).apply(instance, (var1, var2) -> new EntityChasingParticleOption<>(var1, particleType, var2))
         );
     }
 
     public static StreamCodec<? super RegistryFriendlyByteBuf, EntityChasingParticleOption<?>> basicStreamCodec(ParticleType<EntityChasingParticleOption<?>> particleType) {
         return StreamCodec.composite(
-                ByteBufCodecs.INT,
-                EntityChasingParticleOption::getEntityId,
-                ByteBufCodecs.VECTOR3F,
-                EntityChasingParticleOption::getVector3f,
-                (var1, var2) -> new EntityChasingParticleOption<>(var1, new Vec3(var2), particleType)
+                ByteBufCodecs.INT, EntityChasingParticleOption::getEntityId,
+                ByteBufCodecs.VECTOR3F, EntityChasingParticleOption::getVector3f,
+                (var1, var2) -> new EntityChasingParticleOption<>(var1, particleType, new Vec3(var2))
         );
     }
 
     private final int entity;
-    private final Vec3 relative;
     private final T particleType;
+    private final Vec3 relative;
 
-    public EntityChasingParticleOption(int entity, Vec3 relative, T particleType) {
+    public EntityChasingParticleOption(int entity, T particleType, float wdt, float hgt) {
         this.entity = entity;
-        this.relative = relative;
+        this.relative = bakeRelative(wdt, hgt);
         this.particleType = particleType;
+    }
+
+    private EntityChasingParticleOption(int entity, T particleType, Vec3 relative) {
+        this.entity = entity;
+        this.particleType = particleType;
+        this.relative = relative;
     }
 
     @Override
@@ -57,5 +62,13 @@ public class EntityChasingParticleOption<T extends ParticleType<?>> implements P
 
     protected Vector3f getVector3f() {
         return getRelative().toVector3f();
+    }
+
+    private Vec3 bakeRelative(float wdt, float hgt) {
+        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(wdt);
+        double x = vec3.x();
+        double z = vec3.z();
+        double y = Fantazia.RANDOM.nextDouble(hgt * 0.1, hgt * 0.8);
+        return new Vec3(x, y, z);
     }
 }

@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -27,7 +26,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -46,16 +44,13 @@ import java.util.function.Predicate;
  * Aura can have {@link #primaryFilter conditions} for an entity which have to be met in order to apply its effects to the entity
  * <br>
  * The effects of auras vary from {@link #attributeModifiers changing attributes} to {@link #affectedTick(Entity, Entity) influencing} an entity in certain ways while it is inside the aura
- *
- * @param <T> the class of affected entities
  */
-public class BasicAura<T extends Entity> implements ITooltipBuilder {
+public class BasicAura {
 
     public enum TYPE {
         POSITIVE, NEGATIVE, MIXED
     }
 
-    private final Class<T> tClass;
     private final TYPE type;
     private final float range;
     /**
@@ -89,7 +84,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * {@link Entity#getType() type}, {@link TamableAnimal#getOwner() owner}, {@link LivingEntity#fireImmune() built-in fire resistance}. etc.,
      */
-    private final BiPredicate<T, Entity> primaryFilter;
+    private final BiPredicate<Entity, Entity> primaryFilter;
     /**
      * Secondary Filter is supposed to check entity's «transient» fields which
      * <br>
@@ -97,7 +92,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * {@link LivingEntity#getHealth() health}, {@link LivingEntity#getAttributes() attributes}, {@link LivingEntity#getTicksFrozen() freezing ticks}, {@link Player#getFoodData() food data} for players, etc.,
      */
-    private final BiPredicate<T, Entity> secondaryFilter;
+    private final BiPredicate<Entity, Entity> secondaryFilter;
     /**
      * ownerConditions is supposed to check aura instance's owner's fields
      * <br>
@@ -119,7 +114,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
      * <br>
      * the effects on owner will also be multiplied by the amount of entities inside if there are more than one
      */
-    private final BiConsumer<T, Entity> onTickAffected;
+    private final BiConsumer<Entity, Entity> onTickAffected;
     /**
      * OnTickOwner is performed every tick on the owner of the aura
      */
@@ -127,7 +122,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     /**
      * OnTickBlock is performed every tick on all blocks within aura
      */
-    private final BiConsumer<BlockPos, AuraInstance<T>> onTickBlock;
+    private final BiConsumer<BlockPos, AuraInstance> onTickBlock;
     /**
      * Contains all {@link DamageType types of damage} which suitable entities should
      * <br>
@@ -147,16 +142,16 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
 
     private final ChatFormatting[] tooltipFormatting;
 
-    protected BasicAura(Class<T> affectedType, TYPE type, float range,
+    protected BasicAura(TYPE type, float range,
                         Map<Holder<Attribute>, AttributeModifier> attributeModifiers,
                         Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers,
                         Map<Holder<MobEffect>, Integer> mobEffects,
-                        BiPredicate<T, Entity> primaryFilter,
-                        BiPredicate<T, Entity> secondaryFilter,
+                        BiPredicate<Entity, Entity> primaryFilter,
+                        BiPredicate<Entity, Entity> secondaryFilter,
                         Predicate<Entity> ownerConditions,
-                        BiConsumer<T, Entity> onTickAffected,
+                        BiConsumer<Entity, Entity> onTickAffected,
                         Consumer<Entity> onTickOwner,
-                        BiConsumer<BlockPos, AuraInstance<T>> onTickBlock,
+                        BiConsumer<BlockPos, AuraInstance> onTickBlock,
                         List<ResourceKey<DamageType>> damageImmunities,
                         List<TagKey<DamageType>> tagDamageImmunities,
                         Map<ResourceKey<DamageType>, Float> damageMultipliers,
@@ -165,7 +160,6 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
     ) {
         this.range = range;
         this.type = type;
-        this.tClass = affectedType;
 
         this.attributeModifiers = ImmutableMap.copyOf(attributeModifiers);
         this.dynamicAttributeModifiers = ImmutableMap.copyOf(dynamicAttributeModifiers);
@@ -192,33 +186,31 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
                 };
     }
 
-    @Override
-    public List<Component> buildIconTooltip() {
+    public static List<Component> buildIconTooltip(Holder<BasicAura> holder) {
         List<Component> components = Lists.newArrayList();
-        if (getID() == null) return components;
-        String lines = Component.translatable("aura_tooltip." + this.getID().getNamespace() + "." + this.getID().getPath() + ".lines").getString();
+        if (getID(holder) == null) return components;
+        String lines = Component.translatable("aura_tooltip." + getID(holder).getNamespace() + "." + getID(holder).getPath() + ".lines").getString();
         int li = 0;
         try {
             li = Integer.parseInt(lines);
         } catch (NumberFormatException ignored){}
 
         if (li > 0) {
-            ChatFormatting[] head = switch (this.type) {
+            ChatFormatting[] head = switch (holder.value().getType()) {
                 case MIXED -> new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
                 case NEGATIVE -> new ChatFormatting[]{ChatFormatting.RED};
                 case POSITIVE -> new ChatFormatting[]{ChatFormatting.GREEN};
             };
-            for (int i = 1; i <= li; i++) components.add(Component.translatable("aura_tooltip." + this.getID().getNamespace() + "." + this.getID().getPath() + "." + i).withStyle(head));
+            for (int i = 1; i <= li; i++) components.add(Component.translatable("aura_tooltip." + getID(holder).getNamespace() + "." + getID(holder).getPath() + "." + i).withStyle(head));
 
         }
         return components;
     }
 
-    @Override
-    public List<Component> itemTooltip(@Nullable ItemStack stack) {
+    public static List<Component> itemTooltip(Holder<BasicAura> holder) {
         List<Component> components = Lists.newArrayList();
-        if (this.getID() == null) return components;
-        String basicPath = "aura." + this.getID().getNamespace() + "." + this.getID().getPath();
+        if (getID(holder) == null) return components;
+        String basicPath = "aura." + getID(holder).getNamespace() + "." + getID(holder).getPath();
         int amo = 0;
         if (!Screen.hasShiftDown()) {
             components.add(Component.literal(" "));
@@ -232,17 +224,17 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         }
         components.add(Component.literal(" "));
 
-        ChatFormatting[] text = switch (this.type) {
+        ChatFormatting[] text = switch (holder.value().getType()) {
             case MIXED -> new ChatFormatting[]{ChatFormatting.GOLD};
             case NEGATIVE -> new ChatFormatting[]{ChatFormatting.DARK_PURPLE};
             case POSITIVE -> new ChatFormatting[]{ChatFormatting.AQUA};
         };
-        ChatFormatting[] ability = switch (this.type) {
+        ChatFormatting[] ability = switch (holder.value().getType()) {
             case MIXED -> new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD};
             case NEGATIVE -> new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD};
             case POSITIVE -> new ChatFormatting[]{ChatFormatting.DARK_GREEN, ChatFormatting.BOLD};
         };
-        ChatFormatting[] heading = switch (this.type) {
+        ChatFormatting[] heading = switch (holder.value().getType()) {
             case MIXED -> new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
             case NEGATIVE -> new ChatFormatting[]{ChatFormatting.RED};
             case POSITIVE -> new ChatFormatting[]{ChatFormatting.GREEN};
@@ -252,8 +244,8 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.aura", heading, ability, Component.translatable(namePath).getString()));
 
         // spell range
-        Component addRangeComponent = bakeRangeComponent();
-        String range = String.format("%.1f", this.getRadius());
+        Component addRangeComponent = holder.value().bakeRangeComponent();
+        String range = String.format("%.1f", holder.value().getRadius());
         Component basicRange = Component.literal(range).withStyle(ability);
 
         Component rangeComponent;
@@ -284,23 +276,20 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return components;
     }
 
-    public Class<T> affectedClass() {
-        return tClass;
+    public static ResourceLocation getID(Holder<BasicAura> holder) {
+        return FantazicRegistries.AURAS.getKey(holder.value());
     }
 
-    public ResourceLocation getID() {
-        return FantazicRegistries.AURAS.getKey(this);
-    }
-
-    public MutableComponent getAuraComponent() {
-        if (getID() == null) return null;
-        String s = "aura.icon." + getID().getNamespace() + "." + getID().getPath();
+    public static MutableComponent getAuraComponent(Holder<BasicAura> holder) {
+        if (getID(holder) == null) return null;
+        String s = "aura.icon." + getID(holder).getNamespace() + "." + getID(holder).getPath();
         return Component.translatable(s);
     }
 
-    public ResourceLocation getIcon() {
-        if (getID() == null) return getID();
-        return getID().withPrefix("textures/aura/").withSuffix(".png");
+    public static ResourceLocation getIcon(Holder<BasicAura> holder) {
+        ResourceKey<BasicAura> key = holder.getKey();
+        if (key == null) return ResourceLocation.parse("");
+        return key.location().withPrefix("textures/aura/").withSuffix(".png");
     }
 
     public TYPE getType() {
@@ -311,14 +300,8 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return range;
     }
 
-    @SuppressWarnings("unchecked")
-    public boolean canAffect(Entity entity, Entity owner) {
-        try {
-            return primaryFilter.test((T) entity, owner) && secondaryFilter.test((T) entity, owner) && entity != owner;
-        } catch (ClassCastException ignored) {
-            return false;
-        }
-
+    public boolean affects(Entity entity, Entity owner) {
+        return primaryFilter.test(entity, owner) && secondaryFilter.test(entity, owner) && entity != owner;
     }
 
     public Map<Holder<MobEffect>, Integer> getMobEffects() {
@@ -333,29 +316,19 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return dynamicAttributeModifiers;
     }
 
-    @SuppressWarnings("unchecked")
     public boolean primary(Entity entity, Entity owner) {
-        try {
-            return primaryFilter.test((T) entity, owner);
-        } catch (ClassCastException ignored) {
-            return false;
-        }
+        return primaryFilter.test(entity, owner);
     }
 
-    @SuppressWarnings("unchecked")
     public boolean secondary(Entity entity, Entity owner) {
-        try {
-            return secondaryFilter.test((T) entity, owner);
-        } catch (ClassCastException ignored) {
-            return false;
-        }
+        return secondaryFilter.test(entity, owner);
     }
 
     public boolean ownerCond(Entity owner) {
         return ownerConditions.test(owner);
     }
 
-    public void affectedTick(T entity, Entity owner) {
+    public void affectedTick(Entity entity, Entity owner) {
         onTickAffected.accept(entity, owner);
     }
 
@@ -363,7 +336,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         onTickOwner.accept(owner);
     }
 
-    public void blockTick(BlockPos blockPos, AuraInstance<T> auraInstance) {
+    public void blockTick(BlockPos blockPos, AuraInstance auraInstance) {
         onTickBlock.accept(blockPos, auraInstance);
     }
 
@@ -392,7 +365,7 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         return tooltipFormatting;
     }
 
-    private @Nullable Component bakeRangeComponent() {
+    protected @Nullable Component bakeRangeComponent() {
         AttributeInstance instance = Minecraft.getInstance().player == null ? null : Minecraft.getInstance().player.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
         if (instance == null) return null;
         double value = instance.getValue();
@@ -401,9 +374,8 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         else return Component.literal("- " + Math.min(this.getRadius(), Math.abs(value))).withStyle(ChatFormatting.RED, ChatFormatting.BOLD, ChatFormatting.ITALIC);
     }
 
-    public static class Builder<T extends Entity> {
+    public static class Builder {
 
-        private final Class<T> affectedClass;
         private final TYPE type;
         private final float range;
 
@@ -411,13 +383,13 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
         private final Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers = Maps.newHashMap();
         private final Map<Holder<MobEffect>, Integer> mobEffects = Maps.newHashMap();
 
-        private BiPredicate<T, Entity> primaryFilter = (entity, owner) -> true;
-        private BiPredicate<T, Entity> secondaryFilter = (entity, owner) -> true;
+        private BiPredicate<Entity, Entity> primaryFilter = (entity, owner) -> true;
+        private BiPredicate<Entity, Entity> secondaryFilter = (entity, owner) -> true;
         private Predicate<Entity> ownerConditions = owner -> true;
 
-        private BiConsumer<T, Entity> onTickAffected = (entity, owner) -> {};
+        private BiConsumer<Entity, Entity> onTickAffected = (entity, owner) -> {};
         private Consumer<Entity> onTickOwner = owner -> {};
-        private BiConsumer<BlockPos, AuraInstance<T>> onTickBlock = ((blockPos, tmAuraInstance) -> {});
+        private BiConsumer<BlockPos, AuraInstance> onTickBlock = ((blockPos, tmAuraInstance) -> {});
 
         private final List<ResourceKey<DamageType>> damageImmunities = Lists.newArrayList();
         private final List<TagKey<DamageType>> tagDamageImmunities = Lists.newArrayList();
@@ -426,84 +398,83 @@ public class BasicAura<T extends Entity> implements ITooltipBuilder {
 
         private @Nullable ChatFormatting[] tooltipFormatting = null;
 
-        public Builder(Class<T> affectedClass, TYPE type, float range) {
-            this.affectedClass = affectedClass;
+        public Builder(TYPE type, float range) {
             this.type = type;
             this.range = range;
         }
 
-        public Builder<T> addAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
+        public Builder addAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
             this.attributeModifiers.put(attribute, attributeModifier);
             return this;
         }
 
-        public Builder<T> addDynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
+        public Builder addDynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
             this.dynamicAttributeModifiers.put(attribute, attributeModifier);
             return this;
         }
 
-        public Builder<T> addMobEffect(Holder<MobEffect> mobEffect, int amplifier) {
+        public Builder addMobEffect(Holder<MobEffect> mobEffect, int amplifier) {
             this.mobEffects.put(mobEffect, amplifier);
             return this;
         }
 
-        public Builder<T> primaryFilter(BiPredicate<T, Entity> value) {
+        public Builder primaryFilter(BiPredicate<Entity, Entity> value) {
             this.primaryFilter = value;
             return this;
         }
 
-        public Builder<T> secondaryFilter(BiPredicate<T, Entity> value) {
+        public Builder secondaryFilter(BiPredicate<Entity, Entity> value) {
             this.secondaryFilter = value;
             return this;
         }
 
-        public Builder<T> ownerConditions(Predicate<Entity> value) {
+        public Builder ownerConditions(Predicate<Entity> value) {
             this.ownerConditions = value;
             return this;
         }
 
-        public Builder<T> onTickAffected(BiConsumer<T, Entity> value) {
+        public Builder onTickAffected(BiConsumer<Entity, Entity> value) {
             this.onTickAffected = value;
             return this;
         }
 
-        public Builder<T> onTickOwner(Consumer<Entity> value) {
+        public Builder onTickOwner(Consumer<Entity> value) {
             this.onTickOwner = value;
             return this;
         }
 
-        public Builder<T> onTickBlock(BiConsumer<BlockPos, AuraInstance<T>> value) {
+        public Builder onTickBlock(BiConsumer<BlockPos, AuraInstance> value) {
             this.onTickBlock = value;
             return this;
         }
 
-        public Builder<T> addDamageImmunity(ResourceKey<DamageType> damageType) {
+        public Builder addDamageImmunity(ResourceKey<DamageType> damageType) {
             this.damageImmunities.add(damageType);
             return this;
         }
 
-        public Builder<T> addDamageImmunity(TagKey<DamageType> damageType) {
+        public Builder addDamageImmunity(TagKey<DamageType> damageType) {
             this.tagDamageImmunities.add(damageType);
             return this;
         }
 
-        public Builder<T> putDamageMultiplier(ResourceKey<DamageType> damageType, float multiplier) {
+        public Builder putDamageMultiplier(ResourceKey<DamageType> damageType, float multiplier) {
             this.damageMultipliers.put(damageType, multiplier);
             return this;
         }
 
-        public Builder<T> putDamageMultiplier(TagKey<DamageType> damageType, float multiplier) {
+        public Builder putDamageMultiplier(TagKey<DamageType> damageType, float multiplier) {
             this.tagDamageMultipliers.put(damageType, multiplier);
             return this;
         }
 
-        public Builder<T> putTooltipFormating(ChatFormatting... chatFormattings) {
+        public Builder putTooltipFormating(ChatFormatting... chatFormattings) {
             this.tooltipFormatting = chatFormattings;
             return this;
         }
 
-        public BasicAura<T> build() {
-            return new BasicAura<>(affectedClass, type, range,
+        public BasicAura build() {
+            return new BasicAura(type, range,
                     attributeModifiers,
                     dynamicAttributeModifiers,
                     mobEffects,

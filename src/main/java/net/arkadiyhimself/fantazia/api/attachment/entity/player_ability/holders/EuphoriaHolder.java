@@ -3,13 +3,14 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ITalentListener;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
+import net.arkadiyhimself.fantazia.registries.FTZGameRules;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,7 +31,7 @@ public class EuphoriaHolder extends PlayerAbilityHolder implements IDamageEventL
 
     public static final int TICKS = 400;
     public static final Function<LivingEntity, Float> MODIFIER =livingEntity -> {
-        EuphoriaHolder euphoriaHolder = livingEntity instanceof Player player ? PlayerAbilityGetter.takeHolder(player, EuphoriaHolder.class) : null;
+        EuphoriaHolder euphoriaHolder = livingEntity instanceof Player player ? PlayerAbilityHelper.takeHolder(player, EuphoriaHolder.class) : null;
         return euphoriaHolder == null ? 0f : (float) euphoriaHolder.comboPercent();
     };
     private static final AttributeModifier LIFESTEAL = new AttributeModifier(Fantazia.res("talent.euphoria.lifesteal"),0.25, AttributeModifier.Operation.ADD_VALUE);
@@ -63,7 +64,11 @@ public class EuphoriaHolder extends PlayerAbilityHolder implements IDamageEventL
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
+        if (!getPlayer().level().getGameRules().getBoolean(FTZGameRules.EUPHORIA)) {
+            reset();
+            return;
+        }
         if (remainingTicks > 0) {
             remainingTicks--;
             if (getPlayer() instanceof ServerPlayer serverPlayer && kills > 1) EuphoriaTrigger.INSTANCE.trigger(serverPlayer, remainingTicks, peakTicks, kills);
@@ -82,6 +87,9 @@ public class EuphoriaHolder extends PlayerAbilityHolder implements IDamageEventL
     }
 
     @Override
+    public void clientTick() {}
+
+    @Override
     public void respawn() {
         reset();
     }
@@ -89,7 +97,7 @@ public class EuphoriaHolder extends PlayerAbilityHolder implements IDamageEventL
     @Override
     public void onHit(LivingDamageEvent.Post event) {
         DamageSource source = event.getSource();
-        if (!source.is(FTZDamageTypes.REMOVAL)) remainingTicks = Math.max(0, remainingTicks - 80);
+        if (!source.is(FTZDamageTypes.REMOVAL) && event.getNewDamage() > 0) remainingTicks = Math.max(0, remainingTicks - 80);
     }
 
     @Override
@@ -103,6 +111,7 @@ public class EuphoriaHolder extends PlayerAbilityHolder implements IDamageEventL
     }
 
     public void processAttack(LivingDamageEvent.Pre event) {
+        if (!getPlayer().level().getGameRules().getBoolean(FTZGameRules.EUPHORIA)) return;
         if (relentless) {
             CriticalHitEvent criticalHitEvent = CommonHooks.fireCriticalHit(getPlayer(), event.getEntity(), false, comboPercent() + 1f);
             float dmg = event.getNewDamage();
@@ -112,11 +121,13 @@ public class EuphoriaHolder extends PlayerAbilityHolder implements IDamageEventL
     }
 
     public void increase() {
+        if (!getPlayer().level().getGameRules().getBoolean(FTZGameRules.EUPHORIA)) return;
         this.kills = Math.min(10, kills + 1);
-        this.remainingTicks = TICKS;
+        this.remainingTicks = this.kills == 10 ? TICKS * 2 : TICKS;
     }
 
     public int kills() {
+        if (!getPlayer().level().getGameRules().getBoolean(FTZGameRules.EUPHORIA)) return 0;
         return kills;
     }
 
@@ -125,6 +136,7 @@ public class EuphoriaHolder extends PlayerAbilityHolder implements IDamageEventL
     }
 
     public float comboPercent() {
+        if (!getPlayer().level().getGameRules().getBoolean(FTZGameRules.EUPHORIA)) return 0;
         return kills > 1 ? (float) kills / 10 : 0f;
     }
 

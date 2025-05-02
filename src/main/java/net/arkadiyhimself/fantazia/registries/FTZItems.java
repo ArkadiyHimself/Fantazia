@@ -70,7 +70,7 @@ public class FTZItems {
         return magicItem(id, () -> new SpellCasterItem(spellHolder), SPELL_CASTERS);
     }
 
-    private static DeferredItem<AuraCasterItem> auraCaster(String id, Holder<BasicAura<?>> auraHolder) {
+    private static DeferredItem<AuraCasterItem> auraCaster(String id, Holder<BasicAura> auraHolder) {
         return magicItem(id, () -> new AuraCasterItem(auraHolder),  AURA_CASTERS);
     }
 
@@ -104,18 +104,20 @@ public class FTZItems {
     public static final DeferredItem<SpellCasterItem> ATHAME; // finished and implemented
     public static final DeferredItem<SpellCasterItem> SANDMANS_DUST; // finished and implemented
     public static final DeferredItem<SpellCasterItem> CARD_DECK; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> ROAMERS_COMPASS;
 
     public static final DeferredItem<SpellCasterItem> SOUL_EATER; // finished and implemented
     public static final DeferredItem<SpellCasterItem> SCULK_HEART; // finished and implemented
     public static final DeferredItem<SpellCasterItem> NIMBLE_DAGGER; // finished and implemented
     public static final DeferredItem<SpellCasterItem> CAUGHT_THUNDER; // finished and implemented
     public static final DeferredItem<SpellCasterItem> PUPPET_DOLL; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> BROKEN_STAFF;
 
     public static final DeferredItem<SpellCasterItem> MYSTIC_MIRROR; // finished and implemented
     public static final DeferredItem<SpellCasterItem> BLOODLUST_AMULET; // finished and implemented
     public static final DeferredItem<SpellCasterItem> CONTAINED_SOUND; // finished and implemented
     public static final DeferredItem<SpellCasterItem> WITHERS_QUINTESSENCE; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> RUSTY_RING;
+    public static final DeferredItem<SpellCasterItem> RUSTY_RING; // finished and implemented
 
     // auracasters
     public static final DeferredItem<AuraCasterItem> LEADERS_HORN; // finished and implemented
@@ -125,7 +127,7 @@ public class FTZItems {
     public static final DeferredItem<AuraCasterItem> NETHER_HEART; // finished and implemented
     public static final DeferredItem<AuraCasterItem> AMPLIFIED_ICE; // finished and implemented
     public static final DeferredItem<AuraCasterItem> OPTICAL_LENS; // finished and implemented
-    public static final DeferredItem<AuraCasterItem> NECKLACE_OF_CLAIRVOYANCE;
+    public static final DeferredItem<AuraCasterItem> NECKLACE_OF_CLAIRVOYANCE; // finished and implemented
 
     // expendables
     public static final DeferredItem<ExpendableItem> OBSCURE_SUBSTANCE; // finished and implemented
@@ -136,7 +138,7 @@ public class FTZItems {
     public static final DeferredItem<InsightBottleItem> INSIGHT_ESSENCE; // finished and implemented
     public static final DeferredItem<Item> RAW_FANTAZIUM; // finished and implemented
     public static final DeferredItem<Item> FANTAZIUM_INGOT; // finished and implemented
-    public static final DeferredItem<FantazicPaintingItem> FANTAZIC_PAINTING;
+    public static final DeferredItem<FantazicPaintingItem> FANTAZIC_PAINTING; // finished and implemented
 
     // obscure wood items
     public static final DeferredItem<SignItem> OBSCURE_SIGN; // finished and implemented
@@ -182,12 +184,14 @@ public class FTZItems {
         ATHAME = spellCaster("athame", FTZSpells.TRANSFER);
         SANDMANS_DUST = spellCaster("sandmans_dust", FTZSpells.VANISH);
         CARD_DECK = spellCaster("card_deck", FTZSpells.ALL_IN);
+        ROAMERS_COMPASS = spellCaster("roamers_compass", FTZSpells.WANDERERS_SPIRIT);
 
         SOUL_EATER = spellCaster("soul_eater", FTZSpells.DEVOUR);
         SCULK_HEART = spellCaster("heart_of_sculk", FTZSpells.SONIC_BOOM);
         NIMBLE_DAGGER = spellCaster("nimble_dagger", FTZSpells.BOUNCE);
         CAUGHT_THUNDER = spellCaster("caught_thunder", FTZSpells.LIGHTNING_STRIKE);
         PUPPET_DOLL = spellCaster("puppet_doll", FTZSpells.PUPPETEER);
+        BROKEN_STAFF = spellCaster("broken_staff", FTZSpells.KNOCK_OUT);
 
         MYSTIC_MIRROR = spellCaster("mystic_mirror", FTZSpells.REFLECT);
         BLOODLUST_AMULET = spellCaster("bloodlust_amulet", FTZSpells.DAMNED_WRATH);

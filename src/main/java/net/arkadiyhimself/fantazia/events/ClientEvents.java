@@ -1,19 +1,23 @@
 package net.arkadiyhimself.fantazia.events;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.KeyBinding;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.*;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.DurationHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.BarrierEffectHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.MeleeBlockHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.client.gui.FantazicGui;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.client.render.bars.*;
 import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
@@ -22,6 +26,7 @@ import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.FragileBladeItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.MurasamaItem;
 import net.arkadiyhimself.fantazia.packets.stuff.KeyInputC2S;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.tags.FTZItemTags;
@@ -47,7 +52,9 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
@@ -73,11 +80,14 @@ import java.util.Optional;
 public class ClientEvents {
 
     public static @Nullable LivingEntity suitableTarget = null;
+    public static @Nullable AuraCasterItem heldAuraCaster = null;
+    public static int lastWisdom = 0;
+    public static int wisdomTick = 0;
 
     @SubscribeEvent
     public static void entityTickPre(EntityTickEvent.Pre event) {
         Entity entity = event.getEntity();
-        if (entity == suitableTarget) VisualHelper.randomParticleOnModelClient(entity, ParticleTypes.SMOKE, VisualHelper.ParticleMovement.REGULAR);
+        if (entity == suitableTarget && Screen.hasShiftDown()) VisualHelper.particleOnEntityClient(entity, ParticleTypes.SMOKE, ParticleMovement.REGULAR);
     }
 
     @SubscribeEvent
@@ -95,20 +105,13 @@ public class ClientEvents {
         PoseStack poseStack = event.getGuiGraphics().pose();
         ResourceLocation overlay = event.getName();
 
-        FrozenEffect frozenEffect = LivingEffectGetter.takeHolder(player, FrozenEffect.class);
-        if (frozenEffect != null) {
-            float effPer = frozenEffect.effectPercent();
-            float frePer = player.getPercentFrozen();
-            if (effPer > frePer && overlay.equals(VanillaGuiLayers.FOOD_LEVEL)) event.setCanceled(true);
-        }
-
         if (overlay.equals(VanillaGuiLayers.SUBTITLE_OVERLAY) && !player.shouldShowDeathScreen()) poseStack.translate(0,-48,0);
         if (overlay.equals(VanillaGuiLayers.EXPERIENCE_BAR)) {
             int x = event.getGuiGraphics().guiWidth() / 2 - 91;
             int y = event.getGuiGraphics().guiHeight() - 29;
 
-            StunEffect stunEffect = LivingEffectGetter.takeHolder(player, StunEffect.class);
-            BarrierEffect barrierEffect = LivingEffectGetter.takeHolder(player, BarrierEffect.class);
+            StunEffectHolder stunEffect = LivingEffectHelper.takeHolder(player, StunEffectHolder.class);
+            BarrierEffectHolder barrierEffect = LivingEffectHelper.takeHolder(player, BarrierEffectHolder.class);
 
             poseStack.pushPose();
             if (FantazicGui.renderStunBar(stunEffect, guiGraphics, x, y)) event.setCanceled(true);
@@ -144,9 +147,8 @@ public class ClientEvents {
         if (entity instanceof Player player && player.isSpectator()) return;
         if (!entity.getPassengers().isEmpty()) return;
 
-        AncientFlameTicksHolder ancientFlameTicksHolder = LivingDataGetter.takeHolder(entity, AncientFlameTicksHolder.class);
         float yOffset = -1f;
-        if (ancientFlameTicksHolder != null && ancientFlameTicksHolder.isBurning()) VisualHelper.renderAncientFlame(poseStack, entity, buffers);
+        if (entity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS).value() > 0) VisualHelper.renderAncientFlame(poseStack, entity, buffers);
         if (entity == Minecraft.getInstance().player) return;
 
         poseStack.pushPose();
@@ -156,21 +158,18 @@ public class ClientEvents {
 
         poseStack.scale(1,-1,1);
 
-        StunEffect stunEffect = LivingEffectGetter.takeHolder(entity, StunEffect.class);
+        StunEffectHolder stunEffect = LivingEffectHelper.takeHolder(entity, StunEffectHolder.class);
         if (stunEffect != null && stunEffect.renderBar()) {
             yOffset = -1.45f;
             StunBarType.render(stunEffect, poseStack, buffers);
         }
 
-        CursedMarkEffect cursedMarkEffect = LivingEffectGetter.takeHolder(entity, CursedMarkEffect.class);
-        DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(entity, DisarmEffect.class);
-        FrozenEffect frozenEffect = LivingEffectGetter.takeHolder(entity, FrozenEffect.class);
-        DeafenedEffect deafenedEffect = LivingEffectGetter.takeHolder(entity, DeafenedEffect.class);
+        DurationHolder frozenDuration = LivingEffectHelper.getDurationHolder(entity, FTZMobEffects.FROZEN.value());
 
-        if (cursedMarkEffect != null && cursedMarkEffect.isMarked()) CursedMarkType.render(poseStack, buffers, yOffset);
-        else if (disarmEffect != null && disarmEffect.renderDisarm()) DisarmedSwordType.render(poseStack, buffers, yOffset);
-        else if (frozenEffect != null && frozenEffect.renderFreeze()) SnowCrystalType.render(frozenEffect, poseStack, buffers, yOffset);
-        else if (deafenedEffect != null && deafenedEffect.renderDeaf()) DeafeningType.render(deafenedEffect, poseStack, buffers, yOffset);
+        if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.CURSED_MARK.value())) CursedMarkType.render(poseStack, buffers, yOffset);
+        else if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.DISARM.value())) DisarmedSwordType.render(poseStack, buffers, yOffset);
+        else if (frozenDuration != null && (frozenDuration.dur() > 0 || entity.getPercentFrozen() > 0)) SnowCrystalType.render(entity, frozenDuration, poseStack, buffers, yOffset);
+        else if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.DEAFENED.value())) DeafeningType.render(entity, poseStack, buffers, yOffset);
 
         poseStack.popPose();
     }
@@ -184,7 +183,7 @@ public class ClientEvents {
         int packedLight = event.getPackedLight();
         int packedOverlay = LivingEntityRenderer.getOverlayCoords(player, 0);
 
-        EvasionHolder evasionHolder = LivingDataGetter.takeHolder(player, EvasionHolder.class);
+        EvasionHolder evasionHolder = LivingDataHelper.takeHolder(player, EvasionHolder.class);
         if (evasionHolder != null && evasionHolder.getIFrames() > 0) VisualHelper.renderEvasionPlayer(player, renderer, poseStack, buffers, packedLight, packedOverlay);
     }
 
@@ -199,9 +198,8 @@ public class ClientEvents {
         if (entity instanceof Player player && player.isSpectator()) return;
         if (!entity.getPassengers().isEmpty()) return;
 
-        AncientFlameTicksHolder ancientFlameTicksHolder = LivingDataGetter.takeHolder(entity, AncientFlameTicksHolder.class);
         float yOffset = -1f;
-        if (ancientFlameTicksHolder != null && ancientFlameTicksHolder.isBurning()) VisualHelper.renderAncientFlame(poseStack, entity, buffers);
+        if (entity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS).value() > 0) VisualHelper.renderAncientFlame(poseStack, entity, buffers);
         if (entity == Minecraft.getInstance().player) return;
 
         poseStack.pushPose();
@@ -211,22 +209,18 @@ public class ClientEvents {
 
         poseStack.scale(1,-1,1);
 
-        StunEffect stunEffect = LivingEffectGetter.takeHolder(entity, StunEffect.class);
+        StunEffectHolder stunEffect = LivingEffectHelper.takeHolder(entity, StunEffectHolder.class);
         if (stunEffect != null && stunEffect.renderBar()) {
             yOffset = -1.45f;
             StunBarType.render(stunEffect, poseStack, buffers);
         }
 
-        CursedMarkEffect cursedMarkEffect = LivingEffectGetter.takeHolder(entity, CursedMarkEffect.class);
-        DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(entity, DisarmEffect.class);
-        FrozenEffect frozenEffect = LivingEffectGetter.takeHolder(entity, FrozenEffect.class);
-        DeafenedEffect deafenedEffect = LivingEffectGetter.takeHolder(entity, DeafenedEffect.class);
+        DurationHolder frozenDuration = LivingEffectHelper.getDurationHolder(entity, FTZMobEffects.FROZEN.value());
 
-
-        if (cursedMarkEffect != null && cursedMarkEffect.isMarked()) CursedMarkType.render(poseStack, buffers, yOffset);
-        else if (disarmEffect != null && disarmEffect.renderDisarm()) DisarmedSwordType.render(poseStack, buffers, yOffset);
-        else if (frozenEffect != null && frozenEffect.renderFreeze()) SnowCrystalType.render(frozenEffect, poseStack, buffers, yOffset);
-        else if (deafenedEffect != null && deafenedEffect.renderDeaf()) DeafeningType.render(deafenedEffect, poseStack, buffers, yOffset);
+        if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.CURSED_MARK.value())) CursedMarkType.render(poseStack, buffers, yOffset);
+        else if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.DISARM.value())) DisarmedSwordType.render(poseStack, buffers, yOffset);
+        else if (frozenDuration != null && (frozenDuration.dur() > 0 || entity.getPercentFrozen() > 0)) SnowCrystalType.render(entity, frozenDuration, poseStack, buffers, yOffset);
+        else if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.DEAFENED.value())) DeafeningType.render(entity, poseStack, buffers, yOffset);
 
         poseStack.popPose();
     }
@@ -241,17 +235,15 @@ public class ClientEvents {
         int packedLight = event.getPackedLight();
         int packedOverlay = LivingEntityRenderer.getOverlayCoords(entity, 0);
 
-        EvasionHolder evasionHolder = LivingDataGetter.takeHolder(entity, EvasionHolder.class);
+        EvasionHolder evasionHolder = LivingDataHelper.takeHolder(entity, EvasionHolder.class);
         if (evasionHolder != null && evasionHolder.getIFrames() > 0) VisualHelper.renderEvasionEntity(entity, renderer, poseStack, buffers, packedLight, packedOverlay);
     }
 
     @SubscribeEvent
     public static void mouseScrolling(InputEvent.MouseScrollingEvent event) {
-        if (Minecraft.getInstance().level != null && Minecraft.getInstance().player != null) {
-            LocalPlayer player = Minecraft.getInstance().player;
-            StunEffect stunEffect = LivingEffectGetter.takeHolder(player, StunEffect.class);
-            if (stunEffect != null && stunEffect.stunned()) event.setCanceled(true);
-        }
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+        if (ActionsHelper.preventActions(player)) event.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -278,7 +270,7 @@ public class ClientEvents {
         if (KeyBinding.SPELLCAST2.consumeClick()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.SPELLCAST2, 1));
         if (KeyBinding.SPELLCAST3.consumeClick()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.SPELLCAST3, 1));
 
-        TalentsHolder talentsHolder = PlayerAbilityGetter.takeHolder(player, TalentsHolder.class);
+        TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
         if (KeyBinding.TALENTS.consumeClick() && talentsHolder != null) Minecraft.getInstance().setScreen(new TalentScreen(talentsHolder));
         if (event.getKey() == Minecraft.getInstance().options.keyJump.getKey().getValue()) PacketDistributor.sendToServer(new KeyInputC2S(KeyInputC2S.INPUT.JUMP, event.getAction()));
     }
@@ -318,12 +310,13 @@ public class ClientEvents {
     @SubscribeEvent
     public static void renderBlockScreenEffect(RenderBlockScreenEffectEvent event) {
         if (Minecraft.getInstance().player == null) return;
-        AncientFlameTicksHolder ancientFlameTicksHolder = LivingDataGetter.takeHolder(Minecraft.getInstance().player, AncientFlameTicksHolder.class);
-        if (event.getOverlayType() == RenderBlockScreenEffectEvent.OverlayType.FIRE && ancientFlameTicksHolder != null && ancientFlameTicksHolder.isBurning()) event.setCanceled(true);
+        if (event.getOverlayType() == RenderBlockScreenEffectEvent.OverlayType.FIRE && Minecraft.getInstance().player.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS).value() > 0) event.setCanceled(true);
     }
 
     @SubscribeEvent
     public static void clientTickPre(ClientTickEvent.Pre event) {
+        if (wisdomTick > 0) wisdomTick--;
+
         LocalPlayer localPlayer = Minecraft.getInstance().player;
         if (localPlayer == null) return;
 
@@ -334,8 +327,18 @@ public class ClientEvents {
 
         Item item = localPlayer.getMainHandItem().getItem();
 
-        if ((localPlayer.tickCount % 6) == 0 && item instanceof AuraCasterItem auraCasterItem) {
-            float radius = auraCasterItem.getBasicAura().getRadius();
+        if ((localPlayer.tickCount % 6) == 0 && item instanceof AuraCasterItem auraCasterItem && Screen.hasShiftDown()) {
+            heldAuraCaster = auraCasterItem;
+            float radius = heldAuraCaster.getAura().value().getRadius();
+
+            AttributeInstance instance = localPlayer.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
+            float additional = instance == null ? 0 : (float) instance.getValue();
+
+            int finalRadius = (int) (radius + Math.max(0, additional)) + 1;
+            Minecraft.getInstance().levelRenderer.setBlocksDirty(x0 - finalRadius, y0 - finalRadius, z0 - finalRadius, x0 + finalRadius, y0 + finalRadius, z0 + finalRadius);
+        } else if ((!(item instanceof AuraCasterItem) || !Screen.hasShiftDown()) && heldAuraCaster != null) {
+            float radius = heldAuraCaster.getAura().value().getRadius();
+            heldAuraCaster = null;
 
             AttributeInstance instance = localPlayer.getAttribute(FTZAttributes.AURA_RANGE_ADDITION);
             float additional = instance == null ? 0 : (float) instance.getValue();
@@ -364,7 +367,8 @@ public class ClientEvents {
                 List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, aabb);
                 list.removeIf(livingEntity -> livingEntity == localPlayer
                         || !localPlayer.hasLineOfSight(livingEntity) || livingEntity.isInvisible() ||
-                        !targetedSpell.canAffect(livingEntity) || !targetedSpell.conditions(localPlayer, livingEntity));
+                        !targetedSpell.canAffect(livingEntity) || !targetedSpell.conditions(localPlayer, livingEntity)
+                || livingEntity.isInvisible());
                 if (!list.isEmpty()) {
                     LivingEntity livingEntity = SpellHelper.getClosestEntity(list, localPlayer);
                     if (livingEntity != null) {
@@ -376,13 +380,13 @@ public class ClientEvents {
                 if (level.getBlockState(blockPos).isSolid()) {
                     float j = i - 0.75f;
                     head = casterCenter.add(new Vector3(localPlayer.getLookAngle().normalize()).multiply(j)).add(0.0, 0.5, 0.0);
-                    level.addParticle(ParticleTypes.SMOKE, head.x, head.y, head.z,0,0,0);
+                    if (Screen.hasShiftDown()) level.addParticle(ParticleTypes.SMOKE, head.x, head.y, head.z,0,0,0);
                     suitableTarget = null;
                     break;
                 }
 
                 if (Math.abs(i - finalRange) <= 0.5f) {
-                    level.addParticle(ParticleTypes.SMOKE, head.x, head.y, head.z,0,0,0);
+                    if (Screen.hasShiftDown()) level.addParticle(ParticleTypes.SMOKE, head.x, head.y, head.z,0,0,0);
                     suitableTarget = null;
                     break;
                 }
@@ -396,6 +400,32 @@ public class ClientEvents {
         if (player != null) {
             Item item = player.getMainHandItem().getItem();
             if (!(item instanceof SpellCasterItem spellCasterItem) || !(spellCasterItem.getSpell().value() instanceof TargetedSpell<?>)) suitableTarget = null;
+        }
+    }
+
+    @SubscribeEvent
+    public static void renderArm(RenderHandEvent event) {
+        MeleeBlockHolder holder = PlayerAbilityHelper.takeHolder(Minecraft.getInstance().player, MeleeBlockHolder.class);
+        PoseStack poseStack = event.getPoseStack();
+        if (holder == null) return;
+        int anim = holder.anim();
+        if (anim <= 0) return;
+
+        float delta;
+        if (anim < 6) delta = (anim - event.getPartialTick()) / 6f;
+        else if (anim > MeleeBlockHolder.BLOCK_ANIM - 3f) delta = (MeleeBlockHolder.BLOCK_ANIM - anim + event.getPartialTick()) / 3;
+        else delta = 1f;
+
+        int multip = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? 1 : -1;
+
+        if (event.getHand() == InteractionHand.MAIN_HAND) {
+            poseStack.translate(0.55f * multip * delta, 0.35f * delta, 0);
+            poseStack.mulPose(Axis.YP.rotationDegrees(90f * multip * delta));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-45f * delta));
+        } else {
+            poseStack.translate(-0.55 * multip * delta, -0.35 * delta, 0);
+            poseStack.mulPose(Axis.YP.rotationDegrees(-90 * multip * delta));
+            poseStack.mulPose(Axis.XP.rotationDegrees(45f * delta));
         }
     }
 }

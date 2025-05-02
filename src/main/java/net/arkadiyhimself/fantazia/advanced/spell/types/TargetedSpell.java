@@ -32,8 +32,8 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
     private final BiConsumer<LivingEntity, T> beforeBlockCheck;
     private final BiConsumer<LivingEntity, T> afterBlockCheck;
 
-    protected TargetedSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> affected, float range, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, BiPredicate<LivingEntity, T> conditions, BiConsumer<LivingEntity, T> beforeBlockCheck, BiConsumer<LivingEntity, T> afterBlockCheck) {
-        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, recharge);
+    protected TargetedSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> affected, float range, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, BiPredicate<LivingEntity, T> conditions, BiConsumer<LivingEntity, T> beforeBlockCheck, BiConsumer<LivingEntity, T> afterBlockCheck) {
+        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList());
         this.affected = affected;
         this.range = range;
         this.conditions = conditions;
@@ -160,6 +160,7 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
 
         private TickingConditions tickingConditions = TickingConditions.ALWAYS;
         private Consumer<LivingEntity> ownerTick = owner -> {};
+        private Consumer<LivingEntity> uponEquipping = owner -> {};
         private Cleanse targetCleanse = Cleanse.BASIC;
         private boolean doCleanse = false;
         private Function<LivingEntity, Integer> recharge;
@@ -186,6 +187,11 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         }
         public Builder<T> ownerTick(Consumer<LivingEntity> value) {
             this.ownerTick = value;
+            return this;
+        }
+
+        public Builder uponEquipping(Consumer<LivingEntity> uponEquipping) {
+            this.uponEquipping = uponEquipping;
             return this;
         }
 
@@ -226,7 +232,7 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         }
 
         public TargetedSpell<T> build() {
-            return new TargetedSpell<>(manacost, defaultRecharge, castSound, rechargeSound, targetClass, range, tickingConditions, ownerTick, targetCleanse, doCleanse, recharge, conditions, beforeBlockCheck, afterBlockCheck);
+            return new TargetedSpell<>(manacost, defaultRecharge, castSound, rechargeSound, targetClass, range, tickingConditions, ownerTick, uponEquipping, targetCleanse, doCleanse, recharge, conditions, beforeBlockCheck, afterBlockCheck);
         }
     }
 }

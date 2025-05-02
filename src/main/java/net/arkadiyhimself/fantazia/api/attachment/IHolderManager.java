@@ -14,6 +14,4 @@ public interface IHolderManager<T extends INBTSerializable<CompoundTag>, M exten
     <I extends T> @Nullable I actualHolder(Class<I> iClass);
     <I extends T> Optional<I> optionalHolder(Class<I> iClass);
     <I extends T> boolean hasHolder(Class<I> iClass);
-    CompoundTag syncSerialize();
-    void syncDeserialize(CompoundTag tag);
 }

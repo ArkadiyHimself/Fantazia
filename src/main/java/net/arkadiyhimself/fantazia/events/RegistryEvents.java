@@ -13,9 +13,7 @@ import net.arkadiyhimself.fantazia.client.renderers.entity.*;
 import net.arkadiyhimself.fantazia.client.renderers.item.CustomItemRenderer;
 import net.arkadiyhimself.fantazia.datagen.*;
 import net.arkadiyhimself.fantazia.datagen.tag_providers.*;
-import net.arkadiyhimself.fantazia.packets.attachment_modify.EntityMadeSoundS2C;
-import net.arkadiyhimself.fantazia.packets.attachment_modify.SoundExpiredS2C;
-import net.arkadiyhimself.fantazia.packets.attachment_modify.TalentBuyingC2S;
+import net.arkadiyhimself.fantazia.packets.attachment_modify.*;
 import net.arkadiyhimself.fantazia.packets.attachment_syncing.LevelAttributesUpdateS2C;
 import net.arkadiyhimself.fantazia.packets.attachment_syncing.LivingDataUpdateS2C;
 import net.arkadiyhimself.fantazia.packets.attachment_syncing.LivingEffectUpdateS2C;
@@ -175,6 +173,7 @@ public class RegistryEvents {
     public static void registerLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(CustomBoatRenderer.OBSCURE_BOAT_LAYER, BoatModel::createBodyModel);
         event.registerLayerDefinition(CustomBoatRenderer.OBSCURE_CHEST_BOAT_LAYER, ChestBoatModel::createBodyModel);
+        event.registerLayerDefinition(SimpleChasingProjectileRenderer.SIMPLE_CHASING_PROJECTILE_LAYER, SimpleChasingProjectileModel::createBodyLayer);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -186,6 +185,7 @@ public class RegistryEvents {
         event.registerEntityRenderer(FTZEntityTypes.CUSTOM_BOAT.get(), context -> new CustomBoatRenderer(context, false));
         event.registerEntityRenderer(FTZEntityTypes.CUSTOM_CHEST_BOAT.get(), context -> new CustomBoatRenderer(context, true));
         event.registerEntityRenderer(FTZEntityTypes.FANTAZIC_PAINTING.get(), FantazicPaintingRenderer::new);
+        event.registerEntityRenderer(FTZEntityTypes.SIMPLE_CHASING_PROJECTILE.get(), SimpleChasingProjectileRenderer::new);
 
         event.registerBlockEntityRenderer(FTZBlockEntityTypes.OBSCURE_SIGN.value(), SignRenderer::new);
         event.registerBlockEntityRenderer(FTZBlockEntityTypes.OBSCURE_HANGING_SIGN.value(), HangingSignRenderer::new);
@@ -303,15 +303,22 @@ public class RegistryEvents {
         registrar.playToClient(EntityMadeSoundS2C.TYPE, EntityMadeSoundS2C.CODEC, EntityMadeSoundS2C::handle);
         registrar.playToClient(SoundExpiredS2C.TYPE, SoundExpiredS2C.CODEC, SoundExpiredS2C::handle);
         registrar.playToServer(TalentBuyingC2S.TYPE, TalentBuyingC2S.CODEC, TalentBuyingC2S::handle);
+        registrar.playToClient(WanderersSpiritLocationS2C.TYPE, WanderersSpiritLocationS2C.CODEC, WanderersSpiritLocationS2C::handle);
+        registrar.playToClient(AllInPreviousOutcomeS2C.TYPE, AllInPreviousOutcomeS2C.CODEC, AllInPreviousOutcomeS2C::handle);
+        registrar.playToClient(TickingIntegerUpdateS2C.TYPE, TickingIntegerUpdateS2C.CODEC, TickingIntegerUpdateS2C::handle);
+        registrar.playToClient(ReflectLayerActivateSC2.TYPE, ReflectLayerActivateSC2.CODEC, ReflectLayerActivateSC2::handle);
+        registrar.playToClient(WisdomObtainedSC2.TYPE, WisdomObtainedSC2.CODEC, WisdomObtainedSC2::handle);
+        registrar.playToClient(ResetEuphoriaSC2.TYPE, ResetEuphoriaSC2.CODEC, ResetEuphoriaSC2::handle);
+        registrar.playToClient(SimpleEffectSyncingSC2.TYPE, SimpleEffectSyncingSC2.CODEC, SimpleEffectSyncingSC2::handle);
 
         // stuff
-        registrar.playToClient(AddParticleS2C.TYPE, AddParticleS2C.CODEC, AddParticleS2C::handle);
-        registrar.playToClient(ChasingParticleS2C.TYPE, ChasingParticleS2C.CODEC, ChasingParticleS2C::handle);
+        registrar.playToClient(AnimatePlayerSC2.TYPE, AnimatePlayerSC2.CODEC, AnimatePlayerSC2::handle);
+        registrar.playToClient(AddChasingParticlesS2C.TYPE, AddChasingParticlesS2C.CODEC, AddChasingParticlesS2C::handle);
         registrar.playToClient(InterruptPlayerS2C.TYPE, InterruptPlayerS2C.CODEC, InterruptPlayerS2C::handle);
         registrar.playToServer(KeyInputC2S.TYPE, KeyInputC2S.CODEC, KeyInputC2S::handle);
         registrar.playToClient(SwingHandS2C.TYPE, SwingHandS2C.CODEC, SwingHandS2C::handle);
-        registrar.playToClient(PlayAnimationS2C.TYPE, PlayAnimationS2C.CODEC, PlayAnimationS2C::handle);
         registrar.playToClient(PlaySoundForUIS2C.TYPE, PlaySoundForUIS2C.CODEC, PlaySoundForUIS2C::handle);
+        registrar.playToClient(AddParticlesOnEntitySC2.TYPE, AddParticlesOnEntitySC2.CODEC, AddParticlesOnEntitySC2::handle);
     }
 
     @SubscribeEvent

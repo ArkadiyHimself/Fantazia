@@ -2,10 +2,10 @@ package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -47,7 +47,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     @Inject(at = @At("HEAD"), method = "isBodyVisible", cancellable = true)
     private void invisible(T pLivingEntity, CallbackInfoReturnable<Boolean> cir) {
         if (!(pLivingEntity instanceof Player player)) return;
-        DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+        DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
         if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() == 2) cir.setReturnValue(false);
     }
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V")
@@ -58,12 +58,12 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     private void cancelRender(M instance, PoseStack var1, VertexConsumer var2, int var3, int var4, int var5) {
         boolean render = true;
         if (fantazia$current != null) {
-            EvasionHolder evasionHolder = LivingDataGetter.takeHolder(fantazia$current, EvasionHolder.class);
+            EvasionHolder evasionHolder = LivingDataHelper.takeHolder(fantazia$current, EvasionHolder.class);
             if (evasionHolder != null && evasionHolder.getIFrames() > 0) render = false;
         }
 
         if (fantazia$current instanceof Player player) {
-            DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+            DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
             if (dashHolder != null && dashHolder.getLevel() > 2 && dashHolder.isDashing()) render = false;
         }
 

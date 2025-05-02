@@ -8,18 +8,19 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 public class StandStillGoal extends Goal {
+
     protected final PathfinderMob mob;
+
     public StandStillGoal(PathfinderMob pMob) {
         this.mob = pMob;
         this.setFlags(EnumSet.of(Flag.MOVE));
     }
+
     @Override
     public boolean canUse() {
-        return this.isBleeding();
-    }
-    public boolean isBleeding() {
         return mob.hasEffect(FTZMobEffects.HAEMORRHAGE);
     }
+
     @Override
     public void start() {
         Vec3 pos = mob.position();

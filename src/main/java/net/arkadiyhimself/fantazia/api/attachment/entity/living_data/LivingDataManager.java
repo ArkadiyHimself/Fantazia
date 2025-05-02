@@ -5,8 +5,6 @@ import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
 import net.arkadiyhimself.fantazia.api.attachment.IHolderManager;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.StuckHatchetHolder;
 import net.minecraft.core.HolderLookup;
@@ -35,7 +33,7 @@ public class LivingDataManager implements IHolderManager<IBasicHolder, LivingEnt
 
     @Override
     public LivingEntity getOwner() {
-        return null;
+        return livingEntity;
     }
 
     @Override
@@ -75,20 +73,19 @@ public class LivingDataManager implements IHolderManager<IBasicHolder, LivingEnt
         return holders.containsKey(iClass);
     }
 
-    @Override
     public CompoundTag syncSerialize() {
         CompoundTag tag = new CompoundTag();
         for (IBasicHolder holder : holders.values()) tag.put(holder.id().toString(), holder.syncSerialize());
         return tag;
     }
 
-    @Override
     public void syncDeserialize(CompoundTag tag) {
         for (IBasicHolder holder : holders.values()) if (tag.contains(holder.id().toString())) holder.syncDeserialize(tag.getCompound(holder.id().toString()));
     }
 
     public void tick() {
-        holders.values().forEach(IBasicHolder::tick);
+        if (getOwner().level().isClientSide()) holders.values().forEach(IBasicHolder::clientTick);
+        else holders.values().forEach(IBasicHolder::serverTick);
     }
 
     public void onHit(LivingIncomingDamageEvent event) {
@@ -104,8 +101,6 @@ public class LivingDataManager implements IHolderManager<IBasicHolder, LivingEnt
     }
 
     private void provide() {
-        putHolder(AncientFlameTicksHolder::new);
-        putHolder(CommonDataHolder::new);
         putHolder(StuckHatchetHolder::new);
         putHolder(DAMHolder::new);
     }

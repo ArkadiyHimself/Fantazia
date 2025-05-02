@@ -100,17 +100,17 @@ public class FantazicHooks {
         return NeoForge.EVENT_BUS.post(event).isCanceled();
     }
 
-    public static <T extends Entity> void onAuraTick(AuraInstance<T> aura) {
-        AuraEvent.Tick<T> event = new AuraEvent.Tick<>(aura);
+    public static void onAuraTick(AuraInstance aura) {
+        AuraEvent.Tick event = new AuraEvent.Tick(aura);
         NeoForge.EVENT_BUS.post(event);
     }
 
-    public static <T extends Entity> void onAuraEnter(AuraInstance<T> aura, T entity) {
-        NeoForge.EVENT_BUS.post(new AuraEvent.Enter<>(aura, entity));
+    public static void onAuraEnter(AuraInstance aura, Entity entity) {
+        NeoForge.EVENT_BUS.post(new AuraEvent.Enter(aura, entity));
     }
 
-    public static <T extends Entity> void onAuraExit(AuraInstance<T> aura, T entity) {
-        NeoForge.EVENT_BUS.post(new AuraEvent.Exit<>(aura, entity));
+    public static void onAuraExit(AuraInstance aura, Entity entity) {
+        NeoForge.EVENT_BUS.post(new AuraEvent.Exit(aura, entity));
     }
 
 }

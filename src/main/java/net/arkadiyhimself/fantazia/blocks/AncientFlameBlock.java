@@ -2,10 +2,9 @@ package net.arkadiyhimself.fantazia.blocks;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZBlocks;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -90,8 +89,8 @@ public class AncientFlameBlock extends BaseFireBlock {
             if (livingEntity instanceof SnowGolem) dmg *= 2.5f;
             DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(pLevel);
             if (sources != null) pEntity.hurt(sources.ancientFlame(), dmg);
-            int flameTicks = livingEntity instanceof Player player && (player.getAbilities().invulnerable) ? 3 : 100;
-            LivingDataGetter.acceptConsumer(livingEntity, AncientFlameTicksHolder.class, darkFlameTicks -> darkFlameTicks.setFlameTicks(flameTicks));
+            int flameTicks = livingEntity instanceof Player player && (player.getAbilities().invulnerable) ? 2 : 120;
+            livingEntity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS).set(flameTicks);
         }
     }
 

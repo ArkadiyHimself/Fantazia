@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.client.renderers.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
+import net.arkadiyhimself.fantazia.entities.DashStone;
 import net.arkadiyhimself.fantazia.items.casters.DashStoneItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,7 +20,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
-public class DashStoneRenderer extends EntityRenderer<DashStoneEntity> {
+public class DashStoneRenderer extends EntityRenderer<DashStone> {
     public static final ModelResourceLocation DASHSTONE2 = Fantazia.modelRes("item/dashstone2");
     public static final ModelResourceLocation DASHSTONE3 = Fantazia.modelRes("item/dashstone3");
     public DashStoneRenderer(EntityRendererProvider.Context pContext) {
@@ -28,11 +28,11 @@ public class DashStoneRenderer extends EntityRenderer<DashStoneEntity> {
     }
 
     @Override
-    public void render(@NotNull DashStoneEntity pEntity, float pEntityYaw, float pPartialTick, @NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight) {
+    public void render(@NotNull DashStone pEntity, float pEntityYaw, float pPartialTick, @NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight) {
         pPoseStack.pushPose();
 
         pPoseStack.scale(0.5f,0.5f,0.5f);
-        pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.getEntityData().get(DashStoneEntity.VISUAL_ROT0), pEntity.getEntityData().get(DashStoneEntity.VISUAL_ROT1))));
+        pPoseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTick, pEntity.getEntityData().get(DashStone.VISUAL_ROT0), pEntity.getEntityData().get(DashStone.VISUAL_ROT1))));
 
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(getModel(pEntity));
         Minecraft.getInstance().getItemRenderer().render(pEntity.getDashstone(), ItemDisplayContext.GUI, false, pPoseStack, pBuffer, pPackedLight, pPackedLight, model);
@@ -41,11 +41,11 @@ public class DashStoneRenderer extends EntityRenderer<DashStoneEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull DashStoneEntity pEntity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull DashStone pEntity) {
         return Fantazia.res("");
     }
 
-    private static ModelResourceLocation getModel(DashStoneEntity entity) {
+    private static ModelResourceLocation getModel(DashStone entity) {
         Item item = entity.getDashstone().getItem();
         if (!(item instanceof DashStoneItem dashStoneItem)) return DASHSTONE2;
         int level = dashStoneItem.level;

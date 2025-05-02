@@ -4,12 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.DeafenedEffect;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class DeafeningType extends RenderStateShard {
@@ -31,10 +31,10 @@ public class DeafeningType extends RenderStateShard {
     private static RenderType createDeafWaves(RenderType.CompositeState glState) {
         return RenderType.create("deaf_circle", com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, true, glState);
     }
-    public static void render(@NotNull DeafenedEffect deafenedEffect, PoseStack poseStack, MultiBufferSource buffers, float iconHeight) {
+    public static void render(@NotNull LivingEntity entity, PoseStack poseStack, MultiBufferSource buffers, float iconHeight) {
         poseStack.pushPose();
         poseStack.translate(0,iconHeight,0);
-        int tick = deafenedEffect.getEntity().tickCount;
+        int tick = entity.tickCount;
         int alpha = 125 + (int) (FantazicMath.intoSin(tick, 28) * 65);
         final int light = 0xF000F0;
 

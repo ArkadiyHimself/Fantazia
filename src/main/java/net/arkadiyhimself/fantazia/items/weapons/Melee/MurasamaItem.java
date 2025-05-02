@@ -3,11 +3,10 @@ package net.arkadiyhimself.fantazia.items.weapons.Melee;
 import com.google.common.collect.Lists;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ClientValuesHolder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
-import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
+import net.arkadiyhimself.fantazia.packets.IPacket;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -25,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,8 +39,8 @@ public class MurasamaItem extends MeleeWeaponItem implements ITooltipBuilder {
     public boolean hasActive() { return true; }
     @Override
     public void activeAbility(ServerPlayer player) {
-        PlayerAbilityGetter.acceptConsumer(player, ClientValuesHolder.class, ClientValuesHolder::taunt);
-        PacketDistributor.sendToPlayer(player, new PlayAnimationS2C("taunt"));
+        player.getData(FTZAttachmentTypes.MURASAMA_TAUNT_TICKS).set(30);
+        IPacket.animatePlayer(player, "taunt");;
         if (LivingEffectHelper.isDisguised(player)) return;
         ServerLevel level = (ServerLevel) player.level();
         AABB aabb = player.getBoundingBox().inflate(10);

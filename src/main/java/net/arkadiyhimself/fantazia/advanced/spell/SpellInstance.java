@@ -4,7 +4,8 @@ import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -77,21 +78,22 @@ public class SpellInstance implements INBTSerializable<CompoundTag> {
         return available;
     }
 
-    public void putOnRecharge() {
-        if (livingEntity instanceof Player player && player.hasInfiniteMaterials()) return;
+    public void useResources() {
+        if (ActionsHelper.infiniteResources(livingEntity)) return;
+        if (livingEntity instanceof Player player) PlayerAbilityHelper.wasteMana(player, spell.value().getManacost());
         this.recharge = spell.value().getRecharge(livingEntity);
     }
 
     public boolean attemptCast() {
-        if (this.recharge > 0 || livingEntity instanceof Player player && !PlayerAbilityGetter.wasteMana(player, spell.value().getManacost())) return false;
+        if (!ActionsHelper.infiniteResources(livingEntity) && (this.recharge > 0 || livingEntity instanceof Player player && !PlayerAbilityHelper.enoughMana(player, spell.value().getManacost()))) return false;
 
         boolean flag = false;
 
-        if (this.getSpell().value() instanceof SelfSpell selfSpell) flag = SpellHelper.trySelfSpell(livingEntity, selfSpell, false);
-        else if (this.getSpell().value() instanceof TargetedSpell<?> targetedSpell) flag = SpellHelper.tryTargetedSpell(livingEntity, targetedSpell);
-        else if (this.getSpell().value() instanceof PassiveSpell passiveSpell) flag = SpellHelper.tryPassiveSpell(livingEntity, passiveSpell);
+        if (getSpell().value() instanceof SelfSpell selfSpell) flag = SpellHelper.trySelfSpell(livingEntity, selfSpell, false);
+        else if (getSpell().value() instanceof TargetedSpell<?> targetedSpell) flag = SpellHelper.tryTargetedSpell(livingEntity, targetedSpell);
+        else if (getSpell().value() instanceof PassiveSpell passiveSpell) flag = SpellHelper.tryPassiveSpell(livingEntity, passiveSpell);
 
-        if (flag) putOnRecharge();
+        if (flag) useResources();
 
         return flag;
     }

@@ -7,11 +7,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
+import net.arkadiyhimself.fantazia.api.attachment.basis_attachments.ReflectLayerRenderHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.ClientValuesHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -52,17 +53,17 @@ public class MysticMirror {
 
             if (!(pLivingEntity instanceof Player player)) return;
 
-            DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+            DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
             if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() > 2) return;
 
-            EvasionHolder evasionHolder = LivingDataGetter.takeHolder(pLivingEntity, EvasionHolder.class);
+            EvasionHolder evasionHolder = LivingDataHelper.takeHolder(pLivingEntity, EvasionHolder.class);
             if (evasionHolder != null && evasionHolder.getIFrames() > 0) return;
 
-            ClientValuesHolder clientValuesHolder = PlayerAbilityGetter.takeHolder(player, ClientValuesHolder.class);
-            if (clientValuesHolder == null || !clientValuesHolder.showMirrorLayer) return;
+            ReflectLayerRenderHolder values = pLivingEntity.getData(FTZAttachmentTypes.REFLECT_RENDER_VALUES);
+            if (!values.showLayer) return;
 
             pPoseStack.pushPose();
-            float scale = clientValuesHolder.mirrorLayerSize;
+            float scale = values.layerSize;
             pPoseStack.scale(scale, scale, scale);
             float f = (float)pLivingEntity.tickCount + pPartialTick;
             M entityModel = renderer.getModel();
@@ -76,7 +77,7 @@ public class MysticMirror {
             buffer.setUv2(64, 64);
             entityModel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
 
-            int color = FastColor.ARGB32.colorFromFloat(clientValuesHolder.mirrorLayerVis, clientValuesHolder.mirrorLayerVis, clientValuesHolder.mirrorLayerVis,0.175f * clientValuesHolder.mirrorLayerVis);
+            int color = FastColor.ARGB32.colorFromFloat(values.layerTransparency, values.layerTransparency, values.layerTransparency,0.575f * values.layerTransparency);
             entityModel.renderToBuffer(pPoseStack, buffer, pPackedLight, OverlayTexture.NO_OVERLAY, color);
 
             pPoseStack.popPose();

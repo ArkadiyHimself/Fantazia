@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.entities.ShockwaveEntity;
+import net.arkadiyhimself.fantazia.entities.Shockwave;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class ShockwaveRenderer extends EntityRenderer<ShockwaveEntity> {
+public class ShockwaveRenderer extends EntityRenderer<Shockwave> {
 
     private static final ResourceLocation REGULAR1 = Fantazia.res("textures/entity/shockwave/regular1.png");
     private static final ResourceLocation REGULAR2 = Fantazia.res("textures/entity/shockwave/regular2.png");
@@ -32,7 +32,7 @@ public class ShockwaveRenderer extends EntityRenderer<ShockwaveEntity> {
         return RenderType.create("stun_bar", com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, true, glState);
     }
 
-    private RenderType renderType(ShockwaveEntity entity) {
+    private RenderType renderType(Shockwave entity) {
         RenderType.CompositeState renderTypeState = RenderType.CompositeState.builder()
                 .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
                 .setTextureState(new RenderStateShard.TextureStateShard(getTextureLocation(entity), false, false))
@@ -48,7 +48,7 @@ public class ShockwaveRenderer extends EntityRenderer<ShockwaveEntity> {
     }
 
     @Override
-    public void render(@NotNull ShockwaveEntity entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+    public void render(@NotNull Shockwave entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
         final int light = 0xF000F0;
 
@@ -66,7 +66,7 @@ public class ShockwaveRenderer extends EntityRenderer<ShockwaveEntity> {
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull ShockwaveEntity entity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull Shockwave entity) {
         float lifePer = entity.lifePercentage();
         boolean fury = entity.furious();
         if (lifePer >= 0.8f) return fury ? FURY5 : REGULAR5;

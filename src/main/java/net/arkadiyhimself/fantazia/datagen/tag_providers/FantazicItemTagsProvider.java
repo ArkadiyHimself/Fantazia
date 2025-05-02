@@ -15,6 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -80,5 +81,18 @@ public class FantazicItemTagsProvider extends ItemTagsProvider {
     private void copyFromBlocks() {
         copy(FTZBlockTags.OBSCURE_LOGS, FTZItemTags.OBSCURE_LOGS);
         copy(FTZBlockTags.FANTAZIUM_ORES, FTZItemTags.FANTAZIUM_ORES);
+
+        copy(BlockTags.FENCE_GATES, ItemTags.FENCE_GATES);
+        copy(BlockTags.LEAVES, ItemTags.LEAVES);
+        copy(BlockTags.LOGS_THAT_BURN, ItemTags.LOGS_THAT_BURN);
+        copy(BlockTags.PLANKS, ItemTags.PLANKS);
+        copy(BlockTags.SAPLINGS, ItemTags.SAPLINGS);
+        copy(BlockTags.WOODEN_BUTTONS, ItemTags.WOODEN_BUTTONS);
+        copy(BlockTags.WOODEN_DOORS, ItemTags.WOODEN_DOORS);
+        copy(BlockTags.WOODEN_FENCES, ItemTags.WOODEN_FENCES);
+        copy(BlockTags.WOODEN_PRESSURE_PLATES, ItemTags.WOODEN_PRESSURE_PLATES);
+        copy(BlockTags.WOODEN_SLABS , ItemTags.WOODEN_SLABS);
+        copy(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS);
+        copy(BlockTags.WOODEN_TRAPDOORS, ItemTags.WOODEN_TRAPDOORS);
     }
 }

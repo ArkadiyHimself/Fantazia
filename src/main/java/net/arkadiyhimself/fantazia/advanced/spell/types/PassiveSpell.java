@@ -22,8 +22,8 @@ public class PassiveSpell extends AbstractSpell {
 
     private final Consumer<LivingEntity> onActivation;
 
-    protected PassiveSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Consumer<LivingEntity> onActivation) {
-        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, recharge);
+    protected PassiveSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Consumer<LivingEntity> onActivation) {
+        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList());
         this.onActivation = onActivation;
     }
 
@@ -110,6 +110,7 @@ public class PassiveSpell extends AbstractSpell {
 
         private TickingConditions tickingConditions = TickingConditions.ALWAYS;
         private Consumer<LivingEntity> ownerTick = owner -> {};
+        private Consumer<LivingEntity> uponEquipping = owner -> {};
         private Cleanse cleanse = Cleanse.BASIC;
         private boolean doCleanse = false;
         private Function<LivingEntity, Integer> recharge;
@@ -132,6 +133,11 @@ public class PassiveSpell extends AbstractSpell {
 
         public Builder ownerTick(Consumer<LivingEntity> value) {
             this.ownerTick = value;
+            return this;
+        }
+
+        public Builder uponEquipping(Consumer<LivingEntity> uponEquipping) {
+            this.uponEquipping = uponEquipping;
             return this;
         }
 
@@ -162,7 +168,7 @@ public class PassiveSpell extends AbstractSpell {
         }
 
         public PassiveSpell build() {
-            return new PassiveSpell(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, cleanse, doCleanse, recharge, onActivation);
+            return new PassiveSpell(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, onActivation);
         }
     }
 }

@@ -14,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 
 public class AuraCarrierCommand {
@@ -24,7 +23,7 @@ public class AuraCarrierCommand {
                 .executes((AuraCarrierCommand::createAura))));
     }
     private static int createAura(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
-        Holder.Reference<BasicAura<? extends Entity>> basicAuraReference = ResourceArgument.getResource(commandContext, "aura", FantazicRegistries.Keys.AURA);
+        Holder.Reference<BasicAura> basicAuraReference = ResourceArgument.getResource(commandContext, "aura", FantazicRegistries.Keys.AURA);
 
         BlockPos blockpos = BlockPos.containing(commandContext.getSource().getPosition());
         ServerLevel serverlevel = commandContext.getSource().getLevel();
@@ -32,7 +31,7 @@ public class AuraCarrierCommand {
         serverlevel.addFreshEntity(armorStand);
         commandContext.getSource().sendSuccess(() -> Component.translatable("commands.summon.success", armorStand.getDisplayName()), true);
 
-        armorStand.getData(FTZAttachmentTypes.ARMOR_STAND_COMMAND_AURA).setAura(basicAuraReference.value());
+        armorStand.getData(FTZAttachmentTypes.ARMOR_STAND_COMMAND_AURA).setAura(basicAuraReference);
         return 1;
     }
 }

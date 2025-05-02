@@ -3,17 +3,16 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ITalentListener;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
-import net.arkadiyhimself.fantazia.entities.DashStoneEntity;
+import net.arkadiyhimself.fantazia.entities.DashStone;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
-import net.arkadiyhimself.fantazia.packets.stuff.PlayAnimationS2C;
-import net.arkadiyhimself.fantazia.packets.stuff.PlaySoundForUIS2C;
+import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -28,15 +27,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class DashHolder extends PlayerAbilityHolder implements ITalentListener, IDamageEventListener {
+
     private static final float STAMINA = 1.5f;
     private static final int DEFAULT_DUR = 7;
     private static final int DEFAULT_RECHARGE = 100;
+
     private int dashstoneEntity = -1;
     private int initialDur = 1;
     private int initialRecharge = 1;
@@ -66,12 +66,40 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-        this.level = compoundTag.contains("level") ?  compoundTag.getInt("level") : 0;
-        this.initialDur = compoundTag.contains("initial_dur") ?  compoundTag.getInt("initial_dur") : 1;
-        this.duration = compoundTag.contains("duration") ?  compoundTag.getInt("duration") : 0;
+        this.level = compoundTag.getInt("level");
+        this.initialDur = compoundTag.contains("initial_dur") ? compoundTag.getInt("initial_dur") : 1;
+        this.duration = compoundTag.getInt("duration");
         this.initialRecharge = compoundTag.contains("initial_recharge") ?  compoundTag.getInt("initial_recharge") : 1;
-        this.recharge = compoundTag.contains("recharge") ?  compoundTag.getInt("recharge") : 0;
-        this.dashstoneEntity = compoundTag.contains("entity") ? compoundTag.getInt("entity") : 0;
+        this.recharge = compoundTag.getInt("recharge");
+        this.dashstoneEntity = compoundTag.getInt("entity");
+    }
+
+    @Override
+    public CompoundTag syncSerialize() {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("level", this.level);
+        tag.putInt("initial_dur", this.initialDur);
+        if (this.duration == getInitDur() - 1) tag.putInt("duration", this.duration);
+        tag.putInt("initial_recharge", this.initialRecharge);
+        if (this.recharge == getInitRecharge()) tag.putInt("recharge", this.recharge);
+        if (this.wasDashing) tag.putBoolean("wasDashing", true);
+
+        tag.putDouble("dX", velocity.x);
+        tag.putDouble("dY", velocity.y);
+        tag.putDouble("dZ", velocity.z);
+        return tag;
+    }
+
+    @Override
+    public void syncDeserialize(CompoundTag compoundTag) {
+        this.level = compoundTag.getInt("level");
+        this.initialDur = compoundTag.contains("initial_dur") ? compoundTag.getInt("initial_dur") : 1;
+        if (compoundTag.contains("duration")) this.duration = compoundTag.getInt("duration");
+        this.initialRecharge = compoundTag.contains("initial_recharge") ?  compoundTag.getInt("initial_recharge") : 1;
+        if (compoundTag.contains("recharge")) this.recharge = compoundTag.getInt("recharge");
+        if (compoundTag.contains("wasDashing")) this.wasDashing = true;
+
+        velocity = new Vec3(compoundTag.getDouble("dX"), compoundTag.getDouble("dY"), compoundTag.getDouble("dZ"));
     }
 
     @Override
@@ -83,30 +111,39 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
     }
 
     @Override
-    public void tick() {
+    public void serverTick() {
         if (isDashing()) {
             duration--;
-            getPlayer().hurtMarked = true;
-            getPlayer().setDeltaMovement(velocity);
-            for (int i = 1; i <= Minecraft.getInstance().options.particles().get().getId() + 1; i++) VisualHelper.randomParticleOnModel(getPlayer(), getParticleType(), VisualHelper.ParticleMovement.AWAY);
+            VisualHelper.particleOnEntityServer(getPlayer(), getParticleType(), ParticleMovement.AWAY, 3);
             if (level == 1 && getPlayer().horizontalCollision) getPlayer().hurt(getPlayer().level().damageSources().flyIntoWall(), 3f);
+        } else {
+            if (recharge > 0) recharge--;
+            else if (recharged) {
+                recharged = false;
+                if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.soundForUI(serverPlayer, getRechargeSound());
+            }
+            if (wasDashing) {
+                wasDashing = false;
+                FantazicHooks.onDashExpired(getPlayer(),this);
+                if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "");;
+            }
+        }
 
+        if (duration == initialDur - 5 && initialDur >= 6 && level < 3 && getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "dash.middle");;
+    }
+
+    @Override
+    public void clientTick() {
+        if (isDashing()) {
+            duration--;
+            getPlayer().setDeltaMovement(velocity);
         } else {
             if (recharge > 0) recharge--;
             if (wasDashing) {
                 wasDashing = false;
-                FantazicHooks.onDashExpired(getPlayer(), this);
-                getPlayer().hurtMarked = true;
+                FantazicHooks.onDashExpired(getPlayer(),this);
                 getPlayer().setDeltaMovement(0, 0, 0);
-                if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C(""));
             }
-        }
-
-        if (duration == initialDur - 5 && initialDur >= 6 && level < 3 && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C("dash.middle"));
-
-        if (recharged && recharge == 0) {
-            recharged = false;
-            if (!getPlayer().hasInfiniteMaterials() && getRechargeSound() != null && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(getRechargeSound()));
         }
     }
 
@@ -117,6 +154,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
         else if (Fantazia.res("dash/dash2").equals(resLoc) && level < 2) upgrade(2);
         else if (Fantazia.res("dash/dash3").equals(resLoc) && level < 3) upgrade(3);
     }
+
     @Override
     public void onTalentRevoke(ITalent talent) {
         ResourceLocation resLoc = talent.getID();
@@ -124,14 +162,13 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
         else if (Fantazia.res("dash/dash2").equals(resLoc) && level > 1) level = 1;
         else if (Fantazia.res("dash/dash1").equals(resLoc) && level > 0) level = 0;
         
-        DashStoneEntity entity = getDashstoneEntity(getPlayer().level());
+        DashStone entity = getDashstoneEntity(getPlayer().level());
         if (level == 0 && entity != null) {
             entity.reset();
             dashstoneEntity = -1;
         }
     }
-    
-    
+
     @Override
     public void onHit(LivingIncomingDamageEvent event) {
         if (!isDashing()) return;
@@ -141,26 +178,32 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
 
     private void upgrade(int value) {
         level = value;
-        if (getRechargeSound() != null && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(getRechargeSound()));
+        if (getRechargeSound() != null && getPlayer() instanceof ServerPlayer serverPlayer) IPacket.soundForUI(serverPlayer, getRechargeSound());
     }
+
     public boolean isAvailable() {
         return level > 0;
     }
+
     public int getLevel() {
         return level;
     }
+
     public void setLevel(int level) {
         this.level = level;
     }
+
     public boolean isDashing() {
         return this.duration > 0;
     }
+
     public SimpleParticleType getParticleType() {
         return switch (level) {
             case 1 -> ParticleTypes.POOF;
             default -> null;
         };
     }
+
     public SoundEvent getDashSound() {
         return switch (level) {
             case 1 -> FTZSoundEvents.DASH1.get();
@@ -169,6 +212,7 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
             default -> null;
         };
     }
+
     public SoundEvent getRechargeSound() {
         return switch (level) {
             case 1 -> FTZSoundEvents.DASH1_RECHARGE.get();
@@ -177,24 +221,30 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
             default -> null;
         };
     }
+
     public boolean canDash() {
         return !isDashing() && recharge == 0 && getPlayer().isEffectiveAi() && level > 0 && (getPlayer().onGround() || midAir) && !getPlayer().isSpectator();
     }
+
     public int getInitDur() {
         return level < 3 ? DEFAULT_DUR : DEFAULT_DUR + 2;
     }
+
     public int getInitRecharge() {
         return getPlayer().hasInfiniteMaterials() ? 0 : DEFAULT_RECHARGE;
     }
+
     public int getRecharge() {
         return recharge;
     }
+
     public int getDur() {
         return duration;
     }
+
     public void beginDash(Vec3 vec3) {
         if (!canDash()) return;
-        StaminaHolder staminaHolder = PlayerAbilityGetter.takeHolder(getPlayer(), StaminaHolder.class);
+        StaminaHolder staminaHolder = PlayerAbilityHelper.takeHolder(getPlayer(), StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(STAMINA, true, 65)) return;
 
         int actualDur = FantazicHooks.onDashStart(getPlayer(), this, getInitDur());
@@ -204,30 +254,34 @@ public class DashHolder extends PlayerAbilityHolder implements ITalentListener, 
         recharge = getInitRecharge();
         initialRecharge = recharge;
         wasDashing = true;
-        recharged = true;
+        if (!getPlayer().hasInfiniteMaterials()) recharged = true;
 
         getPlayer().level().playSound(null, getPlayer().blockPosition(), getDashSound(), SoundSource.PLAYERS);
         getPlayer().resetFallDistance();
         actuallyDash(actualDur);
     }
+
     public void actuallyDash(int duration) {
         this.duration = duration;
         this.initialDur = duration;
-        if (level < 3 && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C("dash.start"));
+        if (level < 3 && getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "dash.start");;
     }
+
     public void stopDash() {
         if (!FantazicHooks.onDashEnd(getPlayer(), this)) return;
         this.duration = 0;
         this.wasDashing = false;
         getPlayer().hurtMarked = true;
         getPlayer().setDeltaMovement(0,0,0);
-        if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new PlayAnimationS2C(""));
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "");;
     }
-    public void setDashstoneEntity(DashStoneEntity dashstoneEntity) {
-        this.dashstoneEntity = dashstoneEntity.getId();
+
+    public void setDashstoneEntity(DashStone dashstone) {
+        this.dashstoneEntity = dashstone.getId();
     }
-    public @Nullable DashStoneEntity getDashstoneEntity(Level serverLevel) {
+
+    public @Nullable DashStone getDashstoneEntity(Level serverLevel) {
         Entity entity = serverLevel.getEntity(dashstoneEntity);
-        return entity instanceof DashStoneEntity dashStoneEntity ? dashStoneEntity : null;
+        return entity instanceof DashStone dashStone ? dashStone : null;
     }
 }

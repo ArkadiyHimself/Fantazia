@@ -91,7 +91,7 @@ public class EffectSpawnHolder {
             effectSpawnInstances.addElement(new MobEffectSpawnInstance.Builder(effect, chance, level, hidden));
         }
 
-        public void addAuraInstance(Holder<BasicAura<?>> aura, double chance) {
+        public void addAuraInstance(Holder<BasicAura> aura, double chance) {
             auraSpawnInstances.addElement(new AuraSpawnInstance.Builder(aura, chance));
         }
 

@@ -1,26 +1,19 @@
 package net.arkadiyhimself.fantazia.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.AncientFlameTicksHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.CommonDataHolder;
+import net.arkadiyhimself.fantazia.api.attachment.basis_attachments.TickingIntegerHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
-import net.arkadiyhimself.fantazia.registries.FTZAttributes;
-import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
-import net.arkadiyhimself.fantazia.registries.FTZItems;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.registries.*;
+import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -35,11 +28,11 @@ import net.minecraft.world.level.block.state.BlockState;
 public class Auras {
     private Auras() {}
 
-    public static final BasicAura<LivingEntity> DEBUG = new BasicAura.Builder<>(LivingEntity.class, BasicAura.TYPE.NEGATIVE, 10f)
+    public static final BasicAura DEBUG = new BasicAura.Builder(BasicAura.TYPE.NEGATIVE, 10f)
             .addDynamicAttributeModifier(Attributes.MAX_HEALTH, new AttributeModifier(Fantazia.res("aura.debug"), -18, AttributeModifier.Operation.ADD_VALUE))
             .build();
 
-    public static final BasicAura<LivingEntity> LEADERSHIP = new BasicAura.Builder<>(LivingEntity.class, BasicAura.TYPE.POSITIVE, 12f)
+    public static final BasicAura LEADERSHIP = new BasicAura.Builder(BasicAura.TYPE.POSITIVE, 12f)
             .primaryFilter((entity, owner) -> {
                 boolean pet = entity instanceof TamableAnimal animal && owner instanceof LivingEntity livingOwner && animal.isOwnedBy(livingOwner);
                 boolean ally = entity instanceof Player && owner instanceof Player;
@@ -48,11 +41,11 @@ public class Auras {
             .addAttributeModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(Fantazia.res("aura.leadership"), 0.5f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
             .addAttributeModifier(FTZAttributes.LIFESTEAL, new AttributeModifier(Fantazia.res("aura.leadership"), 0.25f, AttributeModifier.Operation.ADD_VALUE))
             .onTickAffected((entity, owner) -> {
-                if (owner instanceof LivingEntity livingOwner && livingOwner.hasEffect(FTZMobEffects.FURY)) LivingEffectHelper.makeFurious(entity,2);
+                if (owner instanceof LivingEntity livingOwner && livingOwner.hasEffect(FTZMobEffects.FURY) && entity instanceof LivingEntity livingEntity) LivingEffectHelper.makeFurious(livingEntity,2);
             })
             .build();
 
-    public static final BasicAura<LivingEntity> TRANQUIL = new BasicAura.Builder<>(LivingEntity.class, BasicAura.TYPE.POSITIVE, 6f)
+    public static final BasicAura TRANQUIL = new BasicAura.Builder( BasicAura.TYPE.POSITIVE, 6f)
             .primaryFilter((entity, owner) -> {
                 boolean flag = entity instanceof AgeableMob || entity instanceof Player;
                 boolean flag1 = entity instanceof TamableAnimal tamableAnimal && tamableAnimal.getOwner() == owner;
@@ -60,29 +53,22 @@ public class Auras {
             })
             .secondaryFilter((entity, owner) -> {
                 if (owner instanceof Player player && player.getCooldowns().isOnCooldown(FTZItems.TRANQUIL_HERB.get())) return false;
-                if (owner instanceof LivingEntity livingOwner) {
-                    CommonDataHolder commonDataHolder = LivingDataGetter.takeHolder(livingOwner, CommonDataHolder.class);
-                    if (commonDataHolder != null && commonDataHolder.getDamageTicks() > 0) return false;
-                }
-                CommonDataHolder commonDataHolder = LivingDataGetter.takeHolder(entity, CommonDataHolder.class);
-                if (commonDataHolder != null && commonDataHolder.getDamageTicks() > 0) return false;
+                if (owner instanceof LivingEntity livingOwner && livingOwner.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).value() > 0) return false;
 
-                return !InventoryHelper.hasCurio(entity, FTZItems.TRANQUIL_HERB.get()) && entity.getMaxHealth() > entity.getHealth();
+                if (entity.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).value() > 0) return false;
+
+                return entity instanceof LivingEntity livingEntity && !AuraHelper.ownsAura(livingEntity, FTZAuras.TRANQUIL) && livingEntity.getMaxHealth() > livingEntity.getHealth();
             })
             .ownerConditions(owner -> {
                 if (!(owner instanceof LivingEntity livingOwner)) return false;
                 if (owner instanceof Player player && player.getCooldowns().isOnCooldown(FTZItems.TRANQUIL_HERB.get())) return false;
-                CommonDataHolder commonDataHolder = LivingDataGetter.takeHolder(livingOwner, CommonDataHolder.class);
-                return commonDataHolder == null || commonDataHolder.getDamageTicks() <= 0;
+                return livingOwner.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).value() <= 0;
             })
             .onTickAffected((entity, owner) -> {
-                HealingSourcesHolder healingSources = LevelAttributesHelper.getHealingSources(entity.level());
-                if (healingSources != null) AdvancedHealing.tryHeal(entity, healingSources.regenAura(owner), 0.25f / 20);
+                if (entity instanceof LivingEntity livingEntity) LevelAttributesHelper.healEntityByOther(livingEntity, owner, 0.25f / 20, HealingSourcesHolder::regenAura);
             })
             .onTickOwner(owner -> {
-                if (!(owner instanceof LivingEntity livingOwner)) return;
-                HealingSourcesHolder healingSources = LevelAttributesHelper.getHealingSources(livingOwner.level());
-                if (healingSources != null) AdvancedHealing.tryHeal(livingOwner, healingSources.regenAura(owner), 0.3125f / 20);
+                if (owner instanceof LivingEntity livingOwner) LevelAttributesHelper.healEntityByItself(livingOwner, 0.3125f / 20, HealingSourcesHolder::regenAura);
             })
             .onTickBlock((blockPos, auraInstance) -> {
                 if (Fantazia.RANDOM.nextFloat() >= 0.00085f) return;
@@ -92,29 +78,33 @@ public class Auras {
             })
             .build();
 
-    public static final BasicAura<Monster> DESPAIR = new BasicAura.Builder<>(Monster.class, BasicAura.TYPE.NEGATIVE, 8f)
-            .secondaryFilter((entity, owner) -> (owner instanceof LivingEntity livingOwner && livingOwner.getHealth() > entity.getHealth() || entity.hasEffect(FTZMobEffects.DOOMED)) && !entity.hasEffect(FTZMobEffects.FURY))
+    public static final BasicAura DESPAIR = new BasicAura.Builder(BasicAura.TYPE.NEGATIVE, 8f)
+            .secondaryFilter((entity, owner) -> {
+                if (!(entity instanceof LivingEntity livingEntity)) return false;
+                if (owner instanceof LivingEntity livingOwner && livingOwner.getHealth() > livingEntity.getHealth()) return true;
+                return livingEntity.hasEffect(FTZMobEffects.DOOMED) && !livingEntity.hasEffect(FTZMobEffects.FURY);
+            })
             .addAttributeModifier(Attributes.ATTACK_DAMAGE, new AttributeModifier(Fantazia.res("aura.despair"), -0.35, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
             .addDynamicAttributeModifier(Attributes.MOVEMENT_SPEED, new AttributeModifier(Fantazia.res("aura.despair"), -0.8, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
             .build();
 
-    public static final BasicAura<Monster> CORROSIVE = new BasicAura.Builder<>(Monster.class, BasicAura.TYPE.NEGATIVE, 7.5f)
+    public static final BasicAura CORROSIVE = new BasicAura.Builder(BasicAura.TYPE.NEGATIVE, 7.5f)
             .addMobEffect(FTZMobEffects.CORROSION, 2)
             .addAttributeModifier(FTZAttributes.MAX_STUN_POINTS, new AttributeModifier(Fantazia.res("aura.corrosive"), -0.2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL))
             .build();
 
-    public static final BasicAura<LivingEntity> HELLFIRE = new BasicAura.Builder<>(LivingEntity.class, BasicAura.TYPE.NEGATIVE, 6f)
+    public static final BasicAura HELLFIRE = new BasicAura.Builder(BasicAura.TYPE.NEGATIVE, 6f)
             .onTickAffected((livingEntity, entity) -> {
                 if (livingEntity.getRemainingFireTicks() == 1) livingEntity.setRemainingFireTicks(21);
 
-                AncientFlameTicksHolder holder = LivingDataGetter.takeHolder(livingEntity, AncientFlameTicksHolder.class);
-                if (holder != null && holder.isBurning()) holder.setFlameTicks(2);
+                TickingIntegerHolder ancientFlame = livingEntity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS);
+                if (ancientFlame.value() == 1) ancientFlame.set(2);
             })
             .putDamageMultiplier(FTZDamageTypeTags.IS_ANCIENT_FLAME, 1.5f)
             .putDamageMultiplier(DamageTypeTags.IS_FIRE, 1.75f)
             .build();
 
-    public static final BasicAura<Mob> FROSTBITE = new BasicAura.Builder<>(Mob.class, BasicAura.TYPE.NEGATIVE, 8f)
+    public static final BasicAura FROSTBITE = new BasicAura.Builder(BasicAura.TYPE.NEGATIVE, 8f)
             .primaryFilter((mob, entity) -> !(mob instanceof AgeableMob) && mob.canFreeze())
             .onTickAffected((mob, entity) -> mob.setTicksFrozen(Math.min(mob.getTicksRequiredToFreeze() + 3, mob.getTicksFrozen() + 3)))
             .putDamageMultiplier(DamageTypes.FREEZE, 3f)
@@ -122,7 +112,11 @@ public class Auras {
             .putTooltipFormating(ChatFormatting.BLUE)
             .build();
 
-    public static final BasicAura<Monster> DIFFRACTION = new BasicAura.Builder<>(Monster.class, BasicAura.TYPE.NEGATIVE, 6f).build();
+    public static final BasicAura DIFFRACTION = new BasicAura.Builder(BasicAura.TYPE.NEGATIVE, 6f)
+            .primaryFilter(((entity, owner) -> entity instanceof Monster))
+            .build();
 
-    public static final BasicAura<LivingEntity> UNCOVER = new BasicAura.Builder<>(LivingEntity.class, BasicAura.TYPE.NEGATIVE, 24f).build();
+    public static final BasicAura UNCOVER = new BasicAura.Builder(BasicAura.TYPE.NEGATIVE, 24f)
+            .primaryFilter(((entity, owner) -> entity instanceof LivingEntity))
+            .build();
 }

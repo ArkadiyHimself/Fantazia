@@ -4,9 +4,8 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectGetter;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.DisarmEffect;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
@@ -77,8 +76,7 @@ public abstract class MixinLivingEntity extends Entity {
 
     @Inject(at = @At("HEAD"), method = "getAttackAnim", cancellable = true)
     private void attackAnim(float pPartialTick, CallbackInfoReturnable<Float> cir) {
-        DisarmEffect disarmEffect = LivingEffectGetter.takeHolder(fantazia$entity, DisarmEffect.class);
-        if (disarmEffect != null && disarmEffect.renderDisarm()) cir.setReturnValue(0f);
+        if (LivingEffectHelper.hasEffectSimple(fantazia$entity, FTZMobEffects.DISARM.value())) cir.setReturnValue(0f);
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/WalkAnimationState;setSpeed(F)V", args = {"damagesource"}), method = "handleDamageEvent")
@@ -89,7 +87,7 @@ public abstract class MixinLivingEntity extends Entity {
     @Inject(at = @At(value = "HEAD"), method = "onClimbable", cancellable = true)
     private void climbWall(CallbackInfoReturnable<Boolean> cir) {
         if (!(fantazia$entity instanceof Player player)) return;
-        DashHolder dashHolder = PlayerAbilityGetter.takeHolder(player, DashHolder.class);
+        DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
         if (dashHolder != null && dashHolder.isDashing()) return;
         if (fantazia$shouldBeClimbing(player)) cir.setReturnValue(true);
     }

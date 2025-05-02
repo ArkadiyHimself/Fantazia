@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityGetter;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
@@ -12,6 +11,7 @@ import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.WisdomRewardManager;
 import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
+import net.arkadiyhimself.fantazia.packets.attachment_modify.WisdomObtainedSC2;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
@@ -35,6 +35,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
@@ -123,7 +124,7 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     public void grantWisdom(int amount) {
         if (amount <= 0) return;
         this.wisdom += amount;
-        PlayerAbilityGetter.acceptConsumer(getPlayer(), ClientValuesHolder.class, clientValues -> clientValues.obtainedWisdom(amount));
+        if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new WisdomObtainedSC2(amount));
     }
 
     public void convertXP(int xp) {

@@ -135,7 +135,7 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
     }
 
     public AtomicInteger getActionAmount(ResourceLocation action) {
-        return timesPerformed.computeIfAbsent(action, location -> new AtomicInteger(0));
+        return timesPerformed.computeIfAbsent(action,location -> new AtomicInteger(0));
     }
 
     public int performAction(ResourceLocation action, int delta) {

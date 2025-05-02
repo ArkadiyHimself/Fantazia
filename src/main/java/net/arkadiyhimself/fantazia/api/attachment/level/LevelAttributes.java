@@ -6,13 +6,10 @@ import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHo
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsOnSpawnHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
-import net.arkadiyhimself.fantazia.packets.attachment_syncing.LevelAttributesUpdateS2C;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -76,7 +73,6 @@ public class LevelAttributes implements IHolderManager<ILevelAttributeHolder, Le
         return holders.containsKey(iClass);
     }
 
-    @Override
     public CompoundTag syncSerialize() {
         CompoundTag tag = new CompoundTag();
 
@@ -85,13 +81,13 @@ public class LevelAttributes implements IHolderManager<ILevelAttributeHolder, Le
         return tag;
     }
 
-    @Override
     public void syncDeserialize(CompoundTag tag) {
         for (ILevelAttributeHolder holder : holders.values()) if (tag.contains(holder.id().toString())) holder.syncDeserialize(tag.getCompound(holder.id().toString()));
     }
 
     public void tick() {
-        holders.values().forEach(ILevelAttributeHolder::tick);
+        if (level.isClientSide()) holders.values().forEach(ILevelAttributeHolder::clientTick);
+        else holders.values().forEach(ILevelAttributeHolder::serverTick);
     }
 
     public void provide() {
@@ -99,13 +95,5 @@ public class LevelAttributes implements IHolderManager<ILevelAttributeHolder, Le
         putHolder(DamageSourcesHolder::new);
         putHolder(HealingSourcesHolder::new);
         putHolder(EffectsOnSpawnHolder::new);
-    }
-
-    public static void updateTracking(Level level) {
-        PacketDistributor.sendToAllPlayers(new LevelAttributesUpdateS2C(LevelAttributesGetter.getUnwrap(level).syncSerialize()));
-    }
-
-    public static void updateTracking(ServerPlayer serverPlayer) {
-        PacketDistributor.sendToPlayer(serverPlayer, new LevelAttributesUpdateS2C(LevelAttributesGetter.getUnwrap(serverPlayer.level()).syncSerialize()));
     }
 }

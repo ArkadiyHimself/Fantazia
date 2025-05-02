@@ -24,7 +24,7 @@ public class PlayerAnimations {
     public static void animatePlayer(AbstractClientPlayer player, @Nullable String name) {
         ModifierLayer<IAnimation> animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData(player).get(Fantazia.res("animation"));
         if (animation != null) {
-            if (name != null) {
+            if (name != null && !name.isEmpty()) {
                 @Nullable KeyframeAnimation keyframeAnimation = (KeyframeAnimation) PlayerAnimationRegistry.getAnimation(Fantazia.res(name));
                 if (keyframeAnimation != null) animation.setAnimation(new KeyframeAnimationPlayer(keyframeAnimation));
             } else animation.setAnimation(null);

@@ -29,5 +29,4 @@ public class FantazicEntityTypeTagsProvider extends EntityTypeTagsProvider {
         tag(FTZEntityTypeTags.AERIAL).add(EntityType.BLAZE, EntityType.ENDER_DRAGON, EntityType.GHAST,  EntityType.LLAMA, EntityType.SNOW_GOLEM, EntityType.WITCH, EntityType.WITHER);
         tag(FTZEntityTypeTags.RANGED_ATTACK).add(EntityType.ALLAY, EntityType.BAT, EntityType.BEE, EntityType.BLAZE, EntityType.ENDER_DRAGON, EntityType.GHAST, EntityType.PARROT, EntityType.PHANTOM, EntityType.VEX, EntityType.WITHER);
     }
-
 }

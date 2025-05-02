@@ -15,6 +15,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -57,26 +58,21 @@ public class SpellCastCommand {
         ServerPlayer player = commandContext.getSource().getPlayer();
         if (player == null) return;
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistries.SPELLS.holders().toList();
-        SelfSpell spell = null;
-        for (Holder.Reference<AbstractSpell> spellRegistryObject : registryObjects) if (id.equals(spellRegistryObject.value().getID()) && spellRegistryObject.value() instanceof SelfSpell selfSpell) spell = selfSpell;
-        if (spell == null) return;
-        SelfSpell finalSpell = spell;
-        commandContext.getSource().sendSuccess(() -> Component.translatable("commands.spellcast.self.success", finalSpell.getName()), true);
-        SpellHelper.trySelfSpell(player, finalSpell, true);
+        Holder<AbstractSpell> spell = FantazicRegistries.SPELLS.getHolderOrThrow(ResourceKey.create(FantazicRegistries.Keys.SPELL, id));
+        if (!(spell.value() instanceof SelfSpell selfSpell)) return;
+        commandContext.getSource().sendSuccess(() -> Component.translatable("commands.spellcast.self.success", AbstractSpell.getName(id)), true);
+        SpellHelper.trySelfSpell(player, selfSpell, true);
     }
     private static void castTargetedSpell(CommandContext<CommandSourceStack> commandContext) {
         ServerPlayer player = commandContext.getSource().getPlayer();
         if (player == null) return;
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistries.SPELLS.holders().toList();
-        TargetedSpell<?> spell = null;
-        for (Holder.Reference<AbstractSpell> spellRegistryObject : registryObjects) if (id.equals(spellRegistryObject.value().getID()) && spellRegistryObject.value() instanceof TargetedSpell<?> selfSpell) spell = selfSpell;
-        if (spell == null) return;
-        TargetedSpell<?> finalSpell = spell;
-        LivingEntity target = SpellHelper.commandTargetedSpell(player, spell);
+        Holder<AbstractSpell> spell = FantazicRegistries.SPELLS.getHolderOrThrow(ResourceKey.create(FantazicRegistries.Keys.SPELL, id));
+
+        if (!(spell.value() instanceof TargetedSpell<?> targetedSpell)) return;
+        LivingEntity target = SpellHelper.commandTargetedSpell(player, targetedSpell);
         if (target == null) commandContext.getSource().sendSuccess(() -> Component.translatable("commands.spellcast.targeted.failure"), true);
-        else commandContext.getSource().sendSuccess(() -> Component.translatable("commands.spellcast.targeted.success.single", finalSpell.getName(), target.getDisplayName()), true);
+        else commandContext.getSource().sendSuccess(() -> Component.translatable("commands.spellcast.targeted.success.single", AbstractSpell.getName(id), target.getDisplayName()), true);
     }
     private static void castTargetedSpells(CommandContext<CommandSourceStack> commandContext, Collection<? extends Entity> entities) {
         List<LivingEntity> livingEntities = Lists.newArrayList();
@@ -88,13 +84,10 @@ public class SpellCastCommand {
             return;
         }
         ResourceLocation id = commandContext.getArgument("spell", ResourceLocation.class);
-        List<Holder.Reference<AbstractSpell>> registryObjects = FantazicRegistries.SPELLS.holders().toList();
-        TargetedSpell<?> spell = null;
-        for (Holder.Reference<AbstractSpell> spellRegistryObject : registryObjects) if (id.equals(spellRegistryObject.value().getID()) && spellRegistryObject.value() instanceof TargetedSpell<?> selfSpell) spell = selfSpell;
-        if (spell == null) return;
-        TargetedSpell<?> finalSpell = spell;
-        List<? extends LivingEntity> cast = SpellHelper.commandTargetedSpell(player, finalSpell, livingEntities);
+        Holder<AbstractSpell> spell = FantazicRegistries.SPELLS.getHolderOrThrow(ResourceKey.create(FantazicRegistries.Keys.SPELL, id));
+        if (!(spell.value() instanceof TargetedSpell<?> targetedSpell)) return;
+        List<? extends LivingEntity> cast = SpellHelper.commandTargetedSpell(player, targetedSpell, livingEntities);
         if (cast.isEmpty()) commandContext.getSource().sendSuccess(() -> Component.translatable("commands.spellcast.targeted.failure"), true);
-        else commandContext.getSource().sendSuccess(() -> Component.translatable(  "commands.spellcast.targeted.success", finalSpell.getName(), cast.size()),true);
+        else commandContext.getSource().sendSuccess(() -> Component.translatable(  "commands.spellcast.targeted.success", AbstractSpell.getName(id), cast.size()),true);
     }
 }

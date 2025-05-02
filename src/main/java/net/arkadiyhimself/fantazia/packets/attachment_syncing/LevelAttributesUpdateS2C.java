@@ -3,9 +3,6 @@ package net.arkadiyhimself.fantazia.packets.attachment_syncing;
 import io.netty.buffer.ByteBuf;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.packets.IPacket;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -24,10 +21,6 @@ public record LevelAttributesUpdateS2C(CompoundTag tag) implements IPacket {
     }
 
     public void handle(IPayloadContext context) {
-        context.enqueueWork(() -> {
-            ClientLevel clientLevel = Minecraft.getInstance().level;
-            if (clientLevel == null) return;
-            clientLevel.getData(FTZAttachmentTypes.LEVEL_ATTRIBUTES).syncDeserialize(tag);
-        });
+        context.enqueueWork(() -> AttachmentSyncingHandlers.levelAttributes(tag));
     }
 }
