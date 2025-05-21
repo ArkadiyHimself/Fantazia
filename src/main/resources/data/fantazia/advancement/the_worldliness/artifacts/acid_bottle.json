@@ -1,8 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "dashstone": {
-      "trigger": "minecraft:player_killed_entity",
+    "found_acid_bottle": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:acid_bottle"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "killed_witch": {
       "conditions": {
         "entity": [
           {
@@ -13,7 +21,14 @@
             }
           }
         ]
-      }
+      },
+      "trigger": "minecraft:player_killed_entity"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_acid_bottle",
+      "killed_witch"
+    ]
+  ]
 }

@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "fantazia:item/spellcaster/card_deck2"
+  }
+}

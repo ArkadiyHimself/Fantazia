@@ -1,22 +1,22 @@
 {
-  "name": "item.fantazia.entangler",
-  "icon": "fantazia:entangler",
+  "advancement": "fantazia:the_worldliness/artifacts/entangler",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/entangler",
+  "icon": "fantazia:entangler",
+  "name": "item.fantazia.entangler",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.entangler.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.entangler.page.1"
     },
     {
-      "type": "crafting",
+      "type": "patchouli:crafting",
       "recipe": "fantazia:entangler",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.entangler.page.2"
+      "text": "book.fantazia.the_worldliness.artifacts.entangler.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.entangler.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.entangler.page.3"
     }
   ]
 }

@@ -3,9 +3,9 @@
     "minecraft:blaze",
     "minecraft:ender_dragon",
     "minecraft:ghast",
-    "minecraft:wither",
     "minecraft:llama",
     "minecraft:snow_golem",
-    "minecraft:witch"
+    "minecraft:witch",
+    "minecraft:wither"
   ]
 }

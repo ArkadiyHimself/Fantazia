@@ -1,0 +1,18 @@
+{
+  "advancement": "fantazia:the_worldliness/expendables/insight_essence",
+  "category": "fantazia:expendables",
+  "icon": "fantazia:insight_essence",
+  "name": "item.fantazia.insight_essence",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.expendables.insight_essence.page.1"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "fantazia:insight_essence",
+      "text": "book.fantazia.the_worldliness.expendables.insight_essence.page.2",
+      "title": "book.fantazia.heading.expendables.consumable"
+    }
+  ]
+}

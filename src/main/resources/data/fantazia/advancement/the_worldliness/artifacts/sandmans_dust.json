@@ -1,33 +1,44 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "sand": {
-      "trigger": "minecraft:inventory_changed",
+    "found_sandmans_dust": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:sand"]
+            "items": "fantazia:sandmans_dust"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
-    "substance" : {
-      "trigger": "minecraft:inventory_changed",
+    "obscure_substance": {
+      "conditions": {
+        "possessed": {
+          "items": [
+            "fantazia:obscure_substance"
+          ]
+        }
+      },
+      "trigger": "fantazia:possess_item"
+    },
+    "sand": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:obscure_substance"]
+            "items": "minecraft:sand"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
-      "sand"
+      "sand",
+      "found_sandmans_dust"
     ],
     [
-      "substance"
+      "found_sandmans_dust",
+      "obscure_substance"
     ]
   ]
 }

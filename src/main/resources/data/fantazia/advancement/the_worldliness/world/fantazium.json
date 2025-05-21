@@ -1,50 +1,19 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "fantazium_ingot" : {
-      "trigger": "minecraft:inventory_changed",
+    "fantazium": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:fantazium_ingot"]
+            "items": "#fantazia:from_fantazium"
           }
         ]
-      }
-    },
-    "fantazium_ore" : {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": ["fantazia:fantazium_ore"]
-          }
-        ]
-      }
-    },
-    "deepslate_fantazium_ore" : {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": ["fantazia:deepslate_fantazium_ore"]
-          }
-        ]
-      }
-    },
-    "raw_fantazium" : {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": ["fantazia:raw_fantazium"]
-          }
-        ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
-      "fantazium_ingot", "fantazium_ore", "deepslate_fantazium_ore", "raw_fantazium"
+      "fantazium"
     ]
   ]
 }

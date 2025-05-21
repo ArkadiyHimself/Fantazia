@@ -93,8 +93,8 @@ configurations {
 
 dependencies {
     implementation "dev.kosmx.player-anim:player-animation-lib-forge:${player_anim}"
-    compileOnly "vazkii.patchouli:Patchouli:${patchouly_version}:api"
-    runtimeOnly "vazkii.patchouli:Patchouli:${patchouly_version}"
+    compileOnly "vazkii.patchouli:Patchouli:${patchouli_version}:api"
+    runtimeOnly "vazkii.patchouli:Patchouli:${patchouli_version}"
     runtimeOnly "curse.maven:adorned-1036809:${adorned_version}"
     compileOnly "curse.maven:adorned-1036809:${adorned_version}"
 }

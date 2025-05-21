@@ -1,11 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
-  "pattern": [
-    " Y ",
-    "H#H",
-    " Y "
-  ],
+  "category": "misc",
   "key": {
     "#": {
       "item": "minecraft:ice"
@@ -13,12 +8,17 @@
     "H": {
       "item": "fantazia:obscure_substance"
     },
-    "Y" : {
+    "Y": {
       "item": "minecraft:snowball"
     }
   },
+  "pattern": [
+    " Y ",
+    "H#H",
+    " Y "
+  ],
   "result": {
+    "count": 1,
     "id": "fantazia:amplified_ice"
-  },
-  "show_notification": true
+  }
 }

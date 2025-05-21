@@ -2,21 +2,22 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.BarrierEffectHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.MobEffectDurationSyncHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.SimpleMobEffectHolderSyncHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.SimpleMobEffectSyncHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -42,33 +43,55 @@ import java.util.function.Consumer;
 
 public class LivingEffectHelper {
 
-    private LivingEffectHelper() {}
-
-    public static <T extends ILivingEffectHolder> @Nullable T takeHolder(LivingEntity livingEntity, Class<T> tClass) {
-        return livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).actualHolder(tClass);
+    public static <T extends ILivingEffectHolder> @Nullable T takeHolder(@Nullable LivingEntity livingEntity, Class<T> tClass) {
+        return livingEntity == null ? null : livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).actualHolder(tClass);
     }
 
-    public static <T extends ILivingEffectHolder> void acceptConsumer(LivingEntity livingEntity, Class<T> tClass, Consumer<T> consumer) {
+    public static <T extends ILivingEffectHolder> void acceptConsumer(@Nullable LivingEntity livingEntity, Class<T> tClass, Consumer<T> consumer) {
+        if (livingEntity == null) return;
         livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).optionalHolder(tClass).ifPresent(consumer);
     }
 
     public static void simpleSetEffect(LivingEntity entity, MobEffect mobEffect, boolean present) {
-        acceptConsumer(entity, SimpleMobEffectHolderSyncHolder.class, holder -> holder.setEffect(mobEffect, present));
+        acceptConsumer(entity, SimpleMobEffectSyncHolder.class, holder -> holder.setEffect(mobEffect, present));
     }
 
-    public static void simpleEffectAdded(LivingEntity entity, MobEffectInstance instance) {
-        if (entity instanceof ServerPlayer serverPlayer && instance.getEffect().value() == FTZMobEffects.DOOMED.value()) IPacket.soundForUI(serverPlayer, FTZSoundEvents.DOOMED.get());
+    public static void simpleEffectAdded(LivingEntity livingEntity, MobEffectInstance instance) {
+        MobEffect mobEffect = instance.getEffect().value();
+        int ampl = instance.getAmplifier();
+        int duration = instance.getDuration();
+        if (livingEntity instanceof ServerPlayer serverPlayer && instance.getEffect().value() == FTZMobEffects.DOOMED.value()) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DOOMED.get());
 
-        if (instance.getEffect().value() == FTZMobEffects.HAEMORRHAGE.value()) {
-            entity.level().playSound(null, entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_FLESH_RIPPING.get(), SoundSource.NEUTRAL,0.35f,1f);
-            DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(entity.level());
-            if (sources != null) entity.hurt(sources.bleeding(), entity.getHealth() * 0.1f);
-            entity.setData(FTZAttachmentTypes.HAEMORRHAGE_TO_HEAL,4f + 2 * instance.getAmplifier());
+        if (mobEffect == FTZMobEffects.HAEMORRHAGE.value()) {
+            livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_FLESH_RIPPING.get(), SoundSource.NEUTRAL,0.35f,1f);
+            DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(livingEntity.level());
+            if (sources != null) livingEntity.hurt(sources.bleeding(), livingEntity.getHealth() * 0.1f);
+            livingEntity.setData(FTZAttachmentTypes.HAEMORRHAGE_TO_HEAL,4f + 2 * instance.getAmplifier());
+        }
+
+        if (mobEffect == FTZMobEffects.LAYERED_BARRIER.value()) {
+            int layers = livingEntity.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS);
+            livingEntity.setData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS, Math.max(layers, ampl + 1));
+            if (!livingEntity.level().isClientSide()) IPacket.layeredBarrierChanged(livingEntity, Math.max(layers, ampl + 1));
+        }
+
+        if (mobEffect == FTZMobEffects.BARRIER.value()) {
+            float health = livingEntity.getData(FTZAttachmentTypes.BARRIER_HEALTH);
+            livingEntity.setData(FTZAttachmentTypes.BARRIER_HEALTH, Math.max(health, ampl + 1f));
+            IPacket.barrierChanged(livingEntity, Math.max(health, ampl + 1));
         }
     }
 
     public static void simpleEffectRemoved(LivingEntity entity, MobEffect effect) {
-        if (entity instanceof ServerPlayer serverPlayer && effect == FTZMobEffects.DOOMED.value()) IPacket.soundForUI(serverPlayer, FTZSoundEvents.UNDOOMED.get());
+        if (entity instanceof ServerPlayer serverPlayer && effect == FTZMobEffects.DOOMED.value()) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.UNDOOMED.get());
+
+        if (effect == FTZMobEffects.LAYERED_BARRIER.value()) {
+            entity.setData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS, 0);
+            if (!entity.level().isClientSide()) IPacket.layeredBarrierChanged(entity, 0);
+        } else if (effect == FTZMobEffects.BARRIER.value()) {
+            entity.setData(FTZAttachmentTypes.BARRIER_HEALTH, 0f);
+            if (!entity.level().isClientSide()) IPacket.barrierChanged(entity, 0f);
+        }
     }
 
     public static void simpleEffectOnHit(LivingIncomingDamageEvent event) {
@@ -76,20 +99,62 @@ public class LivingEffectHelper {
         DamageSource source = event.getSource();
         float amount = event.getAmount();
         Entity attacker = source.getEntity();
+        boolean piercesBarrier = source.is(FTZDamageTypeTags.PIERCES_BARRIER);
+        boolean furious = livingEntity.hasEffect(FTZMobEffects.FURY);
 
         if (!source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && livingEntity.hasEffect(FTZMobEffects.ABSOLUTE_BARRIER)) {
             event.setCanceled(true);
             return;
         }
 
-        if (attacker instanceof LivingEntity livAtt && livAtt.hasEffect(FTZMobEffects.FURY)) {
-            event.setAmount(event.getAmount() * 2);
-            if (SpellHelper.spellAvailable(livAtt, FTZSpells.DAMNED_WRATH)) LevelAttributesHelper.healEntityByOther(livAtt, livingEntity,0.15f * event.getAmount(), HealingSourcesHolder::lifesteal);
+        float barrierHealth = livingEntity.getData(FTZAttachmentTypes.BARRIER_HEALTH);
+        if (barrierHealth > 0 && !piercesBarrier) {
+            if (livingEntity.invulnerableTime > 10f && !source.is(DamageTypeTags.BYPASSES_COOLDOWN)) {
+                event.setCanceled(true);
+                return;
+            }
+
+            // damage still gives i-frames and depends on i-frames
+            livingEntity.invulnerableTime = event.getContainer().getPostAttackInvulnerabilityTicks();
+            IPacket.barrierDamaged(livingEntity, amount);
+            float newHP = barrierHealth - amount;
+            if (newHP > 0) {
+                event.setCanceled(true);
+                livingEntity.setData(FTZAttachmentTypes.BARRIER_HEALTH, newHP);
+                livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_BARRIER_DAMAGE.get(), SoundSource.AMBIENT);
+                int num = (int) Math.min(amount * 3f, 25);
+                VisualHelper.particleOnEntityServer(livingEntity, furious ? FTZParticleTypes.PIECES_FURY.random() : FTZParticleTypes.PIECES.random(), ParticleMovement.FALL, num);
+                return;
+            } else {
+                event.setAmount(-newHP);
+                livingEntity.removeEffect(FTZMobEffects.BARRIER);
+                livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_BARRIER_BREAK.get(), SoundSource.AMBIENT);
+                if (event.getEntity().hasEffect(FTZMobEffects.BARRIER)) EffectCleansing.forceCleanse(event.getEntity(), FTZMobEffects.BARRIER);
+
+                VisualHelper.particleOnEntityServer(livingEntity, furious ? FTZParticleTypes.PIECES_FURY.random() : FTZParticleTypes.PIECES.random(), ParticleMovement.FALL, 30);
+            }
         }
 
-        if (livingEntity.hasEffect(FTZMobEffects.FURY)) {
-            float multiplier = SpellHelper.spellAvailable(livingEntity, FTZSpells.DAMNED_WRATH) ? 1.5f : 2f;
+        if (attacker instanceof LivingEntity livAtt && livAtt.hasEffect(FTZMobEffects.FURY)) {
+            event.setAmount(event.getAmount() * 2);
+            if (SpellHelper.spellAvailable(livAtt, Spells.DAMNED_WRATH)) LevelAttributesHelper.healEntityByOther(livAtt, livingEntity,0.15f * event.getAmount(), HealingSourcesHolder::lifesteal);
+        }
+
+        if (furious) {
+            float multiplier = SpellHelper.spellAvailable(livingEntity, Spells.DAMNED_WRATH) ? 1.5f : 2f;
             event.setAmount(event.getAmount() * multiplier);
+        }
+
+        int layers = livingEntity.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS);
+        if (layers > 0 && !piercesBarrier) {
+            event.setCanceled(true);
+            layers--;
+            if (layers <= 0) {
+                EffectCleansing.forceCleanse(livingEntity, FTZMobEffects.LAYERED_BARRIER);
+                livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_LAYERED_BARRIER_BREAK.get(), SoundSource.AMBIENT);
+            } else livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_LAYERED_BARRIER_DAMAGE.get(), SoundSource.AMBIENT);
+            livingEntity.setData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS, layers);
+            IPacket.layeredBarrierDamaged(livingEntity);
         }
     }
 
@@ -122,29 +187,29 @@ public class LivingEffectHelper {
         if (source.is(DamageTypes.SONIC_BOOM) || event.getSource().is(DamageTypeTags.IS_EXPLOSION) && amount > 0) {
             LivingEffectHelper.makeDeaf(livingEntity, 200);
             LivingEffectHelper.microStun(livingEntity);
-            if (livingEntity instanceof ServerPlayer serverPlayer) IPacket.soundForUI(serverPlayer, FTZSoundEvents.RINGING.get());
+            if (livingEntity instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.RINGING.get());
         }
     }
 
     public static boolean hasEffectSimple(LivingEntity livingEntity, MobEffect mobEffect) {
-        SimpleMobEffectHolderSyncHolder holder = takeHolder(livingEntity, SimpleMobEffectHolderSyncHolder.class);
+        SimpleMobEffectSyncHolder holder = takeHolder(livingEntity, SimpleMobEffectSyncHolder.class);
         return holder != null && holder.hasEffect(mobEffect);
     }
 
     public static boolean hasEffect(LivingEntity livingEntity, MobEffect mobEffect) {
         MobEffectDurationSyncHolder holder = takeHolder(livingEntity, MobEffectDurationSyncHolder.class);
         if (holder == null) return false;
-        DurationHolder durationHolder = holder.getDuration(mobEffect);
-        return durationHolder != null && durationHolder.dur() > 0;
+        CurrentAndInitialValue currentAndInitialValue = holder.getDuration(mobEffect);
+        return currentAndInitialValue != null && currentAndInitialValue.value() > 0;
     }
 
-    public static @Nullable DurationHolder getDurationHolder(LivingEntity livingEntity, MobEffect mobEffect) {
+    public static @Nullable CurrentAndInitialValue getDurationHolder(LivingEntity livingEntity, MobEffect mobEffect) {
         MobEffectDurationSyncHolder holder = takeHolder(livingEntity, MobEffectDurationSyncHolder.class);
         return holder == null ? null : holder.getDuration(mobEffect);
     }
 
     public static float bleedingDamage(LivingEntity entity, Vec3 vec3) {
-        float movement = (float) vec3.horizontalDistance() / 500f;
+        float movement = (float) vec3.horizontalDistance() / 1.65f;
 
         if (entity instanceof Player player) {
             DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
@@ -157,15 +222,14 @@ public class LivingEffectHelper {
     }
 
     public static boolean hasBarrier(LivingEntity livingEntity) {
-        BarrierEffectHolder barrierEffect = takeHolder(livingEntity, BarrierEffectHolder.class);
-        if (barrierEffect != null && barrierEffect.hasBarrier()) return true;
-
-        LayeredBarrierEffectHolder layeredBarrierEffect = takeHolder(livingEntity, LayeredBarrierEffectHolder.class);
-        if (layeredBarrierEffect != null && layeredBarrierEffect.hasBarrier()) return true;
-
+        if (livingEntity.getData(FTZAttachmentTypes.BARRIER_HEALTH) > 0) return true;
+        if (livingEntity.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS) > 0) return true;
         if (hasEffectSimple(livingEntity, FTZMobEffects.ABSOLUTE_BARRIER.value())) return true;
-
         return false;
+    }
+
+    public static void healStunPoints(LivingEntity livingEntity, int amount, boolean ignoreDelay) {
+        acceptConsumer(livingEntity, StunEffectHolder.class, stunEffectHolder -> stunEffectHolder.healPoints(amount, ignoreDelay));
     }
 
     public static boolean isDisguised(LivingEntity livingEntity) {
@@ -241,7 +305,12 @@ public class LivingEffectHelper {
     public static void microStun(LivingEntity entity) {
         effectWithoutParticles(entity, FTZMobEffects.MICROSTUN, 1);
     }
+
     public static void unDisguise(LivingEntity entity) {
         EffectCleansing.forceCleanse(entity, FTZMobEffects.DISGUISED);
+    }
+
+    public static void giveAceInTheHole(LivingEntity entity, int duration) {
+        effectWithoutParticles(entity, FTZMobEffects.ACE_IN_THE_HOLE, duration);
     }
 }

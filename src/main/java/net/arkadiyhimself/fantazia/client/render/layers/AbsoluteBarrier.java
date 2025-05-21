@@ -10,6 +10,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.Eva
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.GameRenderer;
@@ -69,23 +70,18 @@ public class AbsoluteBarrier {
             M entityModel = this.renderer.getModel();
             entityModel.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
             this.getParentModel().copyPropertiesTo(entityModel);
-            float pU = xOffset(f) % 1.0F;
+            float pU = VisualHelper.layerOffset(f) % 1.0F;
             float pV = f * 0.01F % 1.0F;
-
-          //  VertexConsumer pBufferBuffer = pBuffer.getBuffer(RenderType.create("absolute_barrier", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ENERGY_SWIRL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(furious ? BARRIER_LAYER_FURY : BARRIER_LAYER, false, false)).setTexturingState(new RenderStateShard.OffsetTexturingStateShard(pU, pV)).setTransparencyState(TRANSLUCENT_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(false)));
-            VertexConsumer pBufferBuffer = pBuffer.getBuffer(RenderType.energySwirl(furious ? BARRIER_LAYER_FURY : BARRIER_LAYER, pU, pV));
 
             entityModel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
 
+            VertexConsumer pBufferBuffer = pBuffer.getBuffer(RenderType.energySwirl(furious ? BARRIER_LAYER_FURY : BARRIER_LAYER, pU, pV));
             int color = FastColor.ARGB32.colorFromFloat(0.20f,1F, 0.6F, furious ? 0.6f : 1f);
             entityModel.renderToBuffer(pPoseStack, pBufferBuffer, pPackedLight, OverlayTexture.NO_OVERLAY, color);
 
             VertexConsumer BGvertex = pBuffer.getBuffer(RenderType.entityTranslucent(furious ? BARRIER_BG_FURY : BARRIER_BG));
             int color1 = FastColor.ARGB32.colorFromFloat(0.125f,1f, 0.4f, furious ? 0.6f : 1f);
             entityModel.renderToBuffer(pPoseStack, BGvertex, pPackedLight, OverlayTexture.NO_OVERLAY, color1);
-        }
-        public static float xOffset(float pTickCount) {
-            return pTickCount * 0.01F;
         }
     }
 

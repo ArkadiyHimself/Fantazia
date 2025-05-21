@@ -5,7 +5,7 @@ import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributeHolder;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.registries.custom.FTZHealingTypes;
+import net.arkadiyhimself.fantazia.registries.custom.HealingTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -28,10 +28,10 @@ public class HealingSourcesHolder extends LevelAttributeHolder {
         super(level, Fantazia.res("healing_sources"));
         healingTypes = level.registryAccess().registryOrThrow(FantazicRegistries.Keys.HEALING_TYPE);
 
-        this.generic = this.source(FTZHealingTypes.GENERIC);
-        this.naturalRegen = this.source(FTZHealingTypes.NATURAL_REGEN);
-        this.mobEffectRegen = this.source(FTZHealingTypes.MOB_EFFECT_REGEN);
-        this.mobEffect = this.source(FTZHealingTypes.MOB_EFFECT);
+        this.generic = this.source(HealingTypes.GENERIC);
+        this.naturalRegen = this.source(HealingTypes.NATURAL_REGEN);
+        this.mobEffectRegen = this.source(HealingTypes.MOB_EFFECT_REGEN);
+        this.mobEffect = this.source(HealingTypes.MOB_EFFECT);
     }
 
     private HealingSource source(ResourceKey<HealingType> healingTypeResourceKey) {
@@ -55,13 +55,13 @@ public class HealingSourcesHolder extends LevelAttributeHolder {
 
     // heal from entities
     public HealingSource lifesteal(@Nullable Entity entity) {
-        return this.source(FTZHealingTypes.LIFESTEAL, entity);
+        return this.source(HealingTypes.LIFESTEAL, entity);
     }
     public HealingSource regenAura(@Nullable Entity entity) {
-        return this.source(FTZHealingTypes.REGEN_AURA, entity);
+        return this.source(HealingTypes.REGEN_AURA, entity);
     }
     public HealingSource devour(@Nullable Entity entity) {
-        return this.source(FTZHealingTypes.DEVOUR, entity);
+        return this.source(HealingTypes.DEVOUR, entity);
     }
 
     @Override

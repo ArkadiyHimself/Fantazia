@@ -1,28 +1,28 @@
 {
-  "name": "book.fantazia.entry.world.the_worldliness.name",
-  "icon": "fantazia:the_worldliness",
   "category": "fantazia:world",
+  "icon": "fantazia:the_worldliness",
+  "name": "book.fantazia.the_worldliness.world.the_worldliness.name",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.world.the_worldliness.page.1"
+      "text": "book.fantazia.the_worldliness.world.the_worldliness.page.1"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.world.the_worldliness.page.2"
+      "text": "book.fantazia.the_worldliness.world.the_worldliness.page.2"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.world.the_worldliness.page.3"
+      "text": "book.fantazia.the_worldliness.world.the_worldliness.page.3"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.world.the_worldliness.page.4"
+      "text": "book.fantazia.the_worldliness.world.the_worldliness.page.4"
     },
     {
-      "type": "spotlight",
-      "item" : "fantazia:the_worldliness",
-      "text" : "book.fantazia.entry.world.the_worldliness.page.5"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:the_worldliness",
+      "text": "book.fantazia.the_worldliness.world.the_worldliness.page.5"
     }
   ]
 }

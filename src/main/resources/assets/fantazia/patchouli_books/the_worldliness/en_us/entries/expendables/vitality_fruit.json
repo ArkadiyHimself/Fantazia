@@ -1,17 +1,18 @@
 {
-  "name": "book.fantazia.entry.expendables.vitality_fruit.name",
-  "icon": "fantazia:vitality_fruit",
+  "advancement": "fantazia:the_worldliness/expendables/vitality_fruit",
   "category": "fantazia:expendables",
-  "advancement" : "fantazia:the_worldliness/expendables/vitality_fruit",
+  "icon": "fantazia:vitality_fruit",
+  "name": "item.fantazia.vitality_fruit",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.expendables.vitality_fruit.page.1"
+      "text": "book.fantazia.the_worldliness.expendables.vitality_fruit.page.1"
     },
     {
-      "type": "spotlight",
-      "item" : "fantazia:vitality_fruit",
-      "text" : "book.fantazia.entry.expendables.vitality_fruit.page.2"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:vitality_fruit",
+      "text": "book.fantazia.the_worldliness.expendables.vitality_fruit.page.2",
+      "title": "book.fantazia.heading.expendables.consumable"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "fantazia:item/consumable/obscure_substance"
+    "layer0": "fantazia:item/expendable/obscure_substance"
   }
 }

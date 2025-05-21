@@ -5,16 +5,17 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.compress.utils.Lists;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public interface ITooltipBuilder {
-    default List<Component> itemTooltip(@Nullable ItemStack stack) {
+
+    default List<Component> itemTooltip(ItemStack stack) {
         return Lists.newArrayList();
     }
-    default List<Component> buildIconTooltip() {
+
+    default List<Component> buildTooltip() {
         return Lists.newArrayList();
     }
 }

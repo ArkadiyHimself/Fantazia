@@ -1,22 +1,22 @@
 {
-  "name": "item.fantazia.nether_heart",
-  "icon": "fantazia:nether_heart",
+  "advancement": "fantazia:the_worldliness/artifacts/nether_heart",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/nether_heart",
+  "icon": "fantazia:nether_heart",
+  "name": "item.fantazia.nether_heart",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.nether_heart.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.nether_heart.page.1"
     },
     {
-      "type": "spotlight",
-      "item" : "fantazia:nether_heart",
-      "title" : "book.fantazia.heading.artifacts.auracaster",
-      "text" : "book.fantazia.entry.artifacts.nether_heart.page.2"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:nether_heart",
+      "text": "book.fantazia.the_worldliness.artifacts.nether_heart.page.2",
+      "title": "book.fantazia.heading.artifacts.auracaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.nether_heart.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.nether_heart.page.3"
     }
   ]
 }

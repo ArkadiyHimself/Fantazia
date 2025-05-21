@@ -1,11 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
-  "pattern": [
-    " Y ",
-    "H#H",
-    " Y "
-  ],
+  "category": "misc",
   "key": {
     "#": {
       "item": "minecraft:sand"
@@ -13,12 +8,17 @@
     "H": {
       "item": "fantazia:obscure_substance"
     },
-    "Y" : {
-      "item": "minecraft:iron_nugget"
+    "Y": {
+      "item": "fantazia:fantazium_ingot"
     }
   },
+  "pattern": [
+    " Y ",
+    "H#H",
+    " Y "
+  ],
   "result": {
+    "count": 1,
     "id": "fantazia:sandmans_dust"
-  },
-  "show_notification": true
+  }
 }

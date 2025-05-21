@@ -9,8 +9,8 @@ import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.arkadiyhimself.fantazia.registries.custom.Auras;
+import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.tags.FTZHealingTypeTags;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
@@ -26,7 +26,7 @@ public class AdvancedHealing {
     public static boolean tryHeal(LivingEntity entity, HealingSource source, float amount) {
         float j = FantazicHooks.ForgeExtension.onAdvancedHealing(entity, source, amount);
         if (!canHeal(entity, source)) return false;
-        if (AuraHelper.affected(entity, FTZAuras.DESPAIR.get()) && !source.is(FTZHealingTypeTags.UNHOLY)) j *= 0.5f;
+        if (AuraHelper.affected(entity, Auras.DESPAIR.get()) && !source.is(FTZHealingTypeTags.UNHOLY)) j *= 0.5f;
         entity.setHealth(entity.getHealth() + j);
         if (entity instanceof Player player) player.causeFoodExhaustion(source.type().exhaustion());
         healHaemorrhage(entity, amount);
@@ -59,6 +59,6 @@ public class AdvancedHealing {
 
     private static boolean cancelHeal(LivingEntity entity) {
         if (entity.hasEffect(FTZMobEffects.FROZEN) || entity.hasEffect(FTZMobEffects.DOOMED)) return true;
-        return SpellHelper.spellAvailable(entity, FTZSpells.ENTANGLE);
+        return SpellHelper.spellAvailable(entity, Spells.ENTANGLE);
     }
 }

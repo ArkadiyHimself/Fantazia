@@ -74,7 +74,7 @@ public class AuraHelper {
         return sortUniqueAura(auras, entity, true);
     }
 
-    public static boolean affected(Entity entity, BasicAura aura) {
+    public static boolean affected(Entity entity, Aura aura) {
         for (AuraInstance instance : getAffectingAuras(entity)) if (instance.getAura() == aura) return true;
         return false;
     }
@@ -90,11 +90,11 @@ public class AuraHelper {
         return d0;
     }
 
-    public static boolean ownsAura(@NotNull Entity entity, Holder<BasicAura> basicAura) {
+    public static boolean ownsAura(@NotNull Entity entity, Holder<Aura> basicAura) {
         return ownedAuraInstance(entity, basicAura) != null;
     }
 
-    public static @Nullable AuraInstance ownedAuraInstance(@NotNull Entity entity, Holder<BasicAura> basicAura) {
+    public static @Nullable AuraInstance ownedAuraInstance(@NotNull Entity entity, Holder<Aura> basicAura) {
         List<AuraInstance> auraInstances = ownedAuras(entity);
         for (AuraInstance auraInstance : auraInstances) if (auraInstance.getAura().value() == basicAura.value()) return auraInstance;
         return null;

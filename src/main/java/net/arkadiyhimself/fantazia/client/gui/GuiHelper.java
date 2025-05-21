@@ -9,10 +9,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,6 +64,11 @@ public class GuiHelper {
         }
         if (strFormat == null) return Component.translatable(str, stringValues);
         else return Component.translatable(str, stringValues).withStyle(strFormat);
+    }
+
+    public static Component bakeLevelComponent(ResourceKey<Level> key) {
+        ResourceLocation location = key.location();
+        return Component.translatable("dimension." + location.getNamespace() + "." + location.getPath());
     }
 
     public static Component attributeModifierComponent(@NotNull Holder<Attribute> attribute, @NotNull AttributeModifier modifier) {

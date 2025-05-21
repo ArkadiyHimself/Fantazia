@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "reflect": {
+      "conditions": {
+        "effects": {
+          "fantazia:reflect": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "requirements": [
+    [
+      "reflect"
+    ]
+  ]
+}

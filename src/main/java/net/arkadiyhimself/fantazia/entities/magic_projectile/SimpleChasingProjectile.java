@@ -8,7 +8,7 @@ import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.registries.FTZEntityTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.core.particles.ParticleType;
@@ -162,9 +162,8 @@ public class SimpleChasingProjectile extends ChasingProjectile {
                 if (!LevelAttributesHelper.hurtEntity(target, projectile, 7f, DamageSourcesHolder::simpleChasingProjectile)) return;
 
                 target.playSound(FTZSoundEvents.KNOCK_OUT_IMPACT.value());
-
-                LivingEffectHelper.makeStunned(target,80);
-                if (target.isDeadOrDying() && projectile.getOwner() instanceof Player player) PlayerAbilityHelper.reduceRecharge(player, FTZSpells.KNOCK_OUT,100);
+                if (target.isDeadOrDying() && projectile.getOwner() instanceof Player player) PlayerAbilityHelper.reduceRecharge(player, Spells.KNOCK_OUT,100);
+                if (target.getType() != EntityType.ENDERMAN) LivingEffectHelper.makeStunned(target,80);
             });
 
             put("", (projectile, target) -> {

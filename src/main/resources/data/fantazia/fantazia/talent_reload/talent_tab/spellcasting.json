@@ -1,4 +1,5 @@
 {
-  "icon": "fantazia:textures/gui/talent/tab/spell_casting.png",
-  "title": "fantazia.talent_tabs.spell_casting"
+  "background": "fantazia:textures/gui/talent_tabs/spellcasting/background.png",
+  "icon": "fantazia:textures/gui/talent_tabs/spellcasting/icon.png",
+  "title": "talent_tab.fantazia.spellcasting"
 }

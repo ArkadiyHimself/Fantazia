@@ -13,10 +13,10 @@ public class FTZCreativeModeTabs {
     private FTZCreativeModeTabs() {}
     private static final DeferredRegister<CreativeModeTab> REGISTER = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Fantazia.MODID);
 
-    public static final CreativeModeTab WEAPONS = CreativeModeTab.builder().icon(() -> new ItemStack(FTZItems.FRAGILE_BLADE.asItem())).title(Component.translatable("fantazia.creativetab.weapons").withStyle(ChatFormatting.DARK_PURPLE)).build();
-    public static final CreativeModeTab ARTIFACTS = CreativeModeTab.builder().icon(() -> new ItemStack(FTZItems.ENTANGLER.asItem())).title(Component.translatable("fantazia.creativetab.artifacts").withStyle(ChatFormatting.DARK_PURPLE)).build();
-    public static final CreativeModeTab EXPENDABLES = CreativeModeTab.builder().icon(() -> new ItemStack(FTZItems.OBSCURE_SUBSTANCE.asItem())).title(Component.translatable("fantazia.creativetab.expendables").withStyle(ChatFormatting.DARK_PURPLE)).build();
-    public static final CreativeModeTab BLOCKS = CreativeModeTab.builder().icon(() -> new ItemStack(FTZItems.OBSCURE_SIGN.asItem())).title(Component.translatable("fantazia.creativetab.blocks").withStyle(ChatFormatting.DARK_PURPLE)).build();
+    public static final CreativeModeTab WEAPONS = CreativeModeTab.builder().icon(() -> new ItemStack(FTZItems.FRAGILE_BLADE.asItem())).title(Component.translatable("creativetab.fantazia.weapons").withStyle(ChatFormatting.DARK_PURPLE)).build();
+    public static final CreativeModeTab ARTIFACTS = CreativeModeTab.builder().icon(() -> new ItemStack(FTZItems.ENTANGLER.asItem())).title(Component.translatable("creativetab.fantazia.artifacts").withStyle(ChatFormatting.DARK_PURPLE)).build();
+    public static final CreativeModeTab EXPENDABLES = CreativeModeTab.builder().icon(() -> new ItemStack(FTZItems.OBSCURE_SUBSTANCE.asItem())).title(Component.translatable("creativetab.fantazia.expendables").withStyle(ChatFormatting.DARK_PURPLE)).build();
+    public static final CreativeModeTab BLOCKS = CreativeModeTab.builder().icon(() -> new ItemStack(FTZItems.OBSCURE_SIGN.asItem())).title(Component.translatable("creativetab.fantazia.blocks").withStyle(ChatFormatting.DARK_PURPLE)).build();
 
     public static void register(IEventBus modEventBus) {
         REGISTER.register(modEventBus);

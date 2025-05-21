@@ -1,13 +1,11 @@
 {
-  "parent" : "fantazia:main/caster",
+  "parent": "fantazia:main/caster",
   "criteria": {
     "card_deck": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "fantazia:card_deck"
-            ]
+            "items": "fantazia:card_deck"
           }
         ]
       },
@@ -15,16 +13,22 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
-      "translate": "advancements.fantazia.card_deck.desc"
+      "translate": "advancement.fantazia.card_deck.desc"
     },
-    "hidden": true,
     "icon": {
+      "count": 1,
       "id": "fantazia:card_deck"
     },
-    "show_toast": true,
     "title": {
-      "translate": "advancements.fantazia.card_deck"
+      "translate": "advancement.fantazia.card_deck"
     }
-  }
+  },
+  "requirements": [
+    [
+      "card_deck"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

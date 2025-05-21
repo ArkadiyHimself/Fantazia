@@ -2,9 +2,10 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHolder;
+import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.util.library.pseudorandom.PSERANInstance;
+import net.arkadiyhimself.fantazia.util.library.concept_of_consistency.ConCosInstance;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
@@ -14,23 +15,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class EvasionHolder extends LivingDataHolder {
+
     private static final int COOLDOWN = 20;
     private final AttributeInstance evasion;
-    private PSERANInstance instance;
+    private ConCosInstance instance;
     private int iFrames = 0;
     private int cooldown = 0;
+
     public EvasionHolder(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("evasion"));
         evasion = livingEntity.getAttribute(FTZAttributes.EVASION);
         assert evasion != null;
-        instance = new PSERANInstance(evasion.getValue() / 100);
+        instance = new ConCosInstance(evasion.getValue() / 100);
     }
 
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
-        if (iFrames > 0) tag.putInt("evasionTicks", iFrames);
-        if (cooldown > 0) tag.putInt("cooldown", cooldown);
+        tag.putInt("evasionTicks", iFrames);
+        tag.putInt("cooldown", cooldown);
         tag.put("random", instance.serialize());
         return tag;
     }
@@ -39,19 +42,7 @@ public class EvasionHolder extends LivingDataHolder {
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         this.iFrames = compoundTag.getInt("evasionTicks");
         this.cooldown = compoundTag.getInt("cooldown");
-        this.instance = PSERANInstance.deserialize(compoundTag.getCompound("random"));
-    }
-
-    @Override
-    public CompoundTag syncSerialize() {
-        CompoundTag tag = new CompoundTag();
-        tag.putInt("evasionTicks", iFrames);
-        return tag;
-    }
-
-    @Override
-    public void syncDeserialize(CompoundTag tag) {
-        this.iFrames = tag.getInt("evasionTicks");
+        this.instance = ConCosInstance.deserialize(compoundTag.getCompound("random"));
     }
 
     @Override
@@ -60,12 +51,16 @@ public class EvasionHolder extends LivingDataHolder {
         if (iFrames > 0) iFrames--;
     }
 
+    @Override
+    public void clientTick() {
+        if (iFrames > 0) iFrames--;
+    }
+
     public boolean tryEvade() {
         updateEvasion();
         if (cooldown > 0 || !instance.performAttempt()) return false;
 
-        iFrames = 5;
-        cooldown = COOLDOWN;
+        success();
         getEntity().level().playSound(null, getEntity().blockPosition(), FTZSoundEvents.ENTITY_EVADE.get(), SoundSource.NEUTRAL);
 
         return true;
@@ -76,5 +71,11 @@ public class EvasionHolder extends LivingDataHolder {
     }
     public int getIFrames() {
         return iFrames;
+    }
+
+    public void success() {
+        this.iFrames = 5;
+        this.cooldown = COOLDOWN;
+        if (!getEntity().level().isClientSide()) IPacket.successfulEvasion(getEntity());
     }
 }

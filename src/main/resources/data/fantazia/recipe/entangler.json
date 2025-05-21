@@ -1,27 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:totem_of_undying"
+    },
+    "H": {
+      "item": "minecraft:copper_ingot"
+    },
+    "X": {
+      "item": "fantazia:obscure_substance"
+    },
+    "Y": {
+      "item": "fantazia:fantazium_ingot"
+    }
+  },
   "pattern": [
     "HYH",
     "X#X",
     "H H"
   ],
-  "key": {
-    "#": {
-      "item": "minecraft:totem_of_undying"
-    },
-    "X": {
-      "item": "fantazia:obscure_substance"
-    },
-    "H" : {
-      "item": "minecraft:copper_ingot"
-    },
-    "Y" : {
-      "item": "fantazia:fantazium_ingot"
-    }
-  },
   "result": {
+    "count": 1,
     "id": "fantazia:entangler"
-  },
-  "show_notification": true
+  }
 }

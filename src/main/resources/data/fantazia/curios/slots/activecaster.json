@@ -1,0 +1,7 @@
+{
+  "icon": "fantazia:slot/activecaster",
+  "size": 2,
+  "validators": [
+    "fantazia:for_activecaster"
+  ]
+}

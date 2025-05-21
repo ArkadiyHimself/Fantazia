@@ -1,5 +1,7 @@
-// 1.21.1	2025-04-09T21:58:27.694104	Tags for minecraft:block mod id fantazia
+// 1.21.1	2025-05-17T23:54:00.628409	Tags for minecraft:block mod id fantazia
 07a11b431402424368fa5351f5e9f7f763727316 data/fantazia/tags/block/fantazium_ores.json
+66ff697e929cd89afadaeed949e3c078274ba857 data/fantazia/tags/block/from_fantazium.json
+2c18bb6368e0422e96c64d8450d6d79be0f6d7d0 data/fantazia/tags/block/from_obscure_tree.json
 5805ba3d0e150b94b847c5564da562de572f303e data/fantazia/tags/block/obscure_logs.json
 d732baf55fd50382458eebc91e25f0b6d5ddfe71 data/minecraft/tags/block/beacon_base_blocks.json
 c244f0d23ba444d8484da5bc477eb3c250600af5 data/minecraft/tags/block/ceiling_hanging_signs.json

@@ -1,13 +1,12 @@
 package net.arkadiyhimself.fantazia.api.attachment.basis_attachments;
 
-import net.arkadiyhimself.fantazia.packets.attachment_modify.TickingIntegerUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -37,7 +36,7 @@ public class TickingIntegerHolder implements INBTSerializable<IntTag> {
 
     public void tick() {
         if (value > 0) value--;
-        if ((alwaysSync || value == 0) && holder instanceof Entity entity && !entity.level().isClientSide()) PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new TickingIntegerUpdateS2C(id, value, entity.getId()));
+        if ((alwaysSync || value == 0) && holder instanceof Entity entity && !entity.level().isClientSide()) IPacket.tickingIntegerUpdate(entity, id, value);
     }
 
     public int value() {
@@ -46,6 +45,6 @@ public class TickingIntegerHolder implements INBTSerializable<IntTag> {
 
     public void set(int value) {
         this.value = value;
-        if (holder instanceof Entity entity && !entity.level().isClientSide()) PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new TickingIntegerUpdateS2C(id, value, entity.getId()));
+        if (holder instanceof Entity entity && !entity.level().isClientSide()) IPacket.tickingIntegerUpdate(entity, id, value);
     }
 }

@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:fantazium_ingot_from_fantazium_block"
+        "recipe": "fantazia:fantazium_ingot_from_fantazium_block"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:fantazium_ingot_from_fantazium_block"
+      "fantazia:fantazium_ingot_from_fantazium_block"
     ]
   }
 }

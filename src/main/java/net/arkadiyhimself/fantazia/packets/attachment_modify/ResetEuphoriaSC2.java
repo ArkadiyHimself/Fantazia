@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 public record ResetEuphoriaSC2() implements IPacket {
 
     public static final CustomPacketPayload.Type<ResetEuphoriaSC2> TYPE = new CustomPacketPayload.Type<>(Fantazia.res("data_attachment_modify.reset_euphoria"));
-
     public static final StreamCodec<ByteBuf, ResetEuphoriaSC2> CODEC = StreamCodec.unit(new ResetEuphoriaSC2());
 
     @Override

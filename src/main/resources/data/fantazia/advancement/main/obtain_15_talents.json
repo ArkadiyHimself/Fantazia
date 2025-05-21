@@ -1,28 +1,36 @@
 {
-  "parent" : "fantazia:main/obtain_1_talent",
-  "criteria" : {
-    "talent_obtain": {
-      "trigger": "fantazia:talent_obtain",
-      "conditions" : {
-        "talents" : [
+  "parent": "fantazia:main/obtain_a_talent",
+  "criteria": {
+    "obtain_15_talents": {
+      "conditions": {
+        "talents": [
           {
-            "amount" : 15
+            "amount": 15
           }
         ]
-      }
+      },
+      "trigger": "fantazia:talent_obtain"
     }
   },
-  "display" : {
-    "announce_to_chat": true,
+  "display": {
+    "announce_to_chat": false,
     "description": {
-      "translate": "advancements.fantazia.obtain_15_talents.desc"
+      "translate": "advancement.fantazia.obtain_15_talents.desc"
     },
+    "frame": "goal",
+    "hidden": true,
     "icon": {
+      "count": 1,
       "id": "minecraft:diamond"
     },
-    "show_toast": true,
     "title": {
-      "translate": "advancements.fantazia.obtain_15_talents"
+      "translate": "advancement.fantazia.obtain_15_talents"
     }
-  }
+  },
+  "requirements": [
+    [
+      "obtain_15_talents"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

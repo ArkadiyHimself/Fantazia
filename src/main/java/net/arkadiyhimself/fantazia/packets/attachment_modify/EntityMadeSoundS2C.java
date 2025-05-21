@@ -13,7 +13,9 @@ public record EntityMadeSoundS2C(int id) implements IPacket {
 
     public static final CustomPacketPayload.Type<EntityMadeSoundS2C> TYPE = new Type<>(Fantazia.res("data_attachment_modify.entity_made_sound"));
 
-    public static final StreamCodec<ByteBuf, EntityMadeSoundS2C> CODEC = StreamCodec.composite(ByteBufCodecs.INT, EntityMadeSoundS2C::id, EntityMadeSoundS2C::new);
+    public static final StreamCodec<ByteBuf, EntityMadeSoundS2C> CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, EntityMadeSoundS2C::id,
+            EntityMadeSoundS2C::new);
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {

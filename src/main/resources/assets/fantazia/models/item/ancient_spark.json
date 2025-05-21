@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fantazia:item/consumable/ancient_spark"
+    "layer0": "fantazia:item/expendable/ancient_spark"
   }
 }

@@ -1,5 +1,12 @@
 {
-  "fantazia:default": 5,
-  "minecraft:golden_apple": 25,
-  "minecraft:enchanted_golden_apple" : 45
+  "category": "fantazia:consumed",
+  "default_reward": 4,
+  "rewards": {
+    "minecraft:enchanted_golden_apple": {
+      "reward": 45
+    },
+    "minecraft:golden_apple": {
+      "reward": 25
+    }
+  }
 }

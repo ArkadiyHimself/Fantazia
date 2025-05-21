@@ -1,0 +1,15 @@
+{
+  "loot_instances": [
+    {
+      "added": {
+        "count": 1,
+        "id": "fantazia:nether_heart"
+      },
+      "chance": 0.175,
+      "first_time": true
+    }
+  ],
+  "loot_tables": [
+    "minecraft:entities/blaze"
+  ]
+}

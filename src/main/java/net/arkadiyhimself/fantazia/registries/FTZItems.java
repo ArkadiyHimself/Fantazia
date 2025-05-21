@@ -2,12 +2,14 @@ package net.arkadiyhimself.fantazia.registries;
 
 import com.google.common.collect.Lists;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
+import net.arkadiyhimself.fantazia.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.data.talent.Talents;
 import net.arkadiyhimself.fantazia.entities.CustomBoat;
 import net.arkadiyhimself.fantazia.events.RegistryEvents;
 import net.arkadiyhimself.fantazia.items.FantazicPaintingItem;
-import net.arkadiyhimself.fantazia.items.TheWorldliness;
+import net.arkadiyhimself.fantazia.items.RuneWielderItem;
+import net.arkadiyhimself.fantazia.items.TheWorldlinessItem;
 import net.arkadiyhimself.fantazia.items.WisdomCatcherItem;
 import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
 import net.arkadiyhimself.fantazia.items.casters.DashStoneItem;
@@ -16,8 +18,8 @@ import net.arkadiyhimself.fantazia.items.expendable.*;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.FragileBladeItem;
 import net.arkadiyhimself.fantazia.items.weapons.Melee.MurasamaItem;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
-import net.arkadiyhimself.fantazia.registries.custom.FTZAuras;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.arkadiyhimself.fantazia.registries.custom.Auras;
+import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -34,14 +36,12 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class FTZItems {
-    private FTZItems() {}
 
-    private static final DeferredRegister.Items REGISTER = DeferredRegister.Items.createItems(Fantazia.MODID);
+    public static final DeferredRegister.Items REGISTER = DeferredRegister.Items.createItems(Fantazia.MODID);
 
     public static final List<DeferredItem<Item>> SIMPLE_ITEMS = Lists.newArrayList();
     public static final List<DeferredItem<SpellCasterItem>> SPELL_CASTERS = Lists.newArrayList();
     public static final List<DeferredItem<AuraCasterItem>> AURA_CASTERS = Lists.newArrayList();
-    public static final List<DeferredItem<DashStoneItem>> DASHSTONES = Lists.newArrayList();
     public static final List<DeferredItem<HatchetItem>> HATCHETS = Lists.newArrayList();
     public static final List<DeferredItem<?>> WEAPONS = Lists.newArrayList();
 
@@ -70,16 +70,13 @@ public class FTZItems {
         return magicItem(id, () -> new SpellCasterItem(spellHolder), SPELL_CASTERS);
     }
 
-    private static DeferredItem<AuraCasterItem> auraCaster(String id, Holder<BasicAura> auraHolder) {
+    private static DeferredItem<AuraCasterItem> auraCaster(String id, Holder<Aura> auraHolder) {
         return magicItem(id, () -> new AuraCasterItem(auraHolder),  AURA_CASTERS);
     }
 
-    private static DeferredItem<DashStoneItem> dashStone(String id, int lvl) {
-        return magicItem(id, () -> new DashStoneItem(lvl), DASHSTONES);
-    }
-
-    public static final DeferredItem<TheWorldliness> THE_WORLDLINESS; // implemented and extended
+    public static final DeferredItem<TheWorldlinessItem> THE_WORLDLINESS;
     public static final DeferredItem<WisdomCatcherItem> WISDOM_CATCHER; // implemented and extended
+    public static final DeferredItem<RuneWielderItem> RUNE_WIELDER;
 
     // melee weapons
     public static final DeferredItem<FragileBladeItem> FRAGILE_BLADE; // finished and implemented
@@ -94,9 +91,7 @@ public class FTZItems {
     public static final DeferredItem<HatchetItem> NETHERITE_HATCHET; // finished and implemented
 
     // dashstones
-    public static final DeferredItem<DashStoneItem> DASHSTONE1; // finished and implemented
-    public static final DeferredItem<DashStoneItem> DASHSTONE2; // finished and implemented
-    public static final DeferredItem<DashStoneItem> DASHSTONE3;
+    public static final DeferredItem<DashStoneItem> DASHSTONE;
 
     // spellcasters
     public static final DeferredItem<SpellCasterItem> ENTANGLER; // finished and implemented
@@ -107,7 +102,7 @@ public class FTZItems {
     public static final DeferredItem<SpellCasterItem> ROAMERS_COMPASS;
 
     public static final DeferredItem<SpellCasterItem> SOUL_EATER; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> SCULK_HEART; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> HEART_OF_SCULK; // finished and implemented
     public static final DeferredItem<SpellCasterItem> NIMBLE_DAGGER; // finished and implemented
     public static final DeferredItem<SpellCasterItem> CAUGHT_THUNDER; // finished and implemented
     public static final DeferredItem<SpellCasterItem> PUPPET_DOLL; // finished and implemented
@@ -163,8 +158,10 @@ public class FTZItems {
     }
 
     static {
-        THE_WORLDLINESS = REGISTER.register("the_worldliness", TheWorldliness::new);
+        THE_WORLDLINESS = REGISTER.register("the_worldliness", TheWorldlinessItem::new);
         WISDOM_CATCHER = magicItem("wisdom_catcher", WisdomCatcherItem::new,null);
+        RUNE_WIELDER = REGISTER.register("rune_wielder", RuneWielderItem::new);
+
         FRAGILE_BLADE = weaponItem("fragile_blade", FragileBladeItem::new,null);
         MURASAMA = weaponItem("murasama", MurasamaItem::new,null);
 
@@ -175,41 +172,39 @@ public class FTZItems {
         DIAMOND_HATCHET = weaponItem("diamond_hatchet", () -> new HatchetItem(Tiers.DIAMOND, -2.6f), HATCHETS);
         NETHERITE_HATCHET = weaponItem("netherite_hatchet", () -> new HatchetItem(Tiers.NETHERITE, -2.6f), HATCHETS);
 
-        DASHSTONE1 = dashStone("dashstone1",1);
-        DASHSTONE2 = dashStone("dashstone2",2);
-        DASHSTONE3 = dashStone("dashstone3",3);
+        DASHSTONE = REGISTER.register("dashstone", DashStoneItem::new);
 
-        ENTANGLER = spellCaster("entangler", FTZSpells.ENTANGLE);
-        ENIGMATIC_CLOCK = spellCaster("enigmatic_clock", FTZSpells.REWIND);
-        ATHAME = spellCaster("athame", FTZSpells.TRANSFER);
-        SANDMANS_DUST = spellCaster("sandmans_dust", FTZSpells.VANISH);
-        CARD_DECK = spellCaster("card_deck", FTZSpells.ALL_IN);
-        ROAMERS_COMPASS = spellCaster("roamers_compass", FTZSpells.WANDERERS_SPIRIT);
+        ENTANGLER = spellCaster("entangler", Spells.ENTANGLE);
+        ENIGMATIC_CLOCK = spellCaster("enigmatic_clock", Spells.REWIND);
+        ATHAME = spellCaster("athame", Spells.TRANSFER);
+        SANDMANS_DUST = spellCaster("sandmans_dust", Spells.VANISH);
+        CARD_DECK = spellCaster("card_deck", Spells.ALL_IN);
+        ROAMERS_COMPASS = spellCaster("roamers_compass", Spells.WANDERERS_SPIRIT);
 
-        SOUL_EATER = spellCaster("soul_eater", FTZSpells.DEVOUR);
-        SCULK_HEART = spellCaster("heart_of_sculk", FTZSpells.SONIC_BOOM);
-        NIMBLE_DAGGER = spellCaster("nimble_dagger", FTZSpells.BOUNCE);
-        CAUGHT_THUNDER = spellCaster("caught_thunder", FTZSpells.LIGHTNING_STRIKE);
-        PUPPET_DOLL = spellCaster("puppet_doll", FTZSpells.PUPPETEER);
-        BROKEN_STAFF = spellCaster("broken_staff", FTZSpells.KNOCK_OUT);
+        SOUL_EATER = spellCaster("soul_eater", Spells.DEVOUR);
+        HEART_OF_SCULK = spellCaster("heart_of_sculk", Spells.SONIC_BOOM);
+        NIMBLE_DAGGER = spellCaster("nimble_dagger", Spells.BOUNCE);
+        CAUGHT_THUNDER = spellCaster("caught_thunder", Spells.LIGHTNING_STRIKE);
+        PUPPET_DOLL = spellCaster("puppet_doll", Spells.PUPPETEER);
+        BROKEN_STAFF = spellCaster("broken_staff", Spells.KNOCK_OUT);
 
-        MYSTIC_MIRROR = spellCaster("mystic_mirror", FTZSpells.REFLECT);
-        BLOODLUST_AMULET = spellCaster("bloodlust_amulet", FTZSpells.DAMNED_WRATH);
-        CONTAINED_SOUND = spellCaster("contained_sound", FTZSpells.SHOCKWAVE);
-        WITHERS_QUINTESSENCE = spellCaster("withers_quintessence", FTZSpells.SUSTAIN);
-        RUSTY_RING = spellCaster("rusty_ring", FTZSpells.REINFORCE);
+        MYSTIC_MIRROR = spellCaster("mystic_mirror", Spells.REFLECT);
+        BLOODLUST_AMULET = spellCaster("bloodlust_amulet", Spells.DAMNED_WRATH);
+        CONTAINED_SOUND = spellCaster("contained_sound", Spells.SHOCKWAVE);
+        WITHERS_QUINTESSENCE = spellCaster("withers_quintessence", Spells.SUSTAIN);
+        RUSTY_RING = spellCaster("rusty_ring", Spells.REINFORCE);
 
-        LEADERS_HORN = auraCaster("leaders_horn", FTZAuras.LEADERSHIP);
-        TRANQUIL_HERB = auraCaster("tranquil_herb", FTZAuras.TRANQUIL);
-        SPIRAL_NEMESIS = auraCaster("spiral_nemesis", FTZAuras.DESPAIR);
-        ACID_BOTTLE = auraCaster("acid_bottle", FTZAuras.CORROSIVE);
-        NETHER_HEART = auraCaster("nether_heart", FTZAuras.HELLFIRE);
-        AMPLIFIED_ICE = auraCaster("amplified_ice", FTZAuras.FROSTBITE);
-        OPTICAL_LENS = auraCaster("optical_lens", FTZAuras.DIFFRACTION);
-        NECKLACE_OF_CLAIRVOYANCE = auraCaster("necklace_of_clairvoyance", FTZAuras.UNCOVER);
+        LEADERS_HORN = auraCaster("leaders_horn", Auras.LEADERSHIP);
+        TRANQUIL_HERB = auraCaster("tranquil_herb", Auras.TRANQUIL);
+        SPIRAL_NEMESIS = auraCaster("spiral_nemesis", Auras.DESPAIR);
+        ACID_BOTTLE = auraCaster("acid_bottle", Auras.CORROSIVE);
+        NETHER_HEART = auraCaster("nether_heart", Auras.HELLFIRE);
+        AMPLIFIED_ICE = auraCaster("amplified_ice", Auras.FROSTBITE);
+        OPTICAL_LENS = auraCaster("optical_lens", Auras.DIFFRACTION);
+        NECKLACE_OF_CLAIRVOYANCE = auraCaster("necklace_of_clairvoyance", Auras.UNCOVER);
 
         OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON),null);
-        UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Fantazia.res("double_jump")),null);
+        UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Talents.DOUBLE_JUMP),null);
         ARACHNID_EYE = expendableItem("arachnid_eye", () -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(64).food(FTZFoods.ARACHNID_EYE)),null);
         VITALITY_FRUIT = expendableItem("vitality_fruit", () -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16).food(FTZFoods.VITALITY_FRUIT)),null);
         ANCIENT_SPARK = expendableItem("ancient_spark", AncientSparkItem::new,null);

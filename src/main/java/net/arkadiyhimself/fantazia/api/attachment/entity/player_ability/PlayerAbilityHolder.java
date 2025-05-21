@@ -23,16 +23,13 @@ public abstract class PlayerAbilityHolder implements IPlayerAbility {
     }
 
     @Override
-    public void respawn() {
+    public void respawn() {}
+
+    @Override
+    public CompoundTag serializeInitial() {
+        return new CompoundTag();
     }
 
     @Override
-    public CompoundTag syncSerialize() {
-        return serializeNBT(getPlayer().registryAccess());
-    }
-
-    @Override
-    public void syncDeserialize(CompoundTag tag) {
-        deserializeNBT(getPlayer().registryAccess(), tag);
-    }
+    public void deserializeInitial(CompoundTag tag) {}
 }

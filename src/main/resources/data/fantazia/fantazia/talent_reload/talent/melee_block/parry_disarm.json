@@ -1,7 +1,0 @@
-{
-  "type" : "basic",
-  "iconTexture" : "fantazia:textures/talents/melee_block/parry_disarm.png",
-  "title" : "fantazia.talent.melee_block.parry_disarm",
-  "wisdom": 0,
-  "advancement" : "fantazia:ftz_talents/melee_block/parry_disarm"
-}

@@ -1,15 +1,19 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "dashstone": {
-      "trigger": "minecraft:inventory_changed",
+    "found_dashstone": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:dashstone1"]
+            "items": "fantazia:dashstone"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_dashstone"
+    ]
+  ]
 }

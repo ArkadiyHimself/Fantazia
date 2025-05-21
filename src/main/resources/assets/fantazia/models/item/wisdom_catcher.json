@@ -1,12 +1,4 @@
 {
   "parent" : "minecraft:builtin/entity",
-  "loader" : "neoforge:separate_transforms",
-  "base" : {
-    "parent" : "fantazia:item/wisdom_catcher_third_person"
-  },
-  "perspectives" : {
-    "gui" : {
-      "parent": "fantazia:item/wisdom_catcher_gui"
-    }
-  }
+  "gui_light" : "front"
 }

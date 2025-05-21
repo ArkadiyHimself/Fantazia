@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.items.casters;
 
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -15,24 +16,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class DashStoneItem extends Item {
-    public final int level;
-    public DashStoneItem(int level) {
-        super(getDefaultProperties());
-        this.level = level;
-    }
-    public static Properties getDefaultProperties() {
-        Properties props = new Properties();
 
-        props.stacksTo(1);
-        props.rarity(Rarity.RARE);
-        props.fireResistant();
-
-        return props;
+    public DashStoneItem() {
+        super(new Properties().stacksTo(1).rarity(Rarity.RARE).fireResistant().component(FTZDataComponentTypes.DASH_LEVEL,1));
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(@NotNull ItemStack pStack, @NotNull Item.TooltipContext pContext, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pIsAdvanced) {
+        Integer level = pStack.get(FTZDataComponentTypes.DASH_LEVEL);
+        if (level == null) return;
+
         super.appendHoverText(pStack, pContext, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(Component.literal(" "));
 
@@ -52,7 +46,7 @@ public class DashStoneItem extends Item {
             return;
         }
         // dash name
-        pTooltipComponents.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active", list, ability, Component.translatable(basicPath + ".name").getString()));
+        pTooltipComponents.add(GuiHelper.bakeComponent("tooltip.fantazia.common.dash.active", list, ability, Component.translatable(basicPath + ".name").getString()));
 
         String desc = Component.translatable(basicPath + ".lines").getString();
         try {
@@ -72,5 +66,11 @@ public class DashStoneItem extends Item {
             pTooltipComponents.add(Component.literal(" "));
             for (int i = 1; i <= lines; i++) pTooltipComponents.add(GuiHelper.bakeComponent(basicPath + ".stats." + i, null, null));
         }
+    }
+
+    @Override
+    public @NotNull String getDescriptionId(@NotNull ItemStack stack) {
+        Integer level = stack.get(FTZDataComponentTypes.DASH_LEVEL);
+        return super.getDescriptionId() + (level == null ? "" : level);
     }
 }

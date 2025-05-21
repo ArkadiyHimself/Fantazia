@@ -1,0 +1,8 @@
+{
+  "icon": "fantazia:textures/talent/abilities/spider_powers/cobweb_climbing.png",
+  "impacts": [
+    "fantazia:wall_climbing.cobweb"
+  ],
+  "title": "talent.fantazia.abilities.spider_powers.cobweb_climbing",
+  "wisdom": 25
+}

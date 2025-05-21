@@ -105,14 +105,6 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
         }
     }
 
-    @Override
-    public CompoundTag syncSerialize() {
-        return new CompoundTag();
-    }
-
-    @Override
-    public void syncDeserialize(CompoundTag tag) {}
-
     public List<Item> getObtainedItems() {
         return this.obtainedItems;
     }

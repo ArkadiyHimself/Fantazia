@@ -1,23 +1,22 @@
 {
-  "name": "item.fantazia.sandmans_dust",
-  "icon": "fantazia:sandmans_dust",
+  "advancement": "fantazia:the_worldliness/artifacts/sandmans_dust",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/sandmans_dust",
-  "read_by_default": false,
+  "icon": "fantazia:sandmans_dust",
+  "name": "item.fantazia.sandmans_dust",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.sandmans_dust.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.sandmans_dust.page.1"
     },
     {
-      "type": "crafting",
+      "type": "patchouli:crafting",
       "recipe": "fantazia:sandmans_dust",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.sandmans_dust.page.2"
+      "text": "book.fantazia.the_worldliness.artifacts.sandmans_dust.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.sandmans_dust.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.sandmans_dust.page.3"
     }
   ]
 }

@@ -3,20 +3,19 @@
   "description": {
     "translate": "enchantment.fantazia.ice_aspect"
   },
+  "exclusive_set": "minecraft:fire_aspect",
   "max_cost": {
     "base": 60,
     "per_level_above_first": 20
   },
-  "exclusive_set": "minecraft:fire_aspect",
   "max_level": 2,
   "min_cost": {
     "base": 10,
     "per_level_above_first": 20
   },
-  "primary_items": "#minecraft:enchantable/sword",
-  "supported_items": "#minecraft:enchantable/fire_aspect",
   "slots": [
     "mainhand"
   ],
+  "supported_items": "#minecraft:enchantable/fire_aspect",
   "weight": 2
 }

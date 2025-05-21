@@ -1,0 +1,16 @@
+{
+  "background": "fantazia:textures/gui/talent_icons/square_white.png",
+  "damage_multiplies": [
+    {
+      "damage_type": {
+        "damage_types": [
+          "minecraft:fall"
+        ]
+      },
+      "multiplier": 0.5
+    }
+  ],
+  "icon": "fantazia:textures/talent/abilities/aerial/cat_reflexes.png",
+  "title": "talent.fantazia.abilities.aerial.cat_reflexes",
+  "wisdom": 50
+}

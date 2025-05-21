@@ -1,8 +1,0 @@
-{
-  "type":"corail_woodcutter:woodcutting",
-  "ingredient": {
-    "item":"fantazia:obscure_planks"
-  },
-  "result": "minecraft:stick",
-  "count": 2
-}

@@ -1,11 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
-  "pattern": [
-    " XX",
-    "H#X",
-    "YH "
-  ],
+  "category": "misc",
   "key": {
     "#": {
       "item": "minecraft:glass"
@@ -13,15 +8,20 @@
     "H": {
       "item": "fantazia:obscure_substance"
     },
-    "X" : {
-      "item": "minecraft:iron_ingot"
+    "X": {
+      "item": "fantazia:fantazium_ingot"
     },
-    "Y" : {
+    "Y": {
       "item": "minecraft:diamond"
     }
   },
+  "pattern": [
+    " XX",
+    "H#X",
+    "YH "
+  ],
   "result": {
+    "count": 1,
     "id": "fantazia:mystic_mirror"
-  },
-  "show_notification": true
+  }
 }

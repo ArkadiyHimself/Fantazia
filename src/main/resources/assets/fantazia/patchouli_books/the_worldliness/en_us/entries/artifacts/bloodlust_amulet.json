@@ -1,22 +1,22 @@
 {
-  "name": "item.fantazia.bloodlust_amulet",
-  "icon": "fantazia:bloodlust_amulet",
+  "advancement": "fantazia:the_worldliness/artifacts/bloodlust_amulet",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/bloodlust_amulet",
+  "icon": "fantazia:bloodlust_amulet",
+  "name": "item.fantazia.bloodlust_amulet",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.bloodlust_amulet.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.bloodlust_amulet.page.1"
     },
     {
-      "type": "spotlight",
-      "item" : "fantazia:bloodlust_amulet",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.bloodlust_amulet.page.2"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:bloodlust_amulet",
+      "text": "book.fantazia.the_worldliness.artifacts.bloodlust_amulet.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.bloodlust_amulet.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.bloodlust_amulet.page.3"
     }
   ]
 }

@@ -5,9 +5,11 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
+import net.arkadiyhimself.fantazia.entities.DashStone;
 import net.arkadiyhimself.fantazia.events.ClientEvents;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,9 +35,8 @@ public class MixinEntity {
         Entity entity = (Entity) (Object) this;
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.hasEffect(FTZMobEffects.HAEMORRHAGE) && (pType == MoverType.SELF || pType == MoverType.PLAYER)) {
-                float dmg = LivingEffectHelper.bleedingDamage(livingEntity, pPos.subtract(livingEntity.getPosition(1f)));
-                DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(livingEntity.level());
-                if (sources != null) livingEntity.hurt(sources.bleeding(), dmg);
+                float dmg = LivingEffectHelper.bleedingDamage(livingEntity, pPos);
+                LevelAttributesHelper.hurtEntity(livingEntity, dmg, DamageSourcesHolder::bleeding);
             }
         }
     }
@@ -50,6 +51,12 @@ public class MixinEntity {
 
     @Inject(at = @At("HEAD"), method = "getTeamColor", cancellable = true)
     private void teamColor(CallbackInfoReturnable<Integer> cir) {
+        DashHolder dashHolder = PlayerAbilityHelper.takeHolder(Minecraft.getInstance().player, DashHolder.class);
+        if (dashHolder != null) {
+            DashStone dashStone = dashHolder.getDashstoneEntity(Minecraft.getInstance().level);
+            if (dashStone != null && dashStone.isProtectorClient(fantazia$entity)) cir.setReturnValue(2286);
+        }
+
         if (!(fantazia$entity instanceof LivingEntity livingEntity)) return;
         if (LivingEffectHelper.hasEffect(livingEntity, FTZMobEffects.FURY.value())) cir.setReturnValue(12586510);
         if (livingEntity == ClientEvents.suitableTarget && Screen.hasShiftDown()) cir.setReturnValue(13788415);

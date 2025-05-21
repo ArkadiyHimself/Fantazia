@@ -1,6 +1,15 @@
 {
-  "fantazia:default": 5,
-  "minecraft:night_vision": 7,
-  "minecraft:fire_resistance": 8,
-  "minecraft:water_breathing": 8
+  "category": "fantazia:brewed",
+  "default_reward": 8,
+  "rewards": {
+    "minecraft:fire_resistance": {
+      "reward": 8
+    },
+    "minecraft:night_vision": {
+      "reward": 7
+    },
+    "minecraft:water_breathing": {
+      "reward": 8
+    }
+  }
 }

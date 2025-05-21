@@ -1,15 +1,44 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "totem": {
-      "trigger": "minecraft:inventory_changed",
+    "found_entangler": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:totem_of_undying"]
+            "items": "fantazia:entangler"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "obscure_substance": {
+      "conditions": {
+        "possessed": {
+          "items": [
+            "fantazia:obscure_substance"
+          ]
+        }
+      },
+      "trigger": "fantazia:possess_item"
+    },
+    "totem_of_undying": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:totem_of_undying"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "totem_of_undying",
+      "found_entangler"
+    ],
+    [
+      "found_entangler",
+      "obscure_substance"
+    ]
+  ]
 }

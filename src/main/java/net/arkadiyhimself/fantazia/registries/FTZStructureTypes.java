@@ -2,7 +2,7 @@ package net.arkadiyhimself.fantazia.registries;
 
 import com.mojang.serialization.MapCodec;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.worldgen.structures.SimpleNetherStructure;
+import net.arkadiyhimself.fantazia.datagen.worldgen.structures.SimpleNetherStructure;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -11,7 +11,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class FTZStructureTypes {
-    private FTZStructureTypes() {}
+
     private static final DeferredRegister<StructureType<?>> REGISTER = DeferredRegister.create(Registries.STRUCTURE_TYPE, Fantazia.MODID);
 
     public static final DeferredHolder<StructureType<?>, StructureType<SimpleNetherStructure>> SIMPLE_NETHER_STRUCTURE = REGISTER.register("simple_nether_structure", () -> codecIntoSupplier(SimpleNetherStructure.CODEC));

@@ -1,8 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "slay_a_blaze": {
-      "trigger": "minecraft:player_killed_entity",
+    "found_nether_heart": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:nether_heart"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "killed_blaze": {
       "conditions": {
         "entity": [
           {
@@ -13,7 +21,14 @@
             }
           }
         ]
-      }
+      },
+      "trigger": "minecraft:player_killed_entity"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_nether_heart",
+      "killed_blaze"
+    ]
+  ]
 }

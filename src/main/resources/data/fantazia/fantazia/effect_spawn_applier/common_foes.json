@@ -1,0 +1,36 @@
+{
+  "entity_types": [
+    "minecraft:zombie",
+    "minecraft:husk",
+    "minecraft:drowned",
+    "minecraft:spider",
+    "minecraft:skeleton",
+    "minecraft:stray"
+  ],
+  "spawn_effects": [
+    {
+      "chance": 0.2,
+      "mob_effect_instances": [
+        {
+          "amplifier": 10,
+          "hidden": true,
+          "mob_effect": "fantazia:barrier"
+        },
+        {
+          "amplifier": 4,
+          "hidden": true,
+          "mob_effect": "fantazia:might"
+        }
+      ]
+    },
+    {
+      "chance": 0.2,
+      "mob_effect_instances": [
+        {
+          "hidden": true,
+          "mob_effect": "fantazia:deflect"
+        }
+      ]
+    }
+  ]
+}

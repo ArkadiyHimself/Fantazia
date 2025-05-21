@@ -1,0 +1,22 @@
+{
+  "loot_instances": [
+    {
+      "added": {
+        "count": 1,
+        "id": "fantazia:vitality_fruit"
+      },
+      "first_time": true
+    },
+    {
+      "added": {
+        "count": 1,
+        "id": "fantazia:athame"
+      },
+      "chance": 0.125
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/desert_pyramid",
+    "minecraft:chests/jungle_temple"
+  ]
+}

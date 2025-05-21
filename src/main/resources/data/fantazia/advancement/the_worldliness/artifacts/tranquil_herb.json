@@ -1,7 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
-  "criteria" : {
-    "in_mineshaft": {
+  "criteria": {
+    "found_tranquil_herb": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:tranquil_herb"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "visited_mineshaft": {
       "conditions": {
         "player": [
           {
@@ -17,5 +26,11 @@
       },
       "trigger": "minecraft:location"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_tranquil_herb",
+      "visited_mineshaft"
+    ]
+  ]
 }

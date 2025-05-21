@@ -1,9 +1,0 @@
-{
-  "hierarchy": "chain",
-  "tab": "fantazia:abilities",
-  "values" : [
-    "fantazia:aerial/double_jump",
-    "fantazia:aerial/cat_reflexes",
-    "fantazia:aerial/finished_wings"
-  ]
-}

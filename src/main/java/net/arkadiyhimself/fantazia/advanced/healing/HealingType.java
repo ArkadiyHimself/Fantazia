@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 
 public record HealingType(String id, float exhaustion, RandomList<ResourceLocation> particleTypes) {
+
     public static final Codec<HealingType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.STRING.fieldOf("id").forGetter(HealingType::id),
             Codec.FLOAT.optionalFieldOf("exhaustion", 0f).forGetter(HealingType::exhaustion),

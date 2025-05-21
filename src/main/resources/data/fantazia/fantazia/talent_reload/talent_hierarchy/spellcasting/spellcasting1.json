@@ -1,0 +1,12 @@
+{
+  "hierarchy": {
+    "type": "chaotic",
+    "elements": {
+      "elements": [
+        "fantazia:spellcasting/spellcasting1/activecaster_slots",
+        "fantazia:spellcasting/spellcasting1/passivecaster_slots"
+      ]
+    }
+  },
+  "tab": "fantazia:spellcasting"
+}

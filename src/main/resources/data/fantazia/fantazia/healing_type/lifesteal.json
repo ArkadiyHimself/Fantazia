@@ -1,6 +1,5 @@
 {
   "id": "lifesteal",
-  "exhaustion": 0,
   "particles": [
     "fantazia:lifesteal1",
     "fantazia:lifesteal2",

@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "surge": {
+      "conditions": {
+        "effects": {
+          "fantazia:surge": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "requirements": [
+    [
+      "surge"
+    ]
+  ]
+}

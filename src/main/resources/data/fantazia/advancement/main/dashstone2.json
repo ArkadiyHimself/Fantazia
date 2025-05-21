@@ -1,44 +1,42 @@
 {
   "parent": "fantazia:main/dashstone1",
   "criteria": {
-    "found_dashstone": {
-      "trigger": "curios:equip_curio",
+    "equip": {
       "conditions": {
         "curios:slot": {
-          "index": {
-            "max": 10,
-            "min": 0
-          },
           "slots": [
             "dashstone"
           ]
         },
         "item": {
-          "items": [
-            "fantazia:dashstone2"
-          ]
+          "components": {
+            "fantazia:dash_level": 2
+          }
         }
-      }
+      },
+      "trigger": "curios:equip_curio"
     }
   },
   "display": {
-    "announce_to_chat": true,
     "description": {
-      "translate": "advancements.fantazia.dashstone2.desc"
+      "translate": "advancement.fantazia.dashstone2.desc"
     },
     "frame": "goal",
     "hidden": true,
     "icon": {
-      "id": "fantazia:dashstone2"
+      "components": {
+        "fantazia:dash_level": 2
+      },
+      "count": 1,
+      "id": "fantazia:dashstone"
     },
-    "show_toast": true,
     "title": {
-      "translate": "advancements.fantazia.dashstone2"
+      "translate": "advancement.fantazia.dashstone2"
     }
   },
   "requirements": [
     [
-      "found_dashstone"
+      "equip"
     ]
   ],
   "sends_telemetry_event": true

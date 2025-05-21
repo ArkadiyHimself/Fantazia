@@ -1,24 +1,24 @@
 {
-  "name": "book.fantazia.entry.world.obscure_tree.name",
-  "icon": "fantazia:obscure_sapling",
-  "advancement" : "fantazia:the_worldliness/world/obscure_tree",
+  "advancement": "fantazia:the_worldliness/world/obscure_tree",
   "category": "fantazia:world",
+  "icon": "fantazia:obscure_sapling",
+  "name": "book.fantazia.the_worldliness.world.obscure_tree.name",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.world.obscure_tree.page.1"
+      "text": "book.fantazia.the_worldliness.world.obscure_tree.page.1"
     },
     {
       "type": "patchouli:image",
-      "text": "book.fantazia.entry.world.obscure_tree.page.2",
-      "images" : [
+      "border": true,
+      "images": [
         "fantazia:textures/entries/obscure_tree.png"
       ],
-      "border" : true
+      "text": "book.fantazia.the_worldliness.world.obscure_tree.page.2"
     },
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.world.obscure_tree.page.3"
+      "text": "book.fantazia.the_worldliness.world.obscure_tree.page.3"
     }
   ]
 }

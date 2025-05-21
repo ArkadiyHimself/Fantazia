@@ -1,33 +1,44 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
     "fantazium_ingot": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:fantazium_ingot"]
+            "items": "#fantazia:from_fantazium"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
-    "gold_ingot" : {
-      "trigger": "minecraft:inventory_changed",
+    "found_wisdom_catcher": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:gold_ingot"]
+            "items": "fantazia:wisdom_catcher"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "gold_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:gold_ingot"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
-      "fantazium_ingot"
+      "gold_ingot",
+      "found_wisdom_catcher"
     ],
     [
-      "gold_ingot"
+      "found_wisdom_catcher",
+      "fantazium_ingot"
     ]
   ]
 }

@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.data_component.HiddenPotentialHolder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class FragileBladeItem extends MeleeWeaponItem implements ITooltipBuilder {
+public class FragileBladeItem extends MeleeWeaponItem {
 
     public FragileBladeItem() {
         super(new Properties().stacksTo(1).durability(1024).component(FTZDataComponentTypes.HIDDEN_POTENTIAL, new HiddenPotentialHolder()),-1.5f, 4, "fragile_blade");
@@ -55,7 +54,7 @@ public class FragileBladeItem extends MeleeWeaponItem implements ITooltipBuilder
             return components;
         }
 
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.weapon", new ChatFormatting[]{ChatFormatting.DARK_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.hidden_potential.name").getString()));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.weapon.ability", new ChatFormatting[]{ChatFormatting.DARK_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.hidden_potential.name").getString()));
         components.add(Component.literal(" "));
         String text = Component.translatable(basicPath + ".lines").getString();
 

@@ -1,20 +1,19 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "substance" : {
-      "trigger": "minecraft:inventory_changed",
+    "obscure_tree": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:obscure_sapling"]
+            "items": "#fantazia:from_obscure_tree"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
-      "substance"
+      "obscure_tree"
     ]
   ]
 }

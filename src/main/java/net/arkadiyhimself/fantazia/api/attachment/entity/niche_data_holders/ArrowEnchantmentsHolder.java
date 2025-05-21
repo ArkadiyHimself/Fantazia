@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class ArrowEnchantmentsHolder implements IBasicHolder {
+
     private final AbstractArrow arrow;
     private boolean frozen = false;
     private int duelist = 0;
@@ -56,12 +57,12 @@ public class ArrowEnchantmentsHolder implements IBasicHolder {
     }
 
     @Override
-    public CompoundTag syncSerialize() {
+    public CompoundTag serializeInitial() {
         return new CompoundTag();
     }
 
     @Override
-    public void syncDeserialize(CompoundTag tag) {
+    public void deserializeInitial(CompoundTag tag) {
 
     }
 

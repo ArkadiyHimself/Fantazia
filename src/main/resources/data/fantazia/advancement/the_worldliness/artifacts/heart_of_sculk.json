@@ -1,7 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
-  "criteria" : {
-    "in_city": {
+  "criteria": {
+    "found_heart_of_sculk": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:heart_of_sculk"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "visited_ancient_city": {
       "conditions": {
         "player": [
           {
@@ -17,5 +26,11 @@
       },
       "trigger": "minecraft:location"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_heart_of_sculk",
+      "visited_ancient_city"
+    ]
+  ]
 }

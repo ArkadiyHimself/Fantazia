@@ -1,0 +1,9 @@
+{
+  "advancement": "fantazia:talents/spellcasting/spellcasting1/passivecaster_slots",
+  "background": "fantazia:textures/gui/talent_icons/square_purple.png",
+  "curio_modifiers": {
+    "passivecaster": 1
+  },
+  "icon": "fantazia:textures/talent/spellcasting/spellcasting1/passivecaster_slots.png",
+  "title": "talent.fantazia.spellcasting.spellcasting1.passivecaster_slots"
+}

@@ -22,12 +22,12 @@ public abstract class LivingDataHolder implements IBasicHolder {
     }
 
     @Override
-    public CompoundTag syncSerialize() {
+    public CompoundTag serializeInitial() {
         return serializeNBT(getEntity().registryAccess());
     }
 
     @Override
-    public void syncDeserialize(CompoundTag tag) {
+    public void deserializeInitial(CompoundTag tag) {
         deserializeNBT(getEntity().registryAccess(), tag);
     }
 }

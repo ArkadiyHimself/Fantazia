@@ -1,0 +1,17 @@
+{
+  "advancement": "fantazia:the_worldliness/mob_effects/corrosion",
+  "category": "fantazia:mob_effects",
+  "icon": "fantazia:textures/mob_effect/corrosion.png",
+  "name": "effect.fantazia.corrosion",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.corrosion.page.1",
+      "title": "book.fantazia.heading.mob_effects.harmful"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.corrosion.page.2"
+    }
+  ]
+}

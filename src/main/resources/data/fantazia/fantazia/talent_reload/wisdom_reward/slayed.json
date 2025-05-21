@@ -1,7 +1,17 @@
 {
-  "fantazia:default": 5,
-  "minecraft:ender_dragon": 25,
-  "minecraft:wither": 25,
-  "minecraft:ravager": 10,
-  "minecraft:warden": 10
+  "category": "fantazia:slayed",
+  "rewards": {
+    "minecraft:ender_dragon": {
+      "reward": 25
+    },
+    "minecraft:ravager": {
+      "reward": 10
+    },
+    "minecraft:warden": {
+      "reward": 15
+    },
+    "minecraft:wither": {
+      "reward": 25
+    }
+  }
 }

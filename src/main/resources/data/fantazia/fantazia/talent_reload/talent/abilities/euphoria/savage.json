@@ -1,0 +1,9 @@
+{
+  "background": "fantazia:textures/gui/talent_icons/square_red.png",
+  "icon": "fantazia:textures/talent/abilities/euphoria/savage.png",
+  "impacts": [
+    "fantazia:euphoria.savage"
+  ],
+  "title": "talent.fantazia.abilities.euphoria.savage",
+  "wisdom": 30
+}

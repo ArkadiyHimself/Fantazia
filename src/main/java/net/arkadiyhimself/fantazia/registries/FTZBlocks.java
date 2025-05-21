@@ -8,9 +8,9 @@ import net.arkadiyhimself.fantazia.blocks.obscure_sign.ObscureHangingSignBlock;
 import net.arkadiyhimself.fantazia.blocks.obscure_sign.ObscureStandingSignBlock;
 import net.arkadiyhimself.fantazia.blocks.obscure_sign.ObscureWallHangingSignBlock;
 import net.arkadiyhimself.fantazia.blocks.obscure_sign.ObscureWallSignBlock;
+import net.arkadiyhimself.fantazia.datagen.worldgen.tree.FTZTreeGrowers;
 import net.arkadiyhimself.fantazia.events.RegistryEvents;
 import net.arkadiyhimself.fantazia.items.RegularBlockItem;
-import net.arkadiyhimself.fantazia.worldgen.tree.FTZTreeGrowers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +37,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class FTZBlocks {
-    private FTZBlocks() {}
 
     public static final List<DeferredBlock<?>> WOODEN_BLOCKS = Lists.newArrayList();
 
@@ -144,8 +143,8 @@ public class FTZBlocks {
         OBSCURE_DOOR = registerBlock("obscure_door", () -> new DoorBlock(BlockSetType.DARK_OAK, BlockBehaviour.Properties.of().mapColor(OBSCURE_PLANKS.value().defaultMapColor()).instrument(NoteBlockInstrument.BASS).strength(2.5F, 5F).noOcclusion().ignitedByLava().pushReaction(PushReaction.DESTROY)), RegularBlockItem::new);
 
         // fantazium ore
-        FANTAZIUM_ORE = registerBlock("fantazium_ore", () -> new DropExperienceBlock(UniformInt.of(6, 9), BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(2.5F,2.5F).lightLevel(blockState -> 3)), RegularBlockItem::new);
-        DEEPSLATE_FANTAZIUM_ORE = registerBlock("deepslate_fantazium_ore", () -> new DropExperienceBlock(UniformInt.of(6, 9), BlockBehaviour.Properties.ofFullCopy(FANTAZIUM_ORE.get()).mapColor(MapColor.DEEPSLATE).strength(4F,2.5F).sound(SoundType.DEEPSLATE).lightLevel(blockState -> 3)), RegularBlockItem::new);
+        FANTAZIUM_ORE = registerBlock("fantazium_ore", () -> new DropExperienceBlock(UniformInt.of(6, 9), BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(2.5F,2.5F).lightLevel(blockState -> 7)), RegularBlockItem::new);
+        DEEPSLATE_FANTAZIUM_ORE = registerBlock("deepslate_fantazium_ore", () -> new DropExperienceBlock(UniformInt.of(6, 9), BlockBehaviour.Properties.ofFullCopy(FANTAZIUM_ORE.get()).mapColor(MapColor.DEEPSLATE).strength(4F,2.5F).sound(SoundType.DEEPSLATE).lightLevel(blockState -> 7)), RegularBlockItem::new);
         FANTAZIUM_BLOCK = registerBlock("fantazium_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5.5F,7.0F).sound(SoundType.METAL)), RegularBlockItem::new);
         RAW_FANTAZIUM_BLOCK = registerBlock("raw_fantazium_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.RAW_IRON).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5.5F,7.0F)), RegularBlockItem::new);
     }

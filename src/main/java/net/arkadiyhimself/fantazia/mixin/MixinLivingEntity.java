@@ -1,20 +1,21 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.registries.custom.Runes;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.tags.FTZMobEffectTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -32,7 +33,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.common.EffectCure;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -42,6 +45,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
+
+    @Shadow public abstract void remove(@NotNull RemovalReason reason);
 
     public MixinLivingEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -53,7 +58,7 @@ public abstract class MixinLivingEntity extends Entity {
     @Inject(at = @At(value = "HEAD"), method = "playHurtSound", cancellable = true)
     private void hurtSound(DamageSource source, CallbackInfo ci) {
         if (source == null) return;
-        for (MobEffectInstance mobEffectInstance : fantazia$entity.getActiveEffects()) if (FTZMobEffectTags.hasTag(mobEffectInstance.getEffect(), FTZMobEffectTags.BARRIER)) ci.cancel();
+        if (!source.is(FTZDamageTypeTags.PIERCES_BARRIER)) for (MobEffectInstance mobEffectInstance : fantazia$entity.getActiveEffects()) if (mobEffectInstance.getEffect().is(FTZMobEffectTags.BARRIER)) ci.cancel();
         if (source.is(FTZDamageTypeTags.NO_HURT_SOUND)) ci.cancel();
         if (source.is(FTZDamageTypes.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) fantazia$entity.level().playSound(null, fantazia$entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
     }
@@ -86,40 +91,58 @@ public abstract class MixinLivingEntity extends Entity {
 
     @Inject(at = @At(value = "HEAD"), method = "onClimbable", cancellable = true)
     private void climbWall(CallbackInfoReturnable<Boolean> cir) {
-        if (!(fantazia$entity instanceof Player player)) return;
-        DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
-        if (dashHolder != null && dashHolder.isDashing()) return;
-        if (fantazia$shouldBeClimbing(player)) cir.setReturnValue(true);
+        if (fantazia$entity instanceof Player player) {
+            DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
+            if (dashHolder != null && dashHolder.isDashing()) return;
+        }
+        if (fantazia$shouldBeClimbing(fantazia$entity)) cir.setReturnValue(true);
     }
 
     @Unique
-    private boolean fantazia$shouldBeClimbing(Player player) {
+    private boolean fantazia$shouldBeClimbing(Entity entity) {
         AABB bb = fantazia$entity.getBoundingBox().inflate(0.2,0,0.2);
         int mX = Mth.floor(bb.minX);
         int mY = Mth.floor(bb.minY);
         int mZ = Mth.floor(bb.minZ);
-        for (int y = mY; y < bb.maxY - 1; y++) for (int x = mX; x < bb.maxX; x++) for (int z = mZ; z < bb.maxZ; z++) {
-            BlockPos blockPos = new BlockPos(x, y, z);
-
-            if (fantazia$fitForClimbing(blockPos, player)) return true;
-        }
+        if (fantazia$fitForCobwebClimbing(entity)) return true;
+        for (int y = mY; y <= bb.maxY - 1; ++y) for (int x = mX; x <= bb.maxX; ++x) for (int z = mZ; z <= bb.maxZ; ++z) if (fantazia$fitForClimbing(new BlockPos(x, y, z), entity)) return true;
         return false;
     }
 
     @Unique
-    private boolean fantazia$fitForClimbing(BlockPos pos, Player player) {
-        if (FantazicCombat.isPhasing(player)) return false;
-        if (pos.getX() == player.getBlockX() && pos.getZ() == player.getBlockZ()) return false;
+    private boolean fantazia$fitForClimbing(BlockPos pos, Entity entity) {
+        if (entity instanceof Player player && FantazicCombat.isPhasing(player)) return false;
+        if (pos.getX() == entity.getBlockX() && pos.getZ() == entity.getBlockZ()) return false;
         BlockState state = level().getBlockState(pos);
 
         Block block = state.getBlock();
         boolean fullBlock = state.getShape(level(), pos) == Shapes.block();
         if (block instanceof BedBlock) return false;
-        if (block instanceof SlabBlock && !fullBlock && pos.getY() - player.getBlockY() <= 0) return false;
-        if (block instanceof StairBlock && pos.getY() - player.getBlockY() <= 0) return false;
+        if (block instanceof SlabBlock && !fullBlock && pos.getY() - entity.getBlockY() <= 0) return false;
+        if (block instanceof StairBlock && pos.getY() - entity.getBlockY() <= 0) return false;
 
-        if (state.isSolid() && TalentHelper.hasTalent(player, Fantazia.res("spider_powers/wall_climbing"))) return true;
-        else return (state.is(Blocks.COBWEB) && TalentHelper.hasTalent(player, Fantazia.res("spider_powers/cobweb_climbing")));
+        if (state.isSolid() && entity.getData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED)) return true;
+        else return (state.is(Blocks.COBWEB) && entity.getData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB));
     }
 
+    @Unique
+    private boolean fantazia$fitForCobwebClimbing(Entity entity) {
+        if (!entity.getData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB)) return false;
+        AABB aabb = entity.getBoundingBox();
+        BlockPos corner1 = BlockPos.containing(aabb.minX + 1.0E-7, aabb.minY + 1.0E-7, aabb.minZ + 1.0E-7);
+        BlockPos corner2 = BlockPos.containing(aabb.maxX - 1.0E-7, aabb.maxY - 1.0E-7, aabb.maxZ - 1.0E-7);
+
+        for(int i = corner1.getX(); i <= corner2.getX(); ++i)
+            for(int j = corner1.getY(); j <= corner2.getY(); ++j)
+                for(int k = corner1.getZ(); k <= corner2.getZ(); ++k)
+                    if (level().getBlockState(new BlockPos(i, j, k)).is(Blocks.COBWEB)) return true;
+
+        return false;
+    }
+
+    @Override
+    public boolean dampensVibrations() {
+        if (FantazicUtil.hasRune(fantazia$entity, Runes.NOISELESS)) return true;
+        return super.dampensVibrations();
+    }
 }

@@ -1,0 +1,24 @@
+{
+  "loot_instances": [
+    {
+      "added": {
+        "count": 1,
+        "id": "fantazia:tranquil_herb"
+      },
+      "chance": 0.25
+    },
+    {
+      "added": {
+        "components": {
+          "fantazia:rune": "fantazia:prosperity"
+        },
+        "count": 1,
+        "id": "fantazia:rune_wielder"
+      },
+      "chance": 0.1125
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/abandoned_mineshaft"
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "effect": {
+    "deafened": {
       "conditions": {
         "effects": {
           "fantazia:deafened": {}
@@ -8,5 +8,10 @@
       },
       "trigger": "minecraft:effects_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "deafened"
+    ]
+  ]
 }

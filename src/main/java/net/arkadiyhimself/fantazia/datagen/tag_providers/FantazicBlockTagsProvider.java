@@ -24,6 +24,8 @@ public class FantazicBlockTagsProvider extends BlockTagsProvider {
         // fantazia tags
         tag(FTZBlockTags.OBSCURE_LOGS).add(FTZBlocks.OBSCURE_LOG.value(), FTZBlocks.OBSCURE_WOOD.value(), FTZBlocks.STRIPPED_OBSCURE_LOG.value(), FTZBlocks.STRIPPED_OBSCURE_WOOD.value());
         tag(FTZBlockTags.FANTAZIUM_ORES).add(FTZBlocks.FANTAZIUM_ORE.value(), FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.value());
+        tag(FTZBlockTags.FROM_OBSCURE_TREE).add(FTZBlocks.OBSCURE_PLANKS.value(), FTZBlocks.OBSCURE_SAPLING.value(), FTZBlocks.OBSCURE_LOG.value(), FTZBlocks.OBSCURE_WOOD.value(), FTZBlocks.OBSCURE_LEAVES.value(), FTZBlocks.OBSCURE_STAIRS.value(), FTZBlocks.STRIPPED_OBSCURE_LOG.value(), FTZBlocks.OBSCURE_WOOD.value(), FTZBlocks.OBSCURE_PRESSURE_PLATE.value(), FTZBlocks.OBSCURE_TRAPDOOR.value(), FTZBlocks.OBSCURE_SAPLING.value(), FTZBlocks.OBSCURE_BUTTON.value(), FTZBlocks.OBSCURE_SLAB.value(), FTZBlocks.OBSCURE_FENCE_GATE.value(), FTZBlocks.OBSCURE_FENCE.value(), FTZBlocks.OBSCURE_DOOR.value());
+        tag(FTZBlockTags.FROM_FANTAZIUM).add(FTZBlocks.FANTAZIUM_ORE.value(), FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.value(), FTZBlocks.FANTAZIUM_BLOCK.value(), FTZBlocks.RAW_FANTAZIUM_BLOCK.value());
 
         // mineable folder
         tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FTZBlocks.FANTAZIUM_ORE.value(), FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.value(), FTZBlocks.FANTAZIUM_BLOCK.value(), FTZBlocks.RAW_FANTAZIUM_BLOCK.value());

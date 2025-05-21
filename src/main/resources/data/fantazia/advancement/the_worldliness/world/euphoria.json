@@ -1,7 +1,12 @@
 {
   "criteria": {
-    "euphoric": {
+    "euphoria": {
       "trigger": "fantazia:euphoria"
     }
-  }
+  },
+  "requirements": [
+    [
+      "euphoria"
+    ]
+  ]
 }

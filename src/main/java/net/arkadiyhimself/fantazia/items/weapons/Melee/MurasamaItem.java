@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.ChatFormatting;
@@ -28,7 +27,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MurasamaItem extends MeleeWeaponItem implements ITooltipBuilder {
+public class MurasamaItem extends MeleeWeaponItem {
+
     public MurasamaItem() {
         super(new Properties().stacksTo(1).durability(512).fireResistant().rarity(Rarity.EPIC), 10, -2.3f, "murasama");
         this.attackDamage = 10;
@@ -36,11 +36,14 @@ public class MurasamaItem extends MeleeWeaponItem implements ITooltipBuilder {
     }
 
     @Override
-    public boolean hasActive() { return true; }
+    public boolean hasActive() {
+        return true;
+    }
+
     @Override
     public void activeAbility(ServerPlayer player) {
         player.getData(FTZAttachmentTypes.MURASAMA_TAUNT_TICKS).set(30);
-        IPacket.animatePlayer(player, "taunt");;
+        IPacket.animatePlayer(player,"taunt");
         if (LivingEffectHelper.isDisguised(player)) return;
         ServerLevel level = (ServerLevel) player.level();
         AABB aabb = player.getBoundingBox().inflate(10);
@@ -48,12 +51,10 @@ public class MurasamaItem extends MeleeWeaponItem implements ITooltipBuilder {
         mobs.removeIf(mob -> !mob.hasLineOfSight(player));
         for (Mob mob : mobs) {
             LivingEffectHelper.makeFurious(mob, 300);
+            if (player.isCreative() || player.isSpectator()) continue;
             mob.setTarget(player);
-            if (player.isCreative() || player.isSpectator()) return;
             if (mob instanceof TamableAnimal animal && animal.getOwner() == player) continue;
-            if (mob instanceof NeutralMob neutralMob) {
-                neutralMob.setTarget(player);
-            }
+            if (mob instanceof NeutralMob neutralMob) neutralMob.setTarget(player);
             if (mob instanceof Warden warden) {
                 warden.increaseAngerAt(player, AngerLevel.ANGRY.getMinimumAnger() + 20, false);
                 warden.setAttackTarget(player);
@@ -90,7 +91,7 @@ public class MurasamaItem extends MeleeWeaponItem implements ITooltipBuilder {
             return components;
         }
 
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.weapon", new ChatFormatting[]{ChatFormatting.RED}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.taunt.name").getString()));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.weapon.ability", new ChatFormatting[]{ChatFormatting.RED}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.taunt.name").getString()));
         components.add(Component.literal(" "));
         String text = Component.translatable(basicPath + ".lines").getString();
 

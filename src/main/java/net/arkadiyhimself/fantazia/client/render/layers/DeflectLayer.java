@@ -27,7 +27,9 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class DeflectLayer {
+
     public static final ResourceLocation LAYER = Fantazia.res("textures/entity_layers/deflect_layer.png");
+
     protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENERGY_SWIRL_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEnergySwirlShader);
     protected static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
         RenderSystem.enableBlend();
@@ -36,15 +38,19 @@ public class DeflectLayer {
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
     });
+
     protected static final RenderStateShard.CullStateShard NO_CULL = new RenderStateShard.CullStateShard(false);
     protected static final RenderStateShard.LightmapStateShard LIGHTMAP = new RenderStateShard.LightmapStateShard(true);
     protected static final RenderStateShard.OverlayStateShard OVERLAY = new RenderStateShard.OverlayStateShard(true);
+
     public static class LayerBarrier<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T,M> {
+
         private final RenderLayerParent<T, M> renderer;
         public LayerBarrier(LivingEntityRenderer<T, M> renderer) {
             super(renderer);
             this.renderer = renderer;
         }
+
         @Override
         public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
             if (pLivingEntity.isInvisible()) return;
@@ -73,6 +79,7 @@ public class DeflectLayer {
             int color = FastColor.ARGB32.colorFromFloat(0.7f,1F,1F,1f);
             entityModel.renderToBuffer(pPoseStack, pBufferBuffer, pPackedLight, OverlayTexture.NO_OVERLAY, color);
         }
+
         public static float xOffset(float pTickCount) {
             return pTickCount * 0.01F;
         }

@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.datagen.tag_providers;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.tags.FTZSpellTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -23,7 +23,7 @@ public class FantazicSpellTagsProvider extends IntrinsicHolderTagsProvider<Abstr
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         tag(FTZSpellTags.NOT_BLOCKABLE);
-        tag(FTZSpellTags.NOT_REFLECTABLE).add(FTZSpells.DEVOUR.get());
-        tag(FTZSpellTags.THROUGH_WALLS).add(FTZSpells.SONIC_BOOM.get());
+        tag(FTZSpellTags.NOT_REFLECTABLE).add(Spells.DEVOUR.get());
+        tag(FTZSpellTags.THROUGH_WALLS).add(Spells.SONIC_BOOM.get());
     }
 }

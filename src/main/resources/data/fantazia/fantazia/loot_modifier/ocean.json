@@ -1,0 +1,18 @@
+{
+  "loot_instances": [
+    {
+      "added": {
+        "count": 1,
+        "id": "fantazia:caught_thunder"
+      },
+      "chance": 0.125
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/underwater_ruin_small",
+    "minecraft:chests/underwater_ruin_big",
+    "minecraft:chests/shipwreck_supply",
+    "minecraft:chests/shipwreck_treasure",
+    "minecraft:chests/buried_treasure"
+  ]
+}

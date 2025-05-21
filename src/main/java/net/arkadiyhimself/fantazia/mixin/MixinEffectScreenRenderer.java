@@ -25,8 +25,9 @@ import java.util.List;
 
 @Mixin(EffectRenderingInventoryScreen.class)
 public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
+
     @Unique
-    private static List<Component> buildTooltip(Holder<MobEffect> effect) {
+    private static List<Component> fantazia$buildTooltip(Holder<MobEffect> effect) {
         List<Component> components = Lists.newArrayList();
         String lines = Component.translatable(effect.value().getDescriptionId() + ".lines").getString();
         int amo;
@@ -54,29 +55,33 @@ public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu>
         }
         return components;
     }
+
     @Unique
-    private static void renderEffectTooltip(GuiGraphics guiGraphics, Holder<MobEffect> effect, int mouseX, int mouseY) {
+    private static void fantazia$renderEffectTooltip(GuiGraphics guiGraphics, Holder<MobEffect> effect, int mouseX, int mouseY) {
         Cleanse cleanse = Cleanse.requiredCleanse(effect);
         Component clns = cleanse.getName();
         List<Component> components = Lists.newArrayList();
-        components.addAll(buildTooltip(effect));
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse", new ChatFormatting[]{ChatFormatting.GOLD}, null, clns));
+        components.addAll(fantazia$buildTooltip(effect));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.mob_effect.cleanse_required", new ChatFormatting[]{ChatFormatting.GOLD}, null, clns));
         guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, components, mouseX, mouseY);
     }
 
     protected MixinEffectScreenRenderer(T pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
     }
+
     @Unique
-    private int mouseX;
+    private int fantazia$mouseX;
+
     @Unique
-    private int mouseY;
+    private int fantazia$mouseY;
+
     @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("HEAD"))
     private void onRenderHead(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
 
         // Cache the mouse position to avoid calculating it later.
-        this.mouseX = mouseX;
-        this.mouseY = mouseY;
+        this.fantazia$mouseX = mouseX;
+        this.fantazia$mouseY = mouseY;
     }
     @Inject(method = "renderBackgrounds(Lnet/minecraft/client/gui/GuiGraphics;IILjava/lang/Iterable;Z)V", at = @At("RETURN"))
     private void renderBackground(GuiGraphics pGuiGraphics, int pRenderX, int pYOffset, Iterable<MobEffectInstance> pEffects, boolean pIsSmall, CallbackInfo ci) {
@@ -89,8 +94,8 @@ public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu>
             final int height = 32;
 
             // Check if the mouse is within the render area of the effect element.
-            if (mouseX >= pRenderX && mouseY >= yPos && mouseX < pRenderX + length && mouseY < yPos + height) {
-                renderEffectTooltip(pGuiGraphics, effect.getEffect(), mouseX, mouseY);
+            if (fantazia$mouseX >= pRenderX && fantazia$mouseY >= yPos && fantazia$mouseX < pRenderX + length && fantazia$mouseY < yPos + height) {
+                fantazia$renderEffectTooltip(pGuiGraphics, effect.getEffect(), fantazia$mouseX, fantazia$mouseY);
                 break;
             }
             yPos += pYOffset;

@@ -1,13 +1,11 @@
 {
-  "parent" : "fantazia:main/caster",
+  "parent": "fantazia:main/caster",
   "criteria": {
     "spiral_nemesis": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "fantazia:spiral_nemesis"
-            ]
+            "items": "fantazia:spiral_nemesis"
           }
         ]
       },
@@ -16,15 +14,21 @@
   },
   "display": {
     "description": {
-      "translate": "advancements.fantazia.spiral_nemesis.desc"
+      "translate": "advancement.fantazia.spiral_nemesis.desc"
     },
     "hidden": true,
     "icon": {
+      "count": 1,
       "id": "fantazia:spiral_nemesis"
     },
-    "show_toast": true,
     "title": {
-      "translate": "advancements.fantazia.spiral_nemesis"
+      "translate": "advancement.fantazia.spiral_nemesis"
     }
-  }
+  },
+  "requirements": [
+    [
+      "spiral_nemesis"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

@@ -1,5 +1,7 @@
 {
-  "order": 20,
+  "icon": "fantazia:slot/dashstone",
   "size": 1,
-  "icon": "fantazia:slot/dashstone"
+  "validators": [
+    "fantazia:for_dashstone"
+  ]
 }

@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.category.world.name",
-  "description": "book.fantazia.category.world.desc",
-  "icon": "minecraft:book"
+  "description": "book.fantazia.the_worldliness.world.desc",
+  "icon": "minecraft:book",
+  "name": "book.fantazia.the_worldliness.world.name"
 }

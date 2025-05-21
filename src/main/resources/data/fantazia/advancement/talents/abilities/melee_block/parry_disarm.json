@@ -1,0 +1,15 @@
+{
+  "criteria": {
+    "twenty_times": {
+      "conditions": {
+        "parries": 20
+      },
+      "trigger": "fantazia:melee_block"
+    }
+  },
+  "requirements": [
+    [
+      "twenty_times"
+    ]
+  ]
+}

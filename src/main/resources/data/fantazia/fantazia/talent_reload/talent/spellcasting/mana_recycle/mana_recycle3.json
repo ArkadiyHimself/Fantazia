@@ -1,0 +1,9 @@
+{
+  "background": "fantazia:textures/gui/talent_icons/circle_light_blue.png",
+  "icon": "fantazia:textures/talent/spellcasting/mana_recycle/mana_recycle3.png",
+  "impacts": [
+    "fantazia:mana_recycle.upgrade"
+  ],
+  "title": "talent.fantazia.spellcasting.mana_recycle.mana_recycle3",
+  "wisdom": 30
+}

@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.items.weapons.Melee;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -18,7 +19,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class MeleeWeaponItem extends Item {
+public abstract class MeleeWeaponItem extends Item implements ITooltipBuilder {
 
     public final String defaultName;
     protected float attackDamage;

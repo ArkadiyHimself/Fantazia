@@ -1,0 +1,17 @@
+{
+  "advancement": "fantazia:the_worldliness/mob_effects/layered_barrier",
+  "category": "fantazia:mob_effects",
+  "icon": "fantazia:textures/mob_effect/layered_barrier.png",
+  "name": "effect.fantazia.layered_barrier",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.layered_barrier.page.1",
+      "title": "book.fantazia.heading.mob_effects.beneficial"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.layered_barrier.page.2"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "criteria": {
+    "rune_wielder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:rune_wielder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "rune_wielder"
+    ]
+  ]
+}

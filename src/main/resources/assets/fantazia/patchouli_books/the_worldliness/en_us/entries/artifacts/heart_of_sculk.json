@@ -1,22 +1,22 @@
 {
-  "name": "item.fantazia.heart_of_sculk",
-  "icon": "fantazia:heart_of_sculk",
+  "advancement": "fantazia:the_worldliness/artifacts/heart_of_sculk",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/heart_of_sculk",
+  "icon": "fantazia:heart_of_sculk",
+  "name": "item.fantazia.heart_of_sculk",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.heart_of_sculk.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.heart_of_sculk.page.1"
     },
     {
-      "type": "spotlight",
-      "item" : "fantazia:heart_of_sculk",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.heart_of_sculk.page.2"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:heart_of_sculk",
+      "text": "book.fantazia.the_worldliness.artifacts.heart_of_sculk.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.heart_of_sculk.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.heart_of_sculk.page.3"
     }
   ]
 }

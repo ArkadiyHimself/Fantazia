@@ -1,16 +1,17 @@
 {
-  "name": "book.fantazia.entry.mob_effects.frozen.name",
-  "icon": "fantazia:textures/mob_effect/frozen.png",
+  "advancement": "fantazia:the_worldliness/mob_effects/frozen",
   "category": "fantazia:mob_effects",
-  "advancement" : "fantazia:the_worldliness/mob_effects/frozen",
+  "icon": "fantazia:textures/mob_effect/frozen.png",
+  "name": "effect.fantazia.frozen",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.mob_effects.frozen.page.1"
+      "text": "book.fantazia.the_worldliness.mob_effects.frozen.page.1",
+      "title": "book.fantazia.heading.mob_effects.harmful"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.mob_effects.frozen.page.2"
+      "text": "book.fantazia.the_worldliness.mob_effects.frozen.page.2"
     }
   ]
 }

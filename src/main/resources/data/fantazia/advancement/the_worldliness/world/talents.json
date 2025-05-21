@@ -1,7 +1,17 @@
 {
-  "criteria" : {
-    "talent_obtain": {
+  "criteria": {
+    "talents": {
+      "conditions": {
+        "talents": [
+          {}
+        ]
+      },
       "trigger": "fantazia:talent_obtain"
     }
-  }
+  },
+  "requirements": [
+    [
+      "talents"
+    ]
+  ]
 }

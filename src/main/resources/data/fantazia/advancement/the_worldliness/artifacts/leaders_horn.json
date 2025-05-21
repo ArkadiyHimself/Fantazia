@@ -1,7 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
-  "criteria" : {
-    "in_outpost": {
+  "criteria": {
+    "found_leaders_horn": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:leaders_horn"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "visited_pillager_outpost": {
       "conditions": {
         "player": [
           {
@@ -17,5 +26,11 @@
       },
       "trigger": "minecraft:location"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_leaders_horn",
+      "visited_pillager_outpost"
+    ]
+  ]
 }

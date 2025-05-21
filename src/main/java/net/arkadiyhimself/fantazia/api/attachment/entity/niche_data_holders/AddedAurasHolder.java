@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
-import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.minecraft.core.Holder;
@@ -56,21 +56,21 @@ public class AddedAurasHolder implements IBasicHolder {
         addedAuras.clear();
         ListTag listTag = tag.getList("added_auras", Tag.TAG_STRING);
         for (int i = 0; i < listTag.size(); i++) {
-            Optional<Holder.Reference<BasicAura>> basicAura = FantazicRegistries.AURAS.getHolder(ResourceLocation.parse(listTag.getString(i)));
+            Optional<Holder.Reference<Aura>> basicAura = FantazicRegistries.AURAS.getHolder(ResourceLocation.parse(listTag.getString(i)));
             basicAura.ifPresent(basicAuraReference -> addedAuras.add(new AuraInstance(owner, basicAuraReference.getDelegate())));
         }
     }
 
     @Override
-    public CompoundTag syncSerialize() {
+    public CompoundTag serializeInitial() {
         return new CompoundTag();
     }
 
     @Override
-    public void syncDeserialize(CompoundTag tag) {
+    public void deserializeInitial(CompoundTag tag) {
     }
 
-    public void addAura(Holder<BasicAura> aura) {
+    public void addAura(Holder<Aura> aura) {
         if (owner == null) return;
         for (AuraInstance auraInstance : addedAuras) if (auraInstance.getAura() == aura.value()) return;
         addedAuras.add(new AuraInstance(owner, aura));

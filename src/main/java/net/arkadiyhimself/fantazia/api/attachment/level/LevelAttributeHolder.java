@@ -25,12 +25,12 @@ public abstract class LevelAttributeHolder implements ILevelAttributeHolder {
     }
 
     @Override
-    public CompoundTag syncSerialize() {
+    public CompoundTag serializeInitial() {
         return new CompoundTag();
     }
 
     @Override
-    public void syncDeserialize(CompoundTag tag) {
+    public void deserializeInitial(CompoundTag tag) {
 
     }
 }

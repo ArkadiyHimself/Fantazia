@@ -1,0 +1,8 @@
+{
+  "advancement": "fantazia:talents/abilities/spider_powers/wall_climbing",
+  "icon": "fantazia:textures/talent/abilities/spider_powers/wall_climbing.png",
+  "impacts": [
+    "fantazia:wall_climbing.unlock"
+  ],
+  "title": "talent.fantazia.abilities.spider_powers.wall_climbing"
+}

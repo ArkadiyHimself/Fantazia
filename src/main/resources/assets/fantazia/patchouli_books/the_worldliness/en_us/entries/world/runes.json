@@ -1,0 +1,17 @@
+{
+  "advancement": "fantazia:the_worldliness/world/runes",
+  "category": "fantazia:world",
+  "icon": "fantazia:rune_wielder",
+  "name": "book.fantazia.the_worldliness.world.runes.name",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.world.runes.page.1"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "fantazia:rune_wielder",
+      "text": "book.fantazia.the_worldliness.world.runes.page.2"
+    }
+  ]
+}

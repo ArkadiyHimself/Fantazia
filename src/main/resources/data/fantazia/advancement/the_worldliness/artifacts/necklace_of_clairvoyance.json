@@ -1,19 +1,29 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
     "fantazium_ingot": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:fantazium_ingot"]
+            "items": "#fantazia:from_fantazium"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "found_necklace_of_clairvoyance": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:necklace_of_clairvoyance"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
+      "found_necklace_of_clairvoyance",
       "fantazium_ingot"
     ]
   ]

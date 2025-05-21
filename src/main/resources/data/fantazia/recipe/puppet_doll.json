@@ -1,11 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
-  "pattern": [
-    " YH",
-    "H#H",
-    "HY "
-  ],
+  "category": "misc",
   "key": {
     "#": {
       "item": "minecraft:armor_stand"
@@ -13,12 +8,17 @@
     "H": {
       "item": "fantazia:obscure_substance"
     },
-    "Y" : {
-      "item": "minecraft:iron_ingot"
+    "Y": {
+      "item": "fantazia:fantazium_ingot"
     }
   },
+  "pattern": [
+    " YH",
+    "H#H",
+    "HY "
+  ],
   "result": {
+    "count": 1,
     "id": "fantazia:puppet_doll"
-  },
-  "show_notification": true
+  }
 }

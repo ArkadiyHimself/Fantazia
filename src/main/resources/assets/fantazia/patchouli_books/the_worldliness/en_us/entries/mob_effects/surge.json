@@ -1,0 +1,17 @@
+{
+  "advancement": "fantazia:the_worldliness/mob_effects/surge",
+  "category": "fantazia:mob_effects",
+  "icon": "fantazia:textures/mob_effect/surge.png",
+  "name": "effect.fantazia.surge",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.surge.page.1",
+      "title": "book.fantazia.heading.mob_effects.beneficial"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.surge.page.2"
+    }
+  ]
+}

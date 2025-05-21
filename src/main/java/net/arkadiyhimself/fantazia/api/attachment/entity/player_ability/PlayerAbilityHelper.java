@@ -4,17 +4,16 @@ import net.arkadiyhimself.fantazia.advanced.spell.SpellInstance;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
+import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,13 +28,15 @@ import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class PlayerAbilityHelper {
+
     private PlayerAbilityHelper() {}
 
-    public static <T extends IPlayerAbility> @Nullable T takeHolder(Player player, Class<T> tClass) {
+    public static <T extends IPlayerAbility> @Nullable T takeHolder(@Nullable Player player, Class<T> tClass) {
         return player == null ? null : player.getData(FTZAttachmentTypes.ABILITY_MANAGER).actualHolder(tClass);
     }
 
-    public static <T extends IPlayerAbility> void acceptConsumer(Player player, Class<T> tClass, Consumer<T> consumer) {
+    public static <T extends IPlayerAbility> void acceptConsumer(@Nullable Player player, Class<T> tClass, Consumer<T> consumer) {
+        if (player == null) return;
         player.getData(FTZAttachmentTypes.ABILITY_MANAGER).optionalHolder(tClass).ifPresent(consumer);
     }
 
@@ -48,32 +49,39 @@ public class PlayerAbilityHelper {
         float f5 = Mth.sin(f);
         return new Vec3(f3 * f4, -f5, f2 * f4);
     }
+
     public static Vec3 dashDeltaMovement(Vec3 lookAngle, double speed, boolean hor) {
         Vec3 velocity = lookAngle.normalize().scale(speed);
         if (velocity.y() == 0 && hor) velocity = velocity.add(0,0.001,0);
         return velocity;
     }
+
     public static Vec3 dashDeltaMovement(LivingEntity entity, double velocity, boolean horizontal) {
         return dashDeltaMovement(calculateViewVector(horizontal ? 0 : entity.getXRot(), entity.getYRot()), velocity, horizontal);
     }
+
     public static boolean doubleJump(Player player) {
         StaminaHolder staminaHolder = PlayerAbilityHelper.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(1.75f, true)) return false;
 
         if (FantazicHooks.onDoubleJump(player)) return false;
-        player.level().playSound(null, player.blockPosition(), FTZSoundEvents.DOUBLE_JUMP.value(), SoundSource.PLAYERS);
-        Vec3 vec3 = player.getDeltaMovement();
-        player.setDeltaMovement(vec3.x, 0.64 + player.getJumpBoostPower(), vec3.z);
-        player.fallDistance = -2f;
-        player.hurtMarked = true;
+
+        jumpInAir(player);
         return true;
     }
+
+    public static void jumpInAir(LivingEntity livingEntity) {
+        Vec3 vec3 = livingEntity.getDeltaMovement();
+        livingEntity.setDeltaMovement(vec3.x, 0.64 + livingEntity.getJumpBoostPower(), vec3.z);
+        livingEntity.fallDistance = -2f;
+        livingEntity.hurtMarked = true;
+    }
+
     public static boolean accelerateFlying(Player player) {
         StaminaHolder staminaHolder = PlayerAbilityHelper.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null && !staminaHolder.wasteStamina(3f, true)) return false;
 
         if (FantazicHooks.onDoubleJump(player)) return false;
-        player.level().playSound(null, player.blockPosition(), FTZSoundEvents.DOUBLE_JUMP.value(), SoundSource.PLAYERS);
 
         Vec3 vec31 = player.getLookAngle();
         Vec3 vec32 = player.getDeltaMovement();
@@ -82,12 +90,19 @@ public class PlayerAbilityHelper {
         player.hurtMarked = true;
         return true;
     }
+
     public static boolean facesAttack(LivingEntity blocker, Vec3 position) {
         Vec3 vec3 = blocker.getViewVector(1.0F);
         Vec3 vec31 = position.vectorTo(blocker.position()).normalize();
         vec31 = new Vec3(vec31.x, 0.0D, vec31.z);
         return vec31.dot(vec3) < 0.0D;
     }
+
+    public static boolean isDashing(Player player) {
+        DashHolder holder = takeHolder(player, DashHolder.class);
+        return holder != null && holder.isDashing();
+    }
+
     public static boolean shouldListen(ServerLevel pLevel, BlockPos pPos, GameEvent.Context pContext, LivingEntity entity) {
         if (pContext.sourceEntity() != null && pContext.sourceEntity().isCrouching() || pContext.sourceEntity() == entity) return false;
         return !entity.isDeadOrDying() && pLevel.getWorldBorder().isWithinBounds(pPos) && !entity.hasEffect(FTZMobEffects.DEAFENED);
@@ -103,6 +118,7 @@ public class PlayerAbilityHelper {
         }
         return true;
     }
+
     public static void tryListen(ServerLevel pLevel, GameEvent.Context pContext, Vec3 pPos, ServerPlayer player) {
         if (pContext.sourceEntity() == null || !(pContext.sourceEntity() instanceof LivingEntity livingEntity)) return;
         Vec3 vec3 = player.getPosition(1f);
@@ -110,7 +126,7 @@ public class PlayerAbilityHelper {
             VibrationListenerHolder vibrationListenerHolder = PlayerAbilityHelper.takeHolder(player, VibrationListenerHolder.class);
             if (vibrationListenerHolder == null || !vibrationListenerHolder.listen()) return;
             vibrationListenerHolder.madeSound(livingEntity);
-            reduceRecharge(player, FTZSpells.SONIC_BOOM,25);
+            reduceRecharge(player, Spells.SONIC_BOOM,25);
         }
     }
 
@@ -121,21 +137,10 @@ public class PlayerAbilityHelper {
         return holder.blockAttack();
     }
 
-    public static TalentsHolder.ProgressHolder getProgressHolder(Player player) {
-        TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
-        return talentsHolder == null ? null : talentsHolder.getProgressHolder();
-    }
-
-    public static void awardWisdom(Player player, String action, ResourceLocation instance) {
-        TalentsHolder.ProgressHolder progressHolder = getProgressHolder(player);
+    public static void awardWisdom(ServerPlayer player, ResourceLocation category, ResourceLocation instance) {
+        TalentsHolder progressHolder = takeHolder(player, TalentsHolder.class);
         if (progressHolder == null) return;
-        progressHolder.award(action, instance);
-    }
-
-    public static void awardWisdom(Player player, String action, int amount) {
-        TalentsHolder.ProgressHolder progressHolder = getProgressHolder(player);
-        if (progressHolder == null) return;
-        progressHolder.award(action, amount);
+        progressHolder.tryAwardWisdom(category, instance);
     }
 
     public static void wasteMana(Player player, float amount) {
@@ -158,5 +163,11 @@ public class PlayerAbilityHelper {
 
     public static void reduceRecharge(Player player, Holder<AbstractSpell> holder, int value) {
         spellInstance(player, holder, spellInstance -> spellInstance.reduceRecharge(value));
+    }
+
+    public static void pogo(Player player) {
+        acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::pogo);
+        acceptConsumer(player, DashHolder.class, DashHolder::pogo);
+        if (player instanceof ServerPlayer serverPlayer) IPacket.pogoPlayer(serverPlayer);
     }
 }

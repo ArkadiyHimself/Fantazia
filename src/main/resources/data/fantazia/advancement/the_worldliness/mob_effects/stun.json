@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "effect": {
+    "stun": {
       "conditions": {
         "effects": {
           "fantazia:stun": {}
@@ -8,5 +8,10 @@
       },
       "trigger": "minecraft:effects_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "stun"
+    ]
+  ]
 }

@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "wings": {
+      "conditions": {
+        "item": {
+          "items": "fantazia:unfinished_wings"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "requirements": [
+    [
+      "wings"
+    ]
+  ]
+}

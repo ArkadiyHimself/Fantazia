@@ -6,7 +6,10 @@ import net.arkadiyhimself.fantazia.api.attachment.IHolderManager;
 import net.arkadiyhimself.fantazia.api.attachment.ISyncEveryTick;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IHealEventListener;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.*;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.MobEffectDurationSyncHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.PuppeteeredEffectHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.SimpleMobEffectSyncHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.api.custom_events.VanillaEventsExtension;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +38,7 @@ public class LivingEffectManager implements IHolderManager<ILivingEffectHolder, 
     }
 
     @Override
-    public LivingEntity getOwner() {
+    public LivingEntity getEntity() {
         return this.livingEntity;
     }
 
@@ -48,7 +51,13 @@ public class LivingEffectManager implements IHolderManager<ILivingEffectHolder, 
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-        for (ILivingEffectHolder iLivingEffectHolder : holders.values()) if (compoundTag.contains(iLivingEffectHolder.id().toString())) iLivingEffectHolder.deserializeNBT(provider, compoundTag.getCompound(iLivingEffectHolder.id().toString()));
+        for (ILivingEffectHolder iLivingEffectHolder : holders.values()) {
+            try {
+                if (compoundTag.contains(iLivingEffectHolder.id().toString())) iLivingEffectHolder.deserializeNBT(provider, compoundTag.getCompound(iLivingEffectHolder.id().toString()));
+            } catch (Exception e) {
+                int i = 0;
+            }
+        }
     }
 
     @Override
@@ -78,9 +87,7 @@ public class LivingEffectManager implements IHolderManager<ILivingEffectHolder, 
 
     public CompoundTag serializeTick() {
         CompoundTag tag = new CompoundTag();
-
         for (ILivingEffectHolder holder : holders.values()) if (holder instanceof ISyncEveryTick syncEveryTick) tag.put(holder.id().toString(), syncEveryTick.serializeTick());
-
         return tag;
     }
 
@@ -88,21 +95,19 @@ public class LivingEffectManager implements IHolderManager<ILivingEffectHolder, 
         for (ILivingEffectHolder holder : holders.values()) if (holder instanceof ISyncEveryTick syncEveryTick) syncEveryTick.deserializeTick(tag.getCompound(holder.id().toString()));
     }
 
-    public CompoundTag syncSerialize() {
+    public CompoundTag serializeInitial() {
         CompoundTag tag = new CompoundTag();
-
-        for (ILivingEffectHolder holder : holders.values()) tag.put(holder.id().toString(), holder.syncSerialize());
-
+        for (ILivingEffectHolder holder : holders.values()) tag.put(holder.id().toString(), holder.serializeInitial());
         return tag;
     }
 
-    public void syncDeserialize(CompoundTag tag) {
-        for (ILivingEffectHolder holder : holders.values()) if (tag.contains(holder.id().toString())) holder.syncDeserialize(tag.getCompound(holder.id().toString()));
+    public void deserializeInitial(CompoundTag tag) {
+        for (ILivingEffectHolder holder : holders.values()) if (tag.contains(holder.id().toString())) holder.deserializeInitial(tag.getCompound(holder.id().toString()));
     }
 
 
     public void tick() {
-        if (getOwner().level().isClientSide()) holders.values().forEach(IBasicHolder::clientTick);
+        if (getEntity().level().isClientSide()) holders.values().forEach(IBasicHolder::clientTick);
         else holders.values().forEach(IBasicHolder::serverTick);
     }
 
@@ -130,11 +135,9 @@ public class LivingEffectManager implements IHolderManager<ILivingEffectHolder, 
     }
 
     private void provide() {
-        putHolder(BarrierEffectHolder::new);
-        putHolder(LayeredBarrierEffectHolder::new);
         putHolder(MobEffectDurationSyncHolder::new);
         putHolder(PuppeteeredEffectHolder::new);
-        putHolder(SimpleMobEffectHolderSyncHolder::new);
+        putHolder(SimpleMobEffectSyncHolder::new);
         putHolder(StunEffectHolder::new);
     }
 }

@@ -2,6 +2,8 @@ package net.arkadiyhimself.fantazia.util.library.hierarchy;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -15,6 +17,13 @@ import java.util.function.Function;
  * Each element can only have up to one parent and up to one child, like chains going one after another
  */
 public class ChainHierarchy<T> extends MonoHierarchy<T> {
+
+    public static <T> Codec<ChainHierarchy<T>> chainHierarchyCodec(Codec<T> tCodec) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+                tCodec.listOf().fieldOf("elements").forGetter(ChainHierarchy::getElements)
+        ).apply(instance, ChainHierarchy::of));
+    }
+
     /**
      * An ordered collection of elements of hierarchy, where the first element is the main one
      * <br>
@@ -76,11 +85,42 @@ public class ChainHierarchy<T> extends MonoHierarchy<T> {
         return ImmutableList.copyOf(ELEMENTS);
     }
 
+    @Override
+    public HierarchyType getType() {
+        return HierarchyType.CHAIN;
+    }
+
+    public List<T> toList() {
+        return List.copyOf(ELEMENTS);
+    }
+
     public int getSize() {
         return ELEMENTS.size();
     }
 
     public void addElement(T t) {
         ELEMENTS.add(t);
+    }
+
+    public static <T> Builder<T> builder(T main) {
+        return new Builder<>(main);
+    }
+
+    public static class Builder<T> {
+
+        private final List<T> tList = Lists.newArrayList();
+
+        private Builder(T main) {
+            tList.add(main);
+        }
+
+        public Builder<T> addElement(T element) {
+            tList.add(element);
+            return this;
+        }
+
+        public ChainHierarchy<T> build() {
+            return ChainHierarchy.of(tList);
+        }
     }
 }

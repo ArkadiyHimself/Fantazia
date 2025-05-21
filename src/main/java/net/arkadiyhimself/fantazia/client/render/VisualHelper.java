@@ -4,22 +4,26 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.attachment.basis_attachments.LocationHolder;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.packets.stuff.AddParticlesOnEntitySC2;
-import net.arkadiyhimself.fantazia.packets.stuff.AddChasingParticlesS2C;
+import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -28,7 +32,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +43,7 @@ public class VisualHelper {
 
     public static void particleOnEntityServer(Entity entity, @Nullable ParticleOptions particle, ParticleMovement movement, int amount, float range) {
         if (particle == null || entity.level().isClientSide()) return;
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new AddParticlesOnEntitySC2(entity.getId(), particle, movement, amount, range));
+        IPacket.addParticlesOnEntity(entity, particle, movement, amount, range);
     }
 
     public static void particleOnEntityServer(Entity entity, @Nullable ParticleOptions particle, ParticleMovement movement, int amount) {
@@ -78,18 +81,18 @@ public class VisualHelper {
         clientLevel.addParticle(particle, x0, y0, z0, delta.x, delta.y, delta.z);
     }
 
-    public static void entityChasingParticle(Supplier<EntityChasingParticleOption<?>> factory, int amount) {
+    public static void entityChasingParticle(Entity entity, Supplier<EntityChasingParticleOption<?>> factory, int amount) {
         List<ParticleOptions> options = Lists.newArrayList();
         for (int i = 0; i < amount; i++) options.add(factory.get());
-        if (factory != null) PacketDistributor.sendToAllPlayers(new AddChasingParticlesS2C(options));
+        if (factory != null) IPacket.addChasingParticles(entity, options);
     }
 
     public static void entityChasingParticle(Entity entity, ParticleType<EntityChasingParticleOption<?>> type, int amount) {
-        entityChasingParticle(() -> new EntityChasingParticleOption<>(entity.getId(), type, entity.getBbWidth() * 0.7f, entity.getBbHeight()), amount);
+        entityChasingParticle(entity, () -> new EntityChasingParticleOption<>(entity.getId(), type, entity.getBbWidth() * 0.7f, entity.getBbHeight()), amount);
     }
 
     public static void entityChasingParticle(Entity entity, ParticleType<EntityChasingParticleOption<?>> type, int amount, float width) {
-        entityChasingParticle(() -> new EntityChasingParticleOption<>(entity.getId(), type, entity.getBbWidth() * 0.7f * width, entity.getBbHeight()), amount);
+        entityChasingParticle(entity, () -> new EntityChasingParticleOption<>(entity.getId(), type, entity.getBbWidth() * 0.7f * width, entity.getBbHeight()), amount);
     }
 
     public static <T extends ParticleOptions> void rayOfParticles(LivingEntity caster, LivingEntity target, T type) {
@@ -219,6 +222,7 @@ public class VisualHelper {
 
         poseStack.popPose();
     }
+
     public static void circleOfParticles(ParticleOptions particle, Vec3 pos) {
         if (Minecraft.getInstance().level == null) return;
         double d0 = pos.x;
@@ -230,4 +234,21 @@ public class VisualHelper {
         }
     }
 
+    public static float layerOffset(float pTickCount) {
+        return pTickCount * 0.01F;
+    }
+
+    public static void wanderersSpiritParticles() {
+        ClientLevel level = Minecraft.getInstance().level;
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (level == null || player == null) return;
+        LocationHolder locationHolder = player.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION);
+        Vec3 pos = locationHolder.position();
+        if (locationHolder.empty() || !locationHolder.isIn(level) || !level.isLoaded(BlockPos.containing(pos))) return;
+
+        Vec3 delta = new Vec3(Fantazia.RANDOM.nextDouble(), Fantazia.RANDOM.nextDouble(), Fantazia.RANDOM.nextDouble()).normalize().scale(0.4);
+        Vec3 finalPos = pos.add(delta).add(0,0.3,0);
+
+        for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() + 2; i++) level.addParticle(ParticleTypes.PORTAL, finalPos.x, finalPos.y, finalPos.z, (Fantazia.RANDOM.nextDouble() - 0.5) * 2.0, -Fantazia.RANDOM.nextDouble(), (Fantazia.RANDOM.nextDouble() - 0.5) * 2.0);
+    }
 }

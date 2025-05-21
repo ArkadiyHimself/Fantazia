@@ -1,7 +1,6 @@
 {
-  "id": "regen_aura",
-  "exhaustion": 0,
-  "particles" : [
+  "id": "regenAura",
+  "particles": [
     "fantazia:regen1",
     "fantazia:regen2",
     "fantazia:regen3"

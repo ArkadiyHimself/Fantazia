@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:cobweb"
+    },
+    "X": {
+      "item": "minecraft:spider_eye"
+    },
+    "Y": {
+      "item": "fantazia:obscure_substance"
+    }
+  },
   "pattern": [
     " Y ",
     "#X#",
     " Y "
   ],
-  "key": {
-    "X" : {
-      "item": "minecraft:spider_eye"
-    },
-    "Y": {
-      "item": "fantazia:obscure_substance"
-    },
-    "#": {
-      "item": "minecraft:cobweb"
-    }
-  },
   "result": {
+    "count": 1,
     "id": "fantazia:arachnid_eye"
-  },
-  "show_notification": true
+  }
 }

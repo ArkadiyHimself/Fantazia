@@ -9,7 +9,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public interface IHolderManager<T extends INBTSerializable<CompoundTag>, M extends IAttachmentHolder> extends INBTSerializable<CompoundTag> {
-    M getOwner();
+
+    M getEntity();
     <I extends T> void putHolder(Function<M, I> holder);
     <I extends T> @Nullable I actualHolder(Class<I> iClass);
     <I extends T> Optional<I> optionalHolder(Class<I> iClass);

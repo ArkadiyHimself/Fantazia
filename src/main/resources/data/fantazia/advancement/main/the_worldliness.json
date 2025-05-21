@@ -1,34 +1,39 @@
 {
-  "parent" : "fantazia:main/root",
-  "criteria" : {
-    "worldliness": {
-      "trigger": "minecraft:inventory_changed",
+  "parent": "fantazia:main/root",
+  "criteria": {
+    "the_worldliness": {
       "conditions": {
-        "items" : [
+        "items": [
           {
-            "items" : ["patchouli:guide_book"],
             "components": {
               "patchouli:book": "fantazia:the_worldliness"
             }
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
-  "display" : {
-    "announce_to_chat": true,
+  "display": {
+    "announce_to_chat": false,
     "description": {
-      "translate": "advancements.fantazia.the_worldliness.desc"
+      "translate": "advancement.fantazia.the_worldliness.desc"
     },
     "icon": {
       "components": {
         "patchouli:book": "fantazia:the_worldliness"
       },
+      "count": 1,
       "id": "patchouli:guide_book"
     },
-    "show_toast": true,
     "title": {
-      "translate": "advancements.fantazia.the_worldliness"
+      "translate": "advancement.fantazia.the_worldliness"
     }
-  }
+  },
+  "requirements": [
+    [
+      "the_worldliness"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

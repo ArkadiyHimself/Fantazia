@@ -1,23 +1,22 @@
 {
-  "name": "item.fantazia.rusty_ring",
-  "icon": "fantazia:rusty_ring",
+  "advancement": "fantazia:the_worldliness/artifacts/rusty_ring",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/rusty_ring",
-  "read_by_default": false,
+  "icon": "fantazia:rusty_ring",
+  "name": "item.fantazia.rusty_ring",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.rusty_ring.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.rusty_ring.page.1"
     },
     {
-      "type": "crafting",
+      "type": "patchouli:crafting",
       "recipe": "fantazia:rusty_ring",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.rusty_ring.page.2"
+      "text": "book.fantazia.the_worldliness.artifacts.rusty_ring.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.rusty_ring.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.rusty_ring.page.3"
     }
   ]
 }

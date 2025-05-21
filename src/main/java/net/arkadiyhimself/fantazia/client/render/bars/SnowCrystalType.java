@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.DurationHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.CurrentAndInitialValue;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -28,7 +28,7 @@ public class SnowCrystalType extends RenderStateShard {
     private static RenderType createSnowCrystal(RenderType.CompositeState glState) {
         return RenderType.create("snow_crystal", com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, true, glState);
     }
-    public static void render(LivingEntity entity, @NotNull DurationHolder holder, PoseStack poseStack, MultiBufferSource buffers, float iconHeight) {
+    public static void render(LivingEntity entity, @NotNull CurrentAndInitialValue holder, PoseStack poseStack, MultiBufferSource buffers, float iconHeight) {
         VertexConsumer freezeType = buffers.getBuffer(SnowCrystalType.SNOW_CRYSTAL_TYPE);
         poseStack.pushPose();
         poseStack.translate(0,iconHeight,0);

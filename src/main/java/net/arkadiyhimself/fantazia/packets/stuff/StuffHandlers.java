@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.packets.stuff;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.renderers.PlayerAnimations;
+import net.arkadiyhimself.fantazia.entities.DashStone;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -19,6 +20,19 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.List;
 
 interface StuffHandlers {
+
+    static void addChasingParticle(List<ParticleOptions> options) {
+        if (Minecraft.getInstance().level == null) return;
+        for (ParticleOptions option : options) Minecraft.getInstance().level.addParticle(option, 0,0,0,0,0,0);
+    }
+
+    static void addDashStoneProtectors(int id, List<Integer> protIDS) {
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) return;
+        Entity stone = level.getEntity(id);
+        if (!(stone instanceof DashStone dashStone)) return;
+        dashStone.addProtectorsClient(protIDS);
+    }
 
     static void addParticleOnEntity(int id, ParticleOptions particle, ParticleMovement movement, int amount, float range) {
         ClientLevel clientLevel = Minecraft.getInstance().level;
@@ -53,11 +67,6 @@ interface StuffHandlers {
         if (entity instanceof LocalPlayer localPlayer) PlayerAnimations.animatePlayer(localPlayer, anim);
     }
 
-    static void chasingParticle(List<ParticleOptions> options) {
-        if (Minecraft.getInstance().level == null) return;
-        for (ParticleOptions option : options) Minecraft.getInstance().level.addParticle(option, 0,0,0,0,0,0);
-    }
-
     static void interruptPlayer() {
         if (Minecraft.getInstance().player == null) return;
         if (!((Minecraft.getInstance().screen) instanceof ChatScreen)) Minecraft.getInstance().player.clientSideCloseContainer();
@@ -71,9 +80,9 @@ interface StuffHandlers {
         input.consumer().accept(serverPlayer, action);
     }
 
-    static void playSoundForUI(SoundEvent soundEvent, float pitch, float volume) {
+    static void playSoundForUI(SoundEvent soundEvent) {
         if (soundEvent == null) return;
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, pitch, volume));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
     }
 
     static void swingHand(InteractionHand hand) {

@@ -1,0 +1,8 @@
+{
+  "advancement": "fantazia:talents/abilities/melee_block/parry_haemorrhage",
+  "icon": "fantazia:textures/talent/abilities/melee_block/parry_haemorrhage.png",
+  "impacts": [
+    "fantazia:melee_block.bloodloss"
+  ],
+  "title": "talent.fantazia.abilities.melee_block.parry_haemorrhage"
+}

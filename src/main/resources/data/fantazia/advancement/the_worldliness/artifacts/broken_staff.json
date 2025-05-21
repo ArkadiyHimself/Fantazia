@@ -1,7 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
-  "criteria" : {
-    "in_village": {
+  "criteria": {
+    "found_broken_staff": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:broken_staff"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "village": {
       "conditions": {
         "player": [
           {
@@ -17,5 +26,11 @@
       },
       "trigger": "minecraft:location"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_broken_staff",
+      "village"
+    ]
+  ]
 }

@@ -1,22 +1,22 @@
 {
-  "name": "item.fantazia.withers_quintessence",
-  "icon": "fantazia:withers_quintessence",
+  "advancement": "fantazia:the_worldliness/artifacts/withers_quintessence",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/withers_quintessence",
+  "icon": "fantazia:withers_quintessence",
+  "name": "item.fantazia.withers_quintessence",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.withers_quintessence.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.withers_quintessence.page.1"
     },
     {
-      "type": "spotlight",
-      "item" : "fantazia:withers_quintessence",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.withers_quintessence.page.2"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:withers_quintessence",
+      "text": "book.fantazia.the_worldliness.artifacts.withers_quintessence.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.withers_quintessence.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.withers_quintessence.page.3"
     }
   ]
 }

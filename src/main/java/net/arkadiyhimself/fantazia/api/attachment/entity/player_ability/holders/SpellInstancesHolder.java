@@ -2,13 +2,15 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.spell.SpellCastResult;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellInstance;
 import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.api.attachment.ISyncEveryTick;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ICurioListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -21,10 +23,9 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Map;
 
-public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioListener {
+public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioListener, ISyncEveryTick {
 
     private final Map<SpellCasterItem, Holder<AbstractSpell>> curioSpells = Maps.newHashMap();
-
     private final Map<Holder<AbstractSpell>, SpellInstance> spellInstances = Maps.newHashMap();
 
     public SpellInstancesHolder(@NotNull Player player) {
@@ -37,7 +38,6 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
 
         ListTag listTag = new ListTag();
         for (SpellInstance spellInstance : spellInstances.values()) listTag.add(spellInstance.serializeNBT(provider));
-
         tag.put("instances", listTag);
 
         return tag;
@@ -50,29 +50,45 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
 
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag instance = listTag.getCompound(i);
-
             ResourceLocation id = ResourceLocation.parse(instance.getString("id"));
-
             Holder<AbstractSpell> abstractSpellHolder = FantazicRegistries.SPELLS.getHolder(id).orElseThrow(() -> new IllegalStateException("Tried to deserialize unknown spell: " + id));
-            SpellInstance perhaps = spellInstances.get(abstractSpellHolder);
-            if (perhaps != null) {
-                perhaps.deserializeNBT(provider, instance);
-                continue;
-            }
+            getOrCreate(abstractSpellHolder).deserializeTick(instance);
+        }
+    }
 
-            SpellInstance spellInstance = new SpellInstance(abstractSpellHolder, getPlayer());
-            spellInstance.deserializeNBT(provider, instance);
-            spellInstances.put(abstractSpellHolder, spellInstance);
+    @Override
+    public CompoundTag serializeTick() {
+        CompoundTag tag = new CompoundTag();
+
+        ListTag listTag = new ListTag();
+        for (SpellInstance spellInstance : spellInstances.values()) listTag.add(spellInstance.serializeTick());
+        tag.put("instances", listTag);
+
+        return tag;
+    }
+
+    @Override
+    public void deserializeTick(CompoundTag tag) {
+        ListTag listTag = tag.getList("instances", ListTag.TAG_COMPOUND);
+        if (listTag.isEmpty()) return;
+
+        for (int i = 0; i < listTag.size(); i++) {
+            CompoundTag instance = listTag.getCompound(i);
+            ResourceLocation id = ResourceLocation.parse(instance.getString("id"));
+            Holder<AbstractSpell> abstractSpellHolder = FantazicRegistries.SPELLS.getHolder(id).orElseThrow(() -> new IllegalStateException("Tried to deserialize unknown spell: " + id));
+            getOrCreate(abstractSpellHolder).deserializeTick(instance);
         }
     }
 
     @Override
     public void serverTick() {
-        spellInstances.values().forEach(SpellInstance::tick);
+        spellInstances.values().forEach(SpellInstance::serverTick);
     }
 
     @Override
-    public void clientTick() {}
+    public void clientTick() {
+        spellInstances.values().forEach(SpellInstance::clientTick);
+    }
 
     @Override
     public void respawn() {
@@ -91,24 +107,24 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
 
     @Override
     public void onCurioUnEquip(ItemStack stack) {
-        if (stack.getItem() instanceof SpellCasterItem caster && curioSpells.containsKey(caster) && InventoryHelper.duplicatingCurio(getPlayer(), caster) <= 1) {
+        if (stack.getItem() instanceof SpellCasterItem caster && curioSpells.containsKey(caster) && FantazicUtil.duplicatingCurio(getPlayer(), caster) <= 1) {
             Holder<AbstractSpell> spell = caster.getSpell();
             getOrCreate(spell).setAvailable(false);
             curioSpells.remove(caster);
         }
     }
 
-    public SpellInstance getOrCreate(Holder<AbstractSpell> spell) {
-        return spellInstances.computeIfAbsent(spell, abstractSpellHolder -> new SpellInstance(spell, getPlayer()));
+    public @NotNull SpellInstance getOrCreate(Holder<AbstractSpell> spell) {
+        return spellInstances.computeIfAbsent(spell,holder -> new SpellInstance(holder, getPlayer()));
     }
 
-    public boolean tryToUse(Holder<AbstractSpell> spellHolder) {
+    public SpellCastResult tryToUse(Holder<AbstractSpell> spellHolder) {
         return getOrCreate(spellHolder).attemptCast();
     }
 
-    public boolean tryToCast(Holder<AbstractSpell> spellHolder) {
+    public SpellCastResult tryToCast(Holder<AbstractSpell> spellHolder) {
         SpellInstance instance = getOrCreate(spellHolder);
-        return instance.isAvailable() && instance.attemptCast();
+        return instance.isAvailable() ? instance.attemptCast() : SpellCastResult.fail();
     }
 
     public boolean hasSpell(Holder<AbstractSpell> spellHolder) {

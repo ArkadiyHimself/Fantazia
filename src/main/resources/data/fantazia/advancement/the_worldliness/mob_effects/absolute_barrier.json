@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "effect": {
+    "absolute_barrier": {
       "conditions": {
         "effects": {
           "fantazia:absolute_barrier": {}
@@ -8,5 +8,10 @@
       },
       "trigger": "minecraft:effects_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "absolute_barrier"
+    ]
+  ]
 }

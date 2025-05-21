@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.util.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
+import net.arkadiyhimself.fantazia.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.commands.CommandBuildContext;
@@ -23,7 +23,7 @@ public class AuraCarrierCommand {
                 .executes((AuraCarrierCommand::createAura))));
     }
     private static int createAura(CommandContext<CommandSourceStack> commandContext) throws CommandSyntaxException {
-        Holder.Reference<BasicAura> basicAuraReference = ResourceArgument.getResource(commandContext, "aura", FantazicRegistries.Keys.AURA);
+        Holder.Reference<Aura> basicAuraReference = ResourceArgument.getResource(commandContext, "aura", FantazicRegistries.Keys.AURA);
 
         BlockPos blockpos = BlockPos.containing(commandContext.getSource().getPosition());
         ServerLevel serverlevel = commandContext.getSource().getLevel();

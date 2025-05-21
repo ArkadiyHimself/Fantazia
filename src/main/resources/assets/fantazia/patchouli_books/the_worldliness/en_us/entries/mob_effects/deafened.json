@@ -1,16 +1,17 @@
 {
-  "name": "book.fantazia.entry.mob_effects.deafened.name",
-  "icon": "fantazia:textures/mob_effect/deafened.png",
+  "advancement": "fantazia:the_worldliness/mob_effects/deafened",
   "category": "fantazia:mob_effects",
-  "advancement" : "fantazia:the_worldliness/mob_effects/deafened",
+  "icon": "fantazia:textures/mob_effect/deafened.png",
+  "name": "effect.fantazia.deafened",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.mob_effects.deafened.page.1"
+      "text": "book.fantazia.the_worldliness.mob_effects.deafened.page.1",
+      "title": "book.fantazia.heading.mob_effects.harmful"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.mob_effects.deafened.page.2"
+      "text": "book.fantazia.the_worldliness.mob_effects.deafened.page.2"
     }
   ]
 }

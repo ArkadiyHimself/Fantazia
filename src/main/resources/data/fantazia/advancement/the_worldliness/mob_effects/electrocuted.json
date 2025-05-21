@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "electrocuted": {
+      "conditions": {
+        "effects": {
+          "fantazia:electrocuted": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "requirements": [
+    [
+      "electrocuted"
+    ]
+  ]
+}

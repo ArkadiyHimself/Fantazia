@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "effect": {
+    "disarm": {
       "conditions": {
         "effects": {
           "fantazia:disarm": {}
@@ -8,5 +8,10 @@
       },
       "trigger": "minecraft:effects_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "disarm"
+    ]
+  ]
 }

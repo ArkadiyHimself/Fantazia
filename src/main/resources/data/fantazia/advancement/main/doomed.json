@@ -1,7 +1,7 @@
 {
-  "parent" : "fantazia:main/root",
-  "criteria" : {
-    "effect": {
+  "parent": "fantazia:main/root",
+  "criteria": {
+    "doomed": {
       "conditions": {
         "effects": {
           "fantazia:doomed": {}
@@ -10,18 +10,23 @@
       "trigger": "minecraft:effects_changed"
     }
   },
-  "display" : {
-    "announce_to_chat": true,
+  "display": {
     "description": {
-      "translate": "advancements.fantazia.doomed.desc"
+      "translate": "advancement.fantazia.doomed.desc"
     },
+    "hidden": true,
     "icon": {
-      "id": "minecraft:magma_cream"
+      "count": 1,
+      "id": "fantazia:soul_eater"
     },
-    "show_toast": true,
     "title": {
-      "translate": "advancements.fantazia.doomed"
-    },
-    "hidden" : true
-  }
+      "translate": "advancement.fantazia.doomed"
+    }
+  },
+  "requirements": [
+    [
+      "doomed"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

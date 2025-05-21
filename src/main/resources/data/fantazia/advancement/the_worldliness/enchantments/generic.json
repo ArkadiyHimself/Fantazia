@@ -1,15 +1,20 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "has_items": {
-      "trigger": "minecraft:inventory_changed",
+    "enchanting_table": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:enchanting_table"]
+            "items": "minecraft:enchanting_table"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "enchanting_table"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

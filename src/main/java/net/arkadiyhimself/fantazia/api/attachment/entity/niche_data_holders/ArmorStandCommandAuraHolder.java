@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
-import net.arkadiyhimself.fantazia.advanced.aura.BasicAura;
 import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.minecraft.core.Holder;
@@ -36,7 +36,7 @@ public class ArmorStandCommandAuraHolder implements IBasicHolder {
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
-        ResourceKey<? extends BasicAura> key = auraInstance == null ? null : auraInstance.getAura().getKey();
+        ResourceKey<? extends Aura> key = auraInstance == null ? null : auraInstance.getAura().getKey();
         if (key == null) return tag;
         tag.putString("aura", key.location().toString());
         return tag;
@@ -46,25 +46,25 @@ public class ArmorStandCommandAuraHolder implements IBasicHolder {
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
         if (!compoundTag.contains("aura") || armorStand == null) return;
         ResourceLocation resourceLocation = ResourceLocation.parse(compoundTag.getString("aura"));
-        Optional<Holder.Reference<BasicAura>> holder = FantazicRegistries.AURAS.getHolder(resourceLocation);
+        Optional<Holder.Reference<Aura>> holder = FantazicRegistries.AURAS.getHolder(resourceLocation);
         if (holder.isEmpty()) return;
         auraInstance = new AuraInstance(armorStand, holder.get().getDelegate());
     }
 
     @Override
-    public CompoundTag syncSerialize() {
+    public CompoundTag serializeInitial() {
         return new CompoundTag();
     }
 
     @Override
-    public void syncDeserialize(CompoundTag tag) {
+    public void deserializeInitial(CompoundTag tag) {
     }
 
     public void onDeath() {
         if (auraInstance != null) auraInstance.discard();
     }
 
-    public void setAura(Holder<BasicAura> basicAura) {
+    public void setAura(Holder<Aura> basicAura) {
         if (armorStand != null) this.auraInstance = new AuraInstance(armorStand, basicAura);
     }
 

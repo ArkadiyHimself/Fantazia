@@ -1,0 +1,15 @@
+{
+  "chain_element": {
+    "advancement": "fantazia:talents/stat_modifiers/mana_boost",
+    "attribute_modifiers": {
+      "fantazia:max_mana": {
+        "amount": 4.0,
+        "operation": "add_value"
+      }
+    },
+    "icon": "fantazia:textures/talent/stat_modifiers/mana_boost.png",
+    "title": "talent.fantazia.stat_modifiers.mana_boost"
+  },
+  "simple_chain": 5,
+  "tab": "fantazia:stat_modifiers"
+}

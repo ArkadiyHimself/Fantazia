@@ -1,6 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "building",
+  "group": "fantazia:fantazium_block",
   "key": {
     "#": {
       "item": "fantazia:fantazium_ingot"

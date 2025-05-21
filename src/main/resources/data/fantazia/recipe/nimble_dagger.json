@@ -1,27 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:stick"
+    },
+    "H": {
+      "item": "fantazia:fantazium_ingot"
+    },
+    "R": {
+      "item": "fantazia:obscure_substance"
+    },
+    "W": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
   "pattern": [
     " W ",
     "RHR",
     " # "
   ],
-  "key": {
-    "H" : {
-      "item": "minecraft:iron_ingot"
-    },
-    "#" : {
-      "item": "minecraft:stick"
-    },
-    "W" : {
-      "item" : "minecraft:ender_pearl"
-    },
-    "R" : {
-      "item": "fantazia:obscure_substance"
-    }
-  },
   "result": {
+    "count": 1,
     "id": "fantazia:nimble_dagger"
-  },
-  "show_notification": true
+  }
 }

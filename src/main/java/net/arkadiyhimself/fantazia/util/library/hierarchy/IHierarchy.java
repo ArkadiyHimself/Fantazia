@@ -57,4 +57,10 @@ public interface IHierarchy<T> {
      * @throws HierarchyException in most subclasses if transformer provides duplicating values or a null value at any point
      */
     <M> IHierarchy<M> transform(@NotNull Function<T, M> transformer) throws HierarchyException;
+
+    /**
+     *
+     * @return the type of this hierarchy
+     */
+    HierarchyType getType();
 }

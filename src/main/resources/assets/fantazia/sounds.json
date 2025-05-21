@@ -633,7 +633,32 @@
     "subtitle": "fantazia.subtitles.entity.dashstone.wind",
     "sounds": [
       {
-        "name" : "fantazia:entity/dashstone/wind",
+        "name" : "fantazia:entity/dashstone/wind1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/dashstone/wind2",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/dashstone/wind3",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/dashstone/wind4",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/dashstone/wind5",
+        "stream" : false
+      }
+    ]
+  },
+  "ui.dashstone_ready" : {
+    "subtitle": "fantazia.subtitles.ui.dashstone_ready",
+    "sounds": [
+      {
+        "name" : "fantazia:entity/dashstone/ready",
         "stream" : false
       }
     ]

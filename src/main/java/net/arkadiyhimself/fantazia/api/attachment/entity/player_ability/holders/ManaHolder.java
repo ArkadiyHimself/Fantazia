@@ -2,9 +2,11 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
+import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +18,8 @@ public class ManaHolder extends PlayerAbilityHolder  {
     private float mana = getMaxMana();
     private boolean philStone = false;
 
+    boolean toSync = false;
+
     public ManaHolder(Player player) {
         super(player, Fantazia.res("mana_data"));
     }
@@ -24,27 +28,33 @@ public class ManaHolder extends PlayerAbilityHolder  {
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
         tag.putFloat("mana", mana);
+        tag.putBoolean("philStone", philStone);
         return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-        if (compoundTag.contains("mana")) mana = compoundTag.getFloat("mana");
+        mana = compoundTag.getFloat("mana");
+        philStone = compoundTag.getBoolean("philStone");
     }
 
     @Override
-    public CompoundTag syncSerialize() {
-        return serializeNBT(getPlayer().registryAccess());
+    public CompoundTag serializeInitial() {
+        CompoundTag tag = new CompoundTag();
+        tag.putFloat("mana", mana);
+        tag.putBoolean("philStone", philStone);
+        return tag;
     }
 
     @Override
-    public void syncDeserialize(CompoundTag tag) {
-        deserializeNBT(getPlayer().registryAccess(), tag);
+    public void deserializeInitial(CompoundTag tag) {
+        mana = tag.getFloat("mana");
+        philStone = tag.getBoolean("philStone");
     }
 
     @Override
     public void respawn() {
-        mana = getMaxMana();
+        restore();
     }
 
     @Override
@@ -53,10 +63,12 @@ public class ManaHolder extends PlayerAbilityHolder  {
     }
 
     @Override
-    public void clientTick() {}
+    public void clientTick() {
+        mana = Math.min(getMaxMana(), mana + getManaRegen());
+    }
 
     public void wasteMana(float amount) {
-        if (!philStone) this.mana = Math.max(0, this.mana - amount);
+        if (!philStone) setMana(Math.max(0, this.mana - amount));
     }
 
     public float getMana() {
@@ -81,11 +93,11 @@ public class ManaHolder extends PlayerAbilityHolder  {
     }
 
     public void restore() {
-        mana = getMaxMana();
+        setMana(getMaxMana());
     }
 
-    public void regenerate(float value) {
-        this.mana = Math.min(getMaxMana(), mana + value);
+    public void regenerate(float amount, boolean aboveMax) {
+        setMana(aboveMax ? mana + amount : Math.min(getMaxMana(), mana + amount));
     }
 
     public void philStone() {
@@ -94,5 +106,10 @@ public class ManaHolder extends PlayerAbilityHolder  {
 
     public boolean hasStone() {
         return philStone;
+    }
+
+    public void setMana(float value) {
+        this.mana = value;
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.manaChanged(serverPlayer, mana);
     }
 }

@@ -3,11 +3,11 @@
   "description": {
     "translate": "enchantment.fantazia.decisive_strike"
   },
+  "exclusive_set": "minecraft:sweeping_edge",
   "max_cost": {
     "base": 20,
     "per_level_above_first": 9
   },
-  "exclusive_set": "minecraft:sweeping_edge",
   "max_level": 3,
   "min_cost": {
     "base": 5,

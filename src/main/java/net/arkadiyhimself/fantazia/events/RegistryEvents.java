@@ -1,38 +1,70 @@
 package net.arkadiyhimself.fantazia.events;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
+import net.arkadiyhimself.fantazia.advanced.runes.Rune;
 import net.arkadiyhimself.fantazia.api.KeyBinding;
+import net.arkadiyhimself.fantazia.api.attachment.basis_attachments.LocationHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.PuppeteeredEffectHolder;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
+import net.arkadiyhimself.fantazia.client.render.FTZRenderTypes;
 import net.arkadiyhimself.fantazia.client.render.layers.*;
 import net.arkadiyhimself.fantazia.client.renderers.entity.*;
-import net.arkadiyhimself.fantazia.client.renderers.item.CustomItemRenderer;
+import net.arkadiyhimself.fantazia.client.renderers.item.FantazicItemRenderer;
 import net.arkadiyhimself.fantazia.datagen.*;
+import net.arkadiyhimself.fantazia.datagen.advancement.FantazicAdvancementsRegular;
+import net.arkadiyhimself.fantazia.datagen.advancement.FantazicAdvancementsTalent;
+import net.arkadiyhimself.fantazia.datagen.advancement.FantazicAdvancementsTheWorldliness;
+import net.arkadiyhimself.fantazia.datagen.effect_spawn_applier.DefaultEffectSpawnAppliers;
+import net.arkadiyhimself.fantazia.datagen.effect_spawn_applier.FantazicEffectSpawnApplierProvider;
+import net.arkadiyhimself.fantazia.datagen.loot_modifier.DefaultFantazicLootModifiers;
+import net.arkadiyhimself.fantazia.datagen.patchouli.TheWorldlinessCategories;
+import net.arkadiyhimself.fantazia.datagen.patchouli.TheWorldlinessCategoryProvider;
+import net.arkadiyhimself.fantazia.datagen.patchouli.TheWorldlinessEntryProvider;
+import net.arkadiyhimself.fantazia.datagen.patchouli.TheWorldlinessProvider;
+import net.arkadiyhimself.fantazia.datagen.patchouli.categories.*;
+import net.arkadiyhimself.fantazia.datagen.recipe.FantazicRecipeProvider;
 import net.arkadiyhimself.fantazia.datagen.tag_providers.*;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.hierarchy.DefaultTalentHierarchies;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.hierarchy.FantazicTalentHierarchyProvider;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.talent.DefaultTalents;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.talent.FantazicTalentProvider;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.talent_tab.DefaultTalentTabs;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.talent_tab.FantazicTalentTabProvider;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.wisdom_reward.DefaultWisdomRewardsCombined;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.wisdom_reward.FantazicWisdomRewardCombinedProvider;
+import net.arkadiyhimself.fantazia.items.RuneWielderItem;
 import net.arkadiyhimself.fantazia.packets.attachment_modify.*;
-import net.arkadiyhimself.fantazia.packets.attachment_syncing.LevelAttributesUpdateS2C;
-import net.arkadiyhimself.fantazia.packets.attachment_syncing.LivingDataUpdateS2C;
-import net.arkadiyhimself.fantazia.packets.attachment_syncing.LivingEffectUpdateS2C;
-import net.arkadiyhimself.fantazia.packets.attachment_syncing.PlayerAbilityUpdateS2C;
+import net.arkadiyhimself.fantazia.packets.attachment_syncing.*;
+import net.arkadiyhimself.fantazia.packets.commands.BuildAuraTooltipSC2;
+import net.arkadiyhimself.fantazia.packets.commands.BuildRuneTooltipSC2;
+import net.arkadiyhimself.fantazia.packets.commands.BuildSpellTooltipSC2;
+import net.arkadiyhimself.fantazia.packets.fantazic_boss_event.FantazicBossEventPacket;
 import net.arkadiyhimself.fantazia.packets.stuff.*;
 import net.arkadiyhimself.fantazia.particless.particles.*;
 import net.arkadiyhimself.fantazia.registries.*;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -53,6 +85,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.data.AdvancementProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -62,6 +95,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,7 +103,6 @@ import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(modid = Fantazia.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class RegistryEvents {
-    private RegistryEvents() {}
 
     public static final List<DeferredItem<? extends Item>> ARTIFACTS = new ArrayList<>();
     public static final List<DeferredItem<? extends Item>> WEAPONS = new ArrayList<>();
@@ -91,8 +124,34 @@ public class RegistryEvents {
     private static void registerVariants() {
         ItemProperties.register(FTZItems.LEADERS_HORN.get(),
                 ResourceLocation.withDefaultNamespace("tooting"),
-                ((itemStack, clientLevel, livingEntity, i) ->
-                        livingEntity != null && livingEntity.isUsingItem() && livingEntity.getUseItem() == itemStack ? 1f : 0f));
+                (itemStack, clientLevel, livingEntity, i) ->
+                        livingEntity != null && livingEntity.isUsingItem() && livingEntity.getUseItem() == itemStack ? 1f : 0f);
+
+        ItemProperties.register(FTZItems.CARD_DECK.get(),
+                Fantazia.res("excluded_outcome"),
+                (itemStack, clientLevel, livingEntity, i) -> {
+            if (livingEntity == null) return 0;
+            return (float) livingEntity.getData(FTZAttachmentTypes.ALL_IN_PREVIOUS_OUTCOME.value()) / 4;
+                });
+
+        ItemProperties.register(FTZItems.BLOODLUST_AMULET.get(),
+                Fantazia.res("furious"),
+                (itemStack, clientLevel, livingEntity, i) ->
+                        livingEntity != null && LivingEffectHelper.hasEffect(livingEntity, FTZMobEffects.FURY.value()) ? 1f : 0f);
+
+        ItemProperties.register(FTZItems.PUPPET_DOLL.get(),
+                Fantazia.res("has_puppet"),
+                (itemStack, clientLevel, livingEntity, i) -> {
+            if (livingEntity == null) return 0;
+            PuppeteeredEffectHolder effectHolder = LivingEffectHelper.takeHolder(livingEntity, PuppeteeredEffectHolder.class);
+            return effectHolder != null && effectHolder.hasPuppet() ? 1f : 0f;
+                });
+
+        ItemProperties.register(FTZItems.ROAMERS_COMPASS.get(),
+                Fantazia.res("angle"), new CompassItemPropertyFunction(((clientLevel, itemStack, entity) -> {
+                    LocationHolder locationHolder = entity.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION);
+                    return locationHolder.empty() ? null : locationHolder.globalPos();
+                })));
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
@@ -136,13 +195,18 @@ public class RegistryEvents {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void modelRegistry(ModelEvent.RegisterAdditional event) {
-        event.register(CustomItemRenderer.BLADE0);
-        event.register(CustomItemRenderer.BLADE1);
-        event.register(CustomItemRenderer.BLADE2);
-        event.register(CustomItemRenderer.BLADE3);
-        event.register(CustomItemRenderer.BLADE4);
-
-        event.register(CustomItemRenderer.BLADE_MODEL);
+        event.register(FantazicItemRenderer.BLADE0);
+        event.register(FantazicItemRenderer.BLADE1);
+        event.register(FantazicItemRenderer.BLADE2);
+        event.register(FantazicItemRenderer.BLADE3);
+        event.register(FantazicItemRenderer.BLADE4);
+        event.register(FantazicItemRenderer.BLADE_MODEL);
+        event.register(FantazicItemRenderer.WISDOM_CATCHER_GUI);
+        event.register(FantazicItemRenderer.WISDOM_CATCHER_MODEL);
+        event.register(FantazicItemRenderer.WISDOM_CATCHER_MODEL_USED);
+        event.register(FantazicItemRenderer.DASHSTONE1);
+        event.register(FantazicItemRenderer.DASHSTONE2);
+        event.register(FantazicItemRenderer.DASHSTONE3);
 
         event.register(ThrownHatchetRenderer.WOODEN);
         event.register(ThrownHatchetRenderer.STONE);
@@ -151,8 +215,7 @@ public class RegistryEvents {
         event.register(ThrownHatchetRenderer.DIAMOND);
         event.register(ThrownHatchetRenderer.NETHERITE);
 
-        event.register(DashStoneRenderer.DASHSTONE2);
-        event.register(DashStoneRenderer.DASHSTONE3);
+        for (Rune rune : FantazicRegistries.RUNES.stream().toList()) event.register(rune.getIcon());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -166,6 +229,7 @@ public class RegistryEvents {
         event.registerAboveAll(Fantazia.res("developer_mode"), FTZGuis.DEVELOPER_MODE);
         event.registerBelowAll(Fantazia.res("frozen_effect"), FTZGuis.FROZEN_EFFECT);
         event.registerBelowAll(Fantazia.res("fury_veins"), FTZGuis.FURY_VEINS);
+        event.registerAboveAll(Fantazia.res("custom_bars"), FTZGuis.CUSTOM_BARS);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -264,7 +328,12 @@ public class RegistryEvents {
     @SubscribeEvent
     public static void creativeTabContents(BuildCreativeModeTabContentsEvent event) {
         CreativeModeTab tab = event.getTab();
-        if (tab == FTZCreativeModeTabs.ARTIFACTS) for (DeferredItem<? extends Item> item : ARTIFACTS) event.accept(new ItemStack(item.asItem()));
+        if (tab == FTZCreativeModeTabs.ARTIFACTS) {
+            for (int i = 1; i <= 3; i++) event.accept(FantazicUtil.dashStone(i));
+            for (DeferredItem<? extends Item> item : ARTIFACTS) event.accept(new ItemStack(item.asItem()));
+
+            for (Holder<Rune> rune : FantazicRegistries.RUNES.holders().toList()) event.accept(RuneWielderItem.rune(rune));
+        }
         if (tab == FTZCreativeModeTabs.WEAPONS) for (DeferredItem<? extends Item> item : WEAPONS) event.accept(new ItemStack(item.asItem()));
         if (tab == FTZCreativeModeTabs.EXPENDABLES) for (DeferredItem<? extends Item> item : EXPENDABLES) event.accept(new ItemStack(item.asItem()));
         if (tab == FTZCreativeModeTabs.BLOCKS) {
@@ -277,6 +346,9 @@ public class RegistryEvents {
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(iClientItemExtensions, FTZItems.FRAGILE_BLADE);
+        event.registerItem(iClientItemExtensions, FTZItems.WISDOM_CATCHER);
+        event.registerItem(iClientItemExtensions, FTZItems.RUNE_WIELDER);
+        event.registerItem(iClientItemExtensions, FTZItems.DASHSTONE);
     }
 
     @SubscribeEvent
@@ -293,38 +365,71 @@ public class RegistryEvents {
     public static void registerPayload(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar(Fantazia.MODID);
 
-        // attachment syncing
-        registrar.playToClient(PlayerAbilityUpdateS2C.TYPE, PlayerAbilityUpdateS2C.CODEC, PlayerAbilityUpdateS2C::handle);
-        registrar.playToClient(LivingDataUpdateS2C.TYPE, LivingDataUpdateS2C.CODEC, LivingDataUpdateS2C::handle);
-        registrar.playToClient(LivingEffectUpdateS2C.TYPE, LivingEffectUpdateS2C.CODEC, LivingEffectUpdateS2C::handle);
-        registrar.playToClient(LevelAttributesUpdateS2C.TYPE, LevelAttributesUpdateS2C.CODEC, LevelAttributesUpdateS2C::handle);
-
         // attachment modifying
-        registrar.playToClient(EntityMadeSoundS2C.TYPE, EntityMadeSoundS2C.CODEC, EntityMadeSoundS2C::handle);
-        registrar.playToClient(SoundExpiredS2C.TYPE, SoundExpiredS2C.CODEC, SoundExpiredS2C::handle);
-        registrar.playToServer(TalentBuyingC2S.TYPE, TalentBuyingC2S.CODEC, TalentBuyingC2S::handle);
-        registrar.playToClient(WanderersSpiritLocationS2C.TYPE, WanderersSpiritLocationS2C.CODEC, WanderersSpiritLocationS2C::handle);
         registrar.playToClient(AllInPreviousOutcomeS2C.TYPE, AllInPreviousOutcomeS2C.CODEC, AllInPreviousOutcomeS2C::handle);
-        registrar.playToClient(TickingIntegerUpdateS2C.TYPE, TickingIntegerUpdateS2C.CODEC, TickingIntegerUpdateS2C::handle);
-        registrar.playToClient(ReflectLayerActivateSC2.TYPE, ReflectLayerActivateSC2.CODEC, ReflectLayerActivateSC2::handle);
-        registrar.playToClient(WisdomObtainedSC2.TYPE, WisdomObtainedSC2.CODEC, WisdomObtainedSC2::handle);
+        registrar.playToClient(BarrierChangedSC2.TYPE, BarrierChangedSC2.CODEC, BarrierChangedSC2::handle);
+        registrar.playToClient(BarrierDamagedS2C.TYPE, BarrierDamagedS2C.CODEC, BarrierDamagedS2C::handle);
+        registrar.playToServer(BeginDashC2S.TYPE, BeginDashC2S.CODEC, BeginDashC2S::handle);
+        registrar.playToClient(BlockAttackSC2.TYPE, BlockAttackSC2.CODEC, BlockAttackSC2::handle);
+        registrar.playToClient(EffectSyncSC2.TYPE, EffectSyncSC2.CODEC, EffectSyncSC2::handle);
+        registrar.playToClient(EntityMadeSoundS2C.TYPE, EntityMadeSoundS2C.CODEC, EntityMadeSoundS2C::handle);
+        registrar.playToClient(IncreaseEuphoriaSC2.TYPE, IncreaseEuphoriaSC2.CODEC, IncreaseEuphoriaSC2::handle);
+        registrar.playToServer(JumpButtonReleasedC2S.TYPE, JumpButtonReleasedC2S.CODEC, JumpButtonReleasedC2S::handle);
+        registrar.playToClient(LayeredBarrierChangedSC2.TYPE, LayeredBarrierChangedSC2.CODEC, LayeredBarrierChangedSC2::handle);
+        registrar.playToClient(LayeredBarrierDamagedS2C.TYPE, LayeredBarrierDamagedS2C.CODEC, LayeredBarrierDamagedS2C::handle);
+        registrar.playToClient(ManaChangedS2C.TYPE, ManaChangedS2C.CODEC, ManaChangedS2C::handle);
+        registrar.playToClient(ParryAttackS2C.TYPE, ParryAttackS2C.CODEC, ParryAttackS2C::handle);
+        registrar.playToServer(PerformDoubleJumpC2S.TYPE, PerformDoubleJumpC2S.CODEC, PerformDoubleJumpC2S::handle);
+        registrar.playToClient(PogoPlayerSC2.TYPE, PogoPlayerSC2.CODEC, PogoPlayerSC2::handle);
+        registrar.playToClient(PuppeteerChangeSC2.TYPE, PuppeteerChangeSC2.CODEC, PuppeteerChangeSC2::handle);
+        registrar.playToClient(ReflectActivateSC2.TYPE, ReflectActivateSC2.CODEC, ReflectActivateSC2::handle);
         registrar.playToClient(ResetEuphoriaSC2.TYPE, ResetEuphoriaSC2.CODEC, ResetEuphoriaSC2::handle);
-        registrar.playToClient(SimpleEffectSyncingSC2.TYPE, SimpleEffectSyncingSC2.CODEC, SimpleEffectSyncingSC2::handle);
+        registrar.playToClient(RevokeAllTalentsS2C.TYPE, RevokeAllTalentsS2C.CODEC, RevokeAllTalentsS2C::handle);
+        registrar.playToClient(SetDashStoneEntitySC2.TYPE, SetDashStoneEntitySC2.CODEC, SetDashStoneEntitySC2::handle);
+        registrar.playToClient(SetWisdomSC2.TYPE, SetWisdomSC2.CODEC, SetWisdomSC2::handle);
+        registrar.playToClient(StaminaChangedSC2.TYPE, StaminaChangedSC2.CODEC, StaminaChangedSC2::handle);
+        registrar.playToServer(StartBlockingC2S.TYPE, StartBlockingC2S.CODEC, StartBlockingC2S::handle);
+        registrar.playToClient(StopDashS2C.TYPE, StopDashS2C.CODEC, StopDashS2C::handle);
+        registrar.playToClient(SuccessfulEvasionSC2.TYPE, SuccessfulEvasionSC2.CODEC, SuccessfulEvasionSC2::handle);
+        registrar.playToServer(TalentBuyingC2S.TYPE, TalentBuyingC2S.CODEC, TalentBuyingC2S::handle);
+        registrar.playToClient(TalentPossessionSC2.TYPE, TalentPossessionSC2.CODEC, TalentPossessionSC2::handle);
+        registrar.playToClient(TickingIntegerUpdateS2C.TYPE, TickingIntegerUpdateS2C.CODEC, TickingIntegerUpdateS2C::handle);
+        registrar.playToClient(WanderersSpiritLocationS2C.TYPE, WanderersSpiritLocationS2C.CODEC, WanderersSpiritLocationS2C::handle);
+        registrar.playToClient(WisdomObtainedSC2.TYPE, WisdomObtainedSC2.CODEC, WisdomObtainedSC2::handle);
+
+        // attachment syncing
+        registrar.playToClient(LevelAttributesUpdateS2C.TYPE, LevelAttributesUpdateS2C.CODEC, LevelAttributesUpdateS2C::handle);
+        registrar.playToClient(LivingEntityAttachmentInitialSyncSC2.TYPE, LivingEntityAttachmentInitialSyncSC2.CODEC, LivingEntityAttachmentInitialSyncSC2::handle);
+        registrar.playToClient(LivingEntityAttachmentTickSyncSC2.TYPE, LivingEntityAttachmentTickSyncSC2.CODEC, LivingEntityAttachmentTickSyncSC2::handle);
+        registrar.playToClient(PlayerAttachmentInitialSyncSC2.TYPE, PlayerAttachmentInitialSyncSC2.CODEC, PlayerAttachmentInitialSyncSC2::handle);
+        registrar.playToClient(PlayerAttachmentTickSyncSC2.TYPE, PlayerAttachmentTickSyncSC2.CODEC, PlayerAttachmentTickSyncSC2::handle);
+
+        registrar.playToClient(SimpleMobEffectSyncingS2C.TYPE, SimpleMobEffectSyncingS2C.CODEC, SimpleMobEffectSyncingS2C::handle);
+
+        // commands
+        registrar.playToClient(BuildAuraTooltipSC2.TYPE, BuildAuraTooltipSC2.CODEC, BuildAuraTooltipSC2::handle);
+        registrar.playToClient(BuildRuneTooltipSC2.TYPE, BuildRuneTooltipSC2.CODEC, BuildRuneTooltipSC2::handle);
+        registrar.playToClient(BuildSpellTooltipSC2.TYPE, BuildSpellTooltipSC2.CODEC, BuildSpellTooltipSC2::handle);
 
         // stuff
-        registrar.playToClient(AnimatePlayerSC2.TYPE, AnimatePlayerSC2.CODEC, AnimatePlayerSC2::handle);
         registrar.playToClient(AddChasingParticlesS2C.TYPE, AddChasingParticlesS2C.CODEC, AddChasingParticlesS2C::handle);
+        registrar.playToClient(AddDashStoneProtectorsSC2.TYPE, AddDashStoneProtectorsSC2.CODEC, AddDashStoneProtectorsSC2::handle);
+        registrar.playToClient(AddParticlesOnEntitySC2.TYPE, AddParticlesOnEntitySC2.CODEC, AddParticlesOnEntitySC2::handle);
+        registrar.playToClient(AnimatePlayerSC2.TYPE, AnimatePlayerSC2.CODEC, AnimatePlayerSC2::handle);
         registrar.playToClient(InterruptPlayerS2C.TYPE, InterruptPlayerS2C.CODEC, InterruptPlayerS2C::handle);
         registrar.playToServer(KeyInputC2S.TYPE, KeyInputC2S.CODEC, KeyInputC2S::handle);
-        registrar.playToClient(SwingHandS2C.TYPE, SwingHandS2C.CODEC, SwingHandS2C::handle);
         registrar.playToClient(PlaySoundForUIS2C.TYPE, PlaySoundForUIS2C.CODEC, PlaySoundForUIS2C::handle);
-        registrar.playToClient(AddParticlesOnEntitySC2.TYPE, AddParticlesOnEntitySC2.CODEC, AddParticlesOnEntitySC2::handle);
+        registrar.playToClient(SwingHandS2C.TYPE, SwingHandS2C.CODEC, SwingHandS2C::handle);
+
+        // boss event
+        registrar.playToClient(FantazicBossEventPacket.TYPE, FantazicBossEventPacket.CODEC, FantazicBossEventPacket::handle);
     }
 
     @SubscribeEvent
     public static void newRegistry(NewRegistryEvent event) {
         event.register(FantazicRegistries.SPELLS);
         event.register(FantazicRegistries.AURAS);
+        event.register(FantazicRegistries.RUNES);
     }
 
     @SubscribeEvent
@@ -339,12 +444,17 @@ public class RegistryEvents {
     }
 
     @SubscribeEvent
+    public static void renderType(RegisterShadersEvent event) throws IOException {
+        event.registerShader(new ShaderInstance(event.getResourceProvider(),
+                Fantazia.res("rendertype_custom_glint"), DefaultVertexFormat.NEW_ENTITY), shaderInstance -> FTZRenderTypes.customGlintShader = shaderInstance);
+    }
+
+    @SubscribeEvent
     public static void gatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-
 
         // client
         FantazicDatapackProvider dataPackProvider = new FantazicDatapackProvider(packOutput, lookupProvider);
@@ -353,23 +463,44 @@ public class RegistryEvents {
         generator.addProvider(event.includeClient(), new FantazicItemModelProvider(packOutput, existingFileHelper));
 
         // tags providers
-        FantazicBlockTagsProvider blockTagsProvider = new FantazicBlockTagsProvider(packOutput, lookupProvider, existingFileHelper);
+        FantazicBlockTagsProvider blockTagsProvider = new FantazicBlockTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper);
 
-        generator.addProvider(event.includeServer(), new FantazicBiomeTagsProvider(packOutput, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new FantazicBiomeTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper));
         generator.addProvider(event.includeServer(), blockTagsProvider);
-        generator.addProvider(event.includeServer(), new FantazicDamageTypeTagsProvider(packOutput, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), new FantazicEnchantmentTagsProvider(packOutput, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), new FantazicEntityTypeTagsProvider(packOutput, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new FantazicDamageTypeTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper));
+        generator.addProvider(event.includeServer(), new FantazicEnchantmentTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper));
+        generator.addProvider(event.includeServer(), new FantazicEntityTypeTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper));
         generator.addProvider(event.includeServer(), new FantazicHealingTypeTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new FantazicItemTagsProvider(packOutput, lookupProvider, blockTagsProvider.contentsGetter(), existingFileHelper));
-        generator.addProvider(event.includeServer(), new FantazicMobEffectTagsProvider(packOutput, lookupProvider, existingFileHelper));
-        generator.addProvider(event.includeServer(), new FantazicSoundEventTagsProvider(packOutput, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new FantazicItemTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), blockTagsProvider.contentsGetter(), existingFileHelper));
+        generator.addProvider(event.includeServer(), new FantazicMobEffectTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper));
+        generator.addProvider(event.includeServer(), new FantazicSoundEventTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper));
         generator.addProvider(event.includeServer(), new FantazicSpellTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper));
 
         // stuff
-        generator.addProvider(event.includeServer(), new FantazicRecipeProvider(packOutput, lookupProvider));
-        generator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(),
-                List.of(new LootTableProvider.SubProviderEntry(FantazicBlockLootSubProvider::new, LootContextParamSets.BLOCK)), lookupProvider));
-
+        generator.addProvider(event.includeServer(), new FantazicRecipeProvider(packOutput, dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new LootTableProvider(packOutput, Collections.emptySet(), List.of(new LootTableProvider.SubProviderEntry(FantazicBlockLootSubProvider::new, LootContextParamSets.BLOCK)), dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new net.arkadiyhimself.fantazia.datagen.loot_modifier.FantazicLootModifierProvider(packOutput, List.of(DefaultFantazicLootModifiers.create()), dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new FantazicEffectSpawnApplierProvider(packOutput, List.of(DefaultEffectSpawnAppliers.create()), dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new FantazicWisdomRewardCombinedProvider(packOutput, List.of(DefaultWisdomRewardsCombined.create()), dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new AdvancementProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper, List.of(
+                FantazicAdvancementsRegular.create(),
+                FantazicAdvancementsTalent.create(),
+                FantazicAdvancementsTheWorldliness.create()
+        )));
+        generator.addProvider(event.includeServer(), new FantazicTalentProvider(packOutput, List.of(DefaultTalents.create()), dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new FantazicTalentHierarchyProvider(packOutput, List.of(DefaultTalentHierarchies.create()), dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new FantazicTalentTabProvider(packOutput, List.of(DefaultTalentTabs.create()), dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new FantazicCurioProvider(packOutput, existingFileHelper, dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new FantazicLootModifierProvider(packOutput, dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new TheWorldlinessEntryProvider(packOutput, dataPackProvider.getRegistryProvider(), List.of(
+                ArtifactCategoryEntries.create(),
+                EnchantmentCategoryEntries.create(),
+                ExpendableCategoryEntries.create(),
+                MobEffectCategoryEntries.create(),
+                WeaponCategoryEntries.create(),
+                WorldCategoryEntries.create()
+        )));
+        generator.addProvider(event.includeServer(), new TheWorldlinessCategoryProvider(packOutput, dataPackProvider.getRegistryProvider(), List.of(TheWorldlinessCategories.create())));
+        generator.addProvider(event.includeServer(), new TheWorldlinessProvider(packOutput, dataPackProvider.getRegistryProvider()));
     }
 }

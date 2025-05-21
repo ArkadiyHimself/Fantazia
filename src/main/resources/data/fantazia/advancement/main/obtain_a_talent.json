@@ -1,0 +1,28 @@
+{
+  "parent": "fantazia:main/root",
+  "criteria": {
+    "obtain_a_talent": {
+      "trigger": "fantazia:talent_obtain"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancement.fantazia.obtain_a_talent.desc"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "minecraft:iron_ingot"
+    },
+    "title": {
+      "translate": "advancement.fantazia.obtain_a_talent"
+    }
+  },
+  "requirements": [
+    [
+      "obtain_a_talent"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

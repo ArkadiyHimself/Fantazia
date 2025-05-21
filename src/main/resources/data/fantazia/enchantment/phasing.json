@@ -3,11 +3,11 @@
   "description": {
     "translate": "enchantment.fantazia.phasing"
   },
+  "exclusive_set": "#fantazia:exclusive_set/hatchet_behaviour",
   "max_cost": {
     "base": 50,
     "per_level_above_first": 0
   },
-  "exclusive_set": "#fantazia:exclusive_set/hatchet_behaviour",
   "max_level": 3,
   "min_cost": {
     "base": 20,

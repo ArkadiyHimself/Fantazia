@@ -1,11 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "equipment",
-  "pattern": [
-    "X ",
-    "X#",
-    " #"
-  ],
+  "category": "equipment",
   "key": {
     "#": {
       "item": "minecraft:stick"
@@ -14,8 +9,13 @@
       "tag": "minecraft:planks"
     }
   },
+  "pattern": [
+    "X ",
+    "X#",
+    " #"
+  ],
   "result": {
+    "count": 1,
     "id": "fantazia:wooden_hatchet"
-  },
-  "show_notification": true
+  }
 }

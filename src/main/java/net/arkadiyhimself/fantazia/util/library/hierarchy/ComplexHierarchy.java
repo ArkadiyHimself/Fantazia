@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.util.library.hierarchy;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import com.mojang.serialization.Codec;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +20,11 @@ import java.util.function.Function;
  * For example, the main element's rank is always 0, and the children of main element will have their rank being 1, while the children of those children will have their rank being 2, and so on
  */
 public class ComplexHierarchy<T> extends MonoHierarchy<T> {
+
+    public static <T> Codec<ComplexHierarchy<T>> complexHierarchyCodec(Codec<T> tCodec) {
+        return null;
+    }
+
     /**
      * An unorganized collection which contains all elements of the hierarchy with no particular order
      */
@@ -83,6 +89,11 @@ public class ComplexHierarchy<T> extends MonoHierarchy<T> {
         }
 
         return complexHierarchy;
+    }
+
+    @Override
+    public HierarchyType getType() {
+        return HierarchyType.COMPLEX;
     }
 
     /**

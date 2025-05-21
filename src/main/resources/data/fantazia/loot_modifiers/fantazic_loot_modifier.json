@@ -1,4 +1,4 @@
 {
-  "conditions": [],
-  "type": "fantazia:fantazic_loot_modifier"
+  "type": "fantazia:fantazic_loot_modifier",
+  "conditions": []
 }

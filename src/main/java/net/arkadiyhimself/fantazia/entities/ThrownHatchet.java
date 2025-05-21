@@ -207,14 +207,13 @@ public class ThrownHatchet extends AbstractArrow {
     }
 
     public void attackEntity(LivingEntity livingEntity) {
-        Registry<Enchantment> enchantmentRegistry = this.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        Registry<Enchantment> enchantmentRegistry = registryAccess().registryOrThrow(Registries.ENCHANTMENT);
         float dmg = 1.5f;
         if (getPickupItem().getItem() instanceof HatchetItem hatchetItem) dmg += hatchetItem.getTier().getAttackDamageBonus();
-        double headDist = Math.abs(this.getY() - livingEntity.getEyeY());
-        if (headDist <= 0.3) dmg += entityData.get(ID_HEADSHOT);
-
-        DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(level());
-        if (sources != null) livingEntity.hurt(sources.hatchet(this), dmg);
+        double headDist = Math.abs(getY() - livingEntity.getEyeY());
+        if (headDist <= 0.35) dmg += entityData.get(ID_HEADSHOT) * 2;
+        LevelAttributesHelper.hurtEntity(livingEntity, this, dmg, DamageSourcesHolder::hatchet);
+        if (livingEntity.getType() == EntityType.ENDERMAN && !isPhasing) return;
 
         Optional<Holder.Reference<Enchantment>> projProt = enchantmentRegistry.getHolder(Enchantments.PROJECTILE_PROTECTION);
         int projProtect = projProt.map(enchantmentReference -> EnchantmentHelper.getEnchantmentLevel(enchantmentReference, livingEntity)).orElse(0);

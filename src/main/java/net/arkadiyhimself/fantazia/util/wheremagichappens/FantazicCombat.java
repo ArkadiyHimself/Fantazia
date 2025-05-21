@@ -6,24 +6,22 @@ import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.BarrierEffectHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.niche_data_holders.ArrowEnchantmentsHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.EuphoriaHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
-import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsOnSpawnHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsSpawnAppliersHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.api.data_component.HiddenPotentialHolder;
-import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.entities.Shockwave;
 import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
-import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.*;
-import net.arkadiyhimself.fantazia.registries.custom.FTZSpells;
+import net.arkadiyhimself.fantazia.registries.custom.Runes;
+import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.tags.FTZEntityTypeTags;
+import net.arkadiyhimself.fantazia.tags.FTZItemTags;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -46,7 +44,9 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class FantazicCombat {
-    private FantazicCombat() {}
 
     public static void dropExperience(LivingEntity entity, float multiplier, LivingEntity killer) {
         if (entity.level() instanceof ServerLevel serverLevel) {
@@ -75,12 +74,8 @@ public class FantazicCombat {
             if (dashHolder != null && dashHolder.isDashing() && dashHolder.getLevel() > 1) return true;
         }
 
-        BarrierEffectHolder barrierEffect = LivingEffectHelper.takeHolder(entity, BarrierEffectHolder.class);
-        if (barrierEffect != null && barrierEffect.hasBarrier()) return true;
-
-        LayeredBarrierEffectHolder layeredBarrierEffect = LivingEffectHelper.takeHolder(entity, LayeredBarrierEffectHolder.class);
-        if (layeredBarrierEffect != null && layeredBarrierEffect.hasBarrier()) return true;
-
+        if (entity.getData(FTZAttachmentTypes.BARRIER_HEALTH) > 0) return true;
+        if (entity.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS) > 0) return true;
         if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.ABSOLUTE_BARRIER.value())) return true;
 
         return false;
@@ -114,6 +109,7 @@ public class FantazicCombat {
         AttributeInstance lifeSteal = livingAttacker.getAttribute(FTZAttributes.LIFESTEAL);
         double heal = lifeSteal == null ? 0 : lifeSteal.getValue() * amount;
         if (heal > 0) LevelAttributesHelper.healEntityByOther(livingAttacker, target, (float) heal, HealingSourcesHolder::lifesteal);
+        if (livingAttacker.getData(FTZAttachmentTypes.WALL_CLIMBING_POISON)) target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 2));
 
         Registry<Enchantment> enchantmentRegistry = target.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
         Optional<Holder.Reference<Enchantment>> bully = enchantmentRegistry.getHolder(FTZEnchantments.BULLY);
@@ -128,19 +124,22 @@ public class FantazicCombat {
             ItemStack itemStack = player.getMainHandItem();
             if (itemStack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) itemStack.update(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialHolder.DEFAULT, holder -> holder.onAttack(parry, target));
 
-            if (TalentHelper.hasTalent(player, Fantazia.res("spider_powers/poison_attack"))) target.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 2));
-
             player.getData(FTZAttachmentTypes.ABILITY_MANAGER).optionalHolder(EuphoriaHolder.class).ifPresent(euphoriaHolder -> euphoriaHolder.processAttack(event));
         }
 
-        if (SpellHelper.hasActiveSpell(livingAttacker, FTZSpells.SHOCKWAVE)) {
+        if (SpellHelper.hasActiveSpell(livingAttacker, Spells.SHOCKWAVE)) {
             float sat = livingAttacker instanceof Player player ? (float) player.getFoodData().getFoodLevel() / 20 : 1f;
             Shockwave shockwave = new Shockwave(livingAttacker.level(), livingAttacker,amount * sat * 0.5f);
-            shockwave.setPos(livingAttacker.getEyePosition().add(0,-0.45,0));
+            shockwave.setPos(target.getEyePosition().add(0,-0.45,0));
             livingAttacker.level().addFreshEntity(shockwave);
         }
 
-        if (SpellHelper.castPassiveSpell(livingAttacker, FTZSpells.SUSTAIN)) LivingEffectHelper.effectWithoutParticles(target, MobEffects.WITHER,80,2);
+        if (FantazicUtil.hasRune(livingAttacker, Runes.PURE_VESSEL) && livingAttacker.getY() > target.getY() && !livingAttacker.onGround()) {
+            PlayerAbilityHelper.jumpInAir(livingAttacker);
+            if (livingAttacker instanceof ServerPlayer serverPlayer) PlayerAbilityHelper.pogo(serverPlayer);
+        }
+
+        if (SpellHelper.castPassiveSpell(livingAttacker, Spells.SUSTAIN).success()) LivingEffectHelper.effectWithoutParticles(target, MobEffects.WITHER,80,2);
     }
 
     public static boolean isFlying(LivingEntity livingEntity) {
@@ -149,8 +148,8 @@ public class FantazicCombat {
 
     public static boolean isRanged(LivingEntity livingEntity) {
         if (livingEntity.getType().is(FTZEntityTypeTags.RANGED_ATTACK)) return true;
-        Item item = livingEntity.getItemInHand(InteractionHand.MAIN_HAND).getItem();
-        return item instanceof ProjectileWeaponItem || item instanceof TridentItem || item instanceof HatchetItem;
+        ItemStack item = livingEntity.getItemInHand(InteractionHand.MAIN_HAND);
+        return item.is(FTZItemTags.RANGED_WEAPON);
     }
 
     public static void arrowImpact(AbstractArrow arrow, LivingEntity entity) {
@@ -184,9 +183,9 @@ public class FantazicCombat {
         return event.isCanceled();
     }
 
-    public static void grantEffectsOnSpawn(LivingEntity livingEntity) {
-        if (!(livingEntity.level() instanceof ServerLevel level)) return;
-        LevelAttributesHelper.acceptConsumer(level, EffectsOnSpawnHolder.class, effectsOnSpawnHolder -> effectsOnSpawnHolder.tryApplyEffects(livingEntity));
+    public static void grantEffectsOnSpawn(Mob mob) {
+        if (!(mob.level() instanceof ServerLevel level)) return;
+        LevelAttributesHelper.acceptConsumer(level, EffectsSpawnAppliersHolder.class, effectsSpawnAppliersHolder -> effectsSpawnAppliersHolder.tryApplyEffects(mob));
     }
 
     public static void clearTarget(Mob mob, @Nullable LivingEntity target) {

@@ -1,4 +1,4 @@
 {
-  "id" : "natural_regen",
-  "exhaustion" : 0.005
+  "exhaustion": 0.005,
+  "id": "naturalRegen"
 }

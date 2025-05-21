@@ -24,11 +24,29 @@ public class FantazicMobEffectTagsProvider extends IntrinsicHolderTagsProvider<M
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         // fantazia
-        tag(FTZMobEffectTags.CleanseTags.MEDIUM).add(MobEffects.DIG_SPEED.value(), MobEffects.DIG_SLOWDOWN.value(), MobEffects.FIRE_RESISTANCE.value(), MobEffects.WATER_BREATHING.value(), MobEffects.INVISIBILITY.value(), MobEffects.WITHER.value(), MobEffects.ABSORPTION.value(), MobEffects.GLOWING.value(), MobEffects.LUCK.value(), MobEffects.UNLUCK.value(), FTZMobEffects.BARRIER.value(), FTZMobEffects.LAYERED_BARRIER.value(), FTZMobEffects.REFLECT.value());
-        tag(FTZMobEffectTags.CleanseTags.POWERFUL).add(MobEffects.DAMAGE_RESISTANCE.value(), MobEffects.HEALTH_BOOST.value(), FTZMobEffects.FURY.value(), FTZMobEffects.STUN.value(), FTZMobEffects.DISARM.value());
-        tag(FTZMobEffectTags.CleanseTags.ABSOLUTE).add(MobEffects.BAD_OMEN.value(), MobEffects.HERO_OF_THE_VILLAGE.value(), FTZMobEffects.ABSOLUTE_BARRIER.value(), FTZMobEffects.DOOMED.value());
+        tag(FTZMobEffectTags.Cleanse.MEDIUM).add(MobEffects.DIG_SPEED.value(), MobEffects.DIG_SLOWDOWN.value(), MobEffects.FIRE_RESISTANCE.value(), MobEffects.WATER_BREATHING.value(), MobEffects.INVISIBILITY.value(), MobEffects.WITHER.value(), MobEffects.ABSORPTION.value(), MobEffects.GLOWING.value(), MobEffects.LUCK.value(), MobEffects.UNLUCK.value(), FTZMobEffects.BARRIER.value(), FTZMobEffects.LAYERED_BARRIER.value(), FTZMobEffects.REFLECT.value());
+        tag(FTZMobEffectTags.Cleanse.POWERFUL).add(MobEffects.DAMAGE_RESISTANCE.value(), MobEffects.HEALTH_BOOST.value(), FTZMobEffects.FURY.value(), FTZMobEffects.STUN.value(), FTZMobEffects.DISARM.value());
+        tag(FTZMobEffectTags.Cleanse.ABSOLUTE).add(MobEffects.BAD_OMEN.value(), MobEffects.HERO_OF_THE_VILLAGE.value(), FTZMobEffects.ABSOLUTE_BARRIER.value(), FTZMobEffects.DOOMED.value());
 
         tag(FTZMobEffectTags.BARRIER).add(FTZMobEffects.BARRIER.value(), FTZMobEffects.LAYERED_BARRIER.value(), FTZMobEffects.ABSOLUTE_BARRIER.value());
         tag(FTZMobEffectTags.INTERRUPT).add(FTZMobEffects.STUN.value(), FTZMobEffects.MICROSTUN.value());
+        tag(FTZMobEffectTags.NO_PARTICLES).add(
+                FTZMobEffects.ABSOLUTE_BARRIER.value(),
+                FTZMobEffects.BARRIER.value(), FTZMobEffects.HAEMORRHAGE.value(),
+                FTZMobEffects.FURY.value(),
+                FTZMobEffects.STUN.value(),
+                FTZMobEffects.LAYERED_BARRIER.value(),
+                FTZMobEffects.DEAFENED.value(),
+                FTZMobEffects.FROZEN.value(),
+                FTZMobEffects.MIGHT.value(),
+                FTZMobEffects.DOOMED.value(),
+                FTZMobEffects.DISARM.value(),
+                FTZMobEffects.REFLECT.value(),
+                FTZMobEffects.DEFLECT.value(),
+                FTZMobEffects.CURSED_MARK.value(),
+                FTZMobEffects.ELECTROCUTED.value(),
+                FTZMobEffects.DISGUISED.value(),
+                FTZMobEffects.PUPPETEERED.value()
+        );
     }
 }

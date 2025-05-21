@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.category.weapons.name",
-  "description": "book.fantazia.category.weapons.desc",
-  "icon": "fantazia:fragile_blade"
+  "description": "book.fantazia.the_worldliness.weapons.desc",
+  "icon": "fantazia:fragile_blade",
+  "name": "book.fantazia.the_worldliness.weapons.name"
 }

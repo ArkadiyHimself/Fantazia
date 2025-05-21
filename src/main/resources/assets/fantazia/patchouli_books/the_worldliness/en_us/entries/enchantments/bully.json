@@ -1,18 +1,18 @@
 {
-  "name": "book.fantazia.entry.enchantments.bully.name",
-  "icon": "minecraft:enchanted_book",
-  "category": "fantazia:enchantments",
   "advancement": "fantazia:the_worldliness/enchantments/generic",
+  "category": "fantazia:enchantments",
+  "icon": "minecraft:enchanted_book",
+  "name": "enchantment.fantazia.bully",
   "pages": [
     {
-      "type": "text",
-      "text": "book.fantazia.entry.enchantments.bully.page.1"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.enchantments.bully.page.1"
     },
     {
-      "type": "spotlight",
-      "item": "tag:minecraft:swords",
-      "title": "book.fantazia.entry.enchantments.bully.heading",
-      "text": "book.fantazia.entry.enchantments.bully.page.2"
+      "type": "patchouli:spotlight",
+      "item": "tag:minecraft:enchantable/sharp_weapon",
+      "text": "book.fantazia.the_worldliness.enchantments.bully.page.2",
+      "title": "book.fantazia.heading.enchantments.sharp_weapon"
     }
   ]
 }

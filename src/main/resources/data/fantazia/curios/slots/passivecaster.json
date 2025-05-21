@@ -1,5 +1,7 @@
 {
-  "order": 20,
+  "icon": "fantazia:slot/passivecaster",
   "size": 2,
-  "icon": "fantazia:slot/passivecaster"
+  "validators": [
+    "fantazia:for_passivecaster"
+  ]
 }

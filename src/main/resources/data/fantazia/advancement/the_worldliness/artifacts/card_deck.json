@@ -1,33 +1,44 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "paper": {
-      "trigger": "minecraft:inventory_changed",
+    "found_card_deck": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:paper"]
+            "items": "fantazia:card_deck"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
-    "substance" : {
-      "trigger": "minecraft:inventory_changed",
+    "obscure_substance": {
+      "conditions": {
+        "possessed": {
+          "items": [
+            "fantazia:obscure_substance"
+          ]
+        }
+      },
+      "trigger": "fantazia:possess_item"
+    },
+    "paper": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:obscure_substance"]
+            "items": "minecraft:paper"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
-      "paper"
+      "paper",
+      "found_card_deck"
     ],
     [
-      "substance"
+      "found_card_deck",
+      "obscure_substance"
     ]
   ]
 }

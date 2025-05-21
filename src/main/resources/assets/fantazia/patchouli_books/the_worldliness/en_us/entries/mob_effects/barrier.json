@@ -1,16 +1,17 @@
 {
-  "name": "book.fantazia.entry.mob_effects.barrier.name",
-  "icon": "fantazia:textures/mob_effect/barrier.png",
+  "advancement": "fantazia:the_worldliness/mob_effects/barrier",
   "category": "fantazia:mob_effects",
-  "advancement" : "fantazia:the_worldliness/mob_effects/barrier",
+  "icon": "fantazia:textures/mob_effect/barrier.png",
+  "name": "effect.fantazia.barrier",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.mob_effects.barrier.page.1"
+      "text": "book.fantazia.the_worldliness.mob_effects.barrier.page.1",
+      "title": "book.fantazia.heading.mob_effects.beneficial"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.mob_effects.barrier.page.2"
+      "text": "book.fantazia.the_worldliness.mob_effects.barrier.page.2"
     }
   ]
 }

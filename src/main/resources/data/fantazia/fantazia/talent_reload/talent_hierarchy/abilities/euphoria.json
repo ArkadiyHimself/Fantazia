@@ -1,0 +1,12 @@
+{
+  "hierarchy": {
+    "type": "chain",
+    "elements": {
+      "elements": [
+        "fantazia:abilities/euphoria/relentless",
+        "fantazia:abilities/euphoria/savage"
+      ]
+    }
+  },
+  "tab": "fantazia:abilities"
+}

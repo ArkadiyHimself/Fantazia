@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
+  "category": "misc",
+  "key": {
+    "H": {
+      "item": "minecraft:iron_nugget"
+    },
+    "R": {
+      "item": "fantazia:obscure_substance"
+    },
+    "W": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
   "pattern": [
     " W ",
     "HRH",
     " H "
   ],
-  "key": {
-    "H" : {
-      "item": "minecraft:iron_nugget"
-    },
-    "W" : {
-      "item" : "minecraft:copper_ingot"
-    },
-    "R" : {
-      "item": "fantazia:obscure_substance"
-    }
-  },
   "result": {
+    "count": 1,
     "id": "fantazia:rusty_ring"
-  },
-  "show_notification": true
+  }
 }

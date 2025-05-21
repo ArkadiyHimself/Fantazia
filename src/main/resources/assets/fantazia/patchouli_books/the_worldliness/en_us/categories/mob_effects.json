@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.category.mob_effects.name",
-  "description": "book.fantazia.category.mob_effects.desc",
-  "icon": "fantazia:textures/mob_effect/fury.png"
+  "description": "book.fantazia.the_worldliness.mob_effects.desc",
+  "icon": "fantazia:textures/mob_effect/fury.png",
+  "name": "book.fantazia.the_worldliness.mob_effects.name"
 }

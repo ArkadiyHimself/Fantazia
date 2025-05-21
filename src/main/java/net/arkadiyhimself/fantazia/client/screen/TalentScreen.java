@@ -3,12 +3,11 @@ package net.arkadiyhimself.fantazia.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
-import net.arkadiyhimself.fantazia.data.talent.reload.TalentTabManager;
-import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
-import net.arkadiyhimself.fantazia.packets.attachment_modify.TalentBuyingC2S;
+import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentTabManager;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
@@ -19,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,9 +27,10 @@ import java.util.Map;
 
 public class TalentScreen extends Screen {
 
-    private static final ResourceLocation BACKGROUND = Fantazia.res("textures/gui/talent/background.png");
+    private static final ResourceLocation DEFAULT_BACKGROUND = Fantazia.res("textures/gui/talent/background.png");
     private static final ResourceLocation FRAME = Fantazia.res("textures/gui/talent/frame.png");
     private static final ResourceLocation WISDOM_WIDGET = Fantazia.res("textures/gui/talent/wisdom_widget.png");
+    private static final ResourceLocation WISDOM_ICON = Fantazia.res("textures/gui/talent/wisdom.png");
 
     private static final int minX = 0;
     private static final int minY = 0;
@@ -50,17 +49,16 @@ public class TalentScreen extends Screen {
     private int frX;
     private int frY;
 
-    @Nullable
-    private TalentTab selectedTab = null;
+    private @Nullable TalentTab selectedTab = null;
     private boolean scrolling = false;
 
     public TalentScreen(TalentsHolder talentsHolder) {
         super(GameNarrator.NO_TITLE);
         this.talentsHolder = talentsHolder;
 
-        for (Map.Entry<ResourceLocation, TalentTab> entry : TalentTabManager.getTabs().entrySet()) {
+        for (Map.Entry<ResourceLocation, TalentTab> entry : ServerTalentTabManager.getTabs().entrySet()) {
             ResourceLocation tabID = entry.getKey();
-            List<IHierarchy<ITalent>> iHierarchyList = TalentTreeData.getTabToHierarchies().get(tabID);
+            List<IHierarchy<Talent>> iHierarchyList = TalentTreeData.getTabToHierarchies().get(tabID);
             TalentTab talentTab = entry.getValue().hierarchies(iHierarchyList);
             TABS.add(talentTab);
         }
@@ -82,9 +80,9 @@ public class TalentScreen extends Screen {
 
         this.renderTabs(pGuiGraphics, pMouseX, pMouseY);
         this.renderBG(pGuiGraphics);
-        this.renderTalents(pGuiGraphics, pMouseX, pMouseY);
+        this.renderTalents(pGuiGraphics, pMouseX, pMouseY, pPartialTick);
         this.renderFrame(pGuiGraphics);
-        this.renderWisdom(pGuiGraphics);
+        this.renderWisdomWidget(pGuiGraphics, pMouseX, pMouseY);
     }
 
     @Override
@@ -114,8 +112,8 @@ public class TalentScreen extends Screen {
                 }
             }
             if (selectedTab != null) {
-                ITalent basicTalent = selectedTab.selectedTalent();
-                if (basicTalent != null) PacketDistributor.sendToServer(new TalentBuyingC2S(basicTalent.getID()));
+                Talent basicTalent = selectedTab.selectedTalent();
+                if (basicTalent != null) talentsHolder.buyTalent(basicTalent);
             }
 
         }
@@ -126,6 +124,7 @@ public class TalentScreen extends Screen {
     public boolean isPauseScreen() {
         return false;
     }
+
     private void renderTabs(GuiGraphics pGuiGraphics, int mouseX, int mouseY) {
         for (int i = 0; i < TABS.size(); i++) {
             TalentTab talentTab = TABS.get(i);
@@ -149,31 +148,48 @@ public class TalentScreen extends Screen {
         guiGraphics.pose().pushPose();
         int x0 = (int) scrollX;
         int y0 = (int) scrollY;
-        guiGraphics.blit(BACKGROUND, bgX + x0, bgY + y0, 0f,0f, 512, 512, 512, 512);
+        guiGraphics.blit(selectedTab == null ? DEFAULT_BACKGROUND : selectedTab.getBackground(), bgX + x0, bgY + y0, 0,0, 512, 512, 512, 512);
         guiGraphics.pose().popPose();
         guiGraphics.disableScissor();
     }
 
-    private void renderTalents(GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    private void renderTalents(GuiGraphics guiGraphics, double mouseX, double mouseY, float partialTick) {
         if (this.selectedTab == null) return;
         int x0 = (int) scrollX;
         int y0 = (int) scrollY;
-        this.selectedTab.drawInsides(guiGraphics, talentsHolder, font, x0, y0, mouseX, mouseY, bgX, bgY);
+        this.selectedTab.drawInsides(guiGraphics, talentsHolder, font, partialTick, x0, y0, mouseX, mouseY, bgX, bgY);
     }
 
     private void renderFrame(GuiGraphics pGuiGraphics) {
         pGuiGraphics.blit(FRAME, frX, frY, 0, 0, frame, frame, frame, frame);
     }
 
-    private void renderWisdom(GuiGraphics guiGraphics) {
+    private void renderWisdomWidget(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int x0 = frX + frame + 10;
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         guiGraphics.blit(WISDOM_WIDGET, x0, frY,0,0,100,30,100,30);
+        guiGraphics.blit(WISDOM_ICON, x0 + 10, frY + 10, 0,0,10,10,10,10);
         RenderSystem.disableBlend();
         int wisdom = talentsHolder.getWisdom();
-        Component component = GuiHelper.bakeComponent("fantazia.gui.talent.wisdom", null, new ChatFormatting[]{ChatFormatting.DARK_PURPLE}, wisdom);
-        guiGraphics.drawString(font, component, x0 + 12, frY + 11, 0);
+        Component component = Component.literal(String.valueOf(wisdom)).withStyle(ChatFormatting.BLUE);
+        if (FantazicMath.within(x0, x0 + 100, mouseX) && FantazicMath.within(frY, frY + 30, mouseY)) {
+            int lines = 0;
+            String basicPath = "fantazia.gui.talent.wisdom";
+            List<Component> components = Lists.newArrayList();
+            components.add(Component.translatable(basicPath).withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD));
+            if (Screen.hasShiftDown()) basicPath += ".desc";
+            String desc = Component.translatable(basicPath + ".lines").getString();
+            try {
+                lines = Integer.parseInt(desc);
+            } catch (NumberFormatException ignored) {}
+            if (lines > 0) {
+                for (int i = 1; i <= lines; i++) components.add(Component.translatable(basicPath + "." + i).withStyle(ChatFormatting.BLUE));
+                guiGraphics.renderComponentTooltip(font, components, mouseX, mouseY);
+            }
+        }
+
+        guiGraphics.drawString(font, component, x0 + 24, frY + 11, 0);
     }
 
     private int bgWidth() {

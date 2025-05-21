@@ -29,6 +29,7 @@
     "MixinWebBlock"
   ],
   "client": [
+    "BossHealthOverlayAccessor",
     "MixinEffectScreenRenderer",
     "MixinElytraLayer",
     "MixinGameRenderer",

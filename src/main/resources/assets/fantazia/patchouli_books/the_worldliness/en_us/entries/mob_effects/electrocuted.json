@@ -1,0 +1,17 @@
+{
+  "advancement": "fantazia:the_worldliness/mob_effects/electrocuted",
+  "category": "fantazia:mob_effects",
+  "icon": "fantazia:textures/mob_effect/electrocuted.png",
+  "name": "effect.fantazia.electrocuted",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.electrocuted.page.1",
+      "title": "book.fantazia.heading.mob_effects.harmful"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.electrocuted.page.2"
+    }
+  ]
+}

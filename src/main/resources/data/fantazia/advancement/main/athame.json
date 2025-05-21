@@ -1,13 +1,11 @@
 {
-  "parent" : "fantazia:main/caster",
+  "parent": "fantazia:main/caster",
   "criteria": {
     "athame": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "fantazia:athame"
-            ]
+            "items": "fantazia:athame"
           }
         ]
       },
@@ -15,16 +13,23 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
-      "translate": "advancements.fantazia.athame.desc"
+      "translate": "advancement.fantazia.athame.desc"
     },
-    "hidden": true,
     "icon": {
+      "count": 1,
       "id": "fantazia:athame"
     },
-    "show_toast": true,
+    "show_toast": false,
     "title": {
-      "translate": "advancements.fantazia.athame"
+      "translate": "advancement.fantazia.athame"
     }
-  }
+  },
+  "requirements": [
+    [
+      "athame"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

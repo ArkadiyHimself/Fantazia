@@ -3,12 +3,16 @@ package net.arkadiyhimself.fantazia.util.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsSpawnAppliersHolder;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ResetCommand {
-    private ResetCommand() {}
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("reset")
                 .then(Commands.literal("talents").executes(context -> {
@@ -26,9 +30,16 @@ public class ResetCommand {
                     PlayerAbilityHelper.acceptConsumer(serverPlayer, StaminaHolder.class, StaminaHolder::restore);
                     return 1;
                 }))
+                .then(Commands.literal("wisdom_rewards").executes(context -> {
+                    ServerPlayer serverPlayer = context.getSource().getPlayer();
+                    if (serverPlayer == null) return 0;
+                    PlayerAbilityHelper.acceptConsumer(serverPlayer, TalentsHolder.class, TalentsHolder::resetWisdomRewards);
+                    return 1;
+                }))
                 .then(Commands.literal("loot_modifiers").executes(context -> {
                     ServerPlayer serverPlayer = context.getSource().getPlayer();
                     if (serverPlayer == null) return 0;
+                    serverPlayer.setData(FTZAttachmentTypes.OBTAINED_DASHSTONE, false);
                     PlayerAbilityHelper.acceptConsumer(serverPlayer, LootTableModifiersHolder.class, LootTableModifiersHolder::reset);
                     return 1;
                 }))
@@ -36,6 +47,15 @@ public class ResetCommand {
                     ServerPlayer serverPlayer = context.getSource().getPlayer();
                     if (serverPlayer == null) return 0;
                     PlayerAbilityHelper.acceptConsumer(serverPlayer, CustomCriteriaHolder.class, CustomCriteriaHolder::reset);
+                    return 1;
+                }))
+                .then(Commands.literal("effects_on_spawn").executes(context -> {
+                    ServerLevel serverLevel = context.getSource().getLevel();
+                    LevelAttributesHelper.acceptConsumer(serverLevel, EffectsSpawnAppliersHolder.class, EffectsSpawnAppliersHolder::reset);
+                    return 1;
+                }))
+                .then(Commands.literal("dashstone_entity").executes(context -> {
+                    PlayerAbilityHelper.acceptConsumer(context.getSource().getPlayer(), DashHolder.class, DashHolder::resetDashstoneEntity);
                     return 1;
                 })));
     }

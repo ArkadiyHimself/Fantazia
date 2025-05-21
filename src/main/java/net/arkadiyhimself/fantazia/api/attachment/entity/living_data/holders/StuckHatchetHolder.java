@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
 public class StuckHatchetHolder extends LivingDataHolder {
+
     private int delay = 0;
     private ItemStack STACK = ItemStack.EMPTY;
 
@@ -29,17 +30,17 @@ public class StuckHatchetHolder extends LivingDataHolder {
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-        this.delay = compoundTag.getInt("delay");
-        this.STACK = ItemStack.parseOptional(provider, compoundTag.getCompound("hatchet"));
+        delay = compoundTag.getInt("delay");
+        STACK = ItemStack.parseOptional(provider, compoundTag.getCompound("hatchet"));
     }
 
     @Override
-    public CompoundTag syncSerialize() {
+    public CompoundTag serializeInitial() {
         return new CompoundTag();
     }
 
     @Override
-    public void syncDeserialize(CompoundTag tag) {
+    public void deserializeInitial(CompoundTag tag) {
     }
 
     @Override

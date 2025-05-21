@@ -1,30 +1,36 @@
 {
-  "parent" : "fantazia:main/obtain_15_talents",
-  "criteria" : {
-    "talent_obtain": {
-      "trigger": "fantazia:talent_obtain",
-      "conditions" : {
-        "talents" : [
+  "parent": "fantazia:main/obtain_15_talents",
+  "criteria": {
+    "obtain_30_talents": {
+      "conditions": {
+        "talents": [
           {
-            "amount" : 30
+            "amount": 30
           }
         ]
-      }
+      },
+      "trigger": "fantazia:talent_obtain"
     }
   },
-  "display" : {
-    "hidden" : true,
-    "frame": "challenge",
-    "announce_to_chat": true,
+  "display": {
+    "announce_to_chat": false,
     "description": {
-      "translate": "advancements.fantazia.obtain_30_talents.desc"
+      "translate": "advancement.fantazia.obtain_30_talents.desc"
     },
+    "frame": "goal",
+    "hidden": true,
     "icon": {
+      "count": 1,
       "id": "minecraft:nether_star"
     },
-    "show_toast": true,
     "title": {
-      "translate": "advancements.fantazia.obtain_30_talents"
+      "translate": "advancement.fantazia.obtain_30_talents"
     }
-  }
+  },
+  "requirements": [
+    [
+      "obtain_30_talents"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

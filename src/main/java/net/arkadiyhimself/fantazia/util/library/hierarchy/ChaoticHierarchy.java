@@ -1,6 +1,8 @@
 package net.arkadiyhimself.fantazia.util.library.hierarchy;
 
 import com.google.common.collect.Lists;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.Fantazia;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +20,12 @@ import java.util.function.Function;
  */
 public class ChaoticHierarchy<T> extends ChainHierarchy<T> {
 
+    public static <T> Codec<ChaoticHierarchy<T>> chaoticHierarchyCodec(Codec<T> tCodec) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+                tCodec.listOf().fieldOf("elements").forGetter(ChaoticHierarchy::getElements)
+        ).apply(instance, ChaoticHierarchy::of));
+    }
+
     @SuppressWarnings("ConstantConditions")
     public ChaoticHierarchy() {
         super(null);
@@ -31,7 +39,8 @@ public class ChaoticHierarchy<T> extends ChainHierarchy<T> {
         return hierarchy;
     }
 
-    public static <M> ChaoticHierarchy<M> of(M[] elements) {
+    @SafeVarargs
+    public static <M> ChaoticHierarchy<M> of(M... elements) {
         return of(Arrays.stream(elements).toList());
     }
     public static <M> ChaoticHierarchy<M> of(ChainHierarchy<M> elements) {
@@ -57,6 +66,11 @@ public class ChaoticHierarchy<T> extends ChainHierarchy<T> {
             newList.add(newElement);
         }
         return of(newList);
+    }
+
+    @Override
+    public HierarchyType getType() {
+        return HierarchyType.CHAOTIC;
     }
 
     /**

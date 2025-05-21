@@ -109,19 +109,24 @@ public abstract class BlockingEvent extends PlayerEvent {
      * If it is canceled, the player does not block the attack
      */
     public static class Block extends BlockingEvent implements ICancellableEvent{
+
         private final float attackerDamage;
         private final LivingEntity attacker;
-        public float getAttackerDamage() {
-            return attackerDamage;
-        }
-        public LivingEntity getAttacker() {
-            return attacker;
-        }
+
         public Block(Player player, ItemStack itemStack, float attackerDamage, LivingEntity attacker) {
             super(player, itemStack);
             this.attackerDamage = attackerDamage;
             this.attacker = attacker;
         }
+
+        public float getAttackerDamage() {
+            return attackerDamage;
+        }
+
+        public LivingEntity getAttacker() {
+            return attacker;
+        }
+
     }
     /**
      * {@link Parry} is fired when player successfully parries an attack <br>

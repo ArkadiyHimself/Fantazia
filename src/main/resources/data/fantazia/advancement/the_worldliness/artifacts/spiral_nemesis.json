@@ -1,8 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "slay_enderman": {
-      "trigger": "minecraft:player_killed_entity",
+    "found_spiral_nemesis": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:spiral_nemesis"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "killed_enderman": {
       "conditions": {
         "entity": [
           {
@@ -13,7 +21,14 @@
             }
           }
         ]
-      }
+      },
+      "trigger": "minecraft:player_killed_entity"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_spiral_nemesis",
+      "killed_enderman"
+    ]
+  ]
 }

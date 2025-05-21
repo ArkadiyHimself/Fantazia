@@ -1,11 +1,26 @@
 {
-  "parent": "fantazia:the_worldliness/root",
-  "criteria" : {
-    "entered_nether" : {
-      "trigger" : "minecraft:changed_dimension",
-      "conditions" : {
+  "criteria": {
+    "entered_the_nether": {
+      "conditions": {
         "to": "minecraft:the_nether"
-      }
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "found_soul_eater": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:soul_eater"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_soul_eater",
+      "entered_the_nether"
+    ]
+  ]
 }

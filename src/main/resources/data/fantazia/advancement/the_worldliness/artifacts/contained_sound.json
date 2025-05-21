@@ -1,15 +1,44 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "sculk_shrieker": {
-      "trigger": "minecraft:inventory_changed",
+    "found_contained_sound": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:sculk_shrieker"]
+            "items": "fantazia:contained_sound"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "obscure_substance": {
+      "conditions": {
+        "possessed": {
+          "items": [
+            "fantazia:obscure_substance"
+          ]
+        }
+      },
+      "trigger": "fantazia:possess_item"
+    },
+    "sculk_shrieker": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:sculk_shrieker"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "sculk_shrieker",
+      "found_contained_sound"
+    ],
+    [
+      "found_contained_sound",
+      "obscure_substance"
+    ]
+  ]
 }

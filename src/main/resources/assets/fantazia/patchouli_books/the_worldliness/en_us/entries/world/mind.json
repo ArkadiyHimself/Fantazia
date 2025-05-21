@@ -1,24 +1,24 @@
 {
-  "name": "book.fantazia.entry.world.mind.name",
-  "icon": "minecraft:book",
+  "advancement": "fantazia:the_worldliness/world/mind",
   "category": "fantazia:world",
-  "advancement" : "fantazia:the_worldliness/world/mind",
+  "icon": "minecraft:book",
+  "name": "book.fantazia.the_worldliness.world.mind.name",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.world.mind.page.1"
+      "text": "book.fantazia.the_worldliness.world.mind.page.1"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.world.mind.page.2"
+      "text": "book.fantazia.the_worldliness.world.mind.page.2"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.world.mind.page.3"
+      "text": "book.fantazia.the_worldliness.world.mind.page.3"
     },
     {
       "type": "patchouli:text",
-      "text" : "book.fantazia.entry.world.mind.page.4"
+      "text": "book.fantazia.the_worldliness.world.mind.page.4"
     }
   ]
 }

@@ -1,12 +1,9 @@
 package net.arkadiyhimself.fantazia.packets.stuff;
 
-import com.mojang.serialization.Codec;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -32,6 +29,6 @@ public record AddChasingParticlesS2C(List<ParticleOptions> particleOptions) impl
 
     @Override
     public void handle(IPayloadContext context) {
-        context.enqueueWork(() -> StuffHandlers.chasingParticle(particleOptions));
+        context.enqueueWork(() -> StuffHandlers.addChasingParticle(particleOptions));
     }
 }

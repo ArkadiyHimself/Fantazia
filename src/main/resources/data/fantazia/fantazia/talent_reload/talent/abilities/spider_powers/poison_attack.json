@@ -1,0 +1,18 @@
+{
+  "damage_multiplies": [
+    {
+      "damage_type": {
+        "damage_types": [
+          "neoforge:poison"
+        ]
+      },
+      "multiplier": 0.5
+    }
+  ],
+  "icon": "fantazia:textures/talent/abilities/spider_powers/poison_attack.png",
+  "impacts": [
+    "fantazia:wall_climbing.poison"
+  ],
+  "title": "talent.fantazia.abilities.spider_powers.poison_attack",
+  "wisdom": 50
+}

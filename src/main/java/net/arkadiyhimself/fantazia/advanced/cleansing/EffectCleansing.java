@@ -42,8 +42,11 @@ public class EffectCleansing {
         if (instance == null || instance.isInfiniteDuration()) return;
         int newDur = instance.getDuration() - duration;
         int amplifier = instance.getAmplifier();
+        boolean ambient = instance.isAmbient();
+        boolean visible = instance.isVisible();
+        boolean showIcon = instance.showIcon();
         livingEntity.removeEffect(effect);
-        if (newDur > 0) livingEntity.addEffect(new MobEffectInstance(effect, newDur, amplifier));
+        if (newDur > 0) livingEntity.addEffect(new MobEffectInstance(effect, newDur, amplifier, ambient, visible, showIcon));
     }
 
     public static void reduceLevel(LivingEntity livingEntity, Holder<MobEffect> effect, int level) {
@@ -51,8 +54,11 @@ public class EffectCleansing {
         if (instance == null) return;
         int duration = instance.getDuration();
         int newAmpl = instance.getAmplifier() - level;
+        boolean ambient = instance.isAmbient();
+        boolean visible = instance.isVisible();
+        boolean showIcon = instance.showIcon();
         livingEntity.removeEffect(effect);
-        if (newAmpl >= 0) livingEntity.addEffect(new MobEffectInstance(effect, duration, newAmpl));
+        if (newAmpl >= 0) livingEntity.addEffect(new MobEffectInstance(effect, duration, newAmpl, ambient, visible, showIcon));
     }
 
     public static void reduceLevel(LivingEntity livingEntity, Holder<MobEffect> effect) {

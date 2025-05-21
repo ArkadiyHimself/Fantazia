@@ -21,7 +21,7 @@ public class FTZGameRules {
         else return key;
     }
 
-    public static void bootStrap() {
+    public static void onModSetup() {
         GAMERULE_MAP.forEach((key,type) -> GameRules.register(key.getId(), key.getCategory(), type));
     }
 

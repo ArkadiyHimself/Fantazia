@@ -1,27 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "equipment",
+  "category": "equipment",
+  "key": {
+    "#": {
+      "item": "minecraft:glass"
+    },
+    "B": {
+      "item": "fantazia:fantazium_ingot"
+    },
+    "H": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "X": {
+      "item": "fantazia:obscure_substance"
+    }
+  },
   "pattern": [
     "X#X",
     "X#X",
     "BHB"
   ],
-  "key": {
-    "#": {
-      "item": "minecraft:glass"
-    },
-    "X": {
-      "item": "fantazia:obscure_substance"
-    },
-    "H" : {
-      "item": "minecraft:netherite_ingot"
-    },
-    "B" : {
-      "item": "fantazia:fantazium_ingot"
-    }
-  },
   "result": {
+    "count": 1,
     "id": "fantazia:fragile_blade"
-  },
-  "show_notification": true
+  }
 }

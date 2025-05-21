@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "fantazia:item/talent/vitality_fruit"
+    "layer0": "fantazia:item/expendable/vitality_fruit"
   }
 }

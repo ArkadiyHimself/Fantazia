@@ -132,7 +132,7 @@ public record HiddenPotentialHolder(float damage, int delay) {
 
     @Override
     public boolean equals(Object obj) {
-        return false;
+        return obj instanceof HiddenPotentialHolder holder && holder.damage == this.damage;
     }
 
     @Override

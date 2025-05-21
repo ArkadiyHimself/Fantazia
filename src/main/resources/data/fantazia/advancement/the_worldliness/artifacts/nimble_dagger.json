@@ -1,33 +1,44 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "pearl": {
-      "trigger": "minecraft:inventory_changed",
+    "ender_pearl": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:ender_pearl"]
+            "items": "minecraft:ender_pearl"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
-    "substance" : {
-      "trigger": "minecraft:inventory_changed",
+    "found_nimble_dagger": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:obscure_substance"]
+            "items": "fantazia:nimble_dagger"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "obscure_substance": {
+      "conditions": {
+        "possessed": {
+          "items": [
+            "fantazia:obscure_substance"
+          ]
+        }
+      },
+      "trigger": "fantazia:possess_item"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
-      "pearl"
+      "ender_pearl",
+      "found_nimble_dagger"
     ],
     [
-      "substance"
+      "found_nimble_dagger",
+      "obscure_substance"
     ]
   ]
 }

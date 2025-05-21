@@ -9,9 +9,10 @@ import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerPlayer;
 
 public class WisdomCommand {
-    private WisdomCommand() {}
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("wisdom").requires(commandSourceStack -> commandSourceStack.hasPermission(2)).then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE)).executes(context -> {
+        dispatcher.register(Commands.literal("wisdom").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+                .then(Commands.argument("amount", IntegerArgumentType.integer(0, Integer.MAX_VALUE)).executes(context -> {
             ServerPlayer serverPlayer = context.getSource().getPlayer();
             if (serverPlayer == null) return 0;
             TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(serverPlayer, TalentsHolder.class);

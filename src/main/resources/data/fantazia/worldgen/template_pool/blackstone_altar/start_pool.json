@@ -1,18 +1,16 @@
 {
-  "name" : "fantazia:blackstone_altar/start_pool",
-  "fallback": "minecraft:empty",
-
   "elements": [
     {
-      "weight": 1,
       "element": {
-
+        "element_type": "minecraft:single_pool_element",
         "location": "fantazia:blackstone_altar",
-
-        "processors": "minecraft:empty",
-        "projection": "rigid",
-        "element_type": "minecraft:single_pool_element"
-      }
+        "processors": {
+          "processors": []
+        },
+        "projection": "rigid"
+      },
+      "weight": 1
     }
-  ]
+  ],
+  "fallback": "minecraft:empty"
 }

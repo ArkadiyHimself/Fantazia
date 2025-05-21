@@ -1,7 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
-  "criteria" : {
-    "in_city": {
+  "criteria": {
+    "found_amplified_ice": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:amplified_ice"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "is_cold/overworld": {
       "conditions": {
         "player": [
           {
@@ -17,5 +26,11 @@
       },
       "trigger": "minecraft:location"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_amplified_ice",
+      "is_cold/overworld"
+    ]
+  ]
 }

@@ -3,7 +3,6 @@ package net.arkadiyhimself.fantazia.advanced.spell.types;
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -23,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public abstract class AbstractSpell implements ITooltipBuilder {
+public abstract class AbstractSpell implements ISpell {
 
     private final float manacost;
     private final int defaultRecharge;
@@ -100,8 +99,8 @@ public abstract class AbstractSpell implements ITooltipBuilder {
         String recharge = String.format("%.1f", ((float) getDefaultRecharge()) / 20);
         Component basicRecharge = Component.literal(recharge).withStyle(ability);
         Component rechargeComponent;
-        if (deltaRechargeComponent != null) rechargeComponent = Component.translatable("tooltip.fantazia.common.recharge_modified", basicRecharge, deltaRechargeComponent).withStyle(heading);
-        else rechargeComponent = GuiHelper.bakeComponent("tooltip.fantazia.common.recharge", heading, ability, basicRecharge);
+        if (deltaRechargeComponent != null) rechargeComponent = Component.translatable("tooltip.fantazia.common.spell.recharge_modified", basicRecharge, deltaRechargeComponent).withStyle(heading);
+        else rechargeComponent = GuiHelper.bakeComponent("tooltip.fantazia.common.spell.recharge", heading, ability, basicRecharge);
         return rechargeComponent;
     }
 

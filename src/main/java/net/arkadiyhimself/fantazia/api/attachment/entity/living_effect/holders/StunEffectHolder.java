@@ -108,6 +108,8 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
         DamageSource source = event.getSource();
         float amount = event.getNewDamage();
 
+        if (!source.is(FTZDamageTypes.REMOVAL) && !source.is(FTZDamageTypes.BLEEDING)) delay = Math.max(delay, 16);
+
         if (serverLevel.getGameRules().getBoolean(FTZGameRules.STUN_FROM_ATTACKS) && meleeHit(source, amount)) return;
 
         int premature = (int) ((float) points / getMaxPoints() * DURATION);
@@ -153,12 +155,14 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
             finalPoints = (int) Math.max(basicPoints, maxPoint * 0.25f);
         }
         if (getEntity().level() instanceof ServerLevel serverLevel) finalPoints = (int) ((float) finalPoints * pointMultiplier(serverLevel));
+        finalPoints = (int) Math.min(finalPoints, maxPoint * 0.85f);
+        if (getEntity().getData(FTZAttachmentTypes.DASHSTONE_MINION)) finalPoints = (int) (0.4f * (float) finalPoints);
 
         points += finalPoints;
-        if (points < getMaxPoints()) return true;
-
-        attackStunned(DURATION);
-        getEntity().playSound(FTZSoundEvents.COMBAT_ATTACK_STUNNED.get());
+        if (points >= getMaxPoints()) {
+            attackStunned(DURATION);
+            getEntity().playSound(FTZSoundEvents.COMBAT_ATTACK_STUNNED.get());
+        }
 
         return true;
     }
@@ -192,5 +196,10 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
     private float pointMultiplier(ServerLevel serverLevel) {
         Difficulty difficulty = serverLevel.getDifficulty();
         return 0.3f + (float) difficulty.getId() * 0.3f;
+    }
+
+    public void healPoints(int amount, boolean ignoreDelay) {
+        if (!ignoreDelay && delay > 0 || duration > 0) return;
+        this.points = Math.max(0, points - amount);
     }
 }

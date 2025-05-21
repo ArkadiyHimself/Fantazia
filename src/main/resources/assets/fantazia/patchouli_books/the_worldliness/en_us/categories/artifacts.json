@@ -1,5 +1,5 @@
 {
-  "name": "book.fantazia.category.artifacts.name",
-  "description": "book.fantazia.category.artifacts.desc",
-  "icon": "fantazia:entangler"
+  "description": "book.fantazia.the_worldliness.artifacts.desc",
+  "icon": "fantazia:entangler",
+  "name": "book.fantazia.the_worldliness.artifacts.name"
 }

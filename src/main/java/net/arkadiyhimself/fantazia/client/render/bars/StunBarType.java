@@ -13,9 +13,14 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class StunBarType extends RenderStateShard {
+
     private static final ResourceLocation STUN_BAR = Fantazia.res("textures/render_above/stun_bar.png");
     public static final RenderType BAR_TEXTURE_TYPE = emptyStunBarType();
-    public StunBarType(String pName, Runnable pSetupState, Runnable pClearState) {super(pName, pSetupState, pClearState);}
+
+    public StunBarType(String pName, Runnable pSetupState, Runnable pClearState) {
+        super(pName, pSetupState, pClearState);
+    }
+
     private static RenderType emptyStunBarType() {
         RenderType.CompositeState renderTypeState = RenderType.CompositeState.builder()
                 .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
@@ -25,9 +30,11 @@ public class StunBarType extends RenderStateShard {
                 .createCompositeState(false);
         return StunBarType.createStunBar(renderTypeState);
     }
+
     private static RenderType createStunBar(RenderType.CompositeState glState) {
         return RenderType.create("stun_bar", com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, true, glState);
     }
+
     public static void render(@NotNull StunEffectHolder stunEffect, PoseStack poseStack, MultiBufferSource buffers) {
         float stunPercent;
         VertexConsumer stunBar = buffers.getBuffer(BAR_TEXTURE_TYPE);

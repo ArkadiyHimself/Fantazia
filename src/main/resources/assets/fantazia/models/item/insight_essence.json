@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "fantazia:item/talent/insight_essence"
+    "layer0": "fantazia:item/expendable/insight_essence"
   }
 }

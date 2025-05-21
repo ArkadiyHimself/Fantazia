@@ -1,4 +1,11 @@
 {
-  "entities" : ["minecraft:player", "player", "minecraft:armor_stand"],
-  "slots" : ["spellcaster", "passivecaster", "dashstone"]
+  "entities": [
+    "minecraft:player"
+  ],
+  "slots": [
+    "activecaster",
+    "passivecaster",
+    "dashstone",
+    "rune"
+  ]
 }

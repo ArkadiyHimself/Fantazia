@@ -1,15 +1,19 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "bottle": {
-      "trigger": "minecraft:inventory_changed",
+    "insight_essence": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:insight_essence"]
+            "items": "fantazia:insight_essence"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "insight_essence"
+    ]
+  ]
 }

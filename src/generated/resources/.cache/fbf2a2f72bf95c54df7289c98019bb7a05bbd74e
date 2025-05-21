@@ -1,13 +1,17 @@
-// 1.21.1	2025-04-16T19:41:46.272758	Tags for minecraft:item mod id fantazia
-5e10c2ee0e01cd4d0d7921acd051904303e11432 data/curios/tags/item/dashstone.json
-81fdfc10440c465b0a77577f0f19ac96df7ab340 data/curios/tags/item/passivecaster.json
-940ff17e4ab80eeb306f523f64b77ea64f0bb0a5 data/curios/tags/item/spellcaster.json
+// 1.21.1	2025-05-17T23:54:00.629971	Tags for minecraft:item mod id fantazia
 5d5c47cc045d34f55ef726601450d7a9aad56035 data/fantazia/tags/item/enchantable/hatchet.json
 07a11b431402424368fa5351f5e9f7f763727316 data/fantazia/tags/item/fantazium_ores.json
-af65634e9e2e47b165480a6f2a8dad34c406653f data/fantazia/tags/item/hatchets.json
+1d96d90328b7737649984791191a2ee47f7c47a1 data/fantazia/tags/item/for_activecaster.json
+2eae8fec980fa63be1bdb33de271e41cb12b0044 data/fantazia/tags/item/for_dashstone.json
+abb25e2c08cbd0535482011ea0ccef2e1af69c4a data/fantazia/tags/item/for_passivecaster.json
+26f948fcc2442d6c81e082dff9aaf28955077d6d data/fantazia/tags/item/for_rune.json
+3f262ccd03ae61799024b49a294f1aed7800112e data/fantazia/tags/item/from_fantazium.json
+eb9f760cbd16fc004ff7382d4042b82f6780690c data/fantazia/tags/item/from_obscure_tree.json
+9a74d7b401652937a945946c415c50d0d6f9d033 data/fantazia/tags/item/hatchets.json
 4baeccdc9cf5331d0de93887d1e03910cb815bf2 data/fantazia/tags/item/melee_block.json
 d9fa8492b3cf95f697b9823051abd6f56771b81b data/fantazia/tags/item/no_disintegration.json
 5805ba3d0e150b94b847c5564da562de572f303e data/fantazia/tags/item/obscure_logs.json
+d5c0a83af5df58238e323b0f5362e52a1684fd1f data/fantazia/tags/item/range_weapon.json
 4945fdd99f77a0fd74762ab4d49e8f26e7c1a593 data/minecraft/tags/item/beacon_payment_items.json
 6ed38f069bed35d7b9c4b2edbd32f5c7d18d7c3c data/minecraft/tags/item/boats.json
 1020eec7504d2b15166d785e840a59a48dfa26d6 data/minecraft/tags/item/chest_boats.json

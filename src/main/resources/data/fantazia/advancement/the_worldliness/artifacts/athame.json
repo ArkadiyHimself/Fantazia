@@ -1,23 +1,16 @@
 {
-  "parent": "fantazia:the_worldliness/root",
-  "criteria" : {
-    "jungle_temple": {
+  "criteria": {
+    "found_athame": {
       "conditions": {
-        "player": [
+        "items": [
           {
-            "condition": "minecraft:entity_properties",
-            "entity": "this",
-            "predicate": {
-              "location": {
-                "structures": "minecraft:jungle_pyramid"
-              }
-            }
+            "items": "fantazia:athame"
           }
         ]
       },
-      "trigger": "minecraft:location"
+      "trigger": "minecraft:inventory_changed"
     },
-    "desert_temple": {
+    "visited_desert_pyramid": {
       "conditions": {
         "player": [
           {
@@ -32,10 +25,29 @@
         ]
       },
       "trigger": "minecraft:location"
+    },
+    "visited_jungle_pyramid": {
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "minecraft:jungle_pyramid"
+              }
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:location"
     }
   },
-
-  "requirements" : [
-   ["jungle_temple", "desert_temple"]
+  "requirements": [
+    [
+      "found_athame",
+      "visited_desert_pyramid",
+      "visited_jungle_pyramid"
+    ]
   ]
 }

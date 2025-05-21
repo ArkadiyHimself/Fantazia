@@ -43,7 +43,6 @@ public class FantazicBlockLootSubProvider extends BlockLootSubProvider {
 
         add(FTZBlocks.FANTAZIUM_ORE.get(),block -> createOreDrop(block, FTZItems.RAW_FANTAZIUM.value()));
         add(FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.get(),block -> createOreDrop(block, FTZItems.RAW_FANTAZIUM.value()));
-
     }
 
     @Override

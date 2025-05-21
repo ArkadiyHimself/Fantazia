@@ -1,0 +1,27 @@
+{
+  "loot_instances": [
+    {
+      "added": {
+        "components": {
+          "fantazia:rune": "fantazia:pure_vessel"
+        },
+        "count": 1,
+        "id": "fantazia:rune_wielder"
+      },
+      "chance": 0.3
+    },
+    {
+      "added": {
+        "components": {
+          "fantazia:rune": "fantazia:omnidirectional"
+        },
+        "count": 1,
+        "id": "fantazia:rune_wielder"
+      },
+      "chance": 0.175
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/trial_chambers/reward_common"
+  ]
+}

@@ -3,23 +3,19 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ITalentListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.custom_events.BlockingEvent;
 import net.arkadiyhimself.fantazia.data.criterion.MeleeBlockTrigger;
-import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
 import net.arkadiyhimself.fantazia.entities.magic_projectile.AbstractMagicProjectile;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.arkadiyhimself.fantazia.packets.IPacket;
-import net.arkadiyhimself.fantazia.packets.stuff.SwingHandS2C;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -36,11 +32,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentListener, IDamageEventListener {
+public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEventListener {
 
     public static final int BLOCK_ANIM = 20;
     private static final int BLOCK_WINDOW = 13;
@@ -78,7 +73,47 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         tag.putBoolean("bloodloss", this.bloodloss);
         tag.putBoolean("disarm", this.disarm);
 
-        if (anim == BLOCK_ANIM - 1) tag.putInt("anim", this.anim);
+        tag.putInt("anim", this.anim);
+        tag.putInt("blockTicks", this.blockTicks);
+        tag.putInt("parryTicks", this.parryTicks);
+        tag.putInt("parryDelay", this.parryDelay);
+        tag.putInt("blockedTime", this.blockedTime);
+        tag.putInt("blockCooldown", this.blockCooldown);
+        tag.putBoolean("parried", this.parried);
+        tag.putBoolean("expiring", this.expiring);
+        tag.putFloat("dmgTaken", this.dmgTaken);
+        tag.putFloat("dmgParry", this.dmgParry);
+
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
+        this.unlocked = tag.getBoolean("unlocked");
+        this.bloodloss = tag.getBoolean("bloodloss");
+        this.disarm = tag.getBoolean("disarm");
+
+        this.anim = tag.getInt("anim");
+        this.blockTicks = tag.getInt("blockTicks");
+        this.parryTicks = tag.getInt("parryTicks");
+        this.parryDelay = tag.getInt("parryDelay");
+        this.blockedTime = tag.getInt("blockedTime");
+        this.blockCooldown = tag.getInt("blockCooldown");
+        this.parried = tag.getBoolean("parried");
+        this.expiring = tag.getBoolean("expiring");
+        this.dmgTaken = tag.getFloat("dmgTaken");
+        this.dmgParry = tag.getFloat("dmgParry");
+    }
+
+    @Override
+    public CompoundTag serializeInitial() {
+        CompoundTag tag = new CompoundTag();
+
+        tag.putBoolean("unlocked", this.unlocked);
+        tag.putBoolean("bloodloss", this.bloodloss);
+        tag.putBoolean("disarm", this.disarm);
+
+        tag.putInt("anim", this.anim);
         tag.putInt("blockCooldown", this.blockCooldown);
         tag.putInt("blockTicks", this.blockTicks);
         tag.putInt("parryTicks", this.parryTicks);
@@ -87,15 +122,15 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-        this.unlocked = compoundTag.getBoolean("unlocked");
-        this.bloodloss = compoundTag.getBoolean("bloodloss");
-        this.disarm = compoundTag.getBoolean("disarm");
+    public void deserializeInitial(CompoundTag tag) {
+        this.unlocked = tag.getBoolean("unlocked");
+        this.bloodloss = tag.getBoolean("bloodloss");
+        this.disarm = tag.getBoolean("disarm");
 
-        if (compoundTag.contains("anim")) this.anim = compoundTag.getInt("anim");
-        this.blockCooldown = compoundTag.getInt("blockCooldown");
-        this.blockTicks = compoundTag.getInt("blockTicks");
-        this.parryTicks = compoundTag.getInt("parryTicks");
+        this.anim = tag.getInt("anim");
+        this.blockCooldown = tag.getInt("blockCooldown");
+        this.blockTicks = tag.getInt("blockTicks");
+        this.parryTicks = tag.getInt("parryTicks");
     }
 
     @Override
@@ -120,7 +155,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         if (blockedTime > 0) blockedTime--;
         if (blockCooldown > 0) blockCooldown--;
 
-        if (parryDelay == 2 && parried && getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new SwingHandS2C(InteractionHand.MAIN_HAND));
+        if (parryDelay == 2 && parried && getPlayer() instanceof ServerPlayer serverPlayer) IPacket.swingHand(serverPlayer, InteractionHand.MAIN_HAND);
         if (parried && parryDelay == 0) {
             boolean flag2 = CommonHooks.fireSweepAttack(getPlayer(), lastAttacker,false).isSweeping();
             if (flag2) getPlayer().sweepAttack();
@@ -172,11 +207,10 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         Entity attacker = event.getSource().getDirectEntity();
         Vec3 sourcePos = event.getSource().getSourcePosition();
 
-        boolean cancel = true;
+        boolean cancel = false;
         if (sourcePos == null || !PlayerAbilityHelper.facesAttack(getPlayer(), sourcePos)) return;
 
         if ((event.getSource().is(DamageTypes.MOB_ATTACK) || event.getSource().is(DamageTypes.PLAYER_ATTACK)) && attacker instanceof LivingEntity livingAtt) {
-
             if (blockTicks > 0) {
                 lastAttacker = livingAtt;
                 dmgTaken = event.getAmount();
@@ -186,36 +220,23 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
                     // parrying
                     AttributeInstance attackDamage = getPlayer().getAttribute(Attributes.ATTACK_DAMAGE);
                     float DMG = attackDamage == null ? 8f : (float) attackDamage.getValue() * 2;
-                    if (parryAttack(DMG)) getPlayer().getMainHandItem().hurtAndBreak(1, livingAtt, EquipmentSlot.MAINHAND);
-                    else cancel = false;
+                    if (parryAttack(DMG)) {
+                        cancel = true;
+                        getPlayer().getMainHandItem().hurtAndBreak(1, livingAtt, EquipmentSlot.MAINHAND);
+                    }
                     // regular blocking
-                } else if (blockAttack()) getPlayer().getMainHandItem().hurtAndBreak(2, livingAtt, EquipmentSlot.MAINHAND);
-            } else if (blockedTime <= 0 && parryDelay <= 0) cancel = false;
+                } else if (blockAttack()) {
+                    cancel = true;
+                    getPlayer().getMainHandItem().hurtAndBreak(2, livingAtt, EquipmentSlot.MAINHAND);
+                }
+            } else if (blockedTime > 0 || parryDelay > 0) cancel = true;
 
         } else if (attacker instanceof AbstractMagicProjectile projectileAtt && blockTicks > 0) {
             projectileAtt.deflect(getPlayer());
             cancel = projectileAtt.isMeleeBlocked() && blockAttack();
         }
 
-        event.setCanceled(cancel);
-    }
-
-    @Override
-    public void onTalentUnlock(ITalent talent) {
-        ResourceLocation location = talent.getID();
-
-        if (Fantazia.res("melee_block/melee_block").equals(location)) unlocked = true;
-        if (Fantazia.res("melee_block/parry_haemorrhage").equals(location)) bloodloss = true;
-        if (Fantazia.res("melee_block/parry_disarm").equals(location)) disarm = true;
-    }
-
-    @Override
-    public void onTalentRevoke(ITalent talent) {
-        ResourceLocation location = talent.getID();
-
-        if (Fantazia.res("melee_block/melee_block").equals(location)) unlocked = false;
-        if (Fantazia.res("melee_block/parry_haemorrhage").equals(location)) bloodloss = false;
-        if (Fantazia.res("melee_block/parry_disarm").equals(location)) disarm = false;
+        if (cancel) event.setCanceled(true);
     }
 
     public boolean isInAnim() {
@@ -242,6 +263,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "parry");;
 
         triggerMeleeBlock(true);
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.parryAttack(serverPlayer, amount);
 
         return true;
     }
@@ -261,6 +283,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.COMBAT_MELEE_BLOCK.get(), SoundSource.PLAYERS);
 
         triggerMeleeBlock(false);
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.blockAttack(serverPlayer);
 
         return true;
     }
@@ -272,7 +295,8 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         parryTicks = getPlayer().level() instanceof ServerLevel serverLevel ? getParryWindow(serverLevel) : PARRY_WINDOW;
         anim = BLOCK_ANIM;
         expiring = true;
-        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "blocking");;
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "blocking");
+        else IPacket.startBlocking();
     }
 
     public void interrupt() {
@@ -299,6 +323,18 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements ITalentList
         int parries = customCriteriaHolder.performAction(Fantazia.res("parried_attack"), parried ? 1 : 0);
 
         MeleeBlockTrigger.INSTANCE.trigger(serverPlayer, blocks, parries, parried, lastAttacker);
+    }
+
+    public void setUnlocked(boolean value) {
+        this.unlocked = value;
+    }
+
+    public void setBloodloss(boolean value) {
+        this.bloodloss = value;
+    }
+
+    public void setDisarm(boolean value) {
+        this.disarm = value;
     }
 
     public int anim() {

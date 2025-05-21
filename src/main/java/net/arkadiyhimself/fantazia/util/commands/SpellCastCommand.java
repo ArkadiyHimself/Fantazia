@@ -27,6 +27,7 @@ import java.util.List;
 
 public class SpellCastCommand {
     private SpellCastCommand() {}
+
     private static final SuggestionProvider<CommandSourceStack> SUGGEST_SELF_SPELL = (context, builder) -> {
         List<Holder.Reference<AbstractSpell>> spells = new java.util.ArrayList<>(List.copyOf(FantazicRegistries.SPELLS.holders().toList()));
         spells.removeIf(spell -> !(spell.value() instanceof SelfSpell));

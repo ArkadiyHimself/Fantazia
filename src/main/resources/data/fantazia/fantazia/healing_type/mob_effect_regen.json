@@ -1,5 +1,3 @@
 {
-  "id": "mob_effect_regen",
-  "exhaustion": 0,
-  "particles": []
+  "id": "mobEffectRegen"
 }

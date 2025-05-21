@@ -1,20 +1,20 @@
 {
-  "name": "book.fantazia.entry.world.cleanse.name",
-  "icon": "minecraft:milk_bucket",
   "category": "fantazia:world",
+  "icon": "minecraft:milk_bucket",
+  "name": "book.fantazia.the_worldliness.world.cleanse.name",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.world.cleanse.page.1"
+      "text": "book.fantazia.the_worldliness.world.cleanse.page.1"
     },
     {
-      "type": "spotlight",
-      "item" : "minecraft:milk_bucket",
-      "text" : "book.fantazia.entry.world.cleanse.page.2"
+      "type": "patchouli:spotlight",
+      "item": "minecraft:milk_bucket",
+      "text": "book.fantazia.the_worldliness.world.cleanse.page.2"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.world.cleanse.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.world.cleanse.page.3"
     }
   ]
 }

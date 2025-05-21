@@ -1,6 +1,7 @@
 {
     "parent" : "minecraft:builtin/entity",
     "loader" : "neoforge:separate_transforms",
+    "gui_light" : "front",
     "base" : {
         "parent" : "fantazia:item/murasama/murasama_model"
     },

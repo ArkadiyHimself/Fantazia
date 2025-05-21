@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "corrosion": {
+      "conditions": {
+        "effects": {
+          "fantazia:corrosion": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "requirements": [
+    [
+      "corrosion"
+    ]
+  ]
+}

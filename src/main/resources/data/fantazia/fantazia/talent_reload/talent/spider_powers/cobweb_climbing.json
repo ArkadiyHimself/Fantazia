@@ -1,6 +1,0 @@
-{
-  "type" : "basic",
-  "iconTexture" : "fantazia:textures/talents/spider_powers/cobweb_climbing.png",
-  "title" : "fantazia.talent.spider_powers.cobweb_climbing",
-  "wisdom": 25
-}

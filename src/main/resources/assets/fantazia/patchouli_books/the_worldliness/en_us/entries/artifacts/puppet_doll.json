@@ -1,23 +1,22 @@
 {
-  "name": "item.fantazia.puppet_doll",
-  "icon": "fantazia:puppet_doll",
+  "advancement": "fantazia:the_worldliness/artifacts/puppet_doll",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/puppet_doll",
-  "read_by_default": false,
+  "icon": "fantazia:puppet_doll",
+  "name": "item.fantazia.puppet_doll",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.puppet_doll.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.puppet_doll.page.1"
     },
     {
-      "type": "crafting",
+      "type": "patchouli:crafting",
       "recipe": "fantazia:puppet_doll",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.puppet_doll.page.2"
+      "text": "book.fantazia.the_worldliness.artifacts.puppet_doll.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.puppet_doll.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.puppet_doll.page.3"
     }
   ]
 }

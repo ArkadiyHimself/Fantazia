@@ -1,18 +1,18 @@
 {
-  "name": "book.fantazia.entry.enchantments.decisive_strike.name",
-  "icon": "minecraft:enchanted_book",
-  "category": "fantazia:enchantments",
   "advancement": "fantazia:the_worldliness/enchantments/generic",
+  "category": "fantazia:enchantments",
+  "icon": "minecraft:enchanted_book",
+  "name": "enchantment.fantazia.decisive_strike",
   "pages": [
     {
-      "type": "text",
-      "text": "book.fantazia.entry.enchantments.decisive_strike.page.1"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.enchantments.decisive_strike.page.1"
     },
     {
-      "type": "spotlight",
-      "item": "tag:minecraft:swords,tag:minecraft:axes",
-      "title": "book.fantazia.entry.enchantments.decisive_strike.heading",
-      "text": "book.fantazia.entry.enchantments.decisive_strike.page.2"
+      "type": "patchouli:spotlight",
+      "item": "tag:minecraft:enchantable/sword",
+      "text": "book.fantazia.the_worldliness.enchantments.decisive_strike.page.2",
+      "title": "book.fantazia.heading.enchantments.sword"
     }
   ]
 }

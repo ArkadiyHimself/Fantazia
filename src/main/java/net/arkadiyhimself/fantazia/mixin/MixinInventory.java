@@ -19,8 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Inventory.class)
 public abstract class MixinInventory {
 
-    @Shadow public abstract ItemStack getSelected();
-
     @Shadow @Final public NonNullList<ItemStack> items;
 
     @Shadow @Final public Player player;

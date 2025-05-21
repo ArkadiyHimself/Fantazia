@@ -1,9 +1,0 @@
-{
-  "entity_types" : [
-    "minecraft:blaze"
-  ],
-
-  "aura_instances" : {
-    "fantazia:hellfire" : 0.3
-  }
-}

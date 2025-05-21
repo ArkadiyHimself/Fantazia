@@ -8,9 +8,10 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.LayeredBarrierEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.GameRenderer;
@@ -56,8 +57,7 @@ public class LayeredBarrierLayer {
             EvasionHolder evasionHolder = LivingDataHelper.takeHolder(pLivingEntity, EvasionHolder.class);
             if (evasionHolder != null && evasionHolder.getIFrames() > 0) return;
 
-            LayeredBarrierEffectHolder layeredBarrierEffect = LivingEffectHelper.takeHolder(pLivingEntity, LayeredBarrierEffectHolder.class);
-            if (layeredBarrierEffect == null || !layeredBarrierEffect.hasBarrier()) return;
+            if (pLivingEntity.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS) <= 0) return;
 
             if (pLivingEntity instanceof Player player) {
                 DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
@@ -70,19 +70,17 @@ public class LayeredBarrierLayer {
             M entityModel = this.renderer.getModel();
             entityModel.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
             this.getParentModel().copyPropertiesTo(entityModel);
-            float pU = xOffset(f) % 1.0F;
+            float pU = VisualHelper.layerOffset(f) % 1.0F;
             float pV = f * 0.01F % 1.0F;
 
             VertexConsumer pBufferBuffer = pBuffer.getBuffer(RenderType.energySwirl(furious ? BARRIER_LAYER_FURY : BARRIER_LAYER, pU, pV));
             entityModel.setupAnim(pLivingEntity, pLimbSwing, pLimbSwingAmount, pAgeInTicks, pNetHeadYaw, pHeadPitch);
 
-            int color = FastColor.ARGB32.colorFromFloat(0.125f, 1f, furious ? 0.6f : 1f, furious ? 0.6f : 1f);
+            float barrierColor = pLivingEntity.getData(FTZAttachmentTypes.LAYERED_BARRIER_COLOR);
+            int color = FastColor.ARGB32.colorFromFloat(0.125f + barrierColor * 0.5f, 1f, furious ? 0.6f : 1f, furious ? 0.6f : 1f);
             entityModel.renderToBuffer(pPoseStack, pBufferBuffer, pPackedLight, OverlayTexture.NO_OVERLAY, color);
             VertexConsumer BGvertex = pBuffer.getBuffer(RenderType.entityTranslucent(furious ? BARRIER_BG_FURY : BARRIER_BG));
             entityModel.renderToBuffer(pPoseStack, BGvertex, pPackedLight, OverlayTexture.NO_OVERLAY, color);
-        }
-        public static float xOffset(float pTickCount) {
-            return pTickCount * 0.01F;
         }
     }
 

@@ -2,26 +2,22 @@ package net.arkadiyhimself.fantazia.advanced.spell.types;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
+import net.arkadiyhimself.fantazia.advanced.spell.SpellCastResult;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.item.ItemStack;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.*;
 
 public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
 
@@ -29,10 +25,10 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
     private final float range;
 
     private final BiPredicate<LivingEntity, T> conditions;
-    private final BiConsumer<LivingEntity, T> beforeBlockCheck;
+    private final BiFunction<LivingEntity, T, SpellCastResult> beforeBlockCheck;
     private final BiConsumer<LivingEntity, T> afterBlockCheck;
 
-    protected TargetedSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> affected, float range, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, BiPredicate<LivingEntity, T> conditions, BiConsumer<LivingEntity, T> beforeBlockCheck, BiConsumer<LivingEntity, T> afterBlockCheck) {
+    protected TargetedSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> affected, float range, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, BiPredicate<LivingEntity, T> conditions, BiFunction<LivingEntity, T, SpellCastResult> beforeBlockCheck, BiConsumer<LivingEntity, T> afterBlockCheck) {
         super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList());
         this.affected = affected;
         this.range = range;
@@ -54,8 +50,8 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         }
     }
 
-    public void beforeBlockCheck(LivingEntity caster, T target) {
-        beforeBlockCheck.accept(caster, target);
+    public SpellCastResult beforeBlockCheck(LivingEntity caster, T target) {
+        return beforeBlockCheck.apply(caster, target);
     }
 
     public void afterBlockCheck(LivingEntity caster, T target) {
@@ -68,22 +64,16 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
     }
 
     @Override
-    public List<Component> itemTooltip(@Nullable ItemStack itemStack) {
+    public boolean isActive() {
+        return true;
+    }
+
+    @Override
+    public List<Component> buildTooltip() {
         List<Component> components = Lists.newArrayList();
-        if (this.getID() == null) return components;
-        String basicPath = "spell." + this.getID().getNamespace() + "." + this.getID().getPath();
-        int lines = 0;
-        if (!Screen.hasShiftDown()) {
-            String desc = Component.translatable(basicPath + ".desc.lines").getString();
-            try {
-                lines = Integer.parseInt(desc);
-            } catch (NumberFormatException ignored) {}
-            if (lines > 0) {
-                components.add(Component.literal(" "));
-                for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
-            }
-            return components;
-        }
+        if (getID() == null) return components;
+        String basicPath = "spell." + getID().getNamespace() + "." + getID().getPath();
+
         components.add(Component.literal(" "));
         ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.GOLD};
 
@@ -92,14 +82,14 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
 
         // spell name
         String namePath = basicPath + ".name";
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.targeted", heading, ability, Component.translatable(namePath).getString()));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.targeted", heading, ability, Component.translatable(namePath).getString()));
 
         // spell recharge
         components.add(bakeRechargeComponent(heading, ability));
 
         // spell manacost
         String manacost = String.format("%.1f", this.getManacost());
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.manacost", heading, ability, manacost));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.manacost", heading, ability, manacost));
 
         // spell range
         Component addRangeComponent = bakeRangeComponent();
@@ -107,17 +97,18 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         String range = String.format("%.1f", this.range());
         Component basicRange = Component.literal(range).withStyle(ability);
         Component rangeComponent;
-        if (addRangeComponent != null) rangeComponent = Component.translatable("tooltip.fantazia.common.range_modified", basicRange, addRangeComponent).withStyle(heading);
-        else rangeComponent = GuiHelper.bakeComponent("tooltip.fantazia.common.range", heading, ability, basicRange);
+        if (addRangeComponent != null) rangeComponent = Component.translatable("tooltip.fantazia.common.spell.range_modified", basicRange, addRangeComponent).withStyle(heading);
+        else rangeComponent = GuiHelper.bakeComponent("tooltip.fantazia.common.spell.range", heading, ability, basicRange);
 
         components.add(rangeComponent);
 
         // spell cleanse
-        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", heading, ability, this.getCleanse().getName()));
+        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, this.getCleanse().getName()));
 
         components.add(Component.literal(" "));
 
         String desc = Component.translatable(basicPath + ".lines").getString();
+        int lines = 0;
         try {
             lines = Integer.parseInt(desc);
         } catch (NumberFormatException ignored) {}
@@ -132,9 +123,8 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
 
         if (lines > 0) {
             components.add(Component.literal(" "));
-            components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active.passive", heading, null));
+            components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.alterations", heading, null));
             for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".passive." + i, null, null));
-
         }
 
         return components;
@@ -149,48 +139,38 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         else return Component.literal("- " + Math.min(range, Math.abs(value))).withStyle(ChatFormatting.RED, ChatFormatting.BOLD, ChatFormatting.ITALIC);
     }
 
-    public static class Builder<T extends LivingEntity> {
+    public static <T extends LivingEntity> Builder<T> builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> targetClass, float range) {
+        return new Builder<>(manacost, defaultRecharge, castSound, rechargeSound, targetClass, range);
+    }
 
-        private final float manacost;
-        private final int defaultRecharge;
-        private final @Nullable Holder<SoundEvent> castSound;
-        private final @Nullable Holder<SoundEvent> rechargeSound;
+    public static class Builder<T extends LivingEntity> extends SpellBuilder<TargetedSpell<T>> {
+
         private final Class<T> targetClass;
         private final float range;
 
-        private TickingConditions tickingConditions = TickingConditions.ALWAYS;
-        private Consumer<LivingEntity> ownerTick = owner -> {};
-        private Consumer<LivingEntity> uponEquipping = owner -> {};
         private Cleanse targetCleanse = Cleanse.BASIC;
-        private boolean doCleanse = false;
-        private Function<LivingEntity, Integer> recharge;
 
-        private BiPredicate<LivingEntity, T> conditions = ((livingEntity, t) -> true);
-        private BiConsumer<LivingEntity, T> beforeBlockCheck = (entity, t) -> {};
-        private BiConsumer<LivingEntity, T> afterBlockCheck = (entity, t) -> {};
+        private BiPredicate<LivingEntity, T> conditions = (livingEntity, target) -> true;
+        private BiFunction<LivingEntity, T, SpellCastResult> beforeBlockCheck = (entity, target) -> SpellCastResult.defaultResult();
+        private BiConsumer<LivingEntity, T> afterBlockCheck = (entity, target) -> {};
 
-        public Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> targetClass, float range) {
-            this.manacost = manacost;
-            this.defaultRecharge = defaultRecharge;
+        private Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> targetClass, float range) {
+            super(manacost, defaultRecharge, castSound, rechargeSound);
             this.targetClass = targetClass;
             this.range = range;
-            this.castSound = castSound;
-            this.rechargeSound = rechargeSound;
-
-            // safety measure
-            this.recharge = livingEntity -> defaultRecharge;
         }
 
         public Builder<T> tickingConditions(TickingConditions value) {
             this.tickingConditions = value;
             return this;
         }
+
         public Builder<T> ownerTick(Consumer<LivingEntity> value) {
             this.ownerTick = value;
             return this;
         }
 
-        public Builder uponEquipping(Consumer<LivingEntity> uponEquipping) {
+        public Builder<T> uponEquipping(Consumer<LivingEntity> uponEquipping) {
             this.uponEquipping = uponEquipping;
             return this;
         }
@@ -221,7 +201,7 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
             return this;
         }
 
-        public Builder<T> beforeBlockChecking(BiConsumer<LivingEntity, T> value) {
+        public Builder<T> beforeBlockChecking(BiFunction<LivingEntity, T, SpellCastResult> value) {
             this.beforeBlockCheck = value;
             return this;
         }

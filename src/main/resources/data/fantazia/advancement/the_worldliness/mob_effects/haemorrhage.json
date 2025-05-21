@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "effect": {
+    "haemorrhage": {
       "conditions": {
         "effects": {
           "fantazia:haemorrhage": {}
@@ -8,5 +8,10 @@
       },
       "trigger": "minecraft:effects_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "haemorrhage"
+    ]
+  ]
 }

@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "ate_fruit": {
+      "conditions": {
+        "item": {
+          "items": "fantazia:vitality_fruit"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "requirements": [
+    [
+      "ate_fruit"
+    ]
+  ]
+}

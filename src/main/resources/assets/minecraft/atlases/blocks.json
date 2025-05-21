@@ -1,9 +1,14 @@
 {
   "sources": [
     {
-      "type": "directory",
-      "source": "slots",
-      "prefix": "slots/"
+      "type" : "directory",
+      "source" : "slots",
+      "prefix" : "slots/"
+    },
+    {
+      "type" : "directory",
+      "source" : "rune",
+      "prefix" : "rune/"
     }
   ]
 }

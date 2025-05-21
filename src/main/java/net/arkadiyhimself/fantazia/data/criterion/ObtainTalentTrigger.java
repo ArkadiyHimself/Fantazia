@@ -4,9 +4,12 @@ import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
+import net.arkadiyhimself.fantazia.data.predicate.TalentPredicate;
+import net.arkadiyhimself.fantazia.data.talent.Talent;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,9 +38,23 @@ public class ObtainTalentTrigger extends SimpleCriterionTrigger<ObtainTalentTrig
             return Optional.empty();
         }
 
+        public static Criterion<TriggerInstance> specific(ResourceLocation... talents) {
+            TalentPredicate talentPredicate = TalentPredicate.builder().addTalents(talents).build();
+            return INSTANCE.createCriterion(new TriggerInstance(List.of(talentPredicate)));
+        }
+
+        public static Criterion<TriggerInstance> amount(int amount) {
+            TalentPredicate talentPredicate = TalentPredicate.builder().amount(amount).build();
+            return INSTANCE.createCriterion(new TriggerInstance(List.of(talentPredicate)));
+        }
+
+        public static Criterion<TriggerInstance> any() {
+            return INSTANCE.createCriterion(new TriggerInstance(List.of()));
+        }
+
         private boolean matches(@NotNull TalentsHolder talentsHolder) {
             if (talentPredicate.isEmpty()) return true;
-            List<ITalent> talents = Lists.newArrayList(talentsHolder.getTalents());
+            List<Talent> talents = Lists.newArrayList(talentsHolder.getTalents());
             List<TalentPredicate> predicates = new java.util.ArrayList<>(List.copyOf(talentPredicate));
             predicates.removeIf(talentPredicate1 -> talentPredicate1.matches(talents));
             return predicates.isEmpty();

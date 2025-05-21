@@ -1,23 +1,22 @@
 {
-  "name": "item.fantazia.mystic_mirror",
-  "icon": "fantazia:mystic_mirror",
+  "advancement": "fantazia:the_worldliness/artifacts/mystic_mirror",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/mystic_mirror",
-  "read_by_default": false,
+  "icon": "fantazia:mystic_mirror",
+  "name": "item.fantazia.mystic_mirror",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.mystic_mirror.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.mystic_mirror.page.1"
     },
     {
-      "type": "crafting",
+      "type": "patchouli:crafting",
       "recipe": "fantazia:mystic_mirror",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.mystic_mirror.page.2"
+      "text": "book.fantazia.the_worldliness.artifacts.mystic_mirror.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.mystic_mirror.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.mystic_mirror.page.3"
     }
   ]
 }

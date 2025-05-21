@@ -1,4 +1,4 @@
 {
-  "icon": "fantazia:textures/gui/talent/tab/stat_modifiers.png",
-  "title": "fantazia.talent_tabs.stat_modifiers"
+  "icon": "fantazia:textures/gui/talent_tabs/stat_modifiers/icon.png",
+  "title": "talent_tab.fantazia.stat_modifiers"
 }

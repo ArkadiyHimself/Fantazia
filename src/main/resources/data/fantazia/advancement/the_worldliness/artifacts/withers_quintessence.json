@@ -1,14 +1,34 @@
 {
   "criteria": {
-    "wither_skull": {
+    "found_withers_quintessence": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:wither_skeleton_skull"
+            "items": "fantazia:withers_quintessence"
           }
         ]
       },
       "trigger": "minecraft:inventory_changed"
+    },
+    "killed_wither_skeleton": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "minecraft:wither_skeleton"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_killed_entity"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_withers_quintessence",
+      "killed_wither_skeleton"
+    ]
+  ]
 }

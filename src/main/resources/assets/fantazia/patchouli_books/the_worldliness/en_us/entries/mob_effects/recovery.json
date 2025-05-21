@@ -1,0 +1,17 @@
+{
+  "advancement": "fantazia:the_worldliness/mob_effects/recovery",
+  "category": "fantazia:mob_effects",
+  "icon": "fantazia:textures/mob_effect/recovery.png",
+  "name": "effect.fantazia.recovery",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.recovery.page.1",
+      "title": "book.fantazia.heading.mob_effects.beneficial"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.mob_effects.recovery.page.2"
+    }
+  ]
+}

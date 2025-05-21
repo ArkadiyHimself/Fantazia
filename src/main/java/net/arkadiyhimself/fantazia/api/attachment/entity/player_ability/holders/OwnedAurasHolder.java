@@ -6,7 +6,7 @@ import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.ICurioListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.InventoryHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -40,7 +40,7 @@ public class OwnedAurasHolder extends PlayerAbilityHolder implements ICurioListe
 
     @Override
     public void onCurioUnEquip(ItemStack stack) {
-        if (stack.getItem() instanceof AuraCasterItem caster && curioAuras.containsKey(caster) && InventoryHelper.duplicatingCurio(getPlayer(), caster) <= 1) {
+        if (stack.getItem() instanceof AuraCasterItem caster && curioAuras.containsKey(caster) && FantazicUtil.duplicatingCurio(getPlayer(), caster) <= 1) {
             curioAuras.get(caster).discard();
             curioAuras.remove(caster);
         }

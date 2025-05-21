@@ -1,0 +1,13 @@
+{
+  "hierarchy": {
+    "type": "chain",
+    "elements": {
+      "elements": [
+        "fantazia:abilities/dash/dash1",
+        "fantazia:abilities/dash/dash2",
+        "fantazia:abilities/dash/dash3"
+      ]
+    }
+  },
+  "tab": "fantazia:abilities"
+}

@@ -1,6 +1,16 @@
 {
   "criteria": {
-    "in_shipwreck": {
+    "found_caught_thunder": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:caught_thunder"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "visited_shipwreck": {
       "conditions": {
         "player": [
           {
@@ -16,5 +26,11 @@
       },
       "trigger": "minecraft:location"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_caught_thunder",
+      "visited_shipwreck"
+    ]
+  ]
 }

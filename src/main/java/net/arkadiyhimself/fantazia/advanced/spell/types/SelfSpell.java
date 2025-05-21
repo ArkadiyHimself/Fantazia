@@ -2,17 +2,16 @@ package net.arkadiyhimself.fantazia.advanced.spell.types;
 
 import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
+import net.arkadiyhimself.fantazia.advanced.spell.SpellCastResult;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.SubscribeEvent;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
@@ -24,9 +23,9 @@ import java.util.function.Predicate;
 public class SelfSpell extends AbstractSpell {
 
     private final Predicate<LivingEntity> conditions;
-    private final Consumer<LivingEntity> onCast;
+    private final Function<LivingEntity, SpellCastResult> onCast;
 
-    protected SelfSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Predicate<LivingEntity> conditions, Consumer<LivingEntity> onCast, Function<LivingEntity, List<Component>> extendTooltip) {
+    protected SelfSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Predicate<LivingEntity> conditions, Function<LivingEntity, SpellCastResult> onCast, Function<LivingEntity, List<Component>> extendTooltip) {
         super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, extendTooltip);
         this.conditions = conditions;
         this.onCast = onCast;
@@ -36,31 +35,21 @@ public class SelfSpell extends AbstractSpell {
         return conditions.test(livingEntity);
     }
 
-    public void onCast(LivingEntity livingEntity) {
+    public SpellCastResult onCast(LivingEntity livingEntity) {
         if (doCleanse()) EffectCleansing.tryCleanseAll(livingEntity, getCleanse(), MobEffectCategory.BENEFICIAL);
-        onCast.accept(livingEntity);
+        return onCast.apply(livingEntity);
     }
 
-    public static List<Component> itemTooltip(Holder<AbstractSpell> holder) {
-        List<Component> components = Lists.newArrayList();
-        ResourceKey<AbstractSpell> key = holder.getKey();
-        if (key == null) return components;
-        ResourceLocation id = key.location();
-        AbstractSpell spell = holder.value();
+    @Override
+    public boolean isActive() {
+        return true;
+    }
 
-        String basicPath = "spell." + id.getNamespace() + "." + id.getPath();
-        int lines = 0;
-        if (!Screen.hasShiftDown()) {
-            String desc = Component.translatable(basicPath + ".desc.lines").getString();
-            try {
-                lines = Integer.parseInt(desc);
-            } catch (NumberFormatException ignored) {}
-            if (lines > 0) {
-                components.add(Component.literal(" "));
-                for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
-            }
-            return components;
-        }
+    @SubscribeEvent
+    public List<Component> buildTooltip() {
+        List<Component> components = Lists.newArrayList();
+        String basicPath = "spell." + getID().getNamespace() + "." + getID().getPath();
+
         components.add(Component.literal(" "));
         ChatFormatting[] text = new ChatFormatting[]{ChatFormatting.GOLD};
 
@@ -68,23 +57,22 @@ public class SelfSpell extends AbstractSpell {
         ChatFormatting[] heading = new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
         // spell name
         String namePath = basicPath + ".name";
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active", heading, ability, Component.translatable(namePath).getString()));
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.active", heading, ability, Component.translatable(namePath).getString()));
         // spell recharge
-        components.add(spell.bakeRechargeComponent(heading, ability));
+        components.add(bakeRechargeComponent(heading, ability));
         // spell manacost
-        String manacost = String.format("%.1f", spell.getManacost());
-        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.manacost", heading, ability, manacost));
+        String manacost = String.format("%.1f", getManacost());
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.manacost", heading, ability, manacost));
         // spell cleanse
-        if (spell.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.cleanse_strength", heading, ability, spell.getCleanse().getName()));
+        if (doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, getCleanse().getName()));
 
         components.add(Component.literal(" "));
 
-
         String desc = Component.translatable(basicPath + ".lines").getString();
+        int lines = 0;
         try {
             lines = Integer.parseInt(desc);
         } catch (NumberFormatException ignored) {}
-
         if (lines > 0) for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, text, null));
 
         String pass = Component.translatable(basicPath + ".passive.lines").getString();
@@ -92,15 +80,26 @@ public class SelfSpell extends AbstractSpell {
         try {
             lines = Integer.parseInt(pass);
         } catch (NumberFormatException ignored) {}
-
         if (lines > 0) {
             components.add(Component.literal(" "));
-            components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.active.passive", heading, null));
+            components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.alterations", heading, null));
             for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".passive." + i, null, null));
         }
 
+        String tweaks = Component.translatable(basicPath + ".tweaks.lines").getString();
+        lines = 0;
+        try {
+            lines = Integer.parseInt(tweaks);
+        } catch (NumberFormatException ignored){}
+
+        if (lines > 0) {
+            components.add(Component.literal(" "));
+            components.add(GuiHelper.bakeComponent(basicPath + ".tweaks", heading, null));
+            for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + ".tweaks." + i, null, null));
+        }
+
         if (Minecraft.getInstance().player != null) {
-            List<Component> extended = spell.extendTooltip(Minecraft.getInstance().player);
+            List<Component> extended = extendTooltip(Minecraft.getInstance().player);
             if (!extended.isEmpty()) {
                 components.add(Component.literal(" "));
                 components.addAll(extended);
@@ -110,33 +109,17 @@ public class SelfSpell extends AbstractSpell {
         return components;
     }
 
-    public static class Builder {
+    public static Builder builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
+        return new Builder(manacost, defaultRecharge, castSound, rechargeSound);
+    }
 
-        private final float manacost;
-        private final int defaultRecharge;
-        private final @Nullable Holder<SoundEvent> castSound;
-        private final @Nullable Holder<SoundEvent> rechargeSound;
-
-        private TickingConditions tickingConditions = TickingConditions.ALWAYS;
-        private Consumer<LivingEntity> ownerTick = owner -> {};
-        private Consumer<LivingEntity> uponEquipping = owner -> {};
-        private Cleanse cleanse = Cleanse.BASIC;
-        private boolean doCleanse = false;
-        private Function<LivingEntity, Integer> recharge;
+    public static class Builder extends SpellBuilder<SelfSpell> {
 
         private Predicate<LivingEntity> conditions = livingEntity -> true;
-        private Consumer<LivingEntity> onCast = livingEntity -> {};
+        private Function<LivingEntity, SpellCastResult> onCast = livingEntity -> SpellCastResult.defaultResult();
 
-        private Function<LivingEntity, List<Component>> extendTooltip = livingEntity -> Lists.newArrayList();
-
-        public Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
-            this.manacost = manacost;
-            this.defaultRecharge = defaultRecharge;
-            this.castSound = castSound;
-            this.rechargeSound = rechargeSound;
-
-            // safety measure
-            this.recharge = livingEntity -> defaultRecharge;
+        private Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
+            super(manacost, defaultRecharge, castSound, rechargeSound);
         }
 
         public Builder tickingConditions(TickingConditions value) {
@@ -179,7 +162,7 @@ public class SelfSpell extends AbstractSpell {
             return this;
         }
 
-        public Builder onCast(Consumer<LivingEntity> value) {
+        public Builder onCast(Function<LivingEntity, SpellCastResult> value) {
             this.onCast = value;
             return this;
         }

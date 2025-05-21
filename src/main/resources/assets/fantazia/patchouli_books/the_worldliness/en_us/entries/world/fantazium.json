@@ -1,22 +1,21 @@
 {
-  "name": "book.fantazia.entry.world.fantazium.name",
-  "icon": "fantazia:fantazium_ingot",
+  "advancement": "fantazia:the_worldliness/world/fantazium",
   "category": "fantazia:world",
-  "advancement" : "fantazia:the_worldliness/world/fantazium",
+  "icon": "fantazia:fantazium_ingot",
+  "name": "book.fantazia.the_worldliness.world.fantazium.name",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.world.fantazium.page.1"
+      "text": "book.fantazia.the_worldliness.world.fantazium.page.1"
     },
     {
-      "type": "spotlight",
-      "text": "book.fantazia.entry.world.fantazium.page.2",
-      "item" : "fantazia:fantazium_ingot",
-      "title" : "book.fantazia.heading.artifacts.expendable"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:fantazium_ingot",
+      "text": "book.fantazia.the_worldliness.world.fantazium.page.2"
     },
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.world.fantazium.page.3"
+      "text": "book.fantazia.the_worldliness.world.fantazium.page.3"
     }
   ]
 }

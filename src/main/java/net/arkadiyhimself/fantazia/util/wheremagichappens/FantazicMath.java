@@ -31,6 +31,14 @@ public class FantazicMath {
         return Math.cos(Math.PI * 2 * tick / period);
     }
 
+    public static double intoSin(float tick, float period) {
+        return Math.sin(Math.PI * 2 * tick / period);
+    }
+
+    public static double intoCos(float tick, float period) {
+        return Math.cos(Math.PI * 2 * tick / period);
+    }
+
     public static int toTicks(int hrs, int min, int sec) {
         return (hrs * 60 * 60 + min * 60 + sec) * 20;
     }

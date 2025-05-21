@@ -1,13 +1,11 @@
 {
-  "parent" : "fantazia:main/caster",
+  "parent": "fantazia:main/caster",
   "criteria": {
     "caught_thunder": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "fantazia:caught_thunder"
-            ]
+            "items": "fantazia:caught_thunder"
           }
         ]
       },
@@ -15,16 +13,22 @@
     }
   },
   "display": {
+    "announce_to_chat": false,
     "description": {
-      "translate": "advancements.fantazia.caught_thunder.desc"
+      "translate": "advancement.fantazia.caught_thunder.desc"
     },
-    "hidden": true,
     "icon": {
+      "count": 1,
       "id": "fantazia:caught_thunder"
     },
-    "show_toast": true,
     "title": {
-      "translate": "advancements.fantazia.caught_thunder"
+      "translate": "advancement.fantazia.caught_thunder"
     }
-  }
+  },
+  "requirements": [
+    [
+      "caught_thunder"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

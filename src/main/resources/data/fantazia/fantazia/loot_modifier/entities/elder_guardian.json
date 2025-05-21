@@ -1,0 +1,14 @@
+{
+  "loot_instances": [
+    {
+      "added": {
+        "count": 1,
+        "id": "fantazia:insight_essence"
+      },
+      "first_time": true
+    }
+  ],
+  "loot_tables": [
+    "minecraft:entities/elder_guardian"
+  ]
+}

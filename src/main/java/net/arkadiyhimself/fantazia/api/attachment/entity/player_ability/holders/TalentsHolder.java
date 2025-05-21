@@ -1,29 +1,29 @@
 package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
+import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
-import net.arkadiyhimself.fantazia.data.talent.reload.TalentManager;
-import net.arkadiyhimself.fantazia.data.talent.reload.WisdomRewardManager;
-import net.arkadiyhimself.fantazia.data.talent.types.ITalent;
-import net.arkadiyhimself.fantazia.packets.attachment_modify.WisdomObtainedSC2;
+import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
+import net.arkadiyhimself.fantazia.data.talent.reload.ServerWisdomRewardManager;
+import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardsCombined;
+import net.arkadiyhimself.fantazia.packets.IPacket;
+import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
-import net.minecraft.ReportedException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -33,28 +33,25 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventListener {
 
     private static final int XP_PER_WISDOM = 25;
 
-    private final NonNullList<ITalent> TALENTS = NonNullList.create();
-    private final ProgressHolder progressHolder = new ProgressHolder();
+    private final List<WisdomRewardsCombined> wisdomRewards = Lists.newArrayList();
+    private final List<Talent> talents = Lists.newArrayList();
     private int wisdom = 0;
     private int xpConverting = 0;
 
     public TalentsHolder(Player player) {
         super(player, Fantazia.res("talents"));
+        wisdomRewards.addAll(ServerWisdomRewardManager.createWisdomRewards());
     }
 
     @Override
@@ -63,19 +60,51 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         tag.putInt("wisdom", wisdom);
         tag.putInt("xpConverting", xpConverting);
         ListTag talentTag = new ListTag();
-        TALENTS.forEach(talent -> talentTag.add(StringTag.valueOf(talent.getID().toString())));
+        talents.forEach(talent -> talentTag.add(StringTag.valueOf(talent.id().toString())));
         tag.put("talents", talentTag);
-        tag.put("progress", progressHolder.serializeNBT(provider));
+
+        ListTag listTag = new ListTag();
+        for (WisdomRewardsCombined wisdomRewards : wisdomRewards) listTag.add(wisdomRewards.serialize());
+        tag.put("wisdomRewards", listTag);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-        TALENTS.clear();
+    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
+        talents.clear();
+        wisdomRewards.clear();
+
+        wisdom = tag.getInt("wisdom");
+        xpConverting = tag.getInt("xpConverting");
+
+        ListTag talentTags = tag.getList("talents", Tag.TAG_STRING);
+
+        for (Tag talentTag : talentTags) {
+            ResourceLocation talentID = ResourceLocation.parse(talentTag.getAsString());
+            Talent talent = ServerTalentManager.getTalent(talentID);
+            if (talent == null) continue;
+            talents.add(talent);
+        }
+
+        ListTag listTag = tag.getList("wisdomRewards", Tag.TAG_COMPOUND);
+        for (int i = 0; i < listTag.size(); i++) wisdomRewards.add(WisdomRewardsCombined.deserialize(listTag.getCompound(i)));
+    }
+
+    @Override
+    public CompoundTag serializeInitial() {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("wisdom", wisdom);
+        ListTag talentTag = new ListTag();
+        talents.forEach(talent -> talentTag.add(StringTag.valueOf(talent.id().toString())));
+        tag.put("talents", talentTag);
+        return tag;
+    }
+
+    @Override
+    public void deserializeInitial(CompoundTag compoundTag) {
+        talents.clear();
 
         wisdom = compoundTag.getInt("wisdom");
-        xpConverting = compoundTag.getInt("xpConverting");
-        if (compoundTag.contains("progress")) progressHolder.deserializeNBT(provider, compoundTag.getCompound("progress"));
 
         if (!compoundTag.contains("talents")) return;
 
@@ -83,23 +112,21 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
 
         for (Tag talentTag : talentTags) {
             ResourceLocation talentID = ResourceLocation.parse(talentTag.getAsString());
-            ITalent talent = TalentManager.getTalents().get(talentID);
+            Talent talent = ServerTalentManager.getTalent(talentID);
             if (talent == null) continue;
-            TALENTS.add(talent);
+            talents.add(talent);
         }
-
-        for (ITalent talent : getTalents()) talent.applyModifiers(getPlayer());
     }
 
     @Override
     public void onHit(LivingIncomingDamageEvent event) {
-        Holder<DamageType> damageTypeHolder = event.getSource().typeHolder();
+        Holder<DamageType> holder = event.getSource().typeHolder();
 
         float damage = event.getAmount();
         float finalMultiplier = 1f;
 
-        for (ITalent talent : TALENTS) {
-            if (talent.getProperties().containsImmunityTo(damageTypeHolder)) {
+        for (Talent talent : talents) {
+            if (talent.containsImmunity(holder)) {
                 event.setCanceled(true);
                 return;
             }
@@ -107,14 +134,14 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
             // The damage multipliers from talents are supposed to be additive;
             // e.g. you have two talents that reduce fall damage by 10% each (so, the multiplier is 0.9)
             // instead of getting 0.9 * 0.9 = 0.81 you are going to get 1 - 0.1 - 0.1 = 0.8
-            finalMultiplier += talent.getProperties().getDamageMultiplier(damageTypeHolder) - 1f;
+            finalMultiplier *= talent.getMultiplier(holder);
         }
 
         event.setAmount(damage * finalMultiplier);
     }
 
-    public ImmutableList<ITalent> getTalents() {
-        return ImmutableList.copyOf(TALENTS);
+    public ImmutableList<Talent> getTalents() {
+        return ImmutableList.copyOf(talents);
     }
 
     public int getWisdom() {
@@ -124,7 +151,7 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     public void grantWisdom(int amount) {
         if (amount <= 0) return;
         this.wisdom += amount;
-        if (getPlayer() instanceof ServerPlayer serverPlayer) PacketDistributor.sendToPlayer(serverPlayer, new WisdomObtainedSC2(amount));
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.wisdomObtained(serverPlayer, amount);
     }
 
     public void convertXP(int xp) {
@@ -137,96 +164,106 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         xpConverting = remaining;
     }
 
-    public ProgressHolder getProgressHolder() {
-        return progressHolder;
+    public boolean talentUnlocked(@NotNull Talent talent) {
+        return talents.contains(talent);
     }
 
-    public boolean talentUnlocked(@NotNull ITalent talent) {
-        return TALENTS.contains(talent);
+    public boolean isUnlockAble(@NotNull Talent talent) {
+        Talent parent = talent.getParent();
+        return parent == null || talentUnlocked(parent);
     }
 
-    public boolean isUnlockAble(@NotNull ITalent talent) {
-        ITalent parent = talent.getParent();
-        return parent == null || TALENTS.contains(parent);
+    public boolean canBePurchased(@NotNull Talent talent) {
+        return isUnlockAble(talent) && talent.purchasable() && talent.wisdom() <= wisdom;
     }
 
-    public boolean canBePurchased(@NotNull ITalent talent) {
-        return isUnlockAble(talent) && talent.toBePurchased() && talent.getProperties().wisdom() <= wisdom;
-    }
-
-    public boolean buyTalent(@NotNull ITalent talent) {
-        if (!talent.toBePurchased()) return false;
-        int cost = talent.getProperties().wisdom();
-        if (cost > wisdom) return false;
-        boolean flag = obtainTalent(talent);
+    public void buyTalent(@NotNull Talent talent) {
+        if (!talent.purchasable()) return;
+        int cost = talent.wisdom();
+        if (cost > wisdom) return;
+        boolean flag = tryObtainTalent(talent);
+        if (getPlayer().level().isClientSide()) {
+            if (flag) IPacket.talentBuying(talent.id());
+            else Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(FTZSoundEvents.DENIED.value(), 1f, 1f));
+        }
         if (flag) wisdom -= cost;
-        return flag;
     }
 
-    public boolean buyTalent(ResourceLocation id) {
-        ITalent talent = TalentManager.getTalents().get(id);
-        return talent != null && buyTalent(talent);
-    }
-
-    public boolean obtainTalent(@NotNull ITalent talent) {
-        if (TALENTS.contains(talent)) return false;
+    public boolean tryObtainTalent(@NotNull Talent talent) {
+        if (talents.contains(talent)) return false;
         if (!isUnlockAble(talent)) return false;
-
+        talents.add(talent);
         TalentHelper.onTalentUnlock(getPlayer(), talent);
-        TALENTS.add(talent);
-        if (getPlayer() instanceof ServerPlayer serverPlayer) ObtainTalentTrigger.INSTANCE.trigger(serverPlayer, this);
-        sendTalentToast(talent);
+
+        if (getPlayer() instanceof ServerPlayer serverPlayer) {
+
+            ObtainTalentTrigger.INSTANCE.trigger(serverPlayer, this);
+            IPacket.talentPossession(serverPlayer, talent, true);
+        }
+        else sendTalentToast(talent);
+
         return true;
     }
 
-    public boolean obtainTalent(ResourceLocation id) {
-        ITalent talent = TalentManager.getTalents().get(id);
-        return talent != null && obtainTalent(talent);
-    }
-
-    public boolean revokeTalent(@NotNull ITalent talent) {
-        if (!TALENTS.contains(talent)) return false;
-        TalentHelper.onTalentRevoke(getPlayer(), talent);
-        return TALENTS.remove(talent);
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean tryRevokeTalent(@NotNull Talent talent) {
+        if (!talents.contains(talent)) return false;
+        if (getPlayer() instanceof ServerPlayer serverPlayer) {
+            IPacket.talentPossession(serverPlayer, talent, false);
+            TalentHelper.onTalentRevoke(serverPlayer, talent);
+        }
+        return talents.remove(talent);
     }
 
     public void revokeAll() {
-        TALENTS.forEach(talent -> TalentHelper.onTalentRevoke(getPlayer(), talent));
-        TALENTS.clear();
-        progressHolder.clear();
+        talents.forEach(talent -> TalentHelper.onTalentRevoke(getPlayer(), talent));
+        talents.clear();
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.revokeAllTalents(serverPlayer);
     }
 
-    public void sendTalentToast(ITalent talent) {
+    public void resetWisdomRewards() {
+        wisdomRewards.clear();
+        wisdomRewards.addAll(ServerWisdomRewardManager.createWisdomRewards());
+    }
+
+    public void sendTalentToast(Talent talent) {
         ToastComponent gui = Minecraft.getInstance().getToasts();
         if (gui.getToast(TalentToast.class, talent) == null) gui.addToast(new TalentToast(talent));
-
     }
 
-    public boolean hasTalent(@NotNull ITalent talent) {
-        return TALENTS.contains(talent);
+    public boolean hasTalent(@NotNull Talent talent) {
+        return talents.contains(talent);
     }
 
     public void setWisdom(int amount) {
         this.wisdom = amount;
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.setWisdom(serverPlayer, amount);
     }
 
     public int upgradeLevel(ResourceLocation location) {
-        IHierarchy<ITalent> talentIHierarchy = TalentTreeData.getLocationToHierarchy().get(location);
-        if (!(talentIHierarchy instanceof ChainHierarchy<ITalent> chainHierarchy) || chainHierarchy instanceof ChaoticHierarchy<ITalent>) return 0;
+        IHierarchy<Talent> talentIHierarchy = TalentTreeData.getLocationToHierarchy().get(location);
+        if (!(talentIHierarchy instanceof ChainHierarchy<Talent> chainHierarchy) || chainHierarchy instanceof ChaoticHierarchy<Talent>) return 0;
         int lvl = 0;
-        for (ITalent talent : chainHierarchy.getElements()) {
+        for (Talent talent : chainHierarchy.getElements()) {
             if (!hasTalent(talent)) break;
             lvl++;
         }
         return lvl;
     }
 
-    private record TalentToast(ITalent talent) implements Toast {
+    public void tryAwardWisdom(ResourceLocation category, ResourceLocation instance) {
+        for (WisdomRewardsCombined wisdomReward : wisdomRewards) {
+            if (!wisdomReward.category().equals(category)) continue;
+            grantWisdom(wisdomReward.getReward(instance).award());
+        }
+    }
+
+    private record TalentToast(Talent talent) implements Toast {
         private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
 
         @NotNull
         @Override
-        public ITalent getToken() {
+        public Talent getToken() {
                 return talent;
             }
 
@@ -235,82 +272,10 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         public Visibility render(GuiGraphics graphics, ToastComponent toastGui, long delta) {
             graphics.blitSprite(BACKGROUND_SPRITE, 0, 0, width(), height());
             Font font = toastGui.getMinecraft().font;
-            graphics.drawString(font, Component.translatable(talent.getProperties().title() + ".name"), 30, 7, 0xfff000f0, false);
+            graphics.drawString(font, Component.translatable(talent.title() + ".name"), 30, 7, 0xfff000f0, false);
             graphics.drawString(font, Component.translatable("fantazia.gui.talent.toast.info"), 30, 17, 0xffffffff, false);
-            graphics.blit(talent.getProperties().iconTexture(), 6, 6, 0, 0, 20, 20, 20, 20);
+            graphics.blit(talent.icon(), 6, 6, 0, 0, 20, 20, 20, 20);
             return delta >= 5000L ? Visibility.HIDE : Visibility.SHOW;
-        }
-    }
-    public class ProgressHolder implements INBTSerializable<CompoundTag> {
-
-        private static final String ID = "progress:";
-        private final HashMap<String, List<ResourceLocation>> PROGRESS = Maps.newHashMap();
-        private CompoundTag TAGS = new CompoundTag();
-        private List<ResourceLocation> getOrCreate(String id) {
-            if (!PROGRESS.containsKey(id)) PROGRESS.put(id, Lists.newArrayList());
-            return PROGRESS.get(id);
-        }
-
-        @SuppressWarnings("UnusedReturnValue")
-        public boolean award(String id, ResourceLocation location) {
-            if (getOrCreate(id).contains(location)) return false;
-            getOrCreate(id).add(location);
-            grantWisdom(WisdomRewardManager.getReward(id, location));
-            return true;
-        }
-
-        @SuppressWarnings("UnusedReturnValue")
-        public boolean award(String tag, int wisdom) {
-            if (TAGS.contains(tag)) return false;
-            TAGS.putBoolean(tag, true);
-            grantWisdom(wisdom);
-            return true;
-        }
-
-        public void clear() {
-            TAGS = new CompoundTag();
-            PROGRESS.clear();
-        }
-
-        @Override
-        public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
-            CompoundTag tag = new CompoundTag();
-
-            tag.put(ID + "done", TAGS);
-
-            CompoundTag progress = new CompoundTag();
-            for (Map.Entry<String, List<ResourceLocation>> entry : PROGRESS.entrySet()) {
-                ListTag listTag = new ListTag();
-                for (ResourceLocation location : entry.getValue()) listTag.add(StringTag.valueOf(location.toString()));
-                progress.put(entry.getKey(), listTag);
-            }
-            tag.put(ID + "lists", progress);
-
-            return tag;
-        }
-
-        @Override
-        public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
-            PROGRESS.clear();
-            TAGS = compoundTag.contains(ID + "done") ? compoundTag.getCompound(ID + "done") : new CompoundTag();
-            compoundTag.remove(ID + "done");
-
-            if (!compoundTag.contains(ID + "lists")) return;
-            CompoundTag progress = compoundTag.getCompound(ID + "lists");
-            for (String name : progress.getAllKeys()) {
-                ListTag listTag;
-
-                try {
-                    listTag = progress.getList(name, Tag.TAG_STRING);
-                } catch (ReportedException exception) {
-                    continue;
-                }
-
-                List<ResourceLocation> locations = Lists.newArrayList();
-                for (Tag tag : listTag) locations.add(ResourceLocation.parse(tag.getAsString()));
-
-                PROGRESS.put(name, locations);
-            }
         }
     }
 }

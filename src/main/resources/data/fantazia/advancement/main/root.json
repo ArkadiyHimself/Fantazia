@@ -7,16 +7,22 @@
   "display": {
     "announce_to_chat": false,
     "background": "minecraft:textures/block/polished_blackstone_bricks.png",
-
-    "icon": {
-      "id": "fantazia:obscure_substance"
-    },
-    "title": {
-      "translate": "advancement_tab.fantazia"
-    },
     "description": {
       "translate": "advancement_tab.fantazia.desc"
     },
-    "show_toast": false
-  }
+    "icon": {
+      "count": 1,
+      "id": "fantazia:obscure_substance"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement_tab.fantazia"
+    }
+  },
+  "requirements": [
+    [
+      "automatic"
+    ]
+  ],
+  "sends_telemetry_event": true
 }

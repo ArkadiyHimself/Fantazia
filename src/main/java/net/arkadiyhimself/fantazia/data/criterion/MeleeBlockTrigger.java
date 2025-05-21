@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.data.criterion;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
@@ -35,6 +36,18 @@ public class MeleeBlockTrigger extends SimpleCriterionTrigger<MeleeBlockTrigger.
                 Codec.INT.optionalFieldOf("parries").forGetter(TriggerInstance::parries),
                 Codec.BOOL.optionalFieldOf("mustParry", false).forGetter(TriggerInstance::mustParry)
                 ).apply(instance, TriggerInstance::new));
+
+        public static Criterion<TriggerInstance> blocksCriterion(int amount) {
+            return INSTANCE.createCriterion(new TriggerInstance(Optional.empty(), Optional.of(amount), Optional.empty(),false));
+        }
+
+        public static Criterion<TriggerInstance> parriesCriterion(int amount) {
+            return INSTANCE.createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.of(amount),false));
+        }
+
+        public static Criterion<TriggerInstance> justParry() {
+            return INSTANCE.createCriterion(new TriggerInstance(Optional.empty(), Optional.empty(), Optional.empty(), true));
+        }
 
         @Override
         public @NotNull Optional<ContextAwarePredicate> player() {

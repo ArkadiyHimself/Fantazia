@@ -1,33 +1,44 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "redstone": {
-      "trigger": "minecraft:inventory_changed",
+    "found_roamers_compass": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:redstone"]
+            "items": "fantazia:roamers_compass"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
-    "substance" : {
-      "trigger": "minecraft:inventory_changed",
+    "obscure_substance": {
+      "conditions": {
+        "possessed": {
+          "items": [
+            "fantazia:obscure_substance"
+          ]
+        }
+      },
+      "trigger": "fantazia:possess_item"
+    },
+    "redstone": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:obscure_substance"]
+            "items": "minecraft:redstone"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
-      "redstone"
+      "redstone",
+      "found_roamers_compass"
     ],
     [
-      "substance"
+      "found_roamers_compass",
+      "obscure_substance"
     ]
   ]
 }

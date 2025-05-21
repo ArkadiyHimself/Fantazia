@@ -1,0 +1,15 @@
+{
+  "criteria": {
+    "reached_peak": {
+      "conditions": {
+        "combo": 10
+      },
+      "trigger": "fantazia:euphoria"
+    }
+  },
+  "requirements": [
+    [
+      "reached_peak"
+    ]
+  ]
+}

@@ -2,5 +2,31 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "fantazia:item/spellcaster/card_deck"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "fantazia:excluded_outcome": 0.25
+      },
+      "model": "fantazia:item/card_deck1"
+    },
+    {
+      "predicate": {
+        "fantazia:excluded_outcome": 0.50
+      },
+      "model": "fantazia:item/card_deck2"
+    },
+    {
+      "predicate": {
+        "fantazia:excluded_outcome": 0.75
+      },
+      "model": "fantazia:item/card_deck3"
+    },
+    {
+      "predicate": {
+        "fantazia:excluded_outcome": 1.00
+      },
+      "model": "fantazia:item/card_deck4"
+    }
+  ]
 }

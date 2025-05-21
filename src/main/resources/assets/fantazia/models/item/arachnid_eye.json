@@ -1,6 +1,16 @@
 {
   "parent": "minecraft:item/generated",
+  "loader" : "neoforge:separate_transforms",
   "textures": {
-    "layer0": "fantazia:item/talent/arachnid_eye"
+    "particle": "fantazia:item/expendable/arachnid_eye_gui"
+  },
+  "gui_light" : "front",
+  "base" : {
+    "parent" : "fantazia:item/arachnid_eye_in_hand"
+  },
+  "perspectives" : {
+    "gui" : {
+      "parent" : "fantazia:item/arachnid_eye_gui"
+    }
   }
 }

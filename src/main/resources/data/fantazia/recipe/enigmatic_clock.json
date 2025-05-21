@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "fantazia:fantazium_ingot"
+    },
+    "X": {
+      "item": "minecraft:clock"
+    },
+    "Y": {
+      "item": "fantazia:obscure_substance"
+    }
+  },
   "pattern": [
     "Y#Y",
     "#X#",
     "Y#Y"
   ],
-  "key": {
-    "X" : {
-      "item": "minecraft:clock"
-    },
-    "#" : {
-      "item": "fantazia:fantazium_ingot"
-    },
-    "Y" : {
-      "item": "fantazia:obscure_substance"
-    }
-  },
   "result": {
+    "count": 1,
     "id": "fantazia:enigmatic_clock"
-  },
-  "show_notification": true
+  }
 }

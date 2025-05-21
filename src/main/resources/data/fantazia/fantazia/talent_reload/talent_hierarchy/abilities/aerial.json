@@ -1,0 +1,13 @@
+{
+  "hierarchy": {
+    "type": "chain",
+    "elements": {
+      "elements": [
+        "fantazia:abilities/aerial/double_jump",
+        "fantazia:abilities/aerial/cat_reflexes",
+        "fantazia:abilities/aerial/finished_wings"
+      ]
+    }
+  },
+  "tab": "fantazia:abilities"
+}

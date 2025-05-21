@@ -1,11 +1,26 @@
 {
-  "parent": "fantazia:the_worldliness/root",
-  "criteria" : {
-    "entered_nether" : {
-      "trigger" : "minecraft:changed_dimension",
-      "conditions" : {
+  "criteria": {
+    "entered_the_nether": {
+      "conditions": {
         "to": "minecraft:the_nether"
-      }
+      },
+      "trigger": "minecraft:changed_dimension"
+    },
+    "found_bloodlust_amulet": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:bloodlust_amulet"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "found_bloodlust_amulet",
+      "entered_the_nether"
+    ]
+  ]
 }

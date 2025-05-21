@@ -1,22 +1,22 @@
 {
-  "name": "item.fantazia.broken_staff",
-  "icon": "fantazia:broken_staff",
+  "advancement": "fantazia:the_worldliness/artifacts/broken_staff",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/broken_staff",
+  "icon": "fantazia:broken_staff",
+  "name": "item.fantazia.broken_staff",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.broken_staff.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.broken_staff.page.1"
     },
     {
-      "type": "spotlight",
-      "item" : "fantazia:broken_staff",
-      "title" : "book.fantazia.heading.artifacts.auracaster",
-      "text" : "book.fantazia.entry.artifacts.broken_staff.page.2"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:broken_staff",
+      "text": "book.fantazia.the_worldliness.artifacts.broken_staff.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.broken_staff.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.broken_staff.page.3"
     }
   ]
 }

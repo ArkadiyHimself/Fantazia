@@ -1,18 +1,18 @@
 {
-  "name": "book.fantazia.entry.enchantments.ice_aspect.name",
-  "icon": "minecraft:enchanted_book",
-  "category": "fantazia:enchantments",
   "advancement": "fantazia:the_worldliness/enchantments/generic",
+  "category": "fantazia:enchantments",
+  "icon": "minecraft:enchanted_book",
+  "name": "enchantment.fantazia.ice_aspect",
   "pages": [
     {
-      "type": "text",
-      "text": "book.fantazia.entry.enchantments.ice_aspect.page.1"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.enchantments.ice_aspect.page.1"
     },
     {
-      "type": "spotlight",
-      "item": "tag:minecraft:swords",
-      "title": "book.fantazia.entry.enchantments.ice_aspect.heading",
-      "text": "book.fantazia.entry.enchantments.ice_aspect.page.2"
+      "type": "patchouli:spotlight",
+      "item": "tag:minecraft:enchantable/fire_aspect",
+      "text": "book.fantazia.the_worldliness.enchantments.ice_aspect.page.2",
+      "title": "book.fantazia.heading.enchantments.sword"
     }
   ]
 }

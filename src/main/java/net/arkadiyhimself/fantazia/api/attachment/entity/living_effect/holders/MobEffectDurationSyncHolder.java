@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.ISyncEveryTick;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.DurationHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.CurrentAndInitialValue;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.ILivingEffectHolder;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.minecraft.core.HolderLookup;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class MobEffectDurationSyncHolder implements ILivingEffectHolder, ISyncEveryTick {
 
-    private final Map<MobEffect, DurationHolder> effectMap = Maps.newHashMap();
+    private final Map<MobEffect, CurrentAndInitialValue> effectMap = Maps.newHashMap();
     private final LivingEntity livingEntity;
 
     public MobEffectDurationSyncHolder(LivingEntity livingEntity) {
@@ -31,6 +31,8 @@ public class MobEffectDurationSyncHolder implements ILivingEffectHolder, ISyncEv
 
         addSyncing(FTZMobEffects.FROZEN.value());
         addSyncing(FTZMobEffects.FURY.value());
+        addSyncing(FTZMobEffects.BARRIER.value());
+        addSyncing(FTZMobEffects.LAYERED_BARRIER.value());
     }
 
     @Override
@@ -41,17 +43,17 @@ public class MobEffectDurationSyncHolder implements ILivingEffectHolder, ISyncEv
     @Override
     public void added(MobEffectInstance instance) {
         int duration = instance.getDuration();
-        DurationHolder holder = effectMap.get(instance.getEffect().value());
+        CurrentAndInitialValue holder = effectMap.get(instance.getEffect().value());
         if (holder != null) {
-            holder.setInitialDur(duration);
-            holder.setDur(duration);
+            holder.setInitialValue(duration);
+            holder.setValue(duration);
         }
     }
 
     @Override
     public void ended(MobEffect effect) {
-        DurationHolder holder = effectMap.get(effect);
-        if (holder != null) holder.setDur(0);
+        CurrentAndInitialValue holder = effectMap.get(effect);
+        if (holder != null) holder.setValue(0);
     }
 
     @Override
@@ -60,21 +62,51 @@ public class MobEffectDurationSyncHolder implements ILivingEffectHolder, ISyncEv
     }
 
     @Override
-    public CompoundTag syncSerialize() {
+    public CompoundTag serializeInitial() {
         return new CompoundTag();
     }
 
     @Override
-    public void syncDeserialize(CompoundTag tag) {}
+    public void deserializeInitial(CompoundTag tag) {}
 
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
-        return new CompoundTag();
+        CompoundTag tag = new CompoundTag();
+
+        ListTag listTag = new ListTag();
+
+        for (Map.Entry<MobEffect, CurrentAndInitialValue> entry : effectMap.entrySet()) {
+            ResourceLocation location = BuiltInRegistries.MOB_EFFECT.getKey(entry.getKey());
+            if (location == null) continue;
+            CompoundTag entryTag = new CompoundTag();
+            entryTag.putString("effect", location.toString());
+            entryTag.putInt("duration", entry.getValue().value());
+            entryTag.putInt("initialDuration", entry.getValue().initialValue());
+
+            listTag.add(entryTag);
+        }
+
+        tag.put("entries", listTag);
+
+        return tag;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
+    public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
+        ListTag entries = tag.getList("entries", Tag.TAG_COMPOUND);
 
+        for (int i = 0; i < entries.size(); i++) {
+            CompoundTag entry = entries.getCompound(i);
+            MobEffect mobEffect = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(entry.getString("effect")));
+            if (mobEffect == null) continue;
+            int dur = entry.getInt("duration");
+            int initDur = entry.getInt("initialDuration");
+
+            CurrentAndInitialValue holder = new CurrentAndInitialValue();
+            holder.setValue(dur);
+            holder.setInitialValue(initDur);
+            effectMap.put(mobEffect, holder);
+        }
     }
 
     @Override
@@ -83,13 +115,13 @@ public class MobEffectDurationSyncHolder implements ILivingEffectHolder, ISyncEv
 
         ListTag listTag = new ListTag();
 
-        for (Map.Entry<MobEffect, DurationHolder> entry : effectMap.entrySet()) {
+        for (Map.Entry<MobEffect, CurrentAndInitialValue> entry : effectMap.entrySet()) {
             ResourceLocation location = BuiltInRegistries.MOB_EFFECT.getKey(entry.getKey());
             if (location == null) continue;
             CompoundTag entryTag = new CompoundTag();
             entryTag.putString("effect", location.toString());
-            entryTag.putInt("duration", entry.getValue().dur());
-            entryTag.putInt("initialDuration", entry.getValue().initialDur());
+            entryTag.putInt("duration", entry.getValue().value());
+            entryTag.putInt("initialDuration", entry.getValue().initialValue());
 
             listTag.add(entryTag);
         }
@@ -110,9 +142,9 @@ public class MobEffectDurationSyncHolder implements ILivingEffectHolder, ISyncEv
             int dur = entry.getInt("duration");
             int initDur = entry.getInt("initialDuration");
 
-            DurationHolder holder = new DurationHolder();
-            holder.setDur(dur);
-            holder.setInitialDur(initDur);
+            CurrentAndInitialValue holder = new CurrentAndInitialValue();
+            holder.setValue(dur);
+            holder.setInitialValue(initDur);
             effectMap.put(mobEffect, holder);
         }
     }
@@ -120,16 +152,16 @@ public class MobEffectDurationSyncHolder implements ILivingEffectHolder, ISyncEv
     @Override
     public void serverTick() {
         for (MobEffectInstance instance : getEntity().getActiveEffects()) {
-            DurationHolder holder = effectMap.get(instance.getEffect().value());
-            if (holder != null) holder.setDur(instance.getDuration());
+            CurrentAndInitialValue holder = effectMap.get(instance.getEffect().value());
+            if (holder != null) holder.setValue(instance.getDuration());
         }
     }
 
     public void addSyncing(MobEffect mobEffect) {
-        if (!effectMap.containsKey(mobEffect)) effectMap.put(mobEffect, new DurationHolder());
+        if (!effectMap.containsKey(mobEffect)) effectMap.put(mobEffect, new CurrentAndInitialValue());
     }
 
-    public @Nullable DurationHolder getDuration(MobEffect mobEffect) {
+    public @Nullable CurrentAndInitialValue getDuration(MobEffect mobEffect) {
         return effectMap.get(mobEffect);
     }
 }

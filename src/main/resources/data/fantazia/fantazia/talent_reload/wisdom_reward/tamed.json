@@ -1,3 +1,5 @@
 {
-  "fantazia:default": 10
+  "category": "fantazia:tamed",
+  "default_reward": 10,
+  "rewards": {}
 }

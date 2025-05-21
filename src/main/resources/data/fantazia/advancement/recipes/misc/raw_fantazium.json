@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:raw_fantazium"
+        "recipe": "fantazia:raw_fantazium"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:raw_fantazium"
+      "fantazia:raw_fantazium"
     ]
   }
 }

@@ -1,33 +1,44 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "glass": {
-      "trigger": "minecraft:inventory_changed",
+    "found_mystic_mirror": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:glass"]
+            "items": "fantazia:mystic_mirror"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
     },
-    "substance" : {
-      "trigger": "minecraft:inventory_changed",
+    "glass": {
       "conditions": {
         "items": [
           {
-            "items": ["fantazia:obscure_substance"]
+            "items": "minecraft:glass"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "obscure_substance": {
+      "conditions": {
+        "possessed": {
+          "items": [
+            "fantazia:obscure_substance"
+          ]
+        }
+      },
+      "trigger": "fantazia:possess_item"
     }
   },
-  "requirements" : [
+  "requirements": [
     [
-      "glass"
+      "glass",
+      "found_mystic_mirror"
     ],
     [
-      "substance"
+      "found_mystic_mirror",
+      "obscure_substance"
     ]
   ]
 }

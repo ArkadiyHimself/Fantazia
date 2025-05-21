@@ -6,8 +6,10 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.LootTableModifiersHolder;
+import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.StuffHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.LootTablesUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -23,8 +25,9 @@ import org.jetbrains.annotations.NotNull;
 public class FantazicLootModifier extends LootModifier {
 
     public static final MapCodec<FantazicLootModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance).apply(instance, FantazicLootModifier::new));
+
     public FantazicLootModifier(LootItemCondition[] conditionsIn) {
-        super(conditionsIn);
+        super(new LootItemCondition[]{});
     }
 
     @Override
@@ -32,18 +35,19 @@ public class FantazicLootModifier extends LootModifier {
         Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
         Entity killer = context.getParamOrNull(LootContextParams.ATTACKING_ENTITY);
         ResourceLocation id = context.getQueriedLootTableId();
-        boolean chest = LootTablesHelper.isVanillaChest(context);
-        boolean slayed = LootTablesHelper.isSlayed(context);
+        boolean chest = LootTablesUtil.isVanillaChest(context);
+        boolean slayed = LootTablesUtil.isEntityLoot(context);
 
-        if (chest && !LootTablesHelper.isVillage(context.getQueriedLootTableId())) addItem(generatedLoot, FTZItems.OBSCURE_SUBSTANCE.get(), -2, 3);
+        if (chest && !LootTablesUtil.village().contains(context.getQueriedLootTableId())) addItem(generatedLoot, FTZItems.OBSCURE_SUBSTANCE.get(), -2, 3);
         if (slayed && killer instanceof Player playerKiller) PlayerAbilityHelper.acceptConsumer(playerKiller, LootTableModifiersHolder.class, lootTableModifiersHolder -> lootTableModifiersHolder.attemptLoot(generatedLoot, id));
 
         if (!(entity instanceof Player player)) return generatedLoot;
 
         PlayerAbilityHelper.acceptConsumer(player, LootTableModifiersHolder.class, lootTableModifiersHolder -> lootTableModifiersHolder.attemptLoot(generatedLoot, id));
-        if (!StuffHelper.hasPersistentTag(player, "LootedFirstDashstone") && chest) {
-            StuffHelper.setPersistentBoolean(player, "LootedFirstDashstone");
-            generatedLoot.add(new ItemStack(FTZItems.DASHSTONE1.get()));
+
+        if (!player.getData(FTZAttachmentTypes.OBTAINED_DASHSTONE) && chest) {
+            player.setData(FTZAttachmentTypes.OBTAINED_DASHSTONE,true);
+            generatedLoot.add(FantazicUtil.dashStone(1));
         }
 
         return generatedLoot;

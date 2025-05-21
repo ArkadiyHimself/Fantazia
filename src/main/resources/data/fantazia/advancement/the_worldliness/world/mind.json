@@ -1,14 +1,21 @@
 {
-  "criteria" : {
-    "talent_obtain": {
-      "trigger": "fantazia:talent_obtain",
-      "conditions" : {
-        "talents" : [
+  "criteria": {
+    "mind": {
+      "conditions": {
+        "talents": [
           {
-            "talents" : ["fantazia:dash/dash2"]
+            "talents": [
+              "fantazia:abilities/dash/dash2"
+            ]
           }
         ]
-      }
+      },
+      "trigger": "fantazia:talent_obtain"
     }
-  }
+  },
+  "requirements": [
+    [
+      "mind"
+    ]
+  ]
 }

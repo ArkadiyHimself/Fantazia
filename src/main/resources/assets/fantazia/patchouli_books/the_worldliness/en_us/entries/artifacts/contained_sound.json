@@ -1,23 +1,22 @@
 {
-  "name": "item.fantazia.contained_sound",
-  "icon": "fantazia:contained_sound",
+  "advancement": "fantazia:the_worldliness/artifacts/contained_sound",
   "category": "fantazia:artifacts",
-  "advancement" : "fantazia:the_worldliness/artifacts/contained_sound",
-  "read_by_default": false,
+  "icon": "fantazia:contained_sound",
+  "name": "item.fantazia.contained_sound",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "book.fantazia.entry.artifacts.contained_sound.page.1"
+      "text": "book.fantazia.the_worldliness.artifacts.contained_sound.page.1"
     },
     {
-      "type": "crafting",
-      "recipe": "fantazia:contained_sound",
-      "title" : "book.fantazia.heading.artifacts.spellcaster",
-      "text" : "book.fantazia.entry.artifacts.contained_sound.page.2"
+      "type": "patchouli:spotlight",
+      "item": "fantazia:contained_sound",
+      "text": "book.fantazia.the_worldliness.artifacts.contained_sound.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
     },
     {
-      "type" : "patchouli:text",
-      "text" : "book.fantazia.entry.artifacts.contained_sound.page.3"
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.contained_sound.page.3"
     }
   ]
 }

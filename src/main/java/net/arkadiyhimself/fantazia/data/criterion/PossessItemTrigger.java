@@ -3,13 +3,16 @@ package net.arkadiyhimself.fantazia.data.criterion;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.CustomCriteriaHolder;
+import net.arkadiyhimself.fantazia.data.predicate.PossessedItemPredicate;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import org.apache.commons.compress.utils.Lists;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Optional;
 
 public class PossessItemTrigger extends SimpleCriterionTrigger<PossessItemTrigger.TriggerInstance> {
@@ -20,14 +23,27 @@ public class PossessItemTrigger extends SimpleCriterionTrigger<PossessItemTrigge
         this.trigger(pPlayer, triggerInstance -> triggerInstance.matches(customCriteriaHolder));
     }
 
+
+
     @Override
     public @NotNull Codec<TriggerInstance> codec() {
         return TriggerInstance.CODEC;
     }
 
-    public record TriggerInstance(List<PossessedItemPredicate> possessedItemPredicates) implements SimpleInstance {
+    public record TriggerInstance(PossessedItemPredicate predicate) implements SimpleInstance {
 
-        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(PossessedItemPredicate.CODEC.listOf().optionalFieldOf("possessed", Lists.newArrayList()).forGetter(TriggerInstance::possessedItemPredicates)).apply(instance, TriggerInstance::new));
+        public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                PossessedItemPredicate.CODEC.optionalFieldOf("possessed", PossessedItemPredicate.builder().build()).forGetter(TriggerInstance::predicate)).apply(instance, TriggerInstance::new));
+
+        public static Criterion<TriggerInstance> itemsOfTag(TagKey<Item> tagKey, int amount) {
+            PossessedItemPredicate predicate = PossessedItemPredicate.builder().tag(tagKey).amount(amount).build();
+            return INSTANCE.createCriterion(new TriggerInstance(predicate));
+        }
+
+        public static Criterion<TriggerInstance> specificItems(ItemLike... items) {
+            PossessedItemPredicate predicate = PossessedItemPredicate.builder().addItems(items).build();
+            return INSTANCE.createCriterion(new TriggerInstance(predicate));
+        }
 
         @Override
         public @NotNull Optional<ContextAwarePredicate> player() {
@@ -35,10 +51,7 @@ public class PossessItemTrigger extends SimpleCriterionTrigger<PossessItemTrigge
         }
 
         private boolean matches(@NotNull CustomCriteriaHolder holder) {
-            if (possessedItemPredicates.isEmpty()) return true;
-            List<PossessedItemPredicate> predicates = new java.util.ArrayList<>(List.copyOf(possessedItemPredicates));
-            predicates.removeIf(possessedItemPredicate -> possessedItemPredicate.matches(holder));
-            return predicates.isEmpty();
+            return predicate().matches(holder);
         }
     }
 }

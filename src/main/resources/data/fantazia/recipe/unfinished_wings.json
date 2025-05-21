@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category" : "misc",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:phantom_membrane"
+    },
+    "X": {
+      "item": "minecraft:feather"
+    },
+    "Y": {
+      "item": "fantazia:obscure_substance"
+    }
+  },
   "pattern": [
     "XXX",
     "#YX",
     "Y#X"
   ],
-  "key": {
-    "X" : {
-      "item": "minecraft:feather"
-    },
-    "#" : {
-      "item": "minecraft:phantom_membrane"
-    },
-    "Y" : {
-      "item": "fantazia:obscure_substance"
-    }
-  },
   "result": {
+    "count": 1,
     "id": "fantazia:unfinished_wings"
-  },
-  "show_notification": true
+  }
 }

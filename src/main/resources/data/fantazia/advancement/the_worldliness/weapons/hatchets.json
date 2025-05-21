@@ -1,15 +1,30 @@
 {
-  "parent": "fantazia:the_worldliness/root",
   "criteria": {
-    "substance": {
-      "trigger": "minecraft:inventory_changed",
+    "hatchet": {
       "conditions": {
         "items": [
           {
-            "items": ["minecraft:stick"]
+            "items": "#fantazia:hatchets"
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "stick": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:stick"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     }
-  }
+  },
+  "requirements": [
+    [
+      "stick",
+      "hatchet"
+    ]
+  ]
 }

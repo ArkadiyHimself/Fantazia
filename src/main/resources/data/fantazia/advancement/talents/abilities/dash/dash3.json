@@ -1,0 +1,24 @@
+{
+  "criteria": {
+    "dashstone": {
+      "conditions": {
+        "curios:slot": {
+          "slots": [
+            "dashstone"
+          ]
+        },
+        "item": {
+          "components": {
+            "fantazia:dash_level": 3
+          }
+        }
+      },
+      "trigger": "curios:equip_curio"
+    }
+  },
+  "requirements": [
+    [
+      "dashstone"
+    ]
+  ]
+}

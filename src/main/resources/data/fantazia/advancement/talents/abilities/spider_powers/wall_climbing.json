@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "ate_eye": {
+      "conditions": {
+        "item": {
+          "items": "fantazia:arachnid_eye"
+        }
+      },
+      "trigger": "minecraft:consume_item"
+    }
+  },
+  "requirements": [
+    [
+      "ate_eye"
+    ]
+  ]
+}

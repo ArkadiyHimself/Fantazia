@@ -20,16 +20,16 @@ public class LevelAttributesHelper {
     private LevelAttributesHelper() {}
 
     public static <T extends ILevelAttributeHolder> T takeHolder(Level level, Class<T> tClass) {
-        LevelAttributes levelAttributes = getUnwrap(level);
-        return levelAttributes.actualHolder(tClass);
+        LevelAttributesManager levelAttributesManager = getUnwrap(level);
+        return levelAttributesManager.actualHolder(tClass);
     }
 
     public static <T extends ILevelAttributeHolder> void acceptConsumer(Level level, Class<T> tClass, Consumer<T> consumer) {
-        LevelAttributes levelAttributes = getUnwrap(level);
-        levelAttributes.optionalHolder(tClass).ifPresent(consumer);
+        LevelAttributesManager levelAttributesManager = getUnwrap(level);
+        levelAttributesManager.optionalHolder(tClass).ifPresent(consumer);
     }
 
-    public static LevelAttributes getUnwrap(Level level) {
+    public static LevelAttributesManager getUnwrap(Level level) {
         return level.getData(FTZAttachmentTypes.LEVEL_ATTRIBUTES);
     }
 
