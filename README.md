@@ -1,4 +1,4 @@
-<img width="1600" alt="fantazia_logo" src="https://github.com/user-attachments/assets/ecd4cf8c-a850-4fac-b201-4b635313e911">
+<img width="1600" alt="fantazia_logo" src="https://github.com/user-attachments/assets/a74c1b4b-76ad-4453-bd1b-0773729e1d07" />
 
 Fantazia is my way to express my imagination using my artistic abilities and programming skills.
 
