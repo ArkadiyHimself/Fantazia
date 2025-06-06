@@ -15,6 +15,7 @@ public interface FTZDamageTypeTags {
     TagKey<DamageType> NOT_STOPPING_DASH = create("not_stopping_dash");
     TagKey<DamageType> ELECTRIC = create("electric");
     TagKey<DamageType> IS_ANCIENT_FLAME = create("is_ancient_flame");
+    TagKey<DamageType> DEAFENING = create("deafening");
 
     private static TagKey<DamageType> create(String pName) {
         return TagKey.create(Registries.DAMAGE_TYPE, Fantazia.res(pName));

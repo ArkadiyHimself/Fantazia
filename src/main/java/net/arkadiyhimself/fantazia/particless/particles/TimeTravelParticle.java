@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.particless.particles;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
@@ -23,7 +24,7 @@ public class TimeTravelParticle extends TextureSheetParticle {
 
         this.setSpriteFromAge(spriteSet);
 
-        float color = Fantazia.RANDOM.nextFloat() * 0.6f + 0.4f;
+        float color = RandomUtil.nextFloat() * 0.6f + 0.4f;
         this.rCol = color * 0.8f;
         this.bCol = color * 0.2f;
         this.gCol = color * 0.5f;

@@ -9,9 +9,11 @@ import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.packets.attachment_syncing.IAttachmentSync;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -118,6 +120,10 @@ public class PlayerAbilityManager implements IHolderManager<IPlayerAbility, Play
 
     public void onCurioUnEquip(ItemStack stack) {
         for (IPlayerAbility iPlayerAbility : playerAbilities) if (iPlayerAbility instanceof ICurioListener listener) listener.onCurioUnEquip(stack);
+    }
+
+    public void onChangeDimension(ResourceKey<Level> from, ResourceKey<Level> to) {
+        for (IPlayerAbility iPlayerAbility : playerAbilities) if (iPlayerAbility instanceof IDimensionChangeListener listener) listener.onChangeDimension(from, to);
     }
 
     public void respawn() {

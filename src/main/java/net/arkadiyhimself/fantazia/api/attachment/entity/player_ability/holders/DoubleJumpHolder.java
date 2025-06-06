@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
+import net.arkadiyhimself.fantazia.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
@@ -29,6 +30,7 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
     private boolean doTick = true;
     private boolean jumped = false;
     private int delay = 0;
+    public boolean enabled = true;
 
     public DoubleJumpHolder(Player player) {
         super(player, Fantazia.res("double_jump"));
@@ -44,6 +46,7 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
         tag.putBoolean("jumped", this.jumped);
         tag.putBoolean("doTick", this.doTick);
         tag.putInt("delay", this.delay);
+        tag.putBoolean("enabled", this.enabled);
         return tag;
     }
 
@@ -56,6 +59,7 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
         this.jumped = compoundTag.contains("jumped") && compoundTag.getBoolean("jumped");
         this.doTick = !compoundTag.contains("doTick") || compoundTag.getBoolean("doTick");
         this.delay = compoundTag.getInt("delay");
+        this.enabled = compoundTag.getBoolean("enabled");
     }
 
     @Override
@@ -118,7 +122,7 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
     }
 
     public boolean canJump() {
-        return recharge <= 0 && unlocked && !jumped && canJump && !getPlayer().mayFly() && !getPlayer().onGround()
+        return recharge <= 0 && unlocked && enabled && !jumped && canJump && !getPlayer().mayFly() && !getPlayer().onGround()
                 && !getPlayer().isInLiquid() && !getPlayer().hasEffect(MobEffects.LEVITATION) &&
                 !getPlayer().hasEffect(MobEffects.SLOW_FALLING);
     }
@@ -127,6 +131,7 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
         this.doTick = false;
         this.delay = 1;
         this.jumped = true;
+        if (unlocked && getPlayer() instanceof ServerPlayer serverPlayer) Prompts.USE_DOUBLE_JUMP.maybePromptPlayer(serverPlayer);
     }
 
     public void buttonRelease() {
@@ -155,6 +160,7 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
             if (!getPlayer().hasInfiniteMaterials()) recharge = elytraRecharge();
         } else canJump = false;
         getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.DOUBLE_JUMP.value(), SoundSource.PLAYERS);
+        if (getPlayer() instanceof ServerPlayer serverPlayer) Prompts.USE_DOUBLE_JUMP.noLongerNeeded(serverPlayer);
     }
 
     public void unlock() {
@@ -162,7 +168,7 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
         if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DOUBLE_JUMP_UNLOCKED.value());
     }
 
-    public void remove() {
+    public void lock() {
         unlocked = false;
     }
 
@@ -185,4 +191,11 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
         return recharge;
     }
 
+    public void setEnabled() {
+        this.enabled = true;
+    }
+
+    public void setDisabled() {
+        this.enabled = false;
+    }
 }

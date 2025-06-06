@@ -16,7 +16,7 @@ public record AuraSpawnInstance(Holder<Aura> basicAura, int amplifier) implement
 
     @Override
     public void addEffects(LivingEntity livingEntity) {
-        livingEntity.getData(FTZAttachmentTypes.ADDED_AURAS).addAura(basicAura);
+        livingEntity.getData(FTZAttachmentTypes.ADDED_AURAS).addAura(basicAura, amplifier);
     }
 
     public CompoundTag serialize() {

@@ -17,6 +17,7 @@ import net.arkadiyhimself.fantazia.tags.FTZMobEffectTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,6 +35,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.common.EffectCure;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -48,6 +50,9 @@ public abstract class MixinLivingEntity extends Entity {
 
     @Shadow public abstract void remove(@NotNull RemovalReason reason);
 
+    @Unique
+    private @Nullable DamageSource fantazia$hurtSource = null;
+
     public MixinLivingEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -61,6 +66,16 @@ public abstract class MixinLivingEntity extends Entity {
         if (!source.is(FTZDamageTypeTags.PIERCES_BARRIER)) for (MobEffectInstance mobEffectInstance : fantazia$entity.getActiveEffects()) if (mobEffectInstance.getEffect().is(FTZMobEffectTags.BARRIER)) ci.cancel();
         if (source.is(FTZDamageTypeTags.NO_HURT_SOUND)) ci.cancel();
         if (source.is(FTZDamageTypes.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) fantazia$entity.level().playSound(null, fantazia$entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
+    }
+
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;makeSound(Lnet/minecraft/sounds/SoundEvent;)V"), method = "hurt")
+    private void deathSound(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        this.fantazia$hurtSource = source;
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;makeSound(Lnet/minecraft/sounds/SoundEvent;)V"), method = "hurt")
+    private void deathSound(LivingEntity instance, SoundEvent sound) {
+        if (fantazia$hurtSource == null || !fantazia$hurtSource.is(FTZDamageTypeTags.NON_LETHAL)) instance.makeSound(sound);
     }
 
     @Inject(at = @At(value = "HEAD"), method = "onItemPickup", cancellable = true)

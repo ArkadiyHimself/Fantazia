@@ -6,6 +6,8 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
+import net.arkadiyhimself.fantazia.data.talent.TalentImpacts;
 import net.arkadiyhimself.fantazia.entities.DashStone;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.arkadiyhimself.fantazia.packets.IPacket;
@@ -54,7 +56,6 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
     private int duration = 0;
     private int initialRecharge = 1;
     private int recharge = 0;
-    private boolean wasDashing = false;
     private boolean wasRecharging = false;
     private Vec3 velocity = new Vec3(0,0,0);
     private @Nullable UUID dashstoneEntityServer = null;
@@ -74,7 +75,6 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
         tag.putInt("duration", this.duration);
         tag.putInt("initial_recharge", this.initialRecharge);
         tag.putInt("recharge", this.recharge);
-        tag.putBoolean("wasDashing", this.wasDashing);
         tag.putBoolean("wasRecharging", this.wasRecharging);
 
         tag.putDouble("dX", velocity.x);
@@ -93,7 +93,6 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
         this.duration = tag.getInt("duration");
         this.initialRecharge = tag.contains("initial_recharge") ?  tag.getInt("initial_recharge") : 1;
         this.recharge = tag.getInt("recharge");
-        this.wasDashing = tag.getBoolean("wasDashing");
         this.wasRecharging = tag.getBoolean("wasRecharging");
 
         this.velocity = new Vec3(tag.getDouble("dX"), tag.getDouble("dY"), tag.getDouble("dZ"));
@@ -110,7 +109,6 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
         tag.putInt("duration", this.duration);
         tag.putInt("initial_recharge", this.initialRecharge);
         tag.putInt("recharge", this.recharge);
-        tag.putBoolean("wasDashing", this.wasDashing);
         tag.putBoolean("wasRecharging", this.wasRecharging);
 
         tag.putDouble("dX", this.velocity.x);
@@ -129,7 +127,6 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
         this.duration = tag.getInt("duration");
         this.initialRecharge = tag.getInt("initial_recharge");
         this.recharge = tag.getInt("recharge");
-        this.wasDashing = tag.getBoolean("wasDashing");
         this.wasRecharging = tag.getBoolean("wasRecharging");
 
         this.velocity = new Vec3(tag.getDouble("dX"), tag.getDouble("dY"), tag.getDouble("dZ"));
@@ -141,7 +138,6 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
     public void respawn() {
         duration = 0;
         recharge = 0;
-        wasDashing = false;
         wasRecharging = false;
     }
 
@@ -149,12 +145,15 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
     public void serverTick() {
         if (duration > 0) {
             duration--;
-            getPlayer().move(MoverType.SELF, velocity);
-            VisualHelper.particleOnEntityServer(getPlayer(), getParticleType(), ParticleMovement.AWAY, 3);
-            if (level == 1 && getPlayer().horizontalCollision) {
-                boolean hurt = getPlayer().hurt(getPlayer().level().damageSources().flyIntoWall(), 3f);
-                if (hurt) stopDash();
+            if (duration > 0) {
+                getPlayer().move(MoverType.PLAYER, velocity);
+                if (level == 1 && getPlayer().horizontalCollision) {
+                    boolean hurt = getPlayer().hurt(getPlayer().level().damageSources().flyIntoWall(), 3f);
+                    if (hurt) stopDash();
+                }
             }
+            VisualHelper.particleOnEntityServer(getPlayer(), getParticleType(), ParticleMovement.AWAY, 3);
+
             if (piercer()) {
                 AABB aabb = getPlayer().getBoundingBox().inflate(0.4, 0, 0.4);
                 List<LivingEntity> targets = getPlayer().level().getEntitiesOfClass(LivingEntity.class, aabb);
@@ -215,6 +214,7 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
     }
 
     public void upgrade() {
+        this.recharge = 0;
         this.level = Math.min(this.level + 1, 3);
         if (getRechargeSound() != null && getPlayer() instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, getRechargeSound());
     }
@@ -265,11 +265,15 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
     }
 
     public boolean canDash() {
-        return !isDashing() && recharge == 0 && getPlayer().isEffectiveAi() && level > 0 && (getPlayer().onGround() || aerobat()) && !getPlayer().isSpectator();
+        return !isDashing() && recharge == 0 && getPlayer().isEffectiveAi() && level > 0
+                && (getPlayer().onGround() || aerobat()) && !getPlayer().isSpectator();
     }
 
     public int getInitDur() {
-        return level < 3 ? DEFAULT_DUR : DEFAULT_DUR + 2;
+        int init = DEFAULT_DUR;
+        if (level >= 3) init += 2;
+        if (extension()) init += 4;
+        return init;
     }
 
     public int getInitRecharge() {
@@ -297,7 +301,6 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
         velocity = PlayerAbilityHelper.dashDeltaMovement(getPlayer(), 1.8f, !omnidirectional());
         recharge = getInitRecharge();
         initialRecharge = recharge;
-        wasDashing = true;
         if (!getPlayer().hasInfiniteMaterials()) wasRecharging = true;
 
         getPlayer().level().playSound(null, getPlayer().blockPosition(), getDashSound(), SoundSource.PLAYERS);
@@ -314,17 +317,25 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
     }
 
     public void stopDash() {
-        if (!FantazicHooks.onDashEnd(getPlayer(), this)) return;
+        if (!FantazicHooks.onDashEnd(getPlayer(),this)) return;
         if (duration > 1) getPlayer().move(MoverType.SELF, velocity);
 
         this.duration = 0;
-        this.wasDashing = false;
-        getPlayer().hurtMarked = true;
         getPlayer().setDeltaMovement(0,0,0);
         if (getPlayer() instanceof ServerPlayer serverPlayer) {
             IPacket.animatePlayer(serverPlayer, "");
             IPacket.stopDash(serverPlayer);
-        };
+        }
+    }
+
+    public void maybeCancelDash() {
+        if (duration <= 0 || !extension()) return;
+        float percent = 1f - (float) duration / initialDur;
+        this.recharge = (int) (percent * initialRecharge);
+        this.duration = 0;
+        getPlayer().setDeltaMovement(0,0,0);
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "");
+        else IPacket.cancelDash();
     }
 
     public void setDashstoneEntityServer(DashStone dashStone) {
@@ -369,5 +380,9 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
 
     private boolean piercer() {
         return FantazicUtil.hasRune(getPlayer(), Runes.PIERCER);
+    }
+
+    private boolean extension() {
+        return FantazicUtil.hasRune(getPlayer(), Runes.EXTENSION);
     }
 }

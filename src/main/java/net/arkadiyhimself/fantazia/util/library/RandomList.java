@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.util.library;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -23,7 +24,7 @@ public class RandomList<T> extends ArrayList<T> {
 
     @Nullable
     public T random() {
-        return this.isEmpty() ? null : this.get(Fantazia.RANDOM.nextInt(0, this.size()));
+        return this.isEmpty() ? null : this.get(RandomUtil.nextInt(0, this.size()));
     }
 
     public void performOnRandom(Consumer<T> consumer) {

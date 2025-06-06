@@ -59,6 +59,10 @@ interface AttachmentModifyHandlers {
          PlayerAbilityHelper.acceptConsumer(Minecraft.getInstance().player, MeleeBlockHolder.class, MeleeBlockHolder::blockAttack);
     }
 
+    static void cancelDash(ServerPlayer serverPlayer) {
+         PlayerAbilityHelper.acceptConsumer(serverPlayer, DashHolder.class, DashHolder::maybeCancelDash);
+    }
+
     static void entityMadeSound(int id) {
         if (Minecraft.getInstance().level == null) return;
         Entity entity = Minecraft.getInstance().level.getEntity(id);
@@ -162,7 +166,12 @@ interface AttachmentModifyHandlers {
 
     static void talentBuying(ServerPlayer player, ResourceLocation location) {
         Talent talent = ServerTalentManager.getTalent(location);
-        if (talent != null) PlayerAbilityHelper.acceptConsumer(player, TalentsHolder.class, talentsHolder -> talentsHolder.buyTalent(talent));
+        if (talent != null) PlayerAbilityHelper.acceptConsumer(player, TalentsHolder.class, talentsHolder -> talentsHolder.tryBuyTalent(talent));
+    }
+
+    static void talendDisable(ServerPlayer player, ResourceLocation location) {
+         Talent talent = ServerTalentManager.getTalent(location);
+         if (talent != null) PlayerAbilityHelper.acceptConsumer(player, TalentsHolder.class, holder -> holder.clickedTalent(talent));
     }
 
     static void talentPossession(ResourceLocation location, boolean unlocked) {

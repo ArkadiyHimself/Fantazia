@@ -26,7 +26,7 @@ import java.util.Optional;
 
 public class ServerTalentManager extends SimpleJsonResourceReloadListener {
 
-    private static final Gson GSON = new GsonBuilder().registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer()).create();
+    private static final Gson GSON = new GsonBuilder().create();
 
     // talent's id || talent itself
     private static final BiMap<ResourceLocation, Talent> TALENTS = HashBiMap.create();

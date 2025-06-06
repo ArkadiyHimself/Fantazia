@@ -15,7 +15,7 @@ public interface FTZAttributes {
     
     DeferredHolder<Attribute, Attribute> MAX_MANA = REGISTER.register("max_mana", () -> new RangedAttribute("attribute.fantazia.max_mana", 20,0,4096).setSyncable(true));
     DeferredHolder<Attribute, Attribute> MAX_STAMINA = REGISTER.register("max_stamina", () ->  new RangedAttribute("attribute.fantazia.max_stamina", 20,0,4096).setSyncable(true));
-    DeferredHolder<Attribute, Attribute> MAX_STUN_POINTS = REGISTER.register("max_stun_points", () -> new RangedAttribute("attribute.fantazia.max_stun_points", 300,1,4096).setSyncable(true));
+    DeferredHolder<Attribute, Attribute> MAX_STUN_POINTS = REGISTER.register("max_stun_points", () -> new RangedAttribute("attribute.fantazia.max_stun_points", 300,10,4096).setSyncable(true));
     DeferredHolder<Attribute, Attribute> CAST_RANGE_ADDITION = REGISTER.register("cast_range_addition", () -> new RangedAttribute("attribute.fantazia.cast_range_addition", 0, -256, 256).setSyncable(true));
     DeferredHolder<Attribute, Attribute> LIFESTEAL = REGISTER.register("lifesteal", () -> new RangedAttribute("attribute.fantazia.lifesteal", 0,0,16));
     DeferredHolder<Attribute, PercentageAttribute> EVASION = REGISTER.register("evasion", () -> new PercentageAttribute("attribute.fantazia.evasion",0).setSyncable(true));

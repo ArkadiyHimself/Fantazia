@@ -1,10 +1,16 @@
 package net.arkadiyhimself.fantazia.packets.stuff;
 
-import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.prompt.Prompt;
+import net.arkadiyhimself.fantazia.api.prompt.PromptToast;
 import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.renderers.PlayerAnimations;
+import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
 import net.arkadiyhimself.fantazia.entities.DashStone;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
+import net.arkadiyhimself.fantazia.world.inventory.AmplificationMenu;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -45,10 +51,10 @@ interface StuffHandlers {
 
         // the resulting position is supposed to be on a "cylinder" around entity, not sphere, which is why y coordinate is taken separately
         for (int i = 0; i < amount; i++) {
-            Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1, 1), 0, Fantazia.RANDOM.nextDouble(-1, 1)).normalize().scale(radius).scale(range);
+            Vec3 vec3 = RandomUtil.randomHorizontalVec3().normalize().scale(radius).scale(range);
             double x = vec3.x();
             double z = vec3.z();
-            double y = Fantazia.RANDOM.nextDouble(height * 0.1, height * 0.8);
+            double y = RandomUtil.nextDouble(height * 0.1, height * 0.8);
 
             double x0 = entity.getX() + x;
             double y0 = entity.getY() + y;
@@ -58,6 +64,13 @@ interface StuffHandlers {
 
             clientLevel.addParticle(particle, x0, y0, z0, delta.x, delta.y, delta.z);
         }
+    }
+
+    static void amplificationMenuEnoughResources(AmplifyResource enoughWisdom, AmplifyResource enoughSubstance) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null || !(player.containerMenu instanceof AmplificationMenu menu)) return;
+        menu.setEnoughWisdom(enoughWisdom);
+        menu.setEnoughSubstance(enoughSubstance);
     }
 
     static void animatePlayer(String anim, int id) {
@@ -85,7 +98,16 @@ interface StuffHandlers {
         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
     }
 
+    static void promptPlayer(Prompt prompt) {
+        ToastComponent gui = Minecraft.getInstance().getToasts();
+        if (gui.getToast(PromptToast.class, prompt) == null) gui.addToast(new PromptToast(prompt));
+    }
+
     static void swingHand(InteractionHand hand) {
         if (Minecraft.getInstance().player != null) Minecraft.getInstance().player.swing(hand);
+    }
+
+    static void usedPrompt(ServerPlayer serverPlayer, Prompt prompt) {
+        prompt.noLongerNeeded(serverPlayer);
     }
 }

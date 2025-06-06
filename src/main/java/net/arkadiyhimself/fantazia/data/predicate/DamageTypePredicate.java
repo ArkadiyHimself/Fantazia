@@ -8,6 +8,7 @@ import net.minecraft.advancements.critereon.TagPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import org.apache.commons.compress.utils.Lists;
 
@@ -48,6 +49,12 @@ public record DamageTypePredicate(List<ResourceKey<DamageType>> damageTypes, Lis
         @SafeVarargs
         public final Builder addTagPredicates(TagPredicate<DamageType>... predicates) {
             this.tagPredicates.addAll(Arrays.stream(predicates).toList());
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder addTagPredicates(TagKey<DamageType>... tagKeys) {
+            for (TagKey<DamageType> tagKey : tagKeys) this.tagPredicates.add(TagPredicate.is(tagKey));
             return this;
         }
 

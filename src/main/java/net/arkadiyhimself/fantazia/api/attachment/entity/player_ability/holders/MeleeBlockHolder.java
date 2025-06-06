@@ -2,24 +2,27 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.custom_events.BlockingEvent;
+import net.arkadiyhimself.fantazia.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.data.criterion.MeleeBlockTrigger;
 import net.arkadiyhimself.fantazia.entities.magic_projectile.AbstractMagicProjectile;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.registries.custom.Runes;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -157,8 +160,8 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
 
         if (parryDelay == 2 && parried && getPlayer() instanceof ServerPlayer serverPlayer) IPacket.swingHand(serverPlayer, InteractionHand.MAIN_HAND);
         if (parried && parryDelay == 0) {
-            boolean flag2 = CommonHooks.fireSweepAttack(getPlayer(), lastAttacker,false).isSweeping();
-            if (flag2) getPlayer().sweepAttack();
+            if (meticulous()) ApplyEffect.giveAbsoluteBarrier(getPlayer(), 25);
+            if (CommonHooks.fireSweepAttack(getPlayer(), lastAttacker,false).isSweeping()) getPlayer().sweepAttack();
 
             Vec3 horLook = getPlayer().getLookAngle().subtract(0, getPlayer().getLookAngle().y(), 0);
             AABB aabb = getPlayer().getBoundingBox().move(horLook.normalize().scale(2f)).inflate(1.5,0.25,1.5);
@@ -169,7 +172,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
                 for (LivingEntity livingentity : getPlayer().level().getEntitiesOfClass(LivingEntity.class, aabb, livingEntity -> livingEntity.isAlive() && livingEntity != getPlayer() && livingEntity != lastAttacker)) {
                     float damageBonus = EnchantmentHelper.modifyDamage(serverLevel, getPlayer().getMainHandItem(), livingentity, sources.parry(getPlayer()), dmgParry);
                     boolean damaged = livingentity.hurt(sources.parry(getPlayer()), damageBonus);
-                    if (bloodloss && damaged) LivingEffectHelper.giveHaemorrhage(livingentity, 200);
+                    if (bloodloss && damaged) ApplyEffect.giveHaemorrhage(livingentity, 200);
 
                 }
                 AttributeInstance instance = getPlayer().getAttribute(Attributes.ENTITY_INTERACTION_RANGE);
@@ -177,9 +180,8 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
                 if (getPlayer().distanceTo(lastAttacker) <= reach) {
                     float damageBonus = EnchantmentHelper.modifyDamage(serverLevel, getPlayer().getMainHandItem(), lastAttacker, sources.parry(getPlayer()), dmgParry);
                     boolean damaged = lastAttacker.hurt(sources.parry(getPlayer()), damageBonus);
-                    if (bloodloss && damaged) LivingEffectHelper.giveHaemorrhage(lastAttacker, 200);
+                    if (bloodloss && damaged) ApplyEffect.giveHaemorrhage(lastAttacker, 200);
                 }
-                if (Fantazia.DEVELOPER_MODE) getPlayer().sendSystemMessage(Component.translatable(String.valueOf(dmgParry)));
             }
 
             parried = false;
@@ -204,13 +206,14 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
 
     @Override
     public void onHit(LivingIncomingDamageEvent event) {
-        Entity attacker = event.getSource().getDirectEntity();
-        Vec3 sourcePos = event.getSource().getSourcePosition();
+        DamageSource source = event.getSource();
+        Entity attacker = source.getDirectEntity();
+        Vec3 sourcePos = source.getSourcePosition();
 
         boolean cancel = false;
         if (sourcePos == null || !PlayerAbilityHelper.facesAttack(getPlayer(), sourcePos)) return;
 
-        if ((event.getSource().is(DamageTypes.MOB_ATTACK) || event.getSource().is(DamageTypes.PLAYER_ATTACK)) && attacker instanceof LivingEntity livingAtt) {
+        if ((source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.PLAYER_ATTACK)) && attacker instanceof LivingEntity livingAtt) {
             if (blockTicks > 0) {
                 lastAttacker = livingAtt;
                 dmgTaken = event.getAmount();
@@ -256,8 +259,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
         anim = 0;
         expiring = false;
 
-        if (lastAttacker != null && disarm) LivingEffectHelper.makeDisarmed(lastAttacker, 160);
-
+        if (lastAttacker != null && disarm) ApplyEffect.makeDisarmed(lastAttacker, 160);
 
         getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.COMBAT_MELEE_BLOCK.get(), SoundSource.PLAYERS);
         if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "parry");;
@@ -279,7 +281,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
         anim = 0;
         expiring = false;
 
-        if (lastAttacker != null) LivingEffectHelper.microStun(lastAttacker);
+        if (lastAttacker != null) ApplyEffect.microStun(lastAttacker);
         getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.COMBAT_MELEE_BLOCK.get(), SoundSource.PLAYERS);
 
         triggerMeleeBlock(false);
@@ -295,7 +297,10 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
         parryTicks = getPlayer().level() instanceof ServerLevel serverLevel ? getParryWindow(serverLevel) : PARRY_WINDOW;
         anim = BLOCK_ANIM;
         expiring = true;
-        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.animatePlayer(serverPlayer, "blocking");
+        if (getPlayer() instanceof ServerPlayer serverPlayer) {
+            Prompts.USE_MELEE_BLOCK.noLongerNeeded(serverPlayer);
+            IPacket.animatePlayer(serverPlayer, "blocking");
+        }
         else IPacket.startBlocking();
     }
 
@@ -337,6 +342,10 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
         this.disarm = value;
     }
 
+    public boolean isUnlocked() {
+        return unlocked;
+    }
+
     public int anim() {
         return anim;
     }
@@ -351,5 +360,9 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
 
     public int parryTicks() {
         return parryTicks;
+    }
+
+    private boolean meticulous() {
+        return FantazicUtil.hasRune(getPlayer(), Runes.METICULOUS);
     }
 }

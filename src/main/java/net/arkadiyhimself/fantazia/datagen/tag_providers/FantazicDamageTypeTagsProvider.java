@@ -30,6 +30,7 @@ public class FantazicDamageTypeTagsProvider extends DamageTypeTagsProvider {
         tag(FTZDamageTypeTags.NOT_STOPPING_DASH).add(DamageTypes.CRAMMING, DamageTypes.DROWN, DamageTypes.STARVE, DamageTypes.GENERIC, DamageTypes.IN_WALL).addTag(DamageTypeTags.NO_KNOCKBACK);
         tag(FTZDamageTypeTags.NOT_TURNING_RED).add(FTZDamageTypes.BLEEDING, FTZDamageTypes.REMOVAL);
         tag(FTZDamageTypeTags.PIERCES_BARRIER).add(DamageTypes.CRAMMING, DamageTypes.DROWN, DamageTypes.STARVE, DamageTypes.GENERIC, DamageTypes.GENERIC_KILL, DamageTypes.IN_WALL, FTZDamageTypes.SHOCKWAVE).addTag(FTZDamageTypeTags.NON_LETHAL);
+        tag(FTZDamageTypeTags.DEAFENING).add(DamageTypes.EXPLOSION, DamageTypes.SONIC_BOOM, DamageTypes.PLAYER_EXPLOSION);
 
         // minecraft
         tag(DamageTypeTags.BYPASSES_ARMOR).add(FTZDamageTypes.REMOVAL, FTZDamageTypes.ANCIENT_FLAME, FTZDamageTypes.ANCIENT_BURNING, FTZDamageTypes.BLEEDING, FTZDamageTypes.FROZEN, FTZDamageTypes.PARRY, FTZDamageTypes.ELECTRIC);
@@ -39,5 +40,6 @@ public class FantazicDamageTypeTagsProvider extends DamageTypeTagsProvider {
         tag(DamageTypeTags.NO_IMPACT).add(FTZDamageTypes.REMOVAL, FTZDamageTypes.ANCIENT_FLAME, FTZDamageTypes.ANCIENT_BURNING, FTZDamageTypes.BLEEDING, FTZDamageTypes.FROZEN, FTZDamageTypes.ELECTRIC);
         tag(DamageTypeTags.NO_KNOCKBACK).add(FTZDamageTypes.REMOVAL, FTZDamageTypes.ANCIENT_FLAME, FTZDamageTypes.ANCIENT_BURNING, FTZDamageTypes.BLEEDING, FTZDamageTypes.FROZEN, FTZDamageTypes.ELECTRIC);
         tag(DamageTypeTags.IS_PROJECTILE).add(FTZDamageTypes.HATCHET, FTZDamageTypes.SIMPLE_CHASING_PROJECTILE);
+        tag(DamageTypeTags.IS_FREEZING).add(FTZDamageTypes.FROZEN);
     }
 }

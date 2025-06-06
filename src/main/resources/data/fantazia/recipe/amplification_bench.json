@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "fantazia:obscure_planks"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "T": {
+      "item": "fantazia:fantazium_ingot"
+    }
+  },
+  "pattern": [
+    "OTO",
+    "O#O"
+  ],
+  "result": {
+    "count": 1,
+    "id": "fantazia:amplification_bench"
+  }
+}

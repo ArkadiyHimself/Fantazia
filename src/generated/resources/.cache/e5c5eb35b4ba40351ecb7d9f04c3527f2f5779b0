@@ -1,4 +1,4 @@
-// 1.21.1	2025-05-18T23:06:06.155472	Advancements
+// 1.21.1	2025-06-06T12:55:51.530411	Advancements
 4591c92467577463c8cdc82579bf7ab6a9ab418b data/fantazia/advancement/main/athame.json
 e27bb6a6f3a670276db2a3c832c8f4564f60c271 data/fantazia/advancement/main/bloodthirsty.json
 b2be8f5347ff0fb98412ae10cc139a3c5b6aab67 data/fantazia/advancement/main/card_deck.json
@@ -11,7 +11,7 @@ a9a7bbf41df23f2615868829717034d95f9d134c data/fantazia/advancement/main/dashston
 2ca9aee08b17f744b41fc8228517a0ef75160452 data/fantazia/advancement/main/obtain_15_talents.json
 983fbf107e7fcfb22c615c3ac95b02395db8d14d data/fantazia/advancement/main/obtain_30_talents.json
 249f8041cb1fcc71088f5422d5a35039b95028f2 data/fantazia/advancement/main/obtain_a_talent.json
-a689b9b8519896d8659f09a9e983c5492782d066 data/fantazia/advancement/main/obtain_spell_recharge_reduce.json
+0d8d87a2eb868db7a1c2f3c3ac9908e390d695a6 data/fantazia/advancement/main/obtain_spell_recharge_reduce.json
 d70e0cbaf99700c53494f77a346bd13dec121efa data/fantazia/advancement/main/root.json
 7c684b7c60752687ddec80cd553e420b17f8a3d1 data/fantazia/advancement/main/spiral_nemesis.json
 e43e6d18f10d1a7610e2bf65537555ed546caa92 data/fantazia/advancement/main/the_worldliness.json
@@ -27,6 +27,7 @@ acc035298283efc286e81f458efd52ea236c5178 data/fantazia/advancement/talents/abili
 12b0184a8ac580bdc25ab7778ef893d3d8398a8f data/fantazia/advancement/talents/abilities/spider_powers/wall_climbing.json
 477bf90e81eb10751e2e3b5b0d320311bb3c8b7a data/fantazia/advancement/talents/spellcasting/spellcasting1/activecaster_slots.json
 fc72bf4e62ab82f529d9c6a6d5d78cc58ef5b290 data/fantazia/advancement/talents/spellcasting/spellcasting1/passivecaster_slots.json
+40886572b1e453f3362dc5ec30969cf0b35e4f3a data/fantazia/advancement/talents/spellcasting/spellcasting1/rune_slots.json
 e4fe0d7934993c9993c0b8a5ff2951ff254502ba data/fantazia/advancement/talents/stat_modifiers/health_boost.json
 a865c8bb150a53afaa010282ae410624062236ba data/fantazia/advancement/talents/stat_modifiers/mana_boost.json
 b3b156abbf0ba028d306182c53f0946fcdecfc30 data/fantazia/advancement/the_worldliness/artifacts/acid_bottle.json

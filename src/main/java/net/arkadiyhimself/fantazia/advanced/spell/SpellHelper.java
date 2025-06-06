@@ -20,8 +20,10 @@ import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.tags.FTZSpellTags;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.arkadiyhimself.fantazia.util.library.Vector3;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -57,41 +59,41 @@ public class SpellHelper {
         return spellInstancesHolder == null ? SpellCastResult.fail() : spellInstancesHolder.tryToCast(spell);
     }
 
-    public static SpellCastResult tryPassiveSpell(LivingEntity entity, PassiveSpell spell) {
+    public static SpellCastResult tryPassiveSpell(LivingEntity entity, int ampl, PassiveSpell spell) {
         if (true) {
-            LivingEffectHelper.unDisguise(entity);
+            ApplyEffect.unDisguise(entity);
             if (spell.getCastSound() != null) entity.level().playSound(null, entity.blockPosition(), spell.getCastSound().value(), SoundSource.PLAYERS);
-            return spell.onActivation(entity);
+            return spell.onActivation(entity, ampl);
         }
         else return SpellCastResult.fail();
     }
 
-    public static SpellCastResult trySelfSpell(LivingEntity entity, SelfSpell spell, boolean ignoreConditions) {
+    public static SpellCastResult trySelfSpell(LivingEntity entity, SelfSpell spell, int ampl, boolean ignoreConditions) {
         if (spell.conditions(entity) || ignoreConditions) {
-            LivingEffectHelper.unDisguise(entity);
+            ApplyEffect.unDisguise(entity);
             if (spell.getCastSound() != null) entity.level().playSound(null, entity.blockPosition(), spell.getCastSound().value(), SoundSource.PLAYERS);
-            return spell.onCast(entity);
+            return spell.onCast(entity, ampl);
         }
         return SpellCastResult.fail();
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends LivingEntity> SpellCastResult tryTargetedSpell(LivingEntity caster, TargetedSpell<T> spell) {
+    public static <T extends LivingEntity> SpellCastResult tryTargetedSpell(LivingEntity caster, int ampl, TargetedSpell<T> spell) {
         T target = getTarget(caster, spell);
         if (target == null) return SpellCastResult.fail();
-        SpellCastResult result = spell.beforeBlockCheck(caster, target);
+        SpellCastResult result = spell.beforeBlockCheck(caster, target, ampl);
 
         boolean blocked = false;
         if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
             TargetedCastResult targetedCastResult = getTargetedCastResult(target);
             blocked = targetedCastResult == TargetedCastResult.REFLECTED || targetedCastResult == TargetedCastResult.BLOCKED;
-            if (targetedCastResult == TargetedCastResult.REFLECTED && !spell.is(FTZSpellTags.NOT_REFLECTABLE) && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
+            if (targetedCastResult == TargetedCastResult.REFLECTED && !spell.is(FTZSpellTags.NOT_REFLECTABLE) && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster, ampl);
         }
 
         if (blocked) return SpellCastResult.blocked(result.wasteMana(), result.recharge(), result.success());
 
-        LivingEffectHelper.unDisguise(caster);
-        spell.afterBlockCheck(caster, target);
+        ApplyEffect.unDisguise(caster);
+        spell.afterBlockCheck(caster, target, ampl);
         return result;
     }
 
@@ -107,34 +109,34 @@ public class SpellHelper {
 
     @Nullable
     @SuppressWarnings("unchecked")
-    public static <T extends LivingEntity> T commandTargetedSpell(LivingEntity caster, TargetedSpell<T> spell) {
+    public static <T extends LivingEntity> T commandTargetedSpell(LivingEntity caster, int ampl, TargetedSpell<T> spell) {
         T target = getTarget(caster, spell);
         if (target == null || !spell.canAffect(target) || !spell.conditions(caster, target)) return null;
-        spell.beforeBlockCheck(caster, target);
+        spell.beforeBlockCheck(caster, target, ampl);
         boolean blocked = false;
         if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
             TargetedCastResult result = getTargetedCastResult(target);
             blocked = result == TargetedCastResult.REFLECTED || result == TargetedCastResult.BLOCKED;
-            if (result == TargetedCastResult.REFLECTED && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
+            if (result == TargetedCastResult.REFLECTED && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster, ampl);
         }
-        if (!blocked) spell.afterBlockCheck(caster, target);
+        if (!blocked) spell.afterBlockCheck(caster, target, ampl);
         return target;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends LivingEntity> List<T> commandTargetedSpell(LivingEntity caster, TargetedSpell<T> spell, Collection<LivingEntity> entities) {
+    public static <T extends LivingEntity> List<T> commandTargetedSpell(LivingEntity caster, int ampl, TargetedSpell<T> spell, Collection<LivingEntity> entities) {
         entities.removeIf(livingEntity -> !spell.canAffect(livingEntity) || livingEntity == caster);
         List<T> newTargets = (List<T>) entities;
         for (T target : newTargets) {
             if (!spell.canAffect(target) || !spell.conditions(caster, target)) continue;
-            spell.beforeBlockCheck(caster, target);
+            spell.beforeBlockCheck(caster, target, ampl);
             boolean blocked = false;
             if (!spell.is(FTZSpellTags.NOT_BLOCKABLE)) {
                 TargetedCastResult result = getTargetedCastResult(target);
                 blocked = result == TargetedCastResult.REFLECTED || result == TargetedCastResult.BLOCKED;
-                if (result == TargetedCastResult.REFLECTED && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster);
+                if (result == TargetedCastResult.REFLECTED && spell.canAffect(caster)) spell.afterBlockCheck(target, (T) caster, ampl);
             }
-            if (!blocked) spell.afterBlockCheck(caster, target);
+            if (!blocked) spell.afterBlockCheck(caster, target, ampl);
         }
         return newTargets;
     }
@@ -187,6 +189,13 @@ public class SpellHelper {
         }
 
         return true;
+    }
+
+    public static int getSpellAmplifier(LivingEntity entity, Holder<AbstractSpell> spell) {
+        if (!(entity instanceof Player player)) return 0;
+
+        SpellInstancesHolder spellInstancesHolder = PlayerAbilityHelper.takeHolder(player, SpellInstancesHolder.class);
+        return spellInstancesHolder != null ? spellInstancesHolder.getOrCreate(spell).getAmplifier() : 0;
     }
 
     public static boolean spellAvailable(LivingEntity entity, Holder<AbstractSpell> spell) {
@@ -244,33 +253,37 @@ public class SpellHelper {
         return livingEntityMap.get(distances.getFirst());
     }
 
-    public static void allIn1(LivingEntity owner) {
-        for (int i = 0; i < 7; i++) FantazicCombat.summonRandomFirework(owner);
+    public static SpellCastResult allIn1(LivingEntity owner, int ampl) {
+        for (int i = 0; i < 7 + ampl * 3; i++) FantazicUtil.summonRandomFirework(owner);
+        return SpellCastResult.defaultResult();
     }
 
-    public static void allIn2(LivingEntity owner) {
-        LivingEffectHelper.effectWithoutParticles(owner, FTZMobEffects.LAYERED_BARRIER, 200, 6);
-        LivingEffectHelper.effectWithoutParticles(owner, FTZMobEffects.MIGHT, 200, 3);
+    public static SpellCastResult allIn2(LivingEntity owner, int ampl) {
+        owner.addEffect(new MobEffectInstance(FTZMobEffects.LAYERED_BARRIER, 200, 6 + ampl));
+        owner.addEffect(new MobEffectInstance(FTZMobEffects.MIGHT, 200, 3 + ampl));
         EffectCleansing.tryCleanseAll(owner, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
+        return SpellCastResult.defaultResult();
     }
 
-    public static void allIn3(LivingEntity owner) {
-        if (!(owner instanceof Player player)) return;
+    public static SpellCastResult allIn3(LivingEntity owner, int ampl) {
+        if (!(owner instanceof Player player)) return SpellCastResult.defaultResult();
 
         SpellInstancesHolder holder = PlayerAbilityHelper.takeHolder(player, SpellInstancesHolder.class);
-        if (holder == null) return;
+        if (holder == null) return SpellCastResult.defaultResult();
         Map<Holder<AbstractSpell>, SpellInstance> availableSpells = holder.availableSpells();
         availableSpells.remove(Spells.ALL_IN);
         RandomList<SpellInstance> spellInstances = RandomList.emptyRandomList();
         for (SpellInstance instance : availableSpells.values()) if (instance.recharge() > 0) spellInstances.add(instance);
 
-        if (spellInstances.isEmpty()) LivingEffectHelper.giveAceInTheHole(owner, 200);
+        if (spellInstances.isEmpty()) ApplyEffect.giveAceInTheHole(owner, 200);
         else spellInstances.performOnRandom(SpellInstance::resetRecharge);
+        return SpellCastResult.keepMana();
     }
 
-    public static void allIn4(LivingEntity owner) {
-        owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100,2));
+    public static SpellCastResult allIn4(LivingEntity owner, int ampl) {
+        owner.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,100,2 + ampl));
         owner.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,100));
-        owner.addEffect(new MobEffectInstance(FTZMobEffects.CORROSION,100,2));
+        owner.addEffect(new MobEffectInstance(FTZMobEffects.CORROSION,100,2 + ampl));
+        return SpellCastResult.defaultResult();
     }
 }

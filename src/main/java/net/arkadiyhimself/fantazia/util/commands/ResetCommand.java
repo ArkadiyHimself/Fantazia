@@ -10,6 +10,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 public class ResetCommand {
 
@@ -56,6 +57,11 @@ public class ResetCommand {
                 }))
                 .then(Commands.literal("dashstone_entity").executes(context -> {
                     PlayerAbilityHelper.acceptConsumer(context.getSource().getPlayer(), DashHolder.class, DashHolder::resetDashstoneEntity);
+                    return 1;
+                }))
+                .then(Commands.literal("prompts").executes(context -> {
+                    Player player = context.getSource().getPlayer();
+                    if (player != null) player.getData(FTZAttachmentTypes.USED_PROMPTS).clear();
                     return 1;
                 })));
     }

@@ -1,5 +1,7 @@
-// 1.21.1	2025-05-21T18:10:49.310177	EffectApplier
+// 1.21.1	2025-05-26T20:40:38.393397	EffectApplier
 391e6b13290cb039042217156aaf66581fb5ab6a data/fantazia/fantazia/effect_spawn_applier/blaze.json
-07d4eb378e87d6bae46e18ec941e9350e333fd4e data/fantazia/fantazia/effect_spawn_applier/common_foes.json
-9a0b1d4c0024801307672e6ff6379593d42f5675 data/fantazia/fantazia/effect_spawn_applier/creeper.json
+16bdc04c66759b669d632a00a8ae641c15500516 data/fantazia/fantazia/effect_spawn_applier/common_foes.json
+d6b59b52b66681e87ab9947403b38e53adbb47a3 data/fantazia/fantazia/effect_spawn_applier/creeper.json
+feea7145f253d3696ed1b066a797637ee96407b9 data/fantazia/fantazia/effect_spawn_applier/enderman.json
+310ce49d8c47e065aa58f8447a2e0ca69f9ab45b data/fantazia/fantazia/effect_spawn_applier/snow_golem.json
 0a576ed990b62853f8ef04c408be74cd816e7f81 data/fantazia/fantazia/effect_spawn_applier/witch.json

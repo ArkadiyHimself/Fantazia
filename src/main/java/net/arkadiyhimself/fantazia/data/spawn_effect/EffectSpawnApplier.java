@@ -106,7 +106,7 @@ public record EffectSpawnApplier(ImmutableList<EntityType<?>> entityTypes, Immut
 
         private static DataResult<Builder> validate(Builder builder) {
             if (builder.entityTypes.isEmpty()) return DataResult.error(() -> "Effect spawn applier has no entity types!");
-            if (builder.combinedEffects.isEmpty()) return DataResult.error(() -> "Effect spawn applier has no spawn effects!");
+            else if (builder.combinedEffects.isEmpty()) return DataResult.error(() -> "Effect spawn applier has no spawn effects!");
             return DataResult.success(builder);
         }
 

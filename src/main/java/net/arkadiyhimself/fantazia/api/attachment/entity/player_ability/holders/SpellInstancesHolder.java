@@ -16,16 +16,17 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.List;
 import java.util.Map;
 
 public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioListener, ISyncEveryTick {
 
-    private final Map<SpellCasterItem, Holder<AbstractSpell>> curioSpells = Maps.newHashMap();
     private final Map<Holder<AbstractSpell>, SpellInstance> spellInstances = Maps.newHashMap();
 
     public SpellInstancesHolder(@NotNull Player player) {
@@ -86,31 +87,49 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
     }
 
     @Override
-    public void clientTick() {
-        spellInstances.values().forEach(SpellInstance::clientTick);
-    }
-
-    @Override
     public void respawn() {
         spellInstances.values().forEach(SpellInstance::resetRecharge);
     }
 
     @Override
     public void onCurioEquip(ItemStack stack) {
-        if (stack.getItem() instanceof SpellCasterItem caster && !curioSpells.containsKey(caster)) {
+        if (stack.getItem() instanceof SpellCasterItem caster) {
             Holder<AbstractSpell> spell = caster.getSpell();
-            getOrCreate(spell).setAvailable(true);
-            curioSpells.put(caster, spell);
+            List<ItemStack> itemStacks = FantazicUtil.getAllCuriosOfItem(getPlayer(), caster);
+
+            int ampl = 0;
+            for (ItemStack stack1 : itemStacks) {
+                int i = FantazicUtil.getCasterAmplifier(stack1, getPlayer().registryAccess());
+                if (i > ampl) ampl = i;
+            }
+
+            SpellInstance spellInstance = getOrCreate(spell);
+            spellInstance.setAmplifier(ampl);
+            spellInstance.setAvailable(true);
             spell.value().uponEquipping(getPlayer());
         }
     }
 
     @Override
     public void onCurioUnEquip(ItemStack stack) {
-        if (stack.getItem() instanceof SpellCasterItem caster && curioSpells.containsKey(caster) && FantazicUtil.duplicatingCurio(getPlayer(), caster) <= 1) {
+        if (stack.getItem() instanceof SpellCasterItem caster) {
             Holder<AbstractSpell> spell = caster.getSpell();
-            getOrCreate(spell).setAvailable(false);
-            curioSpells.remove(caster);
+            List<ItemStack> itemStacks = FantazicUtil.getAllCuriosOfItem(getPlayer(), caster);
+
+            SpellInstance instance = getOrCreate(spell);
+            if (itemStacks.isEmpty()) {
+                instance.setAvailable(false);
+                instance.setAmplifier(0);
+                return;
+            }
+
+            int ampl = 0;
+            for (ItemStack stack1 : itemStacks) {
+                int i = FantazicUtil.getCasterAmplifier(stack1, getPlayer().registryAccess());
+                if (i > ampl) ampl = i;
+            }
+            
+            instance.setAmplifier(ampl);
         }
     }
 
@@ -124,6 +143,7 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
 
     public SpellCastResult tryToCast(Holder<AbstractSpell> spellHolder) {
         SpellInstance instance = getOrCreate(spellHolder);
+
         return instance.isAvailable() ? instance.attemptCast() : SpellCastResult.fail();
     }
 

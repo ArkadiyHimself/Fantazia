@@ -16,6 +16,7 @@ import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -23,9 +24,9 @@ import java.util.function.Predicate;
 public class SelfSpell extends AbstractSpell {
 
     private final Predicate<LivingEntity> conditions;
-    private final Function<LivingEntity, SpellCastResult> onCast;
+    private final BiFunction<LivingEntity, Integer, SpellCastResult> onCast;
 
-    protected SelfSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Predicate<LivingEntity> conditions, Function<LivingEntity, SpellCastResult> onCast, Function<LivingEntity, List<Component>> extendTooltip) {
+    protected SelfSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Predicate<LivingEntity> conditions, BiFunction<LivingEntity, Integer, SpellCastResult> onCast, Function<LivingEntity, List<Component>> extendTooltip) {
         super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, extendTooltip);
         this.conditions = conditions;
         this.onCast = onCast;
@@ -35,9 +36,9 @@ public class SelfSpell extends AbstractSpell {
         return conditions.test(livingEntity);
     }
 
-    public SpellCastResult onCast(LivingEntity livingEntity) {
+    public SpellCastResult onCast(LivingEntity livingEntity, int ampl) {
         if (doCleanse()) EffectCleansing.tryCleanseAll(livingEntity, getCleanse(), MobEffectCategory.BENEFICIAL);
-        return onCast.apply(livingEntity);
+        return onCast.apply(livingEntity, ampl);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class SelfSpell extends AbstractSpell {
         String manacost = String.format("%.1f", getManacost());
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.manacost", heading, ability, manacost));
         // spell cleanse
-        if (doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, getCleanse().getName()));
+        if (doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, getCleanse().getDescription()));
 
         components.add(Component.literal(" "));
 
@@ -116,7 +117,7 @@ public class SelfSpell extends AbstractSpell {
     public static class Builder extends SpellBuilder<SelfSpell> {
 
         private Predicate<LivingEntity> conditions = livingEntity -> true;
-        private Function<LivingEntity, SpellCastResult> onCast = livingEntity -> SpellCastResult.defaultResult();
+        private BiFunction<LivingEntity, Integer, SpellCastResult> onCast = (livingEntity, integer) -> SpellCastResult.defaultResult();
 
         private Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
             super(manacost, defaultRecharge, castSound, rechargeSound);
@@ -162,9 +163,13 @@ public class SelfSpell extends AbstractSpell {
             return this;
         }
 
-        public Builder onCast(Function<LivingEntity, SpellCastResult> value) {
+        public Builder onCast(BiFunction<LivingEntity, Integer, SpellCastResult> value) {
             this.onCast = value;
             return this;
+        }
+
+        public Builder onCast(Function<LivingEntity, SpellCastResult> value) {
+            return onCast((livingEntity, integer) -> value.apply(livingEntity));
         }
 
         public Builder extendTooltip(Function<LivingEntity, List<Component>> extendTooltip) {

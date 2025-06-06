@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.items;
 
+import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -32,5 +33,9 @@ public class WisdomCatcherItem extends Item {
         pPlayer.startUsingItem(pUsedHand);
 
         return InteractionResultHolder.consume(pPlayer.getItemInHand(pUsedHand));
+    }
+
+    public static ItemStack itemStack() {
+        return new ItemStack(FTZItems.WISDOM_CATCHER.asItem());
     }
 }

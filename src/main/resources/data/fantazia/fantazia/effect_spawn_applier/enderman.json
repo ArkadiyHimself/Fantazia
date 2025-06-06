@@ -1,0 +1,21 @@
+{
+  "entity_types": [
+    "minecraft:enderman"
+  ],
+  "spawn_effects": [
+    {
+      "aura_instances": [
+        {
+          "aura": "fantazia:despair"
+        }
+      ],
+      "chance": 0.13,
+      "mob_effect_instances": [
+        {
+          "amplifier": 2,
+          "mob_effect": "minecraft:regeneration"
+        }
+      ]
+    }
+  ]
+}

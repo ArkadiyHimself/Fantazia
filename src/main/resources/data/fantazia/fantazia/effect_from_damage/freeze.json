@@ -1,0 +1,18 @@
+{
+  "damage_type": {
+    "damage_types": [
+      "minecraft:freeze"
+    ]
+  },
+  "mob_effect_instances": [
+    {
+      "duration": 100,
+      "id": "fantazia:frozen",
+      "neoforge:cures": [
+        "milk",
+        "protected_by_totem"
+      ],
+      "show_icon": true
+    }
+  ]
+}

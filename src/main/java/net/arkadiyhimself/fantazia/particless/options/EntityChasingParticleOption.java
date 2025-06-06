@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -65,10 +66,10 @@ public class EntityChasingParticleOption<T extends ParticleType<?>> implements P
     }
 
     private Vec3 bakeRelative(float wdt, float hgt) {
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(wdt);
+        Vec3 vec3 = RandomUtil.randomHorizontalVec3().normalize().scale(wdt);
         double x = vec3.x();
         double z = vec3.z();
-        double y = Fantazia.RANDOM.nextDouble(hgt * 0.1, hgt * 0.8);
+        double y = RandomUtil.nextDouble(hgt * 0.1, hgt * 0.8);
         return new Vec3(x, y, z);
     }
 }

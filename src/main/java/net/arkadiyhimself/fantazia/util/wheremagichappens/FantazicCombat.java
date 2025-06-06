@@ -105,7 +105,7 @@ public class FantazicCombat {
 
         float amount = event.getNewDamage();
 
-        LivingEffectHelper.unDisguise(livingAttacker);
+        ApplyEffect.unDisguise(livingAttacker);
         AttributeInstance lifeSteal = livingAttacker.getAttribute(FTZAttributes.LIFESTEAL);
         double heal = lifeSteal == null ? 0 : lifeSteal.getValue() * amount;
         if (heal > 0) LevelAttributesHelper.healEntityByOther(livingAttacker, target, (float) heal, HealingSourcesHolder::lifesteal);
@@ -115,7 +115,7 @@ public class FantazicCombat {
         Optional<Holder.Reference<Enchantment>> bully = enchantmentRegistry.getHolder(FTZEnchantments.BULLY);
         float bullyDMG = bully.map(enchantmentReference -> livingAttacker.getMainHandItem().getEnchantmentLevel(enchantmentReference) * 1.5f).orElse(0F);
         if (bullyDMG > 0) {
-            LivingEffectHelper.microStun(target);
+            ApplyEffect.microStun(target);
             StunEffectHolder stunEffect = LivingEffectHelper.takeHolder(target, StunEffectHolder.class);
             if (stunEffect != null && stunEffect.stunned()) event.setNewDamage(amount + bullyDMG);
         }
@@ -128,8 +128,10 @@ public class FantazicCombat {
         }
 
         if (SpellHelper.hasActiveSpell(livingAttacker, Spells.SHOCKWAVE)) {
+            int ampl = SpellHelper.getSpellAmplifier(livingAttacker, Spells.SHOCKWAVE);
+            float multip = 0.5f + 0.05f * ampl;
             float sat = livingAttacker instanceof Player player ? (float) player.getFoodData().getFoodLevel() / 20 : 1f;
-            Shockwave shockwave = new Shockwave(livingAttacker.level(), livingAttacker,amount * sat * 0.5f);
+            Shockwave shockwave = new Shockwave(livingAttacker.level(), livingAttacker,amount * sat * multip);
             shockwave.setPos(target.getEyePosition().add(0,-0.45,0));
             livingAttacker.level().addFreshEntity(shockwave);
         }
@@ -139,7 +141,7 @@ public class FantazicCombat {
             if (livingAttacker instanceof ServerPlayer serverPlayer) PlayerAbilityHelper.pogo(serverPlayer);
         }
 
-        if (SpellHelper.castPassiveSpell(livingAttacker, Spells.SUSTAIN).success()) LivingEffectHelper.effectWithoutParticles(target, MobEffects.WITHER,80,2);
+        if (SpellHelper.castPassiveSpell(livingAttacker, Spells.SUSTAIN).success()) target.addEffect(new MobEffectInstance(MobEffects.WITHER, 80, 2));
     }
 
     public static boolean isFlying(LivingEntity livingEntity) {
@@ -154,7 +156,7 @@ public class FantazicCombat {
 
     public static void arrowImpact(AbstractArrow arrow, LivingEntity entity) {
         ArrowEnchantmentsHolder arrowEnchantmentsHolder = arrow.getData(FTZAttachmentTypes.ARROW_ENCHANTMENTS);
-        if (arrowEnchantmentsHolder.isFrozen()) LivingEffectHelper.makeFrozen(entity, 40);
+        if (arrowEnchantmentsHolder.isFrozen()) ApplyEffect.makeFrozen(entity, 40);
 
         float damage = (float) arrow.getBaseDamage();
         int duel = arrowEnchantmentsHolder.getDuelist();
@@ -196,28 +198,5 @@ public class FantazicCombat {
                 if (wrappedGoal.getGoal() instanceof SwellGoal goal) goal.stop();
             }
         }
-    }
-
-    public static ItemStack getFirework(DyeColor color, int flightTime) {
-        ItemStack itemstack = new ItemStack(Items.FIREWORK_ROCKET);
-        itemstack.set(
-                DataComponents.FIREWORKS,
-                new Fireworks(
-                        (byte)flightTime,
-                        List.of(new FireworkExplosion(FireworkExplosion.Shape.BURST, IntList.of(color.getFireworkColor()), IntList.of(), false, false))
-                )
-        );
-        return itemstack;
-    }
-
-    public static void summonRandomFirework(LivingEntity owner) {
-        DyeColor dyecolor = Util.getRandom(DyeColor.values(), owner.getRandom());
-        int i = owner.getRandom().nextInt(3);
-        ItemStack itemstack = getFirework(dyecolor, i);
-
-        double x = owner.getX() + Fantazia.RANDOM.nextDouble(-0.5, 0.5);
-        double z = owner.getZ() + Fantazia.RANDOM.nextDouble(-0.5, 0.5);
-        FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(owner.level(), owner, x, owner.getEyeY(), z, itemstack);
-        owner.level().addFreshEntity(fireworkrocketentity);
     }
 }

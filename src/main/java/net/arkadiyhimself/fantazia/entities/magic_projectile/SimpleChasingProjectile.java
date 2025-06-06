@@ -10,6 +10,7 @@ import net.arkadiyhimself.fantazia.registries.FTZEntityTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
@@ -163,7 +164,7 @@ public class SimpleChasingProjectile extends ChasingProjectile {
 
                 target.playSound(FTZSoundEvents.KNOCK_OUT_IMPACT.value());
                 if (target.isDeadOrDying() && projectile.getOwner() instanceof Player player) PlayerAbilityHelper.reduceRecharge(player, Spells.KNOCK_OUT,100);
-                if (target.getType() != EntityType.ENDERMAN) LivingEffectHelper.makeStunned(target,80);
+                if (target.getType() != EntityType.ENDERMAN) ApplyEffect.makeStunned(target,80);
             });
 
             put("", (projectile, target) -> {
@@ -178,7 +179,7 @@ public class SimpleChasingProjectile extends ChasingProjectile {
                 AABB aabb = projectile.getBoundingBox().inflate(0.85);
                 for (LivingEntity livingEntity : projectile.level().getEntitiesOfClass(LivingEntity.class, aabb)) {
                     if (livingEntity == deflecter) continue;
-                    LivingEffectHelper.microStun(livingEntity);
+                    ApplyEffect.microStun(livingEntity);
                     LevelAttributesHelper.hurtEntity(livingEntity, projectile,2f, DamageSourcesHolder::simpleChasingProjectile);
                 }
             }));

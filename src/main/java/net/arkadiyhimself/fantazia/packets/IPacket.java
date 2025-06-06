@@ -1,6 +1,8 @@
 package net.arkadiyhimself.fantazia.packets;
 
+import net.arkadiyhimself.fantazia.api.prompt.Prompt;
 import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.entities.DashStone;
 import net.arkadiyhimself.fantazia.packets.attachment_modify.*;
@@ -51,6 +53,10 @@ public interface IPacket extends CustomPacketPayload {
 
     static void blockAttack(ServerPlayer serverPlayer) {
         PacketDistributor.sendToPlayer(serverPlayer, new BlockAttackSC2());
+    }
+
+    static void cancelDash() {
+        PacketDistributor.sendToServer(new CancelDashS2C());
     }
 
     static void effectSync(LivingEntity entity, MobEffect mobEffect, boolean present) {
@@ -137,6 +143,10 @@ public interface IPacket extends CustomPacketPayload {
         PacketDistributor.sendToServer(new TalentBuyingC2S(location));
     }
 
+    static void talentDisable(ResourceLocation location) {
+        PacketDistributor.sendToServer(new TalentDisableC2S(location));
+    }
+
     static void talentPossession(ServerPlayer serverPlayer, Talent talent, boolean unlocked) {
         PacketDistributor.sendToPlayer(serverPlayer, new TalentPossessionSC2(talent.id(), unlocked));
     }
@@ -193,6 +203,10 @@ public interface IPacket extends CustomPacketPayload {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new AddParticlesOnEntitySC2(entity.getId(), particle, movement, amount, range));
     }
 
+    static void amplificationMenuEnoughResources(ServerPlayer serverPlayer, AmplifyResource enoughWisdom, AmplifyResource enoughSubstance) {
+        PacketDistributor.sendToPlayer(serverPlayer, new AmplificationMenuEnoughResourcesSC2(enoughWisdom, enoughSubstance));
+    }
+
     static void animatePlayer(ServerPlayer serverPlayer, String anim) {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new AnimatePlayerSC2(anim, serverPlayer));
     }
@@ -209,7 +223,15 @@ public interface IPacket extends CustomPacketPayload {
         PacketDistributor.sendToPlayer(serverPlayer, new PlaySoundForUIS2C(soundEvent));
     }
 
+    static void promptPlayer(ServerPlayer serverPlayer, Prompt prompt) {
+        PacketDistributor.sendToPlayer(serverPlayer, new PromptPlayerSC2(prompt));
+    }
+
     static void swingHand(ServerPlayer serverPlayer, InteractionHand hand) {
         PacketDistributor.sendToPlayer(serverPlayer, new SwingHandS2C(hand));
+    }
+
+    static void usedPrompt(Prompt prompt) {
+        PacketDistributor.sendToServer(new UsedPromptC2S(prompt));
     }
 }

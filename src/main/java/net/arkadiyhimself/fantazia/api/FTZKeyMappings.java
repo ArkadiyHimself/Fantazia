@@ -5,7 +5,7 @@ import net.minecraft.client.KeyMapping;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import org.lwjgl.glfw.GLFW;
 
-public class KeyBinding {
+public class FTZKeyMappings {
     public static final String KEY_MOD = "key.fantazia";
 
     public static final String KEY_DASH = "key.fantazia.dash";
@@ -31,6 +31,6 @@ public class KeyBinding {
         SPELLCAST1 = new KeyMapping(KEY_SPELLCAST1, KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, KEY_MOD);
         SPELLCAST2 = new KeyMapping(KEY_SPELLCAST2, KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_I, KEY_MOD);
         SPELLCAST3 = new KeyMapping(KEY_SPELLCAST3, KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, KEY_MOD);
-        TALENTS = new KeyMapping(KEY_TALENTS, KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_L, KEY_MOD);
+        TALENTS = new KeyMapping(KEY_TALENTS, KeyConflictContext.UNIVERSAL, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_L, KEY_MOD);
     }
 }

@@ -1,0 +1,26 @@
+{
+  "type": "fantazia:rune_carving",
+  "fee": 7,
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "rune": "fantazia:extension",
+  "wisdom": 10
+}

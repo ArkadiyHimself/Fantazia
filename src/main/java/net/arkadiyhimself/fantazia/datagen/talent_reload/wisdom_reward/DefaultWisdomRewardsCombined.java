@@ -21,9 +21,9 @@ public class DefaultWisdomRewardsCombined implements SubProvider<WisdomRewardsCo
     @Override
     public void generate(HolderLookup.Provider provider, Consumer<WisdomRewardsCombinedHolder> consumer) {
         WisdomRewardsCombined.builder(WisdomRewardCategories.BREWED, 8)
-                .addReward(Objects.requireNonNull(MobEffects.NIGHT_VISION.getKey()).location(), 7)
-                .addReward(Objects.requireNonNull(MobEffects.FIRE_RESISTANCE.getKey()).location(), 8)
-                .addReward(Objects.requireNonNull(MobEffects.WATER_BREATHING.getKey()).location(), 8)
+                .addReward(Objects.requireNonNull(MobEffects.NIGHT_VISION.getKey()).location(), 15)
+                .addReward(Objects.requireNonNull(MobEffects.FIRE_RESISTANCE.getKey()).location(), 20)
+                .addReward(Objects.requireNonNull(MobEffects.WATER_BREATHING.getKey()).location(), 15)
                 .save(consumer, WisdomRewardCategories.BREWED);
 
         WisdomRewardsCombined.builder(WisdomRewardCategories.CONSUMED, 4)

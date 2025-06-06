@@ -183,14 +183,15 @@ public class FTZGuis {
         guiGraphics.drawString(font, string1, guiGraphics.guiWidth() - width1, 0, 16755200);
         guiGraphics.drawString(font, "Tick count: " + player.tickCount, guiGraphics.guiWidth() - width1, 10, 16755200);
         guiGraphics.drawString(font, "Inv: " + player.invulnerableTime, guiGraphics.guiWidth() - width1, 20, 16755200);
+        guiGraphics.drawString(font, "Freeze: " + player.getTicksFrozen(), guiGraphics.guiWidth() - width1, 30, 16755200);
 
         MeleeBlockHolder meleeBlockHolder = PlayerAbilityHelper.takeHolder(player, MeleeBlockHolder.class);
         if (meleeBlockHolder != null) {
-            guiGraphics.drawString(font, "Melee block: ", guiGraphics.guiWidth() - width1, 30, 16755200);
-            guiGraphics.drawString(font, "Anim: " + meleeBlockHolder.anim(), guiGraphics.guiWidth() - width1, 40, 16755200);
-            guiGraphics.drawString(font, "Cooldown: " + meleeBlockHolder.blockCooldown(), guiGraphics.guiWidth() - width1, 50, 16755200);
-            guiGraphics.drawString(font, "Block ticks: " + meleeBlockHolder.blockTicks(), guiGraphics.guiWidth() - width1, 60, 16755200);
-            guiGraphics.drawString(font, "Parry ticks: " + meleeBlockHolder.parryTicks(), guiGraphics.guiWidth() - width1, 70, 16755200);
+            guiGraphics.drawString(font, "Melee block: ", guiGraphics.guiWidth() - width1, 40, 16755200);
+            guiGraphics.drawString(font, "Anim: " + meleeBlockHolder.anim(), guiGraphics.guiWidth() - width1, 50, 16755200);
+            guiGraphics.drawString(font, "Cooldown: " + meleeBlockHolder.blockCooldown(), guiGraphics.guiWidth() - width1, 60, 16755200);
+            guiGraphics.drawString(font, "Block ticks: " + meleeBlockHolder.blockTicks(), guiGraphics.guiWidth() - width1, 70, 16755200);
+            guiGraphics.drawString(font, "Parry ticks: " + meleeBlockHolder.parryTicks(), guiGraphics.guiWidth() - width1, 80, 16755200);
         }
     };
 

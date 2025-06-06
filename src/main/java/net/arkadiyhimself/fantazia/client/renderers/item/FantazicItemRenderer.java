@@ -59,6 +59,7 @@ public class FantazicItemRenderer extends BlockEntityWithoutLevelRenderer {
         else if (item == FTZItems.DASHSTONE.value()) renderDashStone(pStack, pDisplayContext, pBuffer, pPoseStack, pPackedLight, pPackedOverlay);
     }
 
+
     public static void renderRuneWielder(ItemStack stack, ItemDisplayContext context, MultiBufferSource pBuffer, PoseStack pPoseStack, int pPackedLight, int pPackedOverlay) {
         Holder<Rune> holder = stack.get(FTZDataComponentTypes.RUNE);
         if (holder == null) return;

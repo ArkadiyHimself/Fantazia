@@ -20,6 +20,8 @@ public class Runes {
     public static final DeferredRune<Rune> PURE_VESSEL;
     public static final DeferredRune<Rune> PROSPERITY;
     public static final DeferredRune<Rune> NOISELESS;
+    public static final DeferredRune<Rune> METICULOUS;
+    public static final DeferredRune<Rune> EXTENSION;
 
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);
@@ -58,6 +60,14 @@ public class Runes {
                 .fortune(2).looting(2));
 
         NOISELESS = register("noiseless", Rune.builder(Fantazia.res("noiseless"))
+                .nameFormatting(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
+                .descFormatting(ChatFormatting.BLUE));
+
+        METICULOUS = register("meticulous", Rune.builder(Fantazia.res("meticulous"))
+                .nameFormatting(ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD)
+                .descFormatting(ChatFormatting.LIGHT_PURPLE));
+
+        EXTENSION = register("extension", Rune.builder(Fantazia.res("extension"))
                 .nameFormatting(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD)
                 .descFormatting(ChatFormatting.BLUE));
     }

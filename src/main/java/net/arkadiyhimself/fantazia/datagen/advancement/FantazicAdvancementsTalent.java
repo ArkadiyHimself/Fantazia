@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.datagen.advancement;
 import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.MeleeBlockTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.PossessItemTrigger;
+import net.arkadiyhimself.fantazia.data.criterion.PossessRuneTrigger;
 import net.arkadiyhimself.fantazia.data.talent.TalentHierarchies;
 import net.arkadiyhimself.fantazia.data.talent.Talents;
 import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
@@ -48,6 +49,7 @@ public class FantazicAdvancementsTalent implements AdvancementProvider.Advanceme
 
         talent().addCriterion("enough_casters", PossessItemTrigger.TriggerInstance.itemsOfTag(FTZItemTags.CURIOS_PASSIVECASTER, 4)).save(consumer, Talents.PASSIVECASTER_SLOTS);
         talent().addCriterion("enough_casters", PossessItemTrigger.TriggerInstance.itemsOfTag(FTZItemTags.CURIOS_ACTIVECASTER, 4)).save(consumer, Talents.ACTIVECASTER_SLOTS);
+        talent().addCriterion("enough_runes", PossessRuneTrigger.TriggerInstance.amountOfRunes(6)).save(consumer, Talents.RUNE_SLOTS);
 
         talent().addCriterion("ate_fruit", ConsumeItemTrigger.TriggerInstance.usedItem(FTZItems.VITALITY_FRUIT)).save(consumer, TalentHierarchies.HEALTH_BOOST);
         talent().addCriterion("ate_fruit", ConsumeItemTrigger.TriggerInstance.usedItem(FTZItems.INSIGHT_ESSENCE)).save(consumer, TalentHierarchies.MANA_BOOST);

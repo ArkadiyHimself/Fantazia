@@ -4,6 +4,7 @@ import net.arkadiyhimself.fantazia.api.attachment.basis_attachments.LocationHold
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.SimpleMobEffectSyncHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.minecraft.client.Minecraft;
@@ -71,9 +72,15 @@ public interface IAttachmentSync extends IPacket {
         LivingEffectHelper.acceptConsumer(livingEntity, SimpleMobEffectSyncHolder.class, holder -> holder.deserializeInitial(tag));
     }
 
+    default void updateAuraInstances(CompoundTag tag) {
+        LevelAttributesHelper.acceptConsumer(Minecraft.getInstance().level, AurasInstancesHolder.class, holder -> holder.deserializeInitial(tag));
+    }
+
     static void onEntityJoinLevel(Entity entity) {
         if (entity instanceof ServerPlayer serverPlayer) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, PlayerAttachmentInitialSyncSC2.build(serverPlayer));
+            if (serverPlayer.level() instanceof ServerLevel serverLevel)
+                PacketDistributor.sendToPlayer(serverPlayer, new LevelAttributesUpdateS2C(serverLevel.getData(FTZAttachmentTypes.LEVEL_ATTRIBUTES).serializeInitial()));
         }
         else if (entity instanceof LivingEntity livingEntity) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(livingEntity, LivingEntityAttachmentInitialSyncSC2.build(livingEntity));
@@ -100,5 +107,9 @@ public interface IAttachmentSync extends IPacket {
 
     static void updateLevelAttributes(ServerLevel level) {
         PacketDistributor.sendToAllPlayers(new LevelAttributesUpdateS2C(LevelAttributesHelper.getUnwrap(level).serializeInitial()));
+    }
+
+    static void updateAuraInstances(ServerLevel level) {
+        PacketDistributor.sendToAllPlayers(UpdateAuraInstancesS2C.create(level));
     }
 }

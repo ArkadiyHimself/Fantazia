@@ -4,7 +4,8 @@
     "elements": {
       "elements": [
         "fantazia:spellcasting/spellcasting1/activecaster_slots",
-        "fantazia:spellcasting/spellcasting1/passivecaster_slots"
+        "fantazia:spellcasting/spellcasting1/passivecaster_slots",
+        "fantazia:spellcasting/spellcasting1/rune_slots"
       ]
     }
   },

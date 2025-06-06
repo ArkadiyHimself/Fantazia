@@ -7,7 +7,7 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
 import net.arkadiyhimself.fantazia.advanced.runes.Rune;
-import net.arkadiyhimself.fantazia.api.KeyBinding;
+import net.arkadiyhimself.fantazia.api.FTZKeyMappings;
 import net.arkadiyhimself.fantazia.api.attachment.basis_attachments.LocationHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.PuppeteeredEffectHolder;
@@ -15,12 +15,16 @@ import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
 import net.arkadiyhimself.fantazia.client.render.FTZRenderTypes;
 import net.arkadiyhimself.fantazia.client.render.layers.*;
+import net.arkadiyhimself.fantazia.client.renderers.block_entity.AmplificationBenchRenderer;
 import net.arkadiyhimself.fantazia.client.renderers.entity.*;
 import net.arkadiyhimself.fantazia.client.renderers.item.FantazicItemRenderer;
+import net.arkadiyhimself.fantazia.client.screen.AmplificationScreen;
 import net.arkadiyhimself.fantazia.datagen.*;
 import net.arkadiyhimself.fantazia.datagen.advancement.FantazicAdvancementsRegular;
 import net.arkadiyhimself.fantazia.datagen.advancement.FantazicAdvancementsTalent;
 import net.arkadiyhimself.fantazia.datagen.advancement.FantazicAdvancementsTheWorldliness;
+import net.arkadiyhimself.fantazia.datagen.effect_from_damage.DefaultEffectsFromDamage;
+import net.arkadiyhimself.fantazia.datagen.effect_from_damage.FantazicEffectFromDamageProvider;
 import net.arkadiyhimself.fantazia.datagen.effect_spawn_applier.DefaultEffectSpawnAppliers;
 import net.arkadiyhimself.fantazia.datagen.effect_spawn_applier.FantazicEffectSpawnApplierProvider;
 import net.arkadiyhimself.fantazia.datagen.loot_modifier.DefaultFantazicLootModifiers;
@@ -253,18 +257,24 @@ public class RegistryEvents {
 
         event.registerBlockEntityRenderer(FTZBlockEntityTypes.OBSCURE_SIGN.value(), SignRenderer::new);
         event.registerBlockEntityRenderer(FTZBlockEntityTypes.OBSCURE_HANGING_SIGN.value(), HangingSignRenderer::new);
+        event.registerBlockEntityRenderer(FTZBlockEntityTypes.AMPLIFICATION_BENCH.value(), AmplificationBenchRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(FTZMenuTypes.AMPLIFICATION.value(), AmplificationScreen::new);
     }
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void keyBinding(RegisterKeyMappingsEvent event) {
-        event.register(KeyBinding.DASH);
-        event.register(KeyBinding.BLOCK);
-        event.register(KeyBinding.SWORD_ABILITY);
-        event.register(KeyBinding.SPELLCAST1);
-        event.register(KeyBinding.SPELLCAST2);
-        event.register(KeyBinding.SPELLCAST3);
-        event.register(KeyBinding.TALENTS);
+        event.register(FTZKeyMappings.DASH);
+        event.register(FTZKeyMappings.BLOCK);
+        event.register(FTZKeyMappings.SWORD_ABILITY);
+        event.register(FTZKeyMappings.SPELLCAST1);
+        event.register(FTZKeyMappings.SPELLCAST2);
+        event.register(FTZKeyMappings.SPELLCAST3);
+        event.register(FTZKeyMappings.TALENTS);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -371,6 +381,7 @@ public class RegistryEvents {
         registrar.playToClient(BarrierDamagedS2C.TYPE, BarrierDamagedS2C.CODEC, BarrierDamagedS2C::handle);
         registrar.playToServer(BeginDashC2S.TYPE, BeginDashC2S.CODEC, BeginDashC2S::handle);
         registrar.playToClient(BlockAttackSC2.TYPE, BlockAttackSC2.CODEC, BlockAttackSC2::handle);
+        registrar.playToServer(CancelDashS2C.TYPE, CancelDashS2C.CODEC, CancelDashS2C::handle);
         registrar.playToClient(EffectSyncSC2.TYPE, EffectSyncSC2.CODEC, EffectSyncSC2::handle);
         registrar.playToClient(EntityMadeSoundS2C.TYPE, EntityMadeSoundS2C.CODEC, EntityMadeSoundS2C::handle);
         registrar.playToClient(IncreaseEuphoriaSC2.TYPE, IncreaseEuphoriaSC2.CODEC, IncreaseEuphoriaSC2::handle);
@@ -391,6 +402,7 @@ public class RegistryEvents {
         registrar.playToServer(StartBlockingC2S.TYPE, StartBlockingC2S.CODEC, StartBlockingC2S::handle);
         registrar.playToClient(StopDashS2C.TYPE, StopDashS2C.CODEC, StopDashS2C::handle);
         registrar.playToClient(SuccessfulEvasionSC2.TYPE, SuccessfulEvasionSC2.CODEC, SuccessfulEvasionSC2::handle);
+        registrar.playToServer(TalentDisableC2S.TYPE, TalentDisableC2S.CODEC, TalentDisableC2S::handle);
         registrar.playToServer(TalentBuyingC2S.TYPE, TalentBuyingC2S.CODEC, TalentBuyingC2S::handle);
         registrar.playToClient(TalentPossessionSC2.TYPE, TalentPossessionSC2.CODEC, TalentPossessionSC2::handle);
         registrar.playToClient(TickingIntegerUpdateS2C.TYPE, TickingIntegerUpdateS2C.CODEC, TickingIntegerUpdateS2C::handle);
@@ -403,8 +415,8 @@ public class RegistryEvents {
         registrar.playToClient(LivingEntityAttachmentTickSyncSC2.TYPE, LivingEntityAttachmentTickSyncSC2.CODEC, LivingEntityAttachmentTickSyncSC2::handle);
         registrar.playToClient(PlayerAttachmentInitialSyncSC2.TYPE, PlayerAttachmentInitialSyncSC2.CODEC, PlayerAttachmentInitialSyncSC2::handle);
         registrar.playToClient(PlayerAttachmentTickSyncSC2.TYPE, PlayerAttachmentTickSyncSC2.CODEC, PlayerAttachmentTickSyncSC2::handle);
-
         registrar.playToClient(SimpleMobEffectSyncingS2C.TYPE, SimpleMobEffectSyncingS2C.CODEC, SimpleMobEffectSyncingS2C::handle);
+        registrar.playToClient(UpdateAuraInstancesS2C.TYPE, UpdateAuraInstancesS2C.CODEC, UpdateAuraInstancesS2C::handle);
 
         // commands
         registrar.playToClient(BuildAuraTooltipSC2.TYPE, BuildAuraTooltipSC2.CODEC, BuildAuraTooltipSC2::handle);
@@ -415,11 +427,14 @@ public class RegistryEvents {
         registrar.playToClient(AddChasingParticlesS2C.TYPE, AddChasingParticlesS2C.CODEC, AddChasingParticlesS2C::handle);
         registrar.playToClient(AddDashStoneProtectorsSC2.TYPE, AddDashStoneProtectorsSC2.CODEC, AddDashStoneProtectorsSC2::handle);
         registrar.playToClient(AddParticlesOnEntitySC2.TYPE, AddParticlesOnEntitySC2.CODEC, AddParticlesOnEntitySC2::handle);
+        registrar.playToClient(AmplificationMenuEnoughResourcesSC2.TYPE, AmplificationMenuEnoughResourcesSC2.CODEC, AmplificationMenuEnoughResourcesSC2::handle);
         registrar.playToClient(AnimatePlayerSC2.TYPE, AnimatePlayerSC2.CODEC, AnimatePlayerSC2::handle);
         registrar.playToClient(InterruptPlayerS2C.TYPE, InterruptPlayerS2C.CODEC, InterruptPlayerS2C::handle);
         registrar.playToServer(KeyInputC2S.TYPE, KeyInputC2S.CODEC, KeyInputC2S::handle);
         registrar.playToClient(PlaySoundForUIS2C.TYPE, PlaySoundForUIS2C.CODEC, PlaySoundForUIS2C::handle);
+        registrar.playToClient(PromptPlayerSC2.TYPE, PromptPlayerSC2.CODEC, PromptPlayerSC2::handle);
         registrar.playToClient(SwingHandS2C.TYPE, SwingHandS2C.CODEC, SwingHandS2C::handle);
+        registrar.playToServer(UsedPromptC2S.TYPE, UsedPromptC2S.CODEC, UsedPromptC2S::handle);
 
         // boss event
         registrar.playToClient(FantazicBossEventPacket.TYPE, FantazicBossEventPacket.CODEC, FantazicBossEventPacket::handle);
@@ -502,5 +517,7 @@ public class RegistryEvents {
         )));
         generator.addProvider(event.includeServer(), new TheWorldlinessCategoryProvider(packOutput, dataPackProvider.getRegistryProvider(), List.of(TheWorldlinessCategories.create())));
         generator.addProvider(event.includeServer(), new TheWorldlinessProvider(packOutput, dataPackProvider.getRegistryProvider()));
+        generator.addProvider(event.includeServer(), new FantazicEffectFromDamageProvider(packOutput, List.of(DefaultEffectsFromDamage.create()), lookupProvider));
+        generator.addProvider(event.includeServer(), new FantazicDataMapsProvider(packOutput, lookupProvider));
     }
 }

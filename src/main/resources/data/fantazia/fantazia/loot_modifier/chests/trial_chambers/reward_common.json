@@ -19,6 +19,16 @@
         "id": "fantazia:rune_wielder"
       },
       "chance": 0.175
+    },
+    {
+      "added": {
+        "components": {
+          "fantazia:rune": "fantazia:extension"
+        },
+        "count": 1,
+        "id": "fantazia:rune_wielder"
+      },
+      "chance": 0.13
     }
   ],
   "loot_tables": [

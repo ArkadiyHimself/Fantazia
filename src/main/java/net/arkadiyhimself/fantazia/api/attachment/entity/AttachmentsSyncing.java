@@ -34,7 +34,7 @@ public class AttachmentsSyncing {
             livingEntity.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).tick();
             TickingIntegerHolder ancientFlameTicks = livingEntity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS);
             ancientFlameTicks.tick();
-            if (ancientFlameTicks.value() > 0 && (ancientFlameTicks.value() % 20) == 0) LevelAttributesHelper.hurtEntity(livingEntity, 1.5f, DamageSourcesHolder::ancientBurning);
+            if (ancientFlameTicks.value() > 0) LevelAttributesHelper.hurtEntity(livingEntity, 1.75f, DamageSourcesHolder::ancientBurning);
         }
 
         if (entity instanceof Player player) {

@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.packets.attachment_modify;
 import io.netty.buffer.ByteBuf;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.packets.IPacket;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;

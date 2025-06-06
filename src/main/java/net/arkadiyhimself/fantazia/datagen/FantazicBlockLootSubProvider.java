@@ -35,6 +35,7 @@ public class FantazicBlockLootSubProvider extends BlockLootSubProvider {
         dropSelf(FTZBlocks.STRIPPED_OBSCURE_WOOD.get());
         dropSelf(FTZBlocks.FANTAZIUM_BLOCK.get());
         dropSelf(FTZBlocks.RAW_FANTAZIUM_BLOCK.get());
+        dropSelf(FTZBlocks.AMPLIFICATION_BENCH.value());
 
         add(FTZBlocks.OBSCURE_DOOR.get(), this::createDoorTable);
         add(FTZBlocks.OBSCURE_LEAVES.get(),block -> createLeavesDrops(block, FTZBlocks.OBSCURE_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES));

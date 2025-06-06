@@ -1,6 +1,13 @@
 {
   "advancement": "fantazia:talents/abilities/dash/dash3",
   "background": "fantazia:textures/gui/talent_icons/octagon_purple.png",
+  "damage_immunities": [
+    {
+      "damage_types": [
+        "minecraft:in_wall"
+      ]
+    }
+  ],
   "icon": "fantazia:textures/talent/abilities/dash/dash3.png",
   "impacts": [
     "fantazia:dash.upgrade"

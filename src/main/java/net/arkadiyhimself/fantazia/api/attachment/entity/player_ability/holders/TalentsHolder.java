@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
+import net.arkadiyhimself.fantazia.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
@@ -12,7 +13,6 @@ import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerWisdomRewardManager;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardsCombined;
 import net.arkadiyhimself.fantazia.packets.IPacket;
-import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
@@ -21,7 +21,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -38,14 +37,16 @@ import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventListener {
 
-    private static final int XP_PER_WISDOM = 25;
+    public static final int XP_PER_WISDOM = 10;
 
     private final List<WisdomRewardsCombined> wisdomRewards = Lists.newArrayList();
-    private final List<Talent> talents = Lists.newArrayList();
+    private final List<Talent> allObtainedTalents = Lists.newArrayList();
+    private final List<Talent> disabledTalents = Lists.newArrayList();
     private int wisdom = 0;
     private int xpConverting = 0;
 
@@ -59,9 +60,14 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         CompoundTag tag = new CompoundTag();
         tag.putInt("wisdom", wisdom);
         tag.putInt("xpConverting", xpConverting);
+
         ListTag talentTag = new ListTag();
-        talents.forEach(talent -> talentTag.add(StringTag.valueOf(talent.id().toString())));
+        allObtainedTalents.forEach(talent -> talentTag.add(StringTag.valueOf(talent.id().toString())));
         tag.put("talents", talentTag);
+
+        ListTag disabledTag = new ListTag();
+        disabledTalents.forEach(talent -> disabledTag.add(StringTag.valueOf(talent.id().toString())));
+        tag.put("disabled", disabledTag);
 
         ListTag listTag = new ListTag();
         for (WisdomRewardsCombined wisdomRewards : wisdomRewards) listTag.add(wisdomRewards.serialize());
@@ -71,8 +77,9 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
-        talents.clear();
+        allObtainedTalents.clear();
         wisdomRewards.clear();
+        disabledTalents.clear();
 
         wisdom = tag.getInt("wisdom");
         xpConverting = tag.getInt("xpConverting");
@@ -83,7 +90,16 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
             ResourceLocation talentID = ResourceLocation.parse(talentTag.getAsString());
             Talent talent = ServerTalentManager.getTalent(talentID);
             if (talent == null) continue;
-            talents.add(talent);
+            allObtainedTalents.add(talent);
+        }
+
+        ListTag disabledTags = tag.getList("disabled", Tag.TAG_STRING);
+
+        for (Tag talentTag : disabledTags) {
+            ResourceLocation talentID = ResourceLocation.parse(talentTag.getAsString());
+            Talent talent = ServerTalentManager.getTalent(talentID);
+            if (talent == null) continue;
+            disabledTalents.add(talent);
         }
 
         ListTag listTag = tag.getList("wisdomRewards", Tag.TAG_COMPOUND);
@@ -94,27 +110,42 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     public CompoundTag serializeInitial() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("wisdom", wisdom);
+
         ListTag talentTag = new ListTag();
-        talents.forEach(talent -> talentTag.add(StringTag.valueOf(talent.id().toString())));
+        allObtainedTalents.forEach(talent -> talentTag.add(StringTag.valueOf(talent.id().toString())));
         tag.put("talents", talentTag);
+
+        ListTag disabledTag = new ListTag();
+        disabledTalents.forEach(talent -> disabledTag.add(StringTag.valueOf(talent.id().toString())));
+        tag.put("disabled", disabledTag);
+
         return tag;
     }
 
     @Override
-    public void deserializeInitial(CompoundTag compoundTag) {
-        talents.clear();
+    public void deserializeInitial(CompoundTag tag) {
+        allObtainedTalents.clear();
 
-        wisdom = compoundTag.getInt("wisdom");
+        wisdom = tag.getInt("wisdom");
 
-        if (!compoundTag.contains("talents")) return;
+        if (!tag.contains("talents")) return;
 
-        ListTag talentTags = compoundTag.getList("talents", Tag.TAG_STRING);
+        ListTag talentTags = tag.getList("talents", Tag.TAG_STRING);
 
         for (Tag talentTag : talentTags) {
             ResourceLocation talentID = ResourceLocation.parse(talentTag.getAsString());
             Talent talent = ServerTalentManager.getTalent(talentID);
             if (talent == null) continue;
-            talents.add(talent);
+            allObtainedTalents.add(talent);
+        }
+
+        ListTag disabledTags = tag.getList("disabled", Tag.TAG_STRING);
+
+        for (Tag talentTag : disabledTags) {
+            ResourceLocation talentID = ResourceLocation.parse(talentTag.getAsString());
+            Talent talent = ServerTalentManager.getTalent(talentID);
+            if (talent == null) continue;
+            disabledTalents.add(talent);
         }
     }
 
@@ -125,7 +156,7 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         float damage = event.getAmount();
         float finalMultiplier = 1f;
 
-        for (Talent talent : talents) {
+        for (Talent talent : allObtainedTalents) {
             if (talent.containsImmunity(holder)) {
                 event.setCanceled(true);
                 return;
@@ -140,8 +171,8 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         event.setAmount(damage * finalMultiplier);
     }
 
-    public ImmutableList<Talent> getTalents() {
-        return ImmutableList.copyOf(talents);
+    public List<Talent> getAllObtainedTalents() {
+        return new ArrayList<>(allObtainedTalents);
     }
 
     public int getWisdom() {
@@ -151,7 +182,15 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     public void grantWisdom(int amount) {
         if (amount <= 0) return;
         this.wisdom += amount;
-        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.wisdomObtained(serverPlayer, amount);
+        if (getPlayer() instanceof ServerPlayer serverPlayer) {
+            IPacket.wisdomObtained(serverPlayer, amount);
+            if (hasPurchasableTalents()) Prompts.OPEN_TALENT_SCREEN.maybePromptPlayer(serverPlayer);
+        }
+    }
+
+    public boolean hasPurchasableTalents() {
+        for (Talent talent : ServerTalentManager.getAllTalents().values()) if (talent.purchasable() && talent.wisdom() <= wisdom && !hasTalent(talent) && isUnlockAble(talent)) return true;
+        return false;
     }
 
     public void convertXP(int xp) {
@@ -165,7 +204,7 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     }
 
     public boolean talentUnlocked(@NotNull Talent talent) {
-        return talents.contains(talent);
+        return allObtainedTalents.contains(talent);
     }
 
     public boolean isUnlockAble(@NotNull Talent talent) {
@@ -173,30 +212,33 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         return parent == null || talentUnlocked(parent);
     }
 
-    public boolean canBePurchased(@NotNull Talent talent) {
-        return isUnlockAble(talent) && talent.purchasable() && talent.wisdom() <= wisdom;
+    public boolean enoughWisdom(@NotNull Talent talent) {
+        return talent.wisdom() <= wisdom;
     }
 
-    public void buyTalent(@NotNull Talent talent) {
-        if (!talent.purchasable()) return;
+    public boolean canBePurchased(@NotNull Talent talent) {
+        return isUnlockAble(talent) && talent.purchasable() && enoughWisdom(talent);
+    }
+
+    public boolean tryBuyTalent(@NotNull Talent talent) {
+        if (!talent.purchasable()) return false;
         int cost = talent.wisdom();
-        if (cost > wisdom) return;
+        if (cost > wisdom) return false;
         boolean flag = tryObtainTalent(talent);
         if (getPlayer().level().isClientSide()) {
             if (flag) IPacket.talentBuying(talent.id());
-            else Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(FTZSoundEvents.DENIED.value(), 1f, 1f));
         }
         if (flag) wisdom -= cost;
+        return flag;
     }
 
     public boolean tryObtainTalent(@NotNull Talent talent) {
-        if (talents.contains(talent)) return false;
+        if (hasTalent(talent)) return false;
         if (!isUnlockAble(talent)) return false;
-        talents.add(talent);
+        allObtainedTalents.add(talent);
         TalentHelper.onTalentUnlock(getPlayer(), talent);
 
         if (getPlayer() instanceof ServerPlayer serverPlayer) {
-
             ObtainTalentTrigger.INSTANCE.trigger(serverPlayer, this);
             IPacket.talentPossession(serverPlayer, talent, true);
         }
@@ -207,17 +249,17 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
 
     @SuppressWarnings("UnusedReturnValue")
     public boolean tryRevokeTalent(@NotNull Talent talent) {
-        if (!talents.contains(talent)) return false;
+        if (!allObtainedTalents.contains(talent)) return false;
         if (getPlayer() instanceof ServerPlayer serverPlayer) {
             IPacket.talentPossession(serverPlayer, talent, false);
             TalentHelper.onTalentRevoke(serverPlayer, talent);
         }
-        return talents.remove(talent);
+        return allObtainedTalents.remove(talent);
     }
 
     public void revokeAll() {
-        talents.forEach(talent -> TalentHelper.onTalentRevoke(getPlayer(), talent));
-        talents.clear();
+        allObtainedTalents.forEach(talent -> TalentHelper.onTalentRevoke(getPlayer(), talent));
+        allObtainedTalents.clear();
         if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.revokeAllTalents(serverPlayer);
     }
 
@@ -232,12 +274,17 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     }
 
     public boolean hasTalent(@NotNull Talent talent) {
-        return talents.contains(talent);
+        return allObtainedTalents.contains(talent);
     }
 
-    public void setWisdom(int amount) {
-        this.wisdom = amount;
-        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.setWisdom(serverPlayer, amount);
+    public void setWisdom(int value) {
+        this.wisdom = value;
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.setWisdom(serverPlayer, value);
+    }
+
+    public void spendWisdom(int amount) {
+        int newValue = Math.max(0, this.wisdom - amount);
+        setWisdom(newValue);
     }
 
     public int upgradeLevel(ResourceLocation location) {
@@ -258,7 +305,35 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         }
     }
 
+    public void disableTalent(Talent talent) {
+        if (!allObtainedTalents.contains(talent) || disabledTalents.contains(talent)) return;
+        talent.disableTalent(getPlayer());
+        disabledTalents.add(talent);
+    }
+
+    public void enableTalent(Talent talent) {
+        if (!allObtainedTalents.contains(talent) || !disabledTalents.contains(talent)) return;
+        talent.enableTalent(getPlayer());
+        disabledTalents.remove(talent);
+    }
+
+    public void clickedTalent(Talent talent) {
+        if (!talent.canBeDisabled()) return;
+        if (disabledTalents.contains(talent)) enableTalent(talent);
+        else disableTalent(talent);
+        if (getPlayer().level().isClientSide()) IPacket.talentDisable(talent.id());
+    }
+
+    public boolean isDisabled(Talent talent) {
+        return disabledTalents.contains(talent);
+    }
+
+    public List<Talent> getDisabledTalents() {
+        return new ArrayList<>(disabledTalents);
+    }
+
     private record TalentToast(Talent talent) implements Toast {
+
         private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
 
         @NotNull
@@ -269,11 +344,11 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
 
         @NotNull
         @Override
-        public Visibility render(GuiGraphics graphics, ToastComponent toastGui, long delta) {
+        public Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long delta) {
             graphics.blitSprite(BACKGROUND_SPRITE, 0, 0, width(), height());
-            Font font = toastGui.getMinecraft().font;
-            graphics.drawString(font, Component.translatable(talent.title() + ".name"), 30, 7, 0xfff000f0, false);
-            graphics.drawString(font, Component.translatable("fantazia.gui.talent.toast.info"), 30, 17, 0xffffffff, false);
+            Font font = toastComponent.getMinecraft().font;
+            graphics.drawString(font, Component.translatable(talent.title() + ".name"), 30, 7, 0xfff000f0);
+            graphics.drawString(font, Component.translatable("fantazia.gui.talent.toast.info"), 30, 17, 0xffffffff);
             graphics.blit(talent.icon(), 6, 6, 0, 0, 20, 20, 20, 20);
             return delta >= 5000L ? Visibility.HIDE : Visibility.SHOW;
         }

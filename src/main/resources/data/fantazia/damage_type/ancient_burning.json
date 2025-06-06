@@ -1,4 +1,5 @@
 {
+  "effects": "burning",
   "exhaustion": 0.1,
   "message_id": "ancient_burning",
   "scaling": "never"

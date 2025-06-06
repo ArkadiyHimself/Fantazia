@@ -14,7 +14,9 @@ public record SwingHandS2C(InteractionHand hand) implements IPacket {
 
     public static final CustomPacketPayload.Type<SwingHandS2C> TYPE = new Type<>(Fantazia.res("stuff.swing_hand"));
 
-    public static final StreamCodec<FriendlyByteBuf, SwingHandS2C> CODEC = StreamCodec.composite(NeoForgeStreamCodecs.enumCodec(InteractionHand.class), SwingHandS2C::hand, SwingHandS2C::new);
+    public static final StreamCodec<FriendlyByteBuf, SwingHandS2C> CODEC = StreamCodec.composite(
+            NeoForgeStreamCodecs.enumCodec(InteractionHand.class),
+            SwingHandS2C::hand, SwingHandS2C::new);
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {

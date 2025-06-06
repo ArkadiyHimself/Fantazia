@@ -1,0 +1,11 @@
+{
+  "type": "fantazia:rune_carving",
+  "fee": 11,
+  "ingredients": [
+    {
+      "item": "minecraft:crossbow"
+    }
+  ],
+  "rune": "fantazia:piercer",
+  "wisdom": 13
+}

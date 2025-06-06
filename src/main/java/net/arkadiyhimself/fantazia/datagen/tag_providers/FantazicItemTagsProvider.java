@@ -1,6 +1,8 @@
 package net.arkadiyhimself.fantazia.datagen.tag_providers;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
+import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.tags.FTZBlockTags;
 import net.arkadiyhimself.fantazia.tags.FTZItemTags;
@@ -15,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,9 +46,12 @@ public class FantazicItemTagsProvider extends ItemTagsProvider {
 
         IntrinsicTagAppender<Item> activecaster = tag(FTZItemTags.CURIOS_ACTIVECASTER);
         IntrinsicTagAppender<Item> passivecaster = tag(FTZItemTags.CURIOS_PASSIVECASTER);
-        for (Item item : BuiltInRegistries.ITEM.stream().toList()) {
+        IntrinsicTagAppender<Item> caster = tag(FTZItemTags.CASTER_ENCHANTABLE);
+        for (DeferredHolder<Item, ? extends Item> itemHolder : FTZItems.REGISTER.getEntries()) {
+            Item item = itemHolder.value();
             if (FantazicUtil.isActiveCaster(item)) activecaster.add(item);
             if (FantazicUtil.isPassiveCaster(item)) passivecaster.add(item);
+            if (item instanceof AuraCasterItem || item instanceof SpellCasterItem) caster.add(item);
         }
 
         // minecraft

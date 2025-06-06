@@ -1,10 +1,13 @@
 package net.arkadiyhimself.fantazia.api.attachment.level;
 
+import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
+import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,9 +20,8 @@ import java.util.function.Function;
 
 public class LevelAttributesHelper {
 
-    private LevelAttributesHelper() {}
-
-    public static <T extends ILevelAttributeHolder> T takeHolder(Level level, Class<T> tClass) {
+    public static <T extends ILevelAttributeHolder> @Nullable T takeHolder(Level level, Class<T> tClass) {
+        if (level == null) return null;
         LevelAttributesManager levelAttributesManager = getUnwrap(level);
         return levelAttributesManager.actualHolder(tClass);
     }
@@ -31,6 +33,10 @@ public class LevelAttributesHelper {
 
     public static LevelAttributesManager getUnwrap(Level level) {
         return level.getData(FTZAttachmentTypes.LEVEL_ATTRIBUTES);
+    }
+
+    public static void addAuraInstance(ServerLevel level, AuraInstance auraInstance) {
+        acceptConsumer(level, AurasInstancesHolder.class, holder -> holder.addAuraInstance(auraInstance));
     }
 
     public static @Nullable HealingSourcesHolder getHealingSources(Level level) {

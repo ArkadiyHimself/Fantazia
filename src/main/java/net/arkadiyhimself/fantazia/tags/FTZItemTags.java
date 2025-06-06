@@ -12,6 +12,7 @@ public interface FTZItemTags {
     TagKey<Item> CURIOS_DASHSTONE = create("for_dashstone");
     TagKey<Item> CURIOS_RUNE = create("for_rune");
 
+    TagKey<Item> CASTER_ENCHANTABLE = create("enchantable/caster");
     TagKey<Item> HATCHETS = create("hatchets");
     TagKey<Item> HATCHET_ENCHANTABLE = create("enchantable/hatchet");
     TagKey<Item> NO_DISINTEGRATION = create("no_disintegration");

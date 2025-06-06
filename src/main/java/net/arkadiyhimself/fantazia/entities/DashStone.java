@@ -13,7 +13,9 @@ import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
@@ -172,7 +174,7 @@ public class DashStone extends Entity {
             if (getOwner() != null) {
                 this.soundRecharge--;
                 if (soundRecharge <= 0) {
-                    soundRecharge = Fantazia.RANDOM.nextInt(25, 30);
+                    soundRecharge = RandomUtil.nextInt(25, 30);
                     serverLevel.playSound(null, blockPosition(), FTZSoundEvents.DASHSTONE_WIND.value(), SoundSource.AMBIENT, 0.06f, 1f);
                 }
             }
@@ -336,7 +338,7 @@ public class DashStone extends Entity {
         if (protector == null) return;
         protector.setPos(getX() + xOff, getY() + (double) -1, getZ() + zOff);
         int barr = 20 + 5 * level().getDifficulty().getId();
-        LivingEffectHelper.giveBarrier(protector,30);
+        ApplyEffect.giveAbsoluteBarrier(protector,30);
         protector.addEffect(new MobEffectInstance(FTZMobEffects.BARRIER, -1, barr - 1, true, true));
         protectorsServer.add(protector.getUUID());
         level().addFreshEntity(protector);

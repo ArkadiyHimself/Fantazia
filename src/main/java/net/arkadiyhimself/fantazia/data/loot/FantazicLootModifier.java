@@ -10,6 +10,7 @@ import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.LootTablesUtil;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -58,7 +59,7 @@ public class FantazicLootModifier extends LootModifier {
     }
 
     private static void addItem(@NotNull ObjectArrayList<ItemStack> generatedLoot, Item item, int min, int max) {
-        int amo = Fantazia.RANDOM.nextInt(min, max);
+        int amo = RandomUtil.nextInt(min, max);
         if (amo > 0) generatedLoot.add(new ItemStack(item, amo));
     }
 }

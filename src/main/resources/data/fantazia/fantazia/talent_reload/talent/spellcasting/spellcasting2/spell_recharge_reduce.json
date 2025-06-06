@@ -1,0 +1,11 @@
+{
+  "attribute_modifiers": {
+    "fantazia:recharge_multiplier": {
+      "amount": -20.0,
+      "operation": "add_value"
+    }
+  },
+  "icon": "fantazia:textures/talent/spellcasting/spellcasting2/spell_recharge_reduce.png",
+  "title": "talent.fantazia.spellcasting.spellcasting2.spell_recharge_reduce",
+  "wisdom": 80
+}

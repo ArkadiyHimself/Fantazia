@@ -11,8 +11,11 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.schedule.Activity;
 
 public class ActionsHelper {
 
@@ -43,6 +46,9 @@ public class ActionsHelper {
             mob.setTarget(null);
             for (WrappedGoal goal : mob.goalSelector.getAvailableGoals()) goal.stop();
             for (WrappedGoal goal : mob.targetSelector.getAvailableGoals()) goal.stop();
+            Brain<?> brain = mob.getBrain();
+            brain.eraseMemory(MemoryModuleType.ATTACK_TARGET);
+            brain.setActiveActivityIfPossible(Activity.IDLE);
         }
     }
 

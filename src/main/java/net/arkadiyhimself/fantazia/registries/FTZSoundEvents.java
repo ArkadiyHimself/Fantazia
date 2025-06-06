@@ -32,6 +32,8 @@ public class FTZSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> FURY_PROLONG = fixedRange("ui.fury_prolong",6f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DAMNED_WRATH = fixedRange("ui.damned_wrath",6f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_READY = fixedRange("ui.dashstone_ready", 4f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> RUNE_CARVED = fixedRange("ui.rune_carved", 4f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> AMPLIFICATION = fixedRange("ui.amplification", 4f);
 
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH1 = fixedRange("dash.dash1",8f);// implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH2 = fixedRange("dash.dash2",12f); // implemented
@@ -88,7 +90,6 @@ public class FTZSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> ENTITY_EVADE = fixedRange("entity.evade",8f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_APPEARED = fixedRange("entity.dashstone.appear",32f);
     public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_WIND = fixedRange("entity.dashstone.wind", 4f); // implemented
-
 
     public static final DeferredHolder<SoundEvent, SoundEvent> HATCHET_THROW = fixedRange("item.hatchet.throw",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> LEADERS_HORN = fixedRange("item.leaders_horn.sound",256f); // implemented

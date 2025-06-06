@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "enough_runes": {
+      "conditions": {
+        "possessed": {
+          "runes": 6
+        }
+      },
+      "trigger": "fantazia:possess_rune"
+    }
+  },
+  "requirements": [
+    [
+      "enough_runes"
+    ]
+  ]
+}

@@ -14,6 +14,8 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang3.function.TriConsumer;
+import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -25,10 +27,10 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
     private final float range;
 
     private final BiPredicate<LivingEntity, T> conditions;
-    private final BiFunction<LivingEntity, T, SpellCastResult> beforeBlockCheck;
-    private final BiConsumer<LivingEntity, T> afterBlockCheck;
+    private final TriFunction<LivingEntity, T, Integer, SpellCastResult> beforeBlockCheck;
+    private final TriConsumer<LivingEntity, T, Integer> afterBlockCheck;
 
-    protected TargetedSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> affected, float range, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, BiPredicate<LivingEntity, T> conditions, BiFunction<LivingEntity, T, SpellCastResult> beforeBlockCheck, BiConsumer<LivingEntity, T> afterBlockCheck) {
+    protected TargetedSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> affected, float range, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, BiPredicate<LivingEntity, T> conditions, TriFunction<LivingEntity, T, Integer, SpellCastResult> beforeBlockCheck, TriConsumer<LivingEntity, T, Integer> afterBlockCheck) {
         super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList());
         this.affected = affected;
         this.range = range;
@@ -50,13 +52,13 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         }
     }
 
-    public SpellCastResult beforeBlockCheck(LivingEntity caster, T target) {
-        return beforeBlockCheck.apply(caster, target);
+    public SpellCastResult beforeBlockCheck(LivingEntity caster, T target, int ampl) {
+        return beforeBlockCheck.apply(caster, target, ampl);
     }
 
-    public void afterBlockCheck(LivingEntity caster, T target) {
+    public void afterBlockCheck(LivingEntity caster, T target, int ampl) {
         if (doCleanse()) EffectCleansing.tryCleanseAll(target, this.getCleanse(), MobEffectCategory.BENEFICIAL);
-        afterBlockCheck.accept(caster, target);
+        afterBlockCheck.accept(caster, target, ampl);
     }
 
     public float range() {
@@ -103,7 +105,7 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         components.add(rangeComponent);
 
         // spell cleanse
-        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, this.getCleanse().getName()));
+        if (this.doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, this.getCleanse().getDescription()));
 
         components.add(Component.literal(" "));
 
@@ -151,8 +153,8 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
         private Cleanse targetCleanse = Cleanse.BASIC;
 
         private BiPredicate<LivingEntity, T> conditions = (livingEntity, target) -> true;
-        private BiFunction<LivingEntity, T, SpellCastResult> beforeBlockCheck = (entity, target) -> SpellCastResult.defaultResult();
-        private BiConsumer<LivingEntity, T> afterBlockCheck = (entity, target) -> {};
+        private TriFunction<LivingEntity, T, Integer, SpellCastResult> beforeBlockCheck = (entity, target, integer) -> SpellCastResult.defaultResult();
+        private TriConsumer<LivingEntity, T, Integer> afterBlockCheck = (entity, target, integer) -> {};
 
         private Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, Class<T> targetClass, float range) {
             super(manacost, defaultRecharge, castSound, rechargeSound);
@@ -201,14 +203,22 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell {
             return this;
         }
 
-        public Builder<T> beforeBlockChecking(BiFunction<LivingEntity, T, SpellCastResult> value) {
+        public Builder<T> beforeBlockChecking(TriFunction<LivingEntity, T, Integer, SpellCastResult> value) {
             this.beforeBlockCheck = value;
             return this;
         }
 
-        public Builder<T> afterBlockChecking(BiConsumer<LivingEntity, T> value) {
+        public Builder<T> beforeBlockChecking(BiFunction<LivingEntity, T, SpellCastResult> value) {
+            return beforeBlockChecking((livingEntity, t, integer) -> value.apply(livingEntity, t));
+        }
+
+        public Builder<T> afterBlockChecking(TriConsumer<LivingEntity, T, Integer> value) {
             this.afterBlockCheck = value;
             return this;
+        }
+
+        public Builder<T> afterBlockChecking(BiConsumer<LivingEntity, T> value) {
+            return afterBlockChecking((livingEntity, t, ampl) -> value.accept(livingEntity, t));
         }
 
         public TargetedSpell<T> build() {

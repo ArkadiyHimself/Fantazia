@@ -1,4 +1,5 @@
-// 1.21.1	2025-05-17T23:54:00.629971	Tags for minecraft:item mod id fantazia
+// 1.21.1	2025-05-28T15:15:39.340005	Tags for minecraft:item mod id fantazia
+7d05a2eb836381c992e2c55318fd1943a200b54b data/fantazia/tags/item/enchantable/caster.json
 5d5c47cc045d34f55ef726601450d7a9aad56035 data/fantazia/tags/item/enchantable/hatchet.json
 07a11b431402424368fa5351f5e9f7f763727316 data/fantazia/tags/item/fantazium_ores.json
 1d96d90328b7737649984791191a2ee47f7c47a1 data/fantazia/tags/item/for_activecaster.json

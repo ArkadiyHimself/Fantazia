@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.data.talent.reload;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -21,9 +22,7 @@ import java.util.Map;
 
 public class ServerWisdomRewardManager extends SimpleJsonResourceReloadListener {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
-            .create();
+    private static final Gson GSON = new GsonBuilder().create();
 
     private static final List<WisdomRewardsCombined.Builder> WISDOM_REWARDS = Lists.newArrayList();
 
@@ -43,5 +42,9 @@ public class ServerWisdomRewardManager extends SimpleJsonResourceReloadListener 
 
     public static List<WisdomRewardsCombined> createWisdomRewards() {
         return ChaoticHierarchy.of(WISDOM_REWARDS).transform(WisdomRewardsCombined.Builder::build).toList();
+    }
+
+    public static List<WisdomRewardsCombined.Builder> getBuilders() {
+        return WISDOM_REWARDS.isEmpty() ? ImmutableList.of() : ImmutableList.copyOf(WISDOM_REWARDS);
     }
 }

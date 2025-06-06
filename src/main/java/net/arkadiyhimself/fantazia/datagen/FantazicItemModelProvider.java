@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.util.Locale;
@@ -40,6 +41,7 @@ public class FantazicItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        /*
         for (DeferredItem<?> simpleItem : FTZItems.SIMPLE_ITEMS) basicItem(simpleItem.asItem());
         //for (DeferredItem<?> spellCasterItem : FTZItems.SPELL_CASTERS) simpleSpellCaster(spellCasterItem);
         for (DeferredItem<?> auraCasterItem : FTZItems.AURA_CASTERS) simpleAuraCaster(auraCasterItem);
@@ -48,6 +50,7 @@ public class FantazicItemModelProvider extends ItemModelProvider {
         basicItem(FTZItems.FANTAZIC_PAINTING.value());
         dashStone();
         roamersCompass();
+         */
     }
 
     private void simpleSpellCaster(DeferredItem<?> deferredItem) {

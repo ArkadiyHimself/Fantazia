@@ -4,6 +4,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.api.attachment.IBasicHolder;
+import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.apache.commons.compress.utils.Lists;
@@ -40,11 +42,7 @@ public class AddedAurasHolder implements IBasicHolder {
         CompoundTag tag = new CompoundTag();
 
         ListTag listTag = new ListTag();
-        for (AuraInstance auraInstance : addedAuras) {
-            ResourceLocation auraID = FantazicRegistries.AURAS.getKey(auraInstance.getAura().value());
-            if (auraID == null) continue;
-            listTag.add(StringTag.valueOf(auraID.toString()));
-        }
+        for (AuraInstance auraInstance : addedAuras) listTag.add(auraInstance.serializeSave());
         tag.put("added_auras", listTag);
 
         return tag;
@@ -53,11 +51,12 @@ public class AddedAurasHolder implements IBasicHolder {
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
         if (owner == null) return;
-        addedAuras.clear();
-        ListTag listTag = tag.getList("added_auras", Tag.TAG_STRING);
+        ListTag listTag = tag.getList("added_auras", Tag.TAG_COMPOUND);
         for (int i = 0; i < listTag.size(); i++) {
-            Optional<Holder.Reference<Aura>> basicAura = FantazicRegistries.AURAS.getHolder(ResourceLocation.parse(listTag.getString(i)));
-            basicAura.ifPresent(basicAuraReference -> addedAuras.add(new AuraInstance(owner, basicAuraReference.getDelegate())));
+            AuraInstance auraInstance = AuraInstance.deserializeSave(listTag.getCompound(i)).apply(owner);
+            if (auraInstance == null) continue;
+            if (owner.level() instanceof ServerLevel serverLevel) LevelAttributesHelper.addAuraInstance(serverLevel, auraInstance);
+            addedAuras.add(auraInstance);
         }
     }
 
@@ -70,9 +69,11 @@ public class AddedAurasHolder implements IBasicHolder {
     public void deserializeInitial(CompoundTag tag) {
     }
 
-    public void addAura(Holder<Aura> aura) {
-        if (owner == null) return;
+    public void addAura(Holder<Aura> aura, int amplifier) {
+        if (owner == null || !(owner.level() instanceof ServerLevel serverLevel)) return;
         for (AuraInstance auraInstance : addedAuras) if (auraInstance.getAura() == aura.value()) return;
-        addedAuras.add(new AuraInstance(owner, aura));
+        AuraInstance auraInstance = new AuraInstance(owner, aura, amplifier);
+        LevelAttributesHelper.addAuraInstance(serverLevel, auraInstance);
+        addedAuras.add(auraInstance);
     }
 }

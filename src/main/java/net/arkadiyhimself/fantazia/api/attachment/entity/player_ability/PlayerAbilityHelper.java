@@ -8,6 +8,7 @@ import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.custom.Spells;
+import net.arkadiyhimself.fantazia.tags.FTZItemTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -143,6 +144,12 @@ public class PlayerAbilityHelper {
         progressHolder.tryAwardWisdom(category, instance);
     }
 
+    public static void awardWisdom(ServerPlayer player, int amount) {
+        TalentsHolder progressHolder = takeHolder(player, TalentsHolder.class);
+        if (progressHolder == null) return;
+        progressHolder.grantWisdom(amount);
+    }
+
     public static void wasteMana(Player player, float amount) {
         acceptConsumer(player, ManaHolder.class, manaHolder -> manaHolder.wasteMana(amount));
     }
@@ -169,5 +176,11 @@ public class PlayerAbilityHelper {
         acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::pogo);
         acceptConsumer(player, DashHolder.class, DashHolder::pogo);
         if (player instanceof ServerPlayer serverPlayer) IPacket.pogoPlayer(serverPlayer);
+    }
+
+    public static boolean canDoMeleeBlock(Player player) {
+        MeleeBlockHolder holder = takeHolder(player, MeleeBlockHolder.class);
+        if (holder == null) return false;
+        return holder.isUnlocked() && player.getMainHandItem().is(FTZItemTags.MELEE_BLOCK);
     }
 }

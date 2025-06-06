@@ -16,6 +16,6 @@ public class MixinInventoryChangeTrigger {
 
     @Inject(at = @At("HEAD"), method = "trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;)V")
     private void obtainItem(ServerPlayer player, Inventory inventory, ItemStack stack, CallbackInfo ci) {
-        PlayerAbilityHelper.acceptConsumer(player, CustomCriteriaHolder.class, customCriteriaHolder -> customCriteriaHolder.obtainedItem(stack.getItem()));
+        PlayerAbilityHelper.acceptConsumer(player, CustomCriteriaHolder.class, customCriteriaHolder -> customCriteriaHolder.obtainedItem(stack));
     }
 }

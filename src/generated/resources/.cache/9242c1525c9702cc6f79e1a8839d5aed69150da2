@@ -1,4 +1,4 @@
-// 1.21.1	2025-05-17T23:54:00.628409	Tags for minecraft:block mod id fantazia
+// 1.21.1	2025-06-01T15:01:27.365108	Tags for minecraft:block mod id fantazia
 07a11b431402424368fa5351f5e9f7f763727316 data/fantazia/tags/block/fantazium_ores.json
 66ff697e929cd89afadaeed949e3c078274ba857 data/fantazia/tags/block/from_fantazium.json
 2c18bb6368e0422e96c64d8450d6d79be0f6d7d0 data/fantazia/tags/block/from_obscure_tree.json
@@ -10,7 +10,8 @@ c7dd8896c30ae4d06de0f342729e4ee6fc0ad570 data/minecraft/tags/block/fence_gates.j
 82ca5134bfefaa48c5849acce19416d1ce3fd216 data/minecraft/tags/block/leaves.json
 0091978ec93e730a6a056189d0d4b9352933d410 data/minecraft/tags/block/logs_that_burn.json
 82ca5134bfefaa48c5849acce19416d1ce3fd216 data/minecraft/tags/block/mineable/hoe.json
-66ff697e929cd89afadaeed949e3c078274ba857 data/minecraft/tags/block/mineable/pickaxe.json
+9da015e442ae53c96a52f4f421ab28ac03be751d data/minecraft/tags/block/mineable/pickaxe.json
+1f8ff512765cb60a85d7138549b7425baf757299 data/minecraft/tags/block/needs_diamond_tool.json
 66ff697e929cd89afadaeed949e3c078274ba857 data/minecraft/tags/block/needs_iron_tool.json
 5547e329fae268af83c1d99500d922c3dc983c03 data/minecraft/tags/block/overworld_natural_logs.json
 db1ef72696e5a3824b0b22e6288f75a1c9057b7e data/minecraft/tags/block/planks.json

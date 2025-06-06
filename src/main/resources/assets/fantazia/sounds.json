@@ -663,6 +663,24 @@
       }
     ]
   },
+  "ui.rune_carved" : {
+    "subtitle" : "fantazia.subtitles.ui.rune_carved",
+    "sounds" : [
+      {
+        "name" : "fantazia:ui/rune_carved",
+        "stream" : false
+      }
+    ]
+  },
+  "ui.amplification" : {
+    "subtitle" : "fantazia.subtitles.ui.amplification",
+    "sounds" : [
+      {
+        "name" : "fantazia:ui/amplification",
+        "stream" : false
+      }
+    ]
+  },
   "item.hatchet.throw" : {
     "subtitle": "fantazia.subtitles.item.hatchet_throw",
     "sounds": [

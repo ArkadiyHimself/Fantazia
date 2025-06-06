@@ -27,5 +27,6 @@ public class FantazicEnchantmentTagsProvider extends EnchantmentTagsProvider {
 
         // minecraft
         tag(EnchantmentTags.DAMAGE_EXCLUSIVE).add(FTZEnchantments.BULLY);
+        tag(EnchantmentTags.NON_TREASURE).add(FTZEnchantments.DISINTEGRATION, FTZEnchantments.ICE_ASPECT, FTZEnchantments.FREEZE, FTZEnchantments.DECISIVE_STRIKE, FTZEnchantments.BULLY, FTZEnchantments.DUELIST, FTZEnchantments.BALLISTA, FTZEnchantments.PHASING, FTZEnchantments.RICOCHET, FTZEnchantments.HEADSHOT);
     }
 }

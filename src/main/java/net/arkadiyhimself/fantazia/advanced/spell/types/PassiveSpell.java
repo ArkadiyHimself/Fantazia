@@ -14,14 +14,15 @@ import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PassiveSpell extends AbstractSpell {
 
-    private final Function<LivingEntity, SpellCastResult> onActivation;
+    private final BiFunction<LivingEntity, Integer, SpellCastResult> onActivation;
 
-    protected PassiveSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Function<LivingEntity, SpellCastResult> onActivation) {
+    protected PassiveSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, BiFunction<LivingEntity, Integer, SpellCastResult> onActivation) {
         super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList());
         this.onActivation = onActivation;
     }
@@ -51,7 +52,7 @@ public class PassiveSpell extends AbstractSpell {
         String manacost = String.format("%.1f", getManacost());
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.manacost", heading, ability, manacost));
         // spell cleanse
-        if (doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, getCleanse().getName()));
+        if (doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, getCleanse().getDescription()));
 
         components.add(Component.literal(" "));
 
@@ -90,9 +91,9 @@ public class PassiveSpell extends AbstractSpell {
         return components;
     }
 
-    public SpellCastResult onActivation(LivingEntity livingEntity) {
+    public SpellCastResult onActivation(LivingEntity livingEntity, int ampl) {
         if (doCleanse()) EffectCleansing.tryCleanseAll(livingEntity, getCleanse(), MobEffectCategory.BENEFICIAL);
-        return onActivation.apply(livingEntity);
+        return onActivation.apply(livingEntity, ampl);
     }
 
     public static Builder builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
@@ -101,7 +102,7 @@ public class PassiveSpell extends AbstractSpell {
 
     public static class Builder extends SpellBuilder<PassiveSpell> {
 
-        private Function<LivingEntity, SpellCastResult> onActivation = owner -> SpellCastResult.defaultResult();
+        private BiFunction<LivingEntity, Integer, SpellCastResult> onActivation = (owner, integer) -> SpellCastResult.defaultResult();
 
         private Builder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
             super(manacost, defaultRecharge, castSound, rechargeSound);
@@ -143,9 +144,13 @@ public class PassiveSpell extends AbstractSpell {
             return this;
         }
 
-        public Builder onActivation(Function<LivingEntity, SpellCastResult> onActivation) {
+        public Builder onActivation(BiFunction<LivingEntity, Integer, SpellCastResult> onActivation) {
             this.onActivation = onActivation;
             return this;
+        }
+
+        public Builder onActivation(Function<LivingEntity, SpellCastResult> onActivation) {
+            return onActivation((livingEntity, integer) -> onActivation.apply(livingEntity));
         }
 
         public PassiveSpell build() {

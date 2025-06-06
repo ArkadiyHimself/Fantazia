@@ -37,10 +37,10 @@ public class EffectCleansing {
         effectInstances.forEach(effectInstance -> tryCleanse(livingEntity, cleanse, effectInstance.getEffect()));
     }
 
-    public static void reduceDuration(LivingEntity livingEntity, Holder<MobEffect> effect, int duration) {
+    public static void changeDuration(LivingEntity livingEntity, Holder<MobEffect> effect, int delta) {
         MobEffectInstance instance = livingEntity.getEffect(effect);
         if (instance == null || instance.isInfiniteDuration()) return;
-        int newDur = instance.getDuration() - duration;
+        int newDur = instance.getDuration() + delta;
         int amplifier = instance.getAmplifier();
         boolean ambient = instance.isAmbient();
         boolean visible = instance.isVisible();

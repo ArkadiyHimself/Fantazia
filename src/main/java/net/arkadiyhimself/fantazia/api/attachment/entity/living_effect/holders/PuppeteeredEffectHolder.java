@@ -86,7 +86,8 @@ public class PuppeteeredEffectHolder extends ComplexLivingEffectHolder {
         this.master = master.getUUID();
     }
 
-    public void givePuppet(UUID newPuppet) {
+    public void givePuppet(LivingEntity livingEntity) {
+        UUID newPuppet = livingEntity.getUUID();
         if (newPuppet.equals(puppet) || !(getEntity().level() instanceof ServerLevel serverLevel)) return;
         if (puppet != null) {
             Entity entity = serverLevel.getEntity(puppet);

@@ -32,8 +32,9 @@ public class Talents {
 
     public static final ResourceLocation PASSIVECASTER_SLOTS = Fantazia.res("spellcasting/spellcasting1/passivecaster_slots");
     public static final ResourceLocation ACTIVECASTER_SLOTS = Fantazia.res("spellcasting/spellcasting1/activecaster_slots");
+    public static final ResourceLocation RUNE_SLOTS = Fantazia.res("spellcasting/spellcasting1/rune_slots");
 
     public static final ResourceLocation AURA_RANGE_ADD = Fantazia.res("spellcasting/spellcasting2/aura_range_add");
     public static final ResourceLocation CAST_RANGE_ADD = Fantazia.res("spellcasting/spellcasting2/cast_range_add");
-    public static final ResourceLocation SPELL_RECHARGE_REDUCE = Fantazia.res("spellcasting/spellcasting1/spell_recharge_reduce");
+    public static final ResourceLocation SPELL_RECHARGE_REDUCE = Fantazia.res("spellcasting/spellcasting2/spell_recharge_reduce");
 }

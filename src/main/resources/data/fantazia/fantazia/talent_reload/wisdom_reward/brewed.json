@@ -3,13 +3,13 @@
   "default_reward": 8,
   "rewards": {
     "minecraft:fire_resistance": {
-      "reward": 8
+      "reward": 20
     },
     "minecraft:night_vision": {
-      "reward": 7
+      "reward": 15
     },
     "minecraft:water_breathing": {
-      "reward": 8
+      "reward": 15
     }
   }
 }

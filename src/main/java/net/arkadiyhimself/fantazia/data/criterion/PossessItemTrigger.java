@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.CustomCriteriaHolder;
 import net.arkadiyhimself.fantazia.data.predicate.PossessedItemPredicate;
+import net.arkadiyhimself.fantazia.data.predicate.PossessedRunePredicate;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
@@ -22,8 +23,6 @@ public class PossessItemTrigger extends SimpleCriterionTrigger<PossessItemTrigge
     public void trigger(@NotNull ServerPlayer pPlayer, @NotNull CustomCriteriaHolder customCriteriaHolder) {
         this.trigger(pPlayer, triggerInstance -> triggerInstance.matches(customCriteriaHolder));
     }
-
-
 
     @Override
     public @NotNull Codec<TriggerInstance> codec() {

@@ -11,6 +11,7 @@ import net.arkadiyhimself.fantazia.client.render.layers.AbsoluteBarrier;
 import net.arkadiyhimself.fantazia.client.renderers.item.FantazicItemRenderer;
 import net.arkadiyhimself.fantazia.entities.DashStone;
 import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -56,8 +57,8 @@ public class DashStoneRenderer extends EntityRenderer<DashStone> {
 
                 PoseStack.Pose pose = pPoseStack.last().copy();
                 VertexConsumer consumer;
-                if (false) consumer = getBarrierVertex(pBuffer, renderType, pose);
-                else consumer = getFoilBuffer(pBuffer, renderType, true, true);;
+                if (false) consumer = barrierVertex(pBuffer, renderType, pose);
+                else consumer = getFoilBuffer(pBuffer, renderType, true, unpickable);
 
                 renderer.renderModelLists(model1, stack, pPackedLight, pPackedLight, pPoseStack, consumer);
             }
@@ -82,5 +83,15 @@ public class DashStoneRenderer extends EntityRenderer<DashStone> {
         return VertexMultiConsumer.create(
                 new SheetedDecalTextureGenerator(bufferSource.getBuffer(FTZRenderTypes.customGlint(AbsoluteBarrier.BARRIER_LAYER)), pose, 0.0078125F), bufferSource.getBuffer(renderType)
         );
+    }
+
+    public static VertexConsumer getFoilBufferDirect(MultiBufferSource bufferSource, RenderType renderType) {
+        return VertexMultiConsumer.create(bufferSource.getBuffer(FTZRenderTypes.customGlint(AbsoluteBarrier.BARRIER_LAYER)), bufferSource.getBuffer(renderType));
+    }
+
+    public static VertexConsumer barrierVertex(MultiBufferSource source, RenderType type, PoseStack.Pose pose) {
+        VertexConsumer custom = ItemRenderer.getFoilBufferDirect(source, FTZRenderTypes.customGlint(AbsoluteBarrier.BARRIER_LAYER), true, false);
+        VertexConsumer base = source.getBuffer(type);
+        return VertexMultiConsumer.create(new SheetedDecalTextureGenerator(custom, pose, 0.007f), base);
     }
 }

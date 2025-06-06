@@ -9,6 +9,7 @@ import net.arkadiyhimself.fantazia.registries.custom.Auras;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 
 import java.util.function.Consumer;
@@ -31,16 +32,16 @@ public class DefaultEffectSpawnAppliers implements SubProvider<EffectSpawnApplie
         EffectSpawnApplier.builder(false)
                 .addEntityTypes(EntityType.ZOMBIE, EntityType.HUSK, EntityType.DROWNED, EntityType.SPIDER, EntityType.SKELETON, EntityType.STRAY)
                 .addEffects(CombinedSpawnEffects.builder(0.2)
-                        .addMobEffectInstance(FTZMobEffects.BARRIER,10,true)
-                        .addMobEffectInstance(FTZMobEffects.MIGHT,4,true))
+                        .addMobEffectInstance(FTZMobEffects.BARRIER,10)
+                        .addMobEffectInstance(FTZMobEffects.MIGHT,4))
                 .addEffects(CombinedSpawnEffects.builder(0.2)
-                        .addMobEffectInstance(FTZMobEffects.DEFLECT, 0, true))
+                        .addMobEffectInstance(FTZMobEffects.DEFLECT, 0))
                 .save(consumer, Fantazia.res("common_foes"));
 
         EffectSpawnApplier.builder(false)
                 .addEntityTypes(EntityType.CREEPER)
                 .addEffects(CombinedSpawnEffects.builder(0.15)
-                        .addMobEffectInstance(FTZMobEffects.LAYERED_BARRIER, 4, true))
+                        .addMobEffectInstance(FTZMobEffects.LAYERED_BARRIER, 4))
                 .save(consumer, entityId(EntityType.CREEPER));
 
         EffectSpawnApplier.builder(false)
@@ -48,6 +49,19 @@ public class DefaultEffectSpawnAppliers implements SubProvider<EffectSpawnApplie
                 .addEffects(CombinedSpawnEffects.builder(0.15)
                         .addAuraInstance(Auras.CORROSIVE))
                 .save(consumer, entityId(EntityType.WITCH));
+
+        EffectSpawnApplier.builder(false)
+                .addEntityTypes(EntityType.SNOW_GOLEM)
+                .addEffects(CombinedSpawnEffects.builder(1)
+                        .addAuraInstance(Auras.FROSTBITE, 2))
+                .save(consumer, entityId(EntityType.SNOW_GOLEM));
+
+        EffectSpawnApplier.builder(false)
+                .addEntityTypes(EntityType.ENDERMAN)
+                .addEffects(CombinedSpawnEffects.builder(0.13)
+                        .addAuraInstance(Auras.DESPAIR)
+                        .addMobEffectInstance(MobEffects.REGENERATION,2))
+                .save(consumer, entityId(EntityType.ENDERMAN));
     }
 
     private ResourceLocation entityId(EntityType<?> entityType) {

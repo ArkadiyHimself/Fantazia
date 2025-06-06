@@ -9,6 +9,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAb
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.EuphoriaHolder;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.*;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -123,13 +124,19 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
             int blastProtect = blast.map(enchantmentReference -> EnchantmentHelper.getEnchantmentLevel(enchantmentReference, getEntity())).orElse(0);
             if (blastProtect > 0) dur /= blastProtect;
             attackStunned(dur);
-        } else if (source.is(DamageTypeTags.IS_FALL) && serverLevel.getGameRules().getBoolean(FTZGameRules.STUN_FROM_FALLING) && amount > 2f) {
-            int dur = (int) Math.max(premature, amount * 5);
+        } else if (source.is(DamageTypeTags.IS_FALL) && serverLevel.getGameRules().getBoolean(FTZGameRules.STUN_FROM_FALLING)) {
+            if (amount > 5f) {
+                int dur = (int) Math.max(premature, amount * 16);
 
-            Optional<Holder.Reference<Enchantment>> blast = enchantmentRegistry.getHolder(Enchantments.FEATHER_FALLING);
-            int fallProtect = blast.map(enchantmentReference -> getEntity().getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(enchantmentReference)).orElse(0);
-            if (fallProtect > 0) dur /= fallProtect;
-            attackStunned(dur);
+                Optional<Holder.Reference<Enchantment>> blast = enchantmentRegistry.getHolder(Enchantments.FEATHER_FALLING);
+                int fallProtect = blast.map(enchantmentReference -> getEntity().getItemBySlot(EquipmentSlot.FEET).getEnchantmentLevel(enchantmentReference)).orElse(0);
+                if (fallProtect > 0) dur /= fallProtect;
+                attackStunned(dur);
+            } else {
+                int newPoints = (int) ((float) getMaxPoints() * (amount / 5f));
+                this.points += newPoints;
+                if (points >= getMaxPoints()) attackStunned(DURATION);
+            }
         }
     }
 
@@ -148,18 +155,29 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
         if (attack) {
             delay = Math.max(delay, DELAY);
             basicPoints = (int) (amount * 25);
-            finalPoints = (int) Mth.clamp(basicPoints,maxPoint * 0.025f, maxPoint * 0.85f);
+            if (basicPoints > 0.8 * maxPoint) {
+                // let's have next arguments: x - basic points, max - maxPoint, fin - finalPoints;
+                // this is a function where:
+                // for x <= (0.8 * max) : fin = x;
+                // fir x > (0.8 * max) : fin = 0.8 * max + (x - 0.8 * max) * ln(1 + (x - 0.8 * max) * 2 / max)
+                // the graph of such function starts going up linearly, but upon reaching 0.8 of max points, it 'turns' into a ln function
+                // initial basic points would have to be more than roughly 120% of max points for the function to reach max points
+                // so, if there are 300 points, the basic points will have to be about 360, and the damage will have to be about 14.5
+                int basePart = (int) ((float) basicPoints * 0.8);
+                int remaining = basicPoints - basePart;
+                remaining = (int) (remaining * Math.log(1 + remaining * 2 / maxPoint));
+                finalPoints = basePart + remaining;
+            } else finalPoints = basicPoints;
         } else {
             delay = Math.max(delay, DELAY * 2);
             basicPoints = (int) (amount * 15.75);
-            finalPoints = (int) Math.max(basicPoints, maxPoint * 0.25f);
+            finalPoints = (int) Math.max(basicPoints, 0.25 * maxPoint);
         }
         if (getEntity().level() instanceof ServerLevel serverLevel) finalPoints = (int) ((float) finalPoints * pointMultiplier(serverLevel));
-        finalPoints = (int) Math.min(finalPoints, maxPoint * 0.85f);
         if (getEntity().getData(FTZAttachmentTypes.DASHSTONE_MINION)) finalPoints = (int) (0.4f * (float) finalPoints);
 
-        points += finalPoints;
-        if (points >= getMaxPoints()) {
+        this.points += finalPoints;
+        if (points >= maxPoint) {
             attackStunned(DURATION);
             getEntity().playSound(FTZSoundEvents.COMBAT_ATTACK_STUNNED.get());
         }
@@ -190,7 +208,7 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
     private void attackStunned(int dur) {
         points = 0;
         delay = 0;
-        LivingEffectHelper.makeStunned(getEntity(), dur);
+        ApplyEffect.makeStunned(getEntity(), dur);
     }
 
     private float pointMultiplier(ServerLevel serverLevel) {

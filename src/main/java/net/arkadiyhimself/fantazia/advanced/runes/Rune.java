@@ -7,6 +7,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
+import net.arkadiyhimself.fantazia.registries.custom.Runes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -101,6 +102,10 @@ public final class Rune implements ITooltipBuilder {
 
     public int looting() {
         return looting;
+    }
+
+    public boolean isEmpty() {
+        return this == Runes.EMPTY.value();
     }
 
     public static Builder builder(ResourceLocation icon) {

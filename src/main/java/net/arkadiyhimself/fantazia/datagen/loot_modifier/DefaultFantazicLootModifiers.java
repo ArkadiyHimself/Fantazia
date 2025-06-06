@@ -134,6 +134,7 @@ public class DefaultFantazicLootModifiers implements SubProvider<LootModifierHol
                 .addLootTables(trialChambersCommon.regular())
                 .addLootInstance(LootInstance.Builder.of(RuneWielderItem.rune(Runes.PURE_VESSEL), 0.3))
                 .addLootInstance(LootInstance.Builder.of(RuneWielderItem.rune(Runes.OMNIDIRECTIONAL), 0.175))
+                .addLootInstance(LootInstance.Builder.of(RuneWielderItem.rune(Runes.EXTENSION), 0.13))
                 .save(consumer, trialChambersCommon.fantazia());
 
         DynamicResourceLocation phantom = entityLootTable(EntityType.PHANTOM);
@@ -141,6 +142,12 @@ public class DefaultFantazicLootModifiers implements SubProvider<LootModifierHol
                 .addLootTables(phantom.regular())
                 .addLootInstance(LootInstance.Builder.of(RuneWielderItem.rune(Runes.AEROBAT),0.15, Items.PHANTOM_MEMBRANE))
                 .save(consumer, phantom.fantazia());
+
+        DynamicResourceLocation piglin = entityLootTable(EntityType.PIGLIN);
+        LootModifier.builder()
+                .addLootTables(piglin.regular())
+                .addLootInstance(LootInstance.Builder.of(RuneWielderItem.rune(Runes.METICULOUS), 0.1))
+                .save(consumer, piglin.fantazia());
     }
 
     static DynamicResourceLocation builtInLootTable(ResourceKey<LootTable> key) {

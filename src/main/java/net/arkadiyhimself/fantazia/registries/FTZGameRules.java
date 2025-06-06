@@ -13,6 +13,7 @@ public class FTZGameRules {
     public static final GameRules.Key<GameRules.BooleanValue> STUN_FROM_ATTACKS;
     public static final GameRules.Key<GameRules.BooleanValue> STUN_FROM_FALLING;
     public static final GameRules.Key<GameRules.BooleanValue> STUN_FROM_EXPLOSION;
+    public static final GameRules.Key<GameRules.BooleanValue> PROMPTS;
 
     private static <T extends GameRules.Value<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
         GameRules.Key<T> key = new GameRules.Key<>(Fantazia.res(name).toLanguageKey(), category);
@@ -30,5 +31,6 @@ public class FTZGameRules {
         STUN_FROM_ATTACKS = register("stun_from_attack", GameRules.Category.MOBS, GameRules.BooleanValue.create(true));
         STUN_FROM_FALLING = register("stun_from_falling", GameRules.Category.MOBS, GameRules.BooleanValue.create(true));
         STUN_FROM_EXPLOSION = register("stun_from_explosion", GameRules.Category.MOBS, GameRules.BooleanValue.create(true));
+        PROMPTS = register("prompts", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true));
     }
 }

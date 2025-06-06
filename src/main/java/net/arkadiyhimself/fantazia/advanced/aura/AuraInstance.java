@@ -2,13 +2,11 @@ package net.arkadiyhimself.fantazia.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.dynamicattributemodifying.DynamicAttributeModifier;
+import net.arkadiyhimself.fantazia.api.AttributeTemplate;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.DAMHolder;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
-import net.arkadiyhimself.fantazia.api.attachment.level.holders.AurasInstancesHolder;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.events.FantazicHooks;
-import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.packets.attachment_syncing.IAttachmentSync;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
@@ -19,6 +17,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -28,16 +28,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
+import oshi.util.tuples.Pair;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class AuraInstance {
 
     private final List<Entity> supposedlyInside = Lists.newArrayList();
-    private final List<DynamicAttributeModifier> dynamicAttributeModifiers = Lists.newArrayList();
+    private final List<Entity> actuallyAffected = Lists.newArrayList();
+    private final List<DynamicAttributeModifier> proximityAttributeModifiers = Lists.newArrayList();
     private final Entity owner;
     private final Level level;
     private Vec3 center;
@@ -53,11 +55,9 @@ public class AuraInstance {
         this.center = owner.getPosition(0f);
         this.amplifier = amplifier;
 
-        if (level instanceof ServerLevel) LevelAttributesHelper.acceptConsumer(level, AurasInstancesHolder.class, aurasInstancesHolder -> aurasInstancesHolder.addAuraInstance(this));
-
-        for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : this.aura.value().getDynamicAttributeModifiers().entrySet()) {
+        for (Map.Entry<Holder<Attribute>, AttributeTemplate> entry : this.aura.value().getProximityAttributeModifiers().entrySet()) {
             Function<LivingEntity, Float> floatFunction = (entity -> 1 - (entity.distanceTo(getOwner()) / getActualRange()));
-            dynamicAttributeModifiers.add(new DynamicAttributeModifier(entry.getKey(), entry.getValue(), floatFunction));
+            proximityAttributeModifiers.add(new DynamicAttributeModifier(entry.getKey(), entry.getValue().create(amplifier), floatFunction));
         }
     }
 
@@ -74,24 +74,22 @@ public class AuraInstance {
     }
 
     public void tick() {
-        if (owner == null || !owner.isAlive()) removed = true;
-        if (removed) return;
+        if (owner == null || owner.isRemoved()) {
+            discard();
+            return;
+        }
 
         FantazicHooks.onAuraTick(this);
         this.center = owner.position();
 
-        for (Entity entity : entitiesInside()) if (!supposedlyInside.contains(entity)) enterAura(entity);
-        for (Entity entity : supposedlyInside) if (!entitiesInside().contains(entity)) exitAura(entity);
-        supposedlyInside.removeIf(entity -> !entitiesInside().contains(entity));
-
-        supposedlyInside.forEach(entity -> {
-            if (aura.value().affects(entity, owner)) {
-                aura.value().affectedTick(entity, this);
-                if (entity instanceof LivingEntity livingEntity) applyModifiers(livingEntity);
-            } else if (entity instanceof LivingEntity livingEntity) removeModifiers(livingEntity);
+        for (Entity entity : entitiesInside()) if (!supposedlyInside.contains(entity)) physicallyEnter(entity);
+        supposedlyInside.removeIf(entity -> {
+            boolean inside = entitiesInside().contains(entity);
+            if (!inside) physicallyExit(entity);
+            return !inside;
         });
 
-        if (aura.value().ownerCond(owner)) aura.value().ownerTick(owner);
+        if (aura.value().ownerCond(owner)) aura.value().instanceTick(this);
         if (!level.isClientSide()) blocksInside().forEach(blockPos -> aura.value().blockTick(blockPos, this));
     }
 
@@ -111,20 +109,31 @@ public class AuraInstance {
         return owner;
     }
 
-    public void enterAura(Entity entity) {
+    // just the fact of being inside aura instance
+    public void physicallyEnter(Entity entity) {
         FantazicHooks.onAuraEnter(this, entity);
         if (getOwner() instanceof ServerPlayer && Fantazia.DEVELOPER_MODE) Fantazia.LOGGER.info("Entered aura: {}", entity);
         supposedlyInside.add(entity);
-        if (!aura.value().affects(entity, getOwner())) return;
-        if (!(entity instanceof LivingEntity livingEntity)) return;
-        applyModifiers(livingEntity);
     }
 
-    public void exitAura(Entity entity) {
+    public void physicallyExit(Entity entity) {
         FantazicHooks.onAuraExit(this, entity);
-        if (getOwner() instanceof ServerPlayer player && Fantazia.DEVELOPER_MODE) Fantazia.LOGGER.info("Exited aura: {}", entity);
-        if (!(entity instanceof LivingEntity livingEntity)) return;
-        removeModifiers(livingEntity);
+        if (getOwner() instanceof ServerPlayer && Fantazia.DEVELOPER_MODE) Fantazia.LOGGER.info("Exited aura: {}", entity);
+    }
+
+    // being actually affected by the aura instance
+    public boolean affectedByAura(Entity entity) {
+        if (actuallyAffected.contains(entity)) return false;
+        actuallyAffected.add(entity);
+        if (entity instanceof LivingEntity livingEntity) applyModifiers(livingEntity);
+        return true;
+    }
+
+    public boolean unaffectedByAura(Entity entity) {
+        if (!actuallyAffected.contains(entity)) return false;
+        actuallyAffected.remove(entity);
+        if (entity instanceof LivingEntity livingEntity) removeModifiers(livingEntity);
+        return true;
     }
 
     public boolean isInside(Entity entity) {
@@ -133,30 +142,41 @@ public class AuraInstance {
 
     public void discard() {
         this.removed = true;
-        entitiesInside().forEach(this::exitAura);
-        if (getLevel() instanceof ServerLevel serverLevel) IAttachmentSync.updateLevelAttributes(serverLevel);
-    }
-
-    public void removeModifiers(LivingEntity livingEntity) {
-        for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : aura.value().getAttributeModifiers().entrySet()) {
-            AttributeInstance instance = livingEntity.getAttribute(entry.getKey());
-            if (instance != null && instance.hasModifier(entry.getValue().id())) instance.removeModifier(entry.getValue());
-        }
-
-        DAMHolder damHolder = LivingDataHelper.takeHolder(livingEntity, DAMHolder.class);
-        if (damHolder == null) return;
-        dynamicAttributeModifiers.forEach(damHolder::removeDAM);
+        supposedlyInside.stream().toList().forEach(this::physicallyExit);
+        actuallyAffected.stream().toList().forEach(this::unaffectedByAura);
+        if (getLevel() instanceof ServerLevel serverLevel) IAttachmentSync.updateAuraInstances(serverLevel);
     }
 
     public void applyModifiers(LivingEntity livingEntity) {
-        for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : aura.value().getAttributeModifiers().entrySet()) {
+        for (Map.Entry<Holder<Attribute>, AttributeTemplate> entry : aura.value().getAttributeModifiers().entrySet()) {
             AttributeInstance instance = livingEntity.getAttribute(entry.getKey());
-            if (instance != null && !instance.hasModifier(entry.getValue().id())) instance.addTransientModifier(entry.getValue());
+            if (instance == null) continue;
+            AttributeModifier modifier = entry.getValue().create(amplifier);
+            instance.removeModifier(modifier);
+            instance.addTransientModifier(modifier);
         }
 
         DAMHolder damHolder = LivingDataHelper.takeHolder(livingEntity, DAMHolder.class);
         if (damHolder == null) return;
-        dynamicAttributeModifiers.forEach(damHolder::addDAM);
+        proximityAttributeModifiers.forEach(damHolder::addOrReplaceDAM);
+        for (Map.Entry<Holder<Attribute>, Pair<AttributeTemplate, Function<LivingEntity, Float>>> entry : aura.value().getDynamicAttributeModifiers().entrySet()) {
+            Pair<AttributeTemplate, Function<LivingEntity, Float>> pair = entry.getValue();
+            damHolder.addOrReplaceDAM(new DynamicAttributeModifier(entry.getKey(), pair.getA().create(amplifier), pair.getB()));
+        }
+    }
+
+    public void removeModifiers(LivingEntity livingEntity) {
+        for (Map.Entry<Holder<Attribute>, AttributeTemplate> entry : aura.value().getAttributeModifiers().entrySet()) {
+            AttributeInstance instance = livingEntity.getAttribute(entry.getKey());
+            if (instance != null) instance.removeModifier(entry.getValue().id());
+        }
+
+        DAMHolder damHolder = LivingDataHelper.takeHolder(livingEntity, DAMHolder.class);
+        if (damHolder == null) return;
+        proximityAttributeModifiers.forEach(damHolder::removeDAM);
+        for (Map.Entry<Holder<Attribute>, Pair<AttributeTemplate, Function<LivingEntity, Float>>> entry : aura.value().getDynamicAttributeModifiers().entrySet()) {
+            damHolder.removeDAM(entry.getValue().getA().id());
+        }
     }
 
     private float getActualRange() {
@@ -167,13 +187,55 @@ public class AuraInstance {
         return addition == null ? initial : initial + (float) addition.getValue();
     }
 
+    public boolean matchesFilter(Entity entity) {
+        return aura.value().matchesFilter(entity, owner);
+    }
+
+    public boolean primaryFilter(Entity entity) {
+        return aura.value().primary(entity, owner);
+    }
+
+    public double distanceToCenter(Entity entity) {
+        return entity.distanceTo(owner);
+    }
+
+    public void tickOnEntity(Entity entity) {
+        this.aura.value().affectedTick(entity, this);
+    }
+
+    public void applyMobEffects(LivingEntity livingEntity) {
+        if (!level.isClientSide()) for (Map.Entry<Holder<MobEffect>, Integer> entry : aura.value().getMobEffects().entrySet()) {
+            livingEntity.addEffect(new MobEffectInstance(entry.getKey(), 2, entry.getValue()));
+        }
+    }
+
+    public int getAmplifier() {
+        return amplifier;
+    }
+
     public boolean removed() {
         return this.removed;
     }
 
+    public AuraInstance copy(Entity newOwner) {
+        return new AuraInstance(newOwner, aura, amplifier);
+    }
+
+    public String getDescriptionId() {
+        return aura.value().getDescriptionId();
+    }
+
+    @Override
+    public String toString() {
+        String desc = getDescriptionId();
+        if (amplifier > 0) desc += " x " + (this.amplifier + 1);
+        desc += ", owner: " + (owner == null ? "null" : owner.getName());
+        return desc;
+    }
+
     public CompoundTag serializeSync() {
         CompoundTag tag = new CompoundTag();
-        tag.putString("aura", aura.value().getID().toString());
+        tag.putString("aura", aura.value().getId().toString());
         tag.putInt("owner", this.owner.getId());
         tag.putBoolean("removed", this.removed);
         tag.putInt("amplifier", this.amplifier);
@@ -182,8 +244,7 @@ public class AuraInstance {
 
     public CompoundTag serializeSave() {
         CompoundTag tag = new CompoundTag();
-        tag.putString("aura", aura.value().getID().toString());
-        tag.putUUID("owner", this.owner.getUUID());
+        tag.putString("aura", aura.value().getId().toString());
         tag.putBoolean("removed", this.removed);
         tag.putInt("amplifier", this.amplifier);
         return tag;
@@ -206,20 +267,20 @@ public class AuraInstance {
         return instance;
     }
 
-    public static AuraInstance deserializeSave(CompoundTag tag, ServerLevel level) {
+    public static Function<Entity, AuraInstance> deserializeSave(CompoundTag tag) {
         ResourceLocation auraID = ResourceLocation.parse(tag.getString("aura"));
-        UUID ownerID = tag.getUUID("owner");
 
-        Aura aura = FantazicRegistries.AURAS.get(auraID);
-        Entity owner = level.getEntity(ownerID);
+        Optional<Holder.Reference<Aura>> aura = FantazicRegistries.AURAS.getHolder(auraID);
 
-        if (aura == null || owner == null) return null;
+        if (aura.isEmpty()) return entity -> null;
 
         int amplifier = tag.getInt("amplifier");
+        boolean removed = tag.getBoolean("removed");
 
-        AuraInstance instance = new AuraInstance(owner, FantazicRegistries.AURAS.wrapAsHolder(aura), amplifier);
-        instance.removed = tag.getBoolean("removed");
-
-        return instance;
+        return entity -> {
+            AuraInstance instance = new AuraInstance(entity, aura.get(), amplifier);
+            instance.removed = removed;
+            return instance;
+        };
     }
 }

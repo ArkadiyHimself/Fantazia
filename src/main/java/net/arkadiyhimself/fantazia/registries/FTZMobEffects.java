@@ -86,7 +86,7 @@ public class FTZMobEffects {
 
     private static final BiConsumer<LivingEntity, Integer> electrocutedTick = (livingEntity, integer) -> {
         DamageSourcesHolder damageSourcesHolder = LevelAttributesHelper.getDamageSources(livingEntity.level());
-        if (damageSourcesHolder != null && (livingEntity.tickCount % 10) == 0) livingEntity.hurt(damageSourcesHolder.electric(), 1f + integer * 0.25f);
+        if (damageSourcesHolder != null && (livingEntity.tickCount % 10) == 0) livingEntity.hurt(damageSourcesHolder.electric(), 0.675f + integer * 0.125f);
         if ((livingEntity.tickCount % 3) == 0 && !livingEntity.level().isClientSide()) VisualHelper.entityChasingParticle(livingEntity, FTZParticleTypes.ELECTRO.random(), (int) Math.min(integer * 1.5 + 3, 3), 0.65f);
     };
 

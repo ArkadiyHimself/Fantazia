@@ -5,7 +5,7 @@
       "elements": [
         "fantazia:spellcasting/spellcasting2/cast_range_add",
         "fantazia:spellcasting/spellcasting2/aura_range_add",
-        "fantazia:spellcasting/spellcasting1/spell_recharge_reduce"
+        "fantazia:spellcasting/spellcasting2/spell_recharge_reduce"
       ]
     }
   },

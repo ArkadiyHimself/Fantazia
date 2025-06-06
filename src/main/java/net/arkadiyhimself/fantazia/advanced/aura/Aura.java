@@ -4,8 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import it.unimi.dsi.fastutil.ints.Int2DoubleFunction;
+import net.arkadiyhimself.fantazia.api.AttributeTemplate;
 import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.arkadiyhimself.fantazia.items.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.minecraft.ChatFormatting;
@@ -17,7 +20,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
@@ -27,14 +29,12 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 
 /**
@@ -59,17 +59,22 @@ public class Aura implements ITooltipBuilder {
      * <br>
      * applied to all suitable entities within aura
      */
-    private final ImmutableMap<Holder<Attribute>, AttributeModifier> attributeModifiers;
+    private final ImmutableMap<Holder<Attribute>, AttributeTemplate> attributeModifiers;
     /**
-     * Contains DAMs which will be applied to all suitable entities within aura.
+     * Contains DAMs which will be applied to all suitable living entities within aura
+     */
+    private final ImmutableMap<Holder<Attribute>, Pair<AttributeTemplate, Function<LivingEntity, Float>>> dynamicAttributeModifiers;
+
+    /**
+     * Contains special case of DAMs, whose percentage depends specifically on
      * <br>
-     * The percentage of each DAM depends on distance between affected entity
+     * the distance between affected entity and the owner of aura;
      * <br>
-     * and the owner of aura: it goes from 0.0F when an entity is on the "edge" of
+     * It goes from 0.0F when an entity is on the "edge" of
      * <br>
      * the aura to 1.0F when it is closest to the owner
      */
-    private final ImmutableMap<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers;
+    private final ImmutableMap<Holder<Attribute>, AttributeTemplate> proximityAttributeModifiers;
     /**
      * Contains the mob effects which will be applied to suitable entities
      * <br>
@@ -117,9 +122,9 @@ public class Aura implements ITooltipBuilder {
      */
     private final BiConsumer<Entity, AuraInstance> onTickAffected;
     /**
-     * OnTickOwner is performed every tick on the owner of the aura
+     * OnTickOwner is performed every tick on the aura instance
      */
-    private final Consumer<Entity> onTickOwner;
+    private final Consumer<AuraInstance> onTickOwner;
     /**
      * OnTickBlock is performed every tick on all blocks within aura
      */
@@ -129,8 +134,7 @@ public class Aura implements ITooltipBuilder {
      * <br>
      * be immune to while within aura
      */
-    private final ImmutableList<ResourceKey<DamageType>> damageImmunities;
-    private final ImmutableList<TagKey<DamageType>> tagDamageImmunities;
+    private final ImmutableList<DamageTypePredicate> damageImmunities;
     /**
      * Whenever a suitable entity inside aura takes damage from a {@link net.minecraft.world.damagesource.DamageSource source},
      * <br>
@@ -138,35 +142,32 @@ public class Aura implements ITooltipBuilder {
      * <br>
      * by respective float value inside this map
      */
-    private final ImmutableMap<ResourceKey<DamageType>, Float> damageMultipliers;
-    private final ImmutableMap<TagKey<DamageType>, Float> tagDamageMultipliers;
+    private final ImmutableMap<DamageTypePredicate, Float> damageMultipliers;
 
     private final ChatFormatting[] tooltipFormatting;
     private @Nullable String descriptionId;
-    private final boolean amplifiable;
 
     protected Aura(TYPE type, float range,
-                   Map<Holder<Attribute>, AttributeModifier> attributeModifiers,
-                   Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers,
+                   Map<Holder<Attribute>, AttributeTemplate> attributeModifiers,
+                   Map<Holder<Attribute>, Pair<AttributeTemplate, Function<LivingEntity, Float>>> dynamicAttributeModifiers,
+                   Map<Holder<Attribute>, AttributeTemplate> proximityAttributeModifiers,
                    Map<Holder<MobEffect>, Integer> mobEffects,
                    BiPredicate<Entity, Entity> primaryFilter,
                    BiPredicate<Entity, Entity> secondaryFilter,
                    Predicate<Entity> ownerConditions,
                    BiConsumer<Entity, AuraInstance> onTickAffected,
-                   Consumer<Entity> onTickOwner,
+                   Consumer<AuraInstance> onTickOwner,
                    BiConsumer<BlockPos, AuraInstance> onTickBlock,
-                   List<ResourceKey<DamageType>> damageImmunities,
-                   List<TagKey<DamageType>> tagDamageImmunities,
-                   Map<ResourceKey<DamageType>, Float> damageMultipliers,
-                   Map<TagKey<DamageType>, Float> tagDamageMultipliers,
-                   @Nullable ChatFormatting[] tooltipFormatting,
-                   boolean amplifiable
+                   List<DamageTypePredicate> damageImmunities,
+                   Map<DamageTypePredicate, Float> damageMultipliers,
+                   @Nullable ChatFormatting[] tooltipFormatting
     ) {
         this.range = range;
         this.type = type;
 
         this.attributeModifiers = ImmutableMap.copyOf(attributeModifiers);
         this.dynamicAttributeModifiers = ImmutableMap.copyOf(dynamicAttributeModifiers);
+        this.proximityAttributeModifiers = ImmutableMap.copyOf(proximityAttributeModifiers);
         this.mobEffects = ImmutableMap.copyOf(mobEffects);
 
         this.primaryFilter = primaryFilter;
@@ -178,9 +179,7 @@ public class Aura implements ITooltipBuilder {
         this.onTickBlock = onTickBlock;
 
         this.damageImmunities = ImmutableList.copyOf(damageImmunities);
-        this.tagDamageImmunities = ImmutableList.copyOf(tagDamageImmunities);
         this.damageMultipliers = ImmutableMap.copyOf(damageMultipliers);
-        this.tagDamageMultipliers = ImmutableMap.copyOf(tagDamageMultipliers);
 
         this.tooltipFormatting = tooltipFormatting != null ? tooltipFormatting :
                 switch (type) {
@@ -188,13 +187,11 @@ public class Aura implements ITooltipBuilder {
                     case NEGATIVE -> new ChatFormatting[]{ChatFormatting.RED};
                     case MIXED -> new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE};
                 };
-
-        this.amplifiable = amplifiable;
     }
 
     public List<Component> buildIconTooltip() {
         List<Component> components = Lists.newArrayList();
-        String lines = Component.translatable("aura_tooltip." + getID().getNamespace() + "." + getID().getPath() + ".lines").getString();
+        String lines = Component.translatable("aura_tooltip." + getId().getNamespace() + "." + getId().getPath() + ".lines").getString();
         int li = 0;
         try {
             li = Integer.parseInt(lines);
@@ -206,7 +203,7 @@ public class Aura implements ITooltipBuilder {
                 case NEGATIVE -> new ChatFormatting[]{ChatFormatting.RED};
                 case POSITIVE -> new ChatFormatting[]{ChatFormatting.GREEN};
             };
-            for (int i = 1; i <= li; i++) components.add(Component.translatable("aura_tooltip." + getID().getNamespace() + "." + getID().getPath() + "." + i).withStyle(head));
+            for (int i = 1; i <= li; i++) components.add(Component.translatable("aura_tooltip." + getId().getNamespace() + "." + getId().getPath() + "." + i).withStyle(head));
 
         }
         return components;
@@ -273,12 +270,12 @@ public class Aura implements ITooltipBuilder {
         return components;
     }
 
-    public ResourceLocation getID() {
+    public ResourceLocation getId() {
         return FantazicRegistries.AURAS.getKey(this);
     }
 
     public MutableComponent getAuraComponent() {
-        String s = "aura.icon." + getID().getNamespace() + "." + getID().getPath();
+        String s = "aura.icon." + getId().getNamespace() + "." + getId().getPath();
         return Component.translatable(s);
     }
 
@@ -296,7 +293,7 @@ public class Aura implements ITooltipBuilder {
         return range;
     }
 
-    public boolean affects(Entity entity, Entity owner) {
+    public boolean matchesFilter(Entity entity, Entity owner) {
         return primaryFilter.test(entity, owner) && secondaryFilter.test(entity, owner) && entity != owner;
     }
 
@@ -304,12 +301,16 @@ public class Aura implements ITooltipBuilder {
         return mobEffects;
     }
 
-    public Map<Holder<Attribute>, AttributeModifier> getAttributeModifiers() {
+    public Map<Holder<Attribute>, AttributeTemplate> getAttributeModifiers() {
         return attributeModifiers;
     }
 
-    public Map<Holder<Attribute>, AttributeModifier> getDynamicAttributeModifiers() {
+    public ImmutableMap<Holder<Attribute>, Pair<AttributeTemplate, Function<LivingEntity, Float>>> getDynamicAttributeModifiers() {
         return dynamicAttributeModifiers;
+    }
+
+    public Map<Holder<Attribute>, AttributeTemplate> getProximityAttributeModifiers() {
+        return proximityAttributeModifiers;
     }
 
     public boolean primary(Entity entity, Entity owner) {
@@ -328,7 +329,7 @@ public class Aura implements ITooltipBuilder {
         onTickAffected.accept(entity, owner);
     }
 
-    public void ownerTick(Entity owner) {
+    public void instanceTick(AuraInstance owner) {
         onTickOwner.accept(owner);
     }
 
@@ -336,24 +337,22 @@ public class Aura implements ITooltipBuilder {
         onTickBlock.accept(blockPos, auraInstance);
     }
 
-    public ImmutableList<ResourceKey<DamageType>> immunities() {
+    public ImmutableList<DamageTypePredicate> immunities() {
         return damageImmunities;
     }
 
-    public boolean immunityTo(Holder<DamageType> damageTypeHolder) {
-        if (damageImmunities.contains(damageTypeHolder.getKey())) return true;
-        else for (TagKey<DamageType> tagKey : tagDamageImmunities) if (damageTypeHolder.is(tagKey)) return true;
+    public boolean immunityTo(Holder<DamageType> damageType) {
+        for (DamageTypePredicate predicate : damageImmunities) if (predicate.matches(damageType)) return true;
         return false;
     }
 
-    public Map<ResourceKey<DamageType>, Float> multipliers() {
+    public Map<DamageTypePredicate, Float> multipliers() {
         return damageMultipliers;
     }
 
-    public float multiplierFor(Holder<DamageType> damageTypeHolder) {
-        Float d0 = damageMultipliers.get(damageTypeHolder.getKey());
-        float d1 = d0 == null ? 1f : d0;
-        for (Map.Entry<TagKey<DamageType>, Float> entry : tagDamageMultipliers.entrySet()) if (damageTypeHolder.is(entry.getKey())) d1 *= entry.getValue();
+    public float multiplierFor(Holder<DamageType> damageType) {
+        float d1 = 1f;
+        for (Map.Entry<DamageTypePredicate, Float> entry : damageMultipliers.entrySet()) if (entry.getKey().matches(damageType)) d1 *= entry.getValue();
         return d1;
     }
 
@@ -375,10 +374,6 @@ public class Aura implements ITooltipBuilder {
         return descriptionId;
     }
 
-    public boolean amplifiable() {
-        return amplifiable;
-    }
-
     public static Builder builder(TYPE type, float range) {
         return new Builder(type, range);
     }
@@ -388,8 +383,9 @@ public class Aura implements ITooltipBuilder {
         private final TYPE type;
         private final float range;
 
-        private final Map<Holder<Attribute>, AttributeModifier> attributeModifiers = Maps.newHashMap();
-        private final Map<Holder<Attribute>, AttributeModifier> dynamicAttributeModifiers = Maps.newHashMap();
+        private final Map<Holder<Attribute>, AttributeTemplate> attributeModifiers = Maps.newHashMap();
+        private final Map<Holder<Attribute>, Pair<AttributeTemplate, Function<LivingEntity, Float>>> dynamicAttributeModifiers = Maps.newHashMap();
+        private final Map<Holder<Attribute>, AttributeTemplate> proximityAttributeModifiers = Maps.newHashMap();
         private final Map<Holder<MobEffect>, Integer> mobEffects = Maps.newHashMap();
 
         private BiPredicate<Entity, Entity> primaryFilter = (entity, owner) -> true;
@@ -397,30 +393,67 @@ public class Aura implements ITooltipBuilder {
         private Predicate<Entity> ownerConditions = owner -> true;
 
         private BiConsumer<Entity, AuraInstance> onTickAffected = (entity, owner) -> {};
-        private Consumer<Entity> onTickOwner = owner -> {};
+        private Consumer<AuraInstance> onTickOwner = owner -> {};
         private BiConsumer<BlockPos, AuraInstance> onTickBlock = ((blockPos, tmAuraInstance) -> {});
 
-        private final List<ResourceKey<DamageType>> damageImmunities = Lists.newArrayList();
-        private final List<TagKey<DamageType>> tagDamageImmunities = Lists.newArrayList();
-        private final Map<ResourceKey<DamageType>, Float> damageMultipliers = Maps.newHashMap();
-        private final Map<TagKey<DamageType>, Float> tagDamageMultipliers = Maps.newHashMap();
+        private final List<DamageTypePredicate> damageImmunities = Lists.newArrayList();
+        private final Map<DamageTypePredicate, Float> damageMultipliers = Maps.newHashMap();
 
         private @Nullable ChatFormatting[] tooltipFormatting = null;
-        private boolean amplifiable = false;
 
         private Builder(TYPE type, float range) {
             this.type = type;
             this.range = range;
         }
 
-        public Builder addAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
-            this.attributeModifiers.put(attribute, attributeModifier);
+        public Builder addAttributeModifier(Holder<Attribute> attribute, AttributeTemplate template) {
+            this.attributeModifiers.put(attribute, template);
             return this;
         }
 
-        public Builder addDynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier attributeModifier) {
-            this.dynamicAttributeModifiers.put(attribute, attributeModifier);
+        public Builder addAttributeModifier(Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
+            return addAttributeModifier(attribute, new AttributeTemplate(id, amount, operation));
+        }
+
+        public Builder addAttributeModifier(Holder<Attribute> attribute, ResourceLocation id, AttributeModifier.Operation operation, Int2DoubleFunction curve) {
+            return addAttributeModifier(attribute, new AttributeTemplate(id, curve.apply(0), operation, curve));
+        }
+
+        public Builder addAttributeModifierStatic(Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
+            return addAttributeModifier(attribute, new AttributeTemplate(id, amount, operation, ampl -> amount));
+        }
+
+        public Builder addDynamicAttributeModifiers(Holder<Attribute> attribute, AttributeTemplate attributeTemplate, Function<LivingEntity, Float> percent) {
+            this.dynamicAttributeModifiers.put(attribute, new Pair<>(attributeTemplate, percent));
             return this;
+        }
+
+        public Builder addDynamicAttributeModifiers(Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation, Function<LivingEntity, Float> percent) {
+            return addDynamicAttributeModifiers(attribute, new AttributeTemplate(id, amount, operation), percent);
+        }
+
+        public Builder addDynamicAttributeModifiers(Holder<Attribute> attribute, ResourceLocation id, AttributeModifier.Operation operation, Int2DoubleFunction curve, Function<LivingEntity, Float> percent) {
+            return addDynamicAttributeModifiers(attribute, new AttributeTemplate(id, curve.apply(0), operation, curve), percent);
+        }
+        public Builder addDynamicAttributeModifiersStatic(Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation, Function<LivingEntity, Float> percent) {
+            return addDynamicAttributeModifiers(attribute, new AttributeTemplate(id, amount, operation, ampl -> amount), percent);
+        }
+
+        public Builder addProximityAttributeModifier(Holder<Attribute> attribute, AttributeTemplate attributeTemplate) {
+            this.proximityAttributeModifiers.put(attribute, attributeTemplate);
+            return this;
+        }
+
+        public Builder addProximityAttributeModifier(Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation) {
+            return addProximityAttributeModifier(attribute, new AttributeTemplate(id, amount, operation));
+        }
+
+        public Builder addProximityAttributeModifier(Holder<Attribute> attribute, ResourceLocation id, AttributeModifier.Operation operation, Int2DoubleFunction curve) {
+            return addProximityAttributeModifier(attribute, new AttributeTemplate(id, curve.apply(0), operation, curve));
+        }
+
+        public Builder addProximityAttributeModifierStatic(Holder<Attribute> attribute, double amount, ResourceLocation id, AttributeModifier.Operation operation) {
+            return addProximityAttributeModifier(attribute, new AttributeTemplate(id, amount, operation, ampl -> amount));
         }
 
         public Builder addMobEffect(Holder<MobEffect> mobEffect, int amplifier) {
@@ -463,7 +496,7 @@ public class Aura implements ITooltipBuilder {
             return this;
         }
 
-        public Builder onTickOwner(Consumer<Entity> value) {
+        public Builder onTickOwner(Consumer<AuraInstance> value) {
             this.onTickOwner = value;
             return this;
         }
@@ -473,23 +506,13 @@ public class Aura implements ITooltipBuilder {
             return this;
         }
 
-        public Builder addDamageImmunity(ResourceKey<DamageType> damageType) {
+        public Builder addDamageImmunity(DamageTypePredicate damageType) {
             this.damageImmunities.add(damageType);
             return this;
         }
 
-        public Builder addDamageImmunity(TagKey<DamageType> damageType) {
-            this.tagDamageImmunities.add(damageType);
-            return this;
-        }
-
-        public Builder putDamageMultiplier(ResourceKey<DamageType> damageType, float multiplier) {
+        public Builder putDamageMultiplier(DamageTypePredicate damageType, float multiplier) {
             this.damageMultipliers.put(damageType, multiplier);
-            return this;
-        }
-
-        public Builder putDamageMultiplier(TagKey<DamageType> damageType, float multiplier) {
-            this.tagDamageMultipliers.put(damageType, multiplier);
             return this;
         }
 
@@ -498,15 +521,12 @@ public class Aura implements ITooltipBuilder {
             return this;
         }
 
-        public Builder upgradable() {
-            this.amplifiable = true;
-            return this;
-        }
 
         public Aura build() {
             return new Aura(type, range,
                     attributeModifiers,
                     dynamicAttributeModifiers,
+                    proximityAttributeModifiers,
                     mobEffects,
                     primaryFilter,
                     secondaryFilter,
@@ -515,11 +535,8 @@ public class Aura implements ITooltipBuilder {
                     onTickOwner,
                     onTickBlock,
                     damageImmunities,
-                    tagDamageImmunities,
                     damageMultipliers,
-                    tagDamageMultipliers,
-                    tooltipFormatting,
-                    amplifiable
+                    tooltipFormatting
             );
         }
     }

@@ -34,6 +34,7 @@
     "MixinElytraLayer",
     "MixinGameRenderer",
     "MixinGui",
+    "MixinGuiGraphics",
     "MixinHumanoidArmorLayer",
     "MixinItemInHandRenderer",
     "MixinLivingEntityRenderer",

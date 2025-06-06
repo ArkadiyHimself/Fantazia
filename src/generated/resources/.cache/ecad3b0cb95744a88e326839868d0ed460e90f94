@@ -1,6 +1,6 @@
-// 1.21.1	2025-05-17T23:54:00.632877	Tags for minecraft:entity_type mod id fantazia
-b124ba50c57bcda47b7425d6fad694c45683e727 data/fantazia/tags/entity_type/aerial.json
+// 1.21.1	2025-06-06T14:10:43.826099	Tags for minecraft:entity_type mod id fantazia
+a4f6e3d52d68769113e22077030c2597ae94f2a3 data/fantazia/tags/entity_type/aerial.json
 738930314aa2c4e8fb4fa886ad0f8cc4d8af17b6 data/fantazia/tags/entity_type/affected/fantazia/deafened.json
 8e57d6afd2482ab9570d6ff985b56d9c72b4310b data/fantazia/tags/entity_type/immune/fantazia/electrocuted.json
 ba7f069d97b5fb1d5881bb05b9b4e7c3d9bbf76b data/fantazia/tags/entity_type/immune/fantazia/haemorrhage.json
-a4f6e3d52d68769113e22077030c2597ae94f2a3 data/fantazia/tags/entity_type/ranged_attack.json
+f794808b590ffe7aeb0ceda2c90d9dcf65a47947 data/fantazia/tags/entity_type/ranged_attack.json

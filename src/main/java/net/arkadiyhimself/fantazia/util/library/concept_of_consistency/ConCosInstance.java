@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.util.library.concept_of_consistency;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.nbt.CompoundTag;
 
 /**
@@ -33,7 +34,7 @@ public class ConCosInstance {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean performAttempt() {
-        if (Fantazia.RANDOM.nextFloat() < getActualChance()) {
+        if (RandomUtil.nextFloat() < getActualChance()) {
             // success
             fails = 0;
             return true;

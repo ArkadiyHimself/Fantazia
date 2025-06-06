@@ -26,7 +26,7 @@ public class FantazicEntityTypeTagsProvider extends EntityTypeTagsProvider {
         tag(FTZMobEffects.Application.getWhiteList(FTZMobEffects.DEAFENED)).add(EntityType.WARDEN, EntityType.PLAYER);
         tag(FTZMobEffects.Application.getBlackList(FTZMobEffects.ELECTROCUTED)).add(EntityType.CREEPER, EntityType.ZOMBIFIED_PIGLIN, EntityType.WITCH, EntityType.MOOSHROOM);
         tag(FTZMobEffects.Application.getBlackList(FTZMobEffects.HAEMORRHAGE)).add(EntityType.SLIME, EntityType.MAGMA_CUBE, EntityType.WARDEN, EntityType.SNOW_GOLEM, EntityType.IRON_GOLEM, EntityType.VEX, EntityType.ALLAY, EntityType.SHULKER, EntityType.GUARDIAN, EntityType.ELDER_GUARDIAN).addTag(EntityTypeTags.SKELETONS);
-        tag(FTZEntityTypeTags.AERIAL).add(EntityType.BLAZE, EntityType.ENDER_DRAGON, EntityType.GHAST,  EntityType.LLAMA, EntityType.SNOW_GOLEM, EntityType.WITCH, EntityType.WITHER);
-        tag(FTZEntityTypeTags.RANGED_ATTACK).add(EntityType.ALLAY, EntityType.BAT, EntityType.BEE, EntityType.BLAZE, EntityType.ENDER_DRAGON, EntityType.GHAST, EntityType.PARROT, EntityType.PHANTOM, EntityType.VEX, EntityType.WITHER);
+        tag(FTZEntityTypeTags.RANGED_ATTACK).add(EntityType.BLAZE, EntityType.ENDER_DRAGON, EntityType.GHAST,  EntityType.LLAMA, EntityType.SNOW_GOLEM, EntityType.WITHER);
+        tag(FTZEntityTypeTags.AERIAL).add(EntityType.ALLAY, EntityType.BAT, EntityType.BEE, EntityType.BLAZE, EntityType.ENDER_DRAGON, EntityType.GHAST, EntityType.PARROT, EntityType.PHANTOM, EntityType.VEX, EntityType.WITHER);
     }
 }

@@ -59,7 +59,7 @@ public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu>
     @Unique
     private static void fantazia$renderEffectTooltip(GuiGraphics guiGraphics, Holder<MobEffect> effect, int mouseX, int mouseY) {
         Cleanse cleanse = Cleanse.requiredCleanse(effect);
-        Component clns = cleanse.getName();
+        Component clns = cleanse.getDescription();
         List<Component> components = Lists.newArrayList();
         components.addAll(fantazia$buildTooltip(effect));
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.mob_effect.cleanse_required", new ChatFormatting[]{ChatFormatting.GOLD}, null, clns));

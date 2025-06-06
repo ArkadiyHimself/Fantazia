@@ -14,6 +14,7 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEff
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
@@ -50,11 +51,13 @@ public class FantazicGui {
     private static final ResourceLocation AURA_NEGATIVE_COMPONENT = Fantazia.res("container/inventory/aura/negative_component");
     private static final ResourceLocation AURA_MIXED_COMPONENT = Fantazia.res("container/inventory/aura/mixed_component");
     private static final ResourceLocation AURA_OWNED_COMPONENT = Fantazia.res("container/inventory/aura/owned_component");
+    private static final ResourceLocation AURA_UNAFFECTING_COMPONENT = Fantazia.res("container/inventory/aura/unaffecting_component");
 
     private static final ResourceLocation AURA_POSITIVE = Fantazia.res("hud/aura/positive");
     private static final ResourceLocation AURA_NEGATIVE = Fantazia.res("hud/aura/negative");
     private static final ResourceLocation AURA_MIXED = Fantazia.res("hud/aura/mixed");
     private static final ResourceLocation AURA_OWNED = Fantazia.res("hud/aura/owned");
+    private static final ResourceLocation AURA_UNAFFECTING = Fantazia.res("hud/aura/unaffecting");
 
     // curio slots
     private static final ResourceLocation CURIOSLOT = Fantazia.res("hud/curioslots/curioslot");
@@ -188,7 +191,7 @@ public class FantazicGui {
         int x = leftPos - 82;
         int topPos = (screen.height - imgHGT) / 2;
 
-        List<AuraInstance> playerAuras = AuraHelper.getAllAffectingAuras(player);
+        List<AuraInstance> playerAuras = AuraHelper.getAurasForGui(player);
         if (playerAuras.isEmpty()) return;
 
         if (Fantazia.DEVELOPER_MODE) guiGraphics.drawString(font, "Affecting auras: " + playerAuras.size(), 0, 180, 16777215);
@@ -199,11 +202,14 @@ public class FantazicGui {
             boolean owned = instance.getOwner() == player;
 
             int y = topPos + i * 22;
-            ResourceLocation location = owned ? AURA_OWNED_COMPONENT : switch (aura.value().getType()) {
+            ResourceLocation location = switch (aura.value().getType()) {
                 case POSITIVE -> AURA_POSITIVE_COMPONENT;
                 case NEGATIVE -> AURA_NEGATIVE_COMPONENT;
                 case MIXED -> AURA_MIXED_COMPONENT;
             };
+            if (owned) location = AURA_OWNED_COMPONENT;
+            else if (!instance.primaryFilter(player)) location = AURA_UNAFFECTING_COMPONENT;
+
             guiGraphics.blitSprite(location, x, y,80,20);
             ResourceLocation icon = Aura.getIcon(aura);
 
@@ -227,8 +233,21 @@ public class FantazicGui {
             if (!aura.value().buildIconTooltip().isEmpty()) {
                 int mouseX = (int)(Minecraft.getInstance().mouseHandler.xpos() * (double)guiGraphics.guiWidth() / (double)Minecraft.getInstance().getWindow().getScreenWidth());
                 int mouseY = (int)(Minecraft.getInstance().mouseHandler.ypos() * (double)guiGraphics.guiHeight() / (double)Minecraft.getInstance().getWindow().getScreenHeight());
-                if (FantazicMath.within(x,x + 80, mouseX) && FantazicMath.within(y,y + 20, mouseY)) guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, aura.value().buildIconTooltip(), mouseX, mouseY);
+                if (FantazicMath.within(x,x + 80, mouseX) && FantazicMath.within(y,y + 20, mouseY)) {
+                    RenderBuffers.NO_TOOLTIP_GAP = true;
+                    List<Component> components = aura.value().buildIconTooltip();
+                    if (Fantazia.DEVELOPER_MODE) {
+                        components.add(Component.literal(" "));
+                        components.add(Component.literal("Owner: ").append(instance.getOwner().getName()));
+                    }
+                    guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, components, mouseX, mouseY);
+                }
             }
+
+            int ampl = instance.getAmplifier();
+            if (ampl <= 0) continue;
+            Component amplifier = VisualHelper.componentLevel(ampl + 1);
+            guiGraphics.drawString(Minecraft.getInstance().font, amplifier, x + 74, y + 2, 16777215);
         }
     }
 
@@ -236,7 +255,8 @@ public class FantazicGui {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         if (Minecraft.getInstance().screen != null && !(Minecraft.getInstance().screen instanceof ChatScreen)) return;
-        List<AuraInstance> auras = AuraHelper.getAllAffectingAuras(player);
+        List<AuraInstance> auras = AuraHelper.getAurasForGui(player);
+        if (auras.isEmpty()) return;
         for (int i = 0; i < Math.min(auras.size(), 6); i++) {
             AuraInstance auraInstance = auras.get(i);
             Holder<Aura> aura = auraInstance.getAura();
@@ -245,17 +265,24 @@ public class FantazicGui {
 
             int x = 2 + i * 22;
             int y = 2;
-            ResourceLocation location = owned ? AURA_OWNED : switch (aura.value().getType()) {
+            ResourceLocation location = switch (aura.value().getType()) {
                 case POSITIVE -> AURA_POSITIVE;
                 case NEGATIVE -> AURA_NEGATIVE;
                 case MIXED -> AURA_MIXED;
             };
+            if (owned) location = AURA_OWNED;
+            else if (!auraInstance.primaryFilter(player)) location = AURA_UNAFFECTING;
 
             guiGraphics.blitSprite(location, x, y, 20,20);
             ResourceLocation icon = Aura.getIcon(aura);
             if (!aura.value().secondary(player, auraInstance.getOwner())) RenderSystem.setShaderColor(0.65f,0.65f,0.65f,0.65f);
             guiGraphics.blit(icon, x + 2, y + 2, 0,0,16,16,16,16);
+
             RenderSystem.setShaderColor(1f,1f,1f,1f);
+            int ampl = auraInstance.getAmplifier();
+            if (ampl <= 0) continue;
+            Component amplifier = VisualHelper.componentLevel(ampl + 1);
+            guiGraphics.drawString(Minecraft.getInstance().font, amplifier, x + 14, y + 2, 16777215);
         }
     }
 

@@ -54,7 +54,7 @@ public class ObtainTalentTrigger extends SimpleCriterionTrigger<ObtainTalentTrig
 
         private boolean matches(@NotNull TalentsHolder talentsHolder) {
             if (talentPredicate.isEmpty()) return true;
-            List<Talent> talents = Lists.newArrayList(talentsHolder.getTalents());
+            List<Talent> talents = Lists.newArrayList(talentsHolder.getAllObtainedTalents());
             List<TalentPredicate> predicates = new java.util.ArrayList<>(List.copyOf(talentPredicate));
             predicates.removeIf(talentPredicate1 -> talentPredicate1.matches(talents));
             return predicates.isEmpty();

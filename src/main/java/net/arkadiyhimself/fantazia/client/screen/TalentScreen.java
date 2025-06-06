@@ -1,13 +1,20 @@
 package net.arkadiyhimself.fantazia.client.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.api.FTZKeyMappings;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.prompt.Prompts;
+import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentTabManager;
+import net.arkadiyhimself.fantazia.packets.IPacket;
+import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
@@ -29,8 +36,8 @@ public class TalentScreen extends Screen {
 
     private static final ResourceLocation DEFAULT_BACKGROUND = Fantazia.res("textures/gui/talent/background.png");
     private static final ResourceLocation FRAME = Fantazia.res("textures/gui/talent/frame.png");
-    private static final ResourceLocation WISDOM_WIDGET = Fantazia.res("textures/gui/talent/wisdom_widget.png");
-    private static final ResourceLocation WISDOM_ICON = Fantazia.res("textures/gui/talent/wisdom.png");
+    public static final ResourceLocation WISDOM_WIDGET = Fantazia.res("textures/gui/talent/wisdom_widget.png");
+    public static final ResourceLocation WISDOM_ICON = Fantazia.res("textures/gui/talent/wisdom.png");
 
     private static final int minX = 0;
     private static final int minY = 0;
@@ -41,8 +48,10 @@ public class TalentScreen extends Screen {
 
     private final List<TalentTab> TABS = Lists.newArrayList();
     private final TalentsHolder talentsHolder;
-    private double scrollX = 0;
-    private double scrollY = 0;
+    private static double scrollX = 0;
+    private static double scrollY = 0;
+
+    private static int tabIndex = -1;
 
     private int bgX;
     private int bgY;
@@ -55,6 +64,7 @@ public class TalentScreen extends Screen {
     public TalentScreen(TalentsHolder talentsHolder) {
         super(GameNarrator.NO_TITLE);
         this.talentsHolder = talentsHolder;
+        IPacket.usedPrompt(Prompts.OPEN_TALENT_SCREEN);
 
         for (Map.Entry<ResourceLocation, TalentTab> entry : ServerTalentTabManager.getTabs().entrySet()) {
             ResourceLocation tabID = entry.getKey();
@@ -66,6 +76,11 @@ public class TalentScreen extends Screen {
 
     @Override
     protected void init() {
+        try {
+            TalentTab talentTab = TABS.get(tabIndex);
+            if (talentTab != null) this.selectedTab = talentTab;
+            return;
+        } catch (IndexOutOfBoundsException ignored) {}
         if (this.selectedTab == null && !TABS.isEmpty()) this.selectedTab = TABS.getFirst();
     }
 
@@ -104,6 +119,7 @@ public class TalentScreen extends Screen {
                 TalentTab talentTab = TABS.get(i);
                 if (talentTab == selectedTab) continue;
                 if (talentTab.isMouseOver(frX, frY, pMouseX, pMouseY, false, i)) {
+                    tabIndex = i;
                     selectedTab = talentTab;
                     Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), 1f,1f));
                     scrollX = 0;
@@ -111,13 +127,38 @@ public class TalentScreen extends Screen {
                     return super.mouseClicked(pMouseX, pMouseY, pButton);
                 }
             }
-            if (selectedTab != null) {
-                Talent basicTalent = selectedTab.selectedTalent();
-                if (basicTalent != null) talentsHolder.buyTalent(basicTalent);
-            }
+            if (Screen.hasShiftDown()) {
+                tryDisableTalent();
+            } else tryPurchasing();
 
         }
         return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    private void tryDisableTalent() {
+        if (selectedTab == null) return;
+        Talent talent = selectedTab.selectedTalent();
+        if (talent == null) return;
+        talentsHolder.clickedTalent(talent);
+    }
+
+    private void tryPurchasing() {
+        if (selectedTab == null) return;
+        Talent talent = selectedTab.selectedTalent();
+        if (talent == null) return;
+        boolean flag = false;
+        if (talentsHolder.hasTalent(talent)) {
+            Talent child = talent.getChild();
+            while (child != null) {
+                if (talentsHolder.hasTalent(child)) {
+                    child = child.getChild();
+                    continue;
+                }
+                flag = talentsHolder.tryBuyTalent(child);
+                break;
+            }
+        } else flag = talentsHolder.tryBuyTalent(talent);
+        if (!flag) FantazicUtil.playSoundUI(FTZSoundEvents.DENIED.value());
     }
 
     @Override
@@ -165,31 +206,44 @@ public class TalentScreen extends Screen {
     }
 
     private void renderWisdomWidget(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int x0 = frX + frame + 10;
+        int x0 = frX - 100 - 10;
+        int y0 = frY + 10;
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        guiGraphics.blit(WISDOM_WIDGET, x0, frY,0,0,100,30,100,30);
-        guiGraphics.blit(WISDOM_ICON, x0 + 10, frY + 10, 0,0,10,10,10,10);
+        guiGraphics.blit(WISDOM_WIDGET, x0, y0,0,0,100,30,100,30);
+        guiGraphics.blit(WISDOM_ICON, x0 + 10, y0 + 10, 0,0,10,10,10,10);
         RenderSystem.disableBlend();
         int wisdom = talentsHolder.getWisdom();
-        Component component = Component.literal(String.valueOf(wisdom)).withStyle(ChatFormatting.BLUE);
-        if (FantazicMath.within(x0, x0 + 100, mouseX) && FantazicMath.within(frY, frY + 30, mouseY)) {
+        boolean redText = selectedTab != null && selectedTab.redWisdomText();
+        Component component = Component.literal(String.valueOf(wisdom)).withStyle(redText ? ChatFormatting.RED : ChatFormatting.BLUE);
+        guiGraphics.drawString(font, component, x0 + 24, y0 + 11, 0);
+        if (FantazicMath.within(x0, x0 + 100, mouseX) && FantazicMath.within(y0, y0 + 30, mouseY)) {
             int lines = 0;
             String basicPath = "fantazia.gui.talent.wisdom";
             List<Component> components = Lists.newArrayList();
-            components.add(Component.translatable(basicPath).withStyle(ChatFormatting.DARK_BLUE, ChatFormatting.BOLD));
             if (Screen.hasShiftDown()) basicPath += ".desc";
+            else components.add(Component.translatable(basicPath).withStyle(redText ? ChatFormatting.DARK_RED : ChatFormatting.DARK_BLUE, ChatFormatting.BOLD));
             String desc = Component.translatable(basicPath + ".lines").getString();
             try {
                 lines = Integer.parseInt(desc);
             } catch (NumberFormatException ignored) {}
             if (lines > 0) {
-                for (int i = 1; i <= lines; i++) components.add(Component.translatable(basicPath + "." + i).withStyle(ChatFormatting.BLUE));
+                for (int i = 1; i <= lines; i++) components.add(Component.translatable(basicPath + "." + i).withStyle(redText ? ChatFormatting.RED : ChatFormatting.BLUE));
+                if (Screen.hasShiftDown()) RenderBuffers.NO_TOOLTIP_GAP = true;
                 guiGraphics.renderComponentTooltip(font, components, mouseX, mouseY);
             }
         }
+    }
 
-        guiGraphics.drawString(font, component, x0 + 24, frY + 11, 0);
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        InputConstants.Key key = InputConstants.getKey(keyCode, scanCode);
+        if (super.keyPressed(keyCode, scanCode, modifiers)) return true;
+        if (FTZKeyMappings.TALENTS.isActiveAndMatches(key)) {
+            this.onClose();
+            return true;
+        }
+        return false;
     }
 
     private int bgWidth() {

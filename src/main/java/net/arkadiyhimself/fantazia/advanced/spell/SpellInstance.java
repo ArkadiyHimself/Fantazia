@@ -7,6 +7,7 @@ import net.arkadiyhimself.fantazia.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.api.attachment.ISyncEveryTick;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.registries.custom.Spells;
@@ -27,6 +28,7 @@ public class SpellInstance implements INBTSerializable<CompoundTag>, ISyncEveryT
     private final LivingEntity livingEntity;
     private final Holder<AbstractSpell> spell;
     private int recharge = 0;
+    private int amplifier = 0;
     private boolean available;
 
     public SpellInstance(Holder<AbstractSpell> spell, LivingEntity livingEntity) {
@@ -79,8 +81,6 @@ public class SpellInstance implements INBTSerializable<CompoundTag>, ISyncEveryT
         if (available) spell.value().tryToTick(livingEntity,recharge > 0);
     }
 
-    public void clientTick() {}
-
     public Holder<AbstractSpell> getSpell() {
         return spell;
     }
@@ -101,6 +101,14 @@ public class SpellInstance implements INBTSerializable<CompoundTag>, ISyncEveryT
         return available;
     }
 
+    public void setAmplifier(int value) {
+        this.amplifier = value;
+    }
+
+    public int getAmplifier() {
+        return amplifier;
+    }
+
     public void useResources(SpellCastResult result) {
         if (ActionsHelper.infiniteResources(livingEntity)) return;
         if (result.wasteMana() && livingEntity instanceof Player player) PlayerAbilityHelper.wasteMana(player, spell.value().getManacost());
@@ -116,9 +124,15 @@ public class SpellInstance implements INBTSerializable<CompoundTag>, ISyncEveryT
 
         SpellCastResult result = SpellCastResult.free();
 
-        if (getSpell().value() instanceof SelfSpell selfSpell) result = SpellHelper.trySelfSpell(livingEntity, selfSpell, false);
-        else if (getSpell().value() instanceof TargetedSpell<?> targetedSpell) result = SpellHelper.tryTargetedSpell(livingEntity, targetedSpell);
-        else if (getSpell().value() instanceof PassiveSpell passiveSpell) result = SpellHelper.tryPassiveSpell(livingEntity, passiveSpell);
+        if (getSpell().value() instanceof SelfSpell selfSpell) result = SpellHelper.trySelfSpell(livingEntity, selfSpell, amplifier, false);
+        else if (getSpell().value() instanceof TargetedSpell<?> targetedSpell) result = SpellHelper.tryTargetedSpell(livingEntity, amplifier, targetedSpell);
+        else if (getSpell().value() instanceof PassiveSpell passiveSpell) result = SpellHelper.tryPassiveSpell(livingEntity, amplifier, passiveSpell);
+
+        if (livingEntity instanceof ServerPlayer serverPlayer) {
+            Prompts.USE_SPELLCAST1.noLongerNeeded(serverPlayer);
+            Prompts.USE_SPELLCAST2.noLongerNeeded(serverPlayer);
+            Prompts.USE_SPELLCAST3.noLongerNeeded(serverPlayer);
+        }
 
         useResources(result);
 

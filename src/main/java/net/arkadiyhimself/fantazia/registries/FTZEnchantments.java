@@ -31,13 +31,39 @@ public interface FTZEnchantments {
     ResourceKey<Enchantment> PHASING = key("phasing");
     ResourceKey<Enchantment> RICOCHET = key("ricochet");
     ResourceKey<Enchantment> HEADSHOT = key("headshot");
+    // amplification exclusive
+    ResourceKey<Enchantment> AMPLIFICATION = key("amplification");
+    ResourceKey<Enchantment> ANCIENT_FLAME = key("ancient_flame");
 
     static void bootStrap(BootstrapContext<Enchantment> context) {
         HolderGetter<Enchantment> enchantmentHolderGetter = context.lookup(Registries.ENCHANTMENT);
         HolderGetter<Item> itemHolderGetter = context.lookup(Registries.ITEM);
 
+        register(context, ANCIENT_FLAME, Enchantment.enchantment(
+                Enchantment.definition(
+                        itemHolderGetter.getOrThrow(ItemTags.FIRE_ASPECT_ENCHANTABLE),
+                        4,
+                        1,
+                        Enchantment.constantCost(20),
+                        Enchantment.constantCost(50),
+                        8
+                )
+        ).exclusiveWith(HolderSet.direct(enchantmentHolderGetter.getOrThrow(Enchantments.FIRE_ASPECT))));
+
+        register(context, AMPLIFICATION, Enchantment.enchantment(
+                Enchantment.definition(
+                        itemHolderGetter.getOrThrow(FTZItemTags.CASTER_ENCHANTABLE),
+                        3,
+                        3,
+                        Enchantment.constantCost(18),
+                        Enchantment.constantCost(54),
+                        4
+                )
+        ));
+
         register(context, BALLISTA, Enchantment.enchantment(
                 Enchantment.definition(
+                        itemHolderGetter.getOrThrow(ItemTags.CROSSBOW_ENCHANTABLE),
                         itemHolderGetter.getOrThrow(ItemTags.CROSSBOW_ENCHANTABLE),
                         2,
                         5,

@@ -84,7 +84,7 @@ public class GuiHelper {
     }
 
     public static Component attributeModifierComponent(@NotNull Holder<Attribute> attribute, @NotNull DynamicAttributeModifier modifier) {
-        return attributeModifierComponent(attribute, modifier.maximumModifier());
+        return attributeModifierComponent(attribute, modifier.fullModifier());
     }
 
 }

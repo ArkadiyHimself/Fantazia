@@ -51,8 +51,6 @@ public class FantazicConfig {
                 .define("euphoriaIconYoff", 0);
         builder.pop();
 
-
-
         SPEC = builder.build();
     }
 

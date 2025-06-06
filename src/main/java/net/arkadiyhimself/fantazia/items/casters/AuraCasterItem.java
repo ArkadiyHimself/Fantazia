@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.items.casters;
 
 import net.arkadiyhimself.fantazia.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.minecraft.client.gui.screens.Screen;
@@ -35,34 +36,6 @@ public class AuraCasterItem extends Item {
     public AuraCasterItem(Holder<Aura> basicAura) {
         super(new Properties().stacksTo(1).fireResistant().rarity(Rarity.RARE));
         this.basicAura = basicAura;
-    }
-
-    @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level pLevel, @NotNull Player pPlayer, @NotNull InteractionHand pUsedHand) {
-        if (this == FTZItems.LEADERS_HORN.get() && !pPlayer.getCooldowns().isOnCooldown(this)) {
-            pPlayer.startUsingItem(pUsedHand);
-            pPlayer.getCooldowns().addCooldown(this, 400);
-            pPlayer.awardStat(Stats.ITEM_USED.get(this));
-            pPlayer.level().playSound(null, pPlayer.blockPosition(), FTZSoundEvents.LEADERS_HORN.get(), SoundSource.NEUTRAL);
-
-            AABB aabb = pPlayer.getBoundingBox().inflate(128);
-            if (pLevel instanceof ServerLevel serverLevel) {
-                List<TamableAnimal> tamableAnimals = serverLevel.getEntitiesOfClass(TamableAnimal.class, aabb);
-                tamableAnimals.removeIf(tamableAnimal -> tamableAnimal.getOwner() != pPlayer || !tamableAnimal.isInSittingPose());
-                tamableAnimals.forEach(tamableAnimal -> tamableAnimal.interact(pPlayer, InteractionHand.MAIN_HAND));
-            }
-            return InteractionResultHolder.success(pPlayer.getItemInHand(pUsedHand));
-        } else return super.use(pLevel, pPlayer,pUsedHand);
-    }
-
-    @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack pStack) {
-        return this == FTZItems.LEADERS_HORN.get() ? UseAnim.TOOT_HORN : super.getUseAnimation(pStack);
-    }
-
-    @Override
-    public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
-        return this == FTZItems.LEADERS_HORN.get() ? 140 : 0;
     }
 
     public Holder<Aura> getAura() {

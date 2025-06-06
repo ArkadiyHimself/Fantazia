@@ -92,12 +92,28 @@ public record Talent(ResourceLocation id, ResourceLocation icon, String title, i
         }
     }
 
+    public boolean canBeDisabled() {
+        return !impacts.isEmpty();
+    }
+
     public void removeImpacts(@NotNull Player player) {
         for (TalentImpact impact : impacts) impact.remove(player);
     }
 
+    public void enableTalent(@NotNull Player player) {
+        for (TalentImpact impact : impacts) impact.enable(player);
+    }
+
+    public void disableTalent(@NotNull Player player) {
+        for (TalentImpact impact : impacts) impact.disable(player);
+    }
+
     public Talent getParent() {
         return getHierarchy().getParent(this);
+    }
+
+    public Talent getChild() {
+        return getHierarchy().getChild(this);
     }
 
     public boolean purchasable() {
@@ -227,6 +243,12 @@ public record Talent(ResourceLocation id, ResourceLocation icon, String title, i
 
         public Builder addDamageImmunities(DamageTypePredicate... predicates) {
             this.damageImmunities.addAll(Arrays.stream(predicates).toList());
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder addDamageImmunities(ResourceKey<DamageType>... resourceKeys) {
+            this.damageImmunities.add(DamageTypePredicate.builder().addDamageTypes(resourceKeys).build());
             return this;
         }
 

@@ -1,0 +1,17 @@
+{
+  "loot_instances": [
+    {
+      "added": {
+        "components": {
+          "fantazia:rune": "fantazia:meticulous"
+        },
+        "count": 1,
+        "id": "fantazia:rune_wielder"
+      },
+      "chance": 0.1
+    }
+  ],
+  "loot_tables": [
+    "minecraft:entities/piglin"
+  ]
+}

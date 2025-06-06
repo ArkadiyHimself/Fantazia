@@ -7,6 +7,7 @@
         "operation": "add_value"
       }
     },
+    "background": "fantazia:textures/gui/talent_icons/rhomb_blue.png",
     "icon": "fantazia:textures/talent/stat_modifiers/mana_boost.png",
     "title": "talent.fantazia.stat_modifiers.mana_boost"
   },

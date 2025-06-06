@@ -25,9 +25,7 @@ import java.util.Optional;
 
 public class ServerTalentHierarchyManager extends SimpleJsonResourceReloadListener {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
-            .setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().create();
 
     // id of a tab || list of ids of talent hierarchies in the tab
     private static final Map<ResourceLocation, List<ResourceLocation>> TABS = Maps.newHashMap();

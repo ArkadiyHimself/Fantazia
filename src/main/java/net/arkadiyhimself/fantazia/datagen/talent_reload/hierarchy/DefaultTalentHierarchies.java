@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.datagen.talent_reload.hierarchy;
 
 import net.arkadiyhimself.fantazia.data.talent.*;
 import net.arkadiyhimself.fantazia.datagen.SubProvider;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.talent.DefaultTalents;
 import net.arkadiyhimself.fantazia.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
@@ -57,7 +58,7 @@ public class DefaultTalentHierarchies implements SubProvider<TalentHierarchyHold
                         .build()).save(consumer, TalentHierarchies.MANA_RECYCLE);
 
         TalentHierarchyBuilder.builder(TalentTabs.SPELLCASTING)
-                .setHierarchy(ChaoticHierarchy.of(Talents.ACTIVECASTER_SLOTS, Talents.PASSIVECASTER_SLOTS))
+                .setHierarchy(ChaoticHierarchy.of(Talents.ACTIVECASTER_SLOTS, Talents.PASSIVECASTER_SLOTS, Talents.RUNE_SLOTS))
                 .save(consumer, TalentHierarchies.SPELLCASTING1);
 
         TalentHierarchyBuilder.builder(TalentTabs.SPELLCASTING)
@@ -72,13 +73,13 @@ public class DefaultTalentHierarchies implements SubProvider<TalentHierarchyHold
 
         TalentHierarchyBuilder.builder(TalentTabs.STAT_MODIFIERS)
                 .makeSimpleChain(5, simpleChainElement(TalentHierarchies.HEALTH_BOOST, true)
-                        .addAttributeModifier(Attributes.MAX_HEALTH, 4, AttributeModifier.Operation.ADD_VALUE))
-                .save(consumer, TalentHierarchies.HEALTH_BOOST);
+                        .addAttributeModifier(Attributes.MAX_HEALTH, 4, AttributeModifier.Operation.ADD_VALUE)
+                        .background(DefaultTalents.RHOMB_PINK)).save(consumer, TalentHierarchies.HEALTH_BOOST);
 
         TalentHierarchyBuilder.builder(TalentTabs.STAT_MODIFIERS)
                 .makeSimpleChain(5, simpleChainElement(TalentHierarchies.MANA_BOOST, true)
-                        .addAttributeModifier(FTZAttributes.MAX_MANA, 4, AttributeModifier.Operation.ADD_VALUE))
-                .save(consumer, TalentHierarchies.MANA_BOOST);
+                        .addAttributeModifier(FTZAttributes.MAX_MANA, 4, AttributeModifier.Operation.ADD_VALUE)
+                        .background(DefaultTalents.RHOMB_BLUE)).save(consumer, TalentHierarchies.MANA_BOOST);
     }
 
     private static Talent.Builder simpleChainElement(ResourceLocation location, boolean advancement) {

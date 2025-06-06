@@ -59,7 +59,7 @@ public class ChainHierarchy<T> extends MonoHierarchy<T> {
     public @Nullable T getChild(T element) {
         if (!contains(element)) throw new HierarchyException("The hierarchy does not contain this element: " + element);
         int i = ELEMENTS.indexOf(element);
-        return i >= getSize() ? null : ELEMENTS.get(i + 1);
+        return i >= getSize() - 1 ? null : ELEMENTS.get(i + 1);
     }
 
     @Override

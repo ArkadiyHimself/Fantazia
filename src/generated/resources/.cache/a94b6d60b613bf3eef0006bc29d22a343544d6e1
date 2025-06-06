@@ -1,4 +1,5 @@
-// 1.21.1	2025-05-17T23:54:00.610916	Tags for minecraft:enchantment mod id fantazia
+// 1.21.1	2025-06-02T22:04:54.886961	Tags for minecraft:enchantment mod id fantazia
 e95ce1ba731aa3c381e4d2c01cdb5949e76262ab data/fantazia/tags/enchantment/exclusive_set/crossbow_damage.json
 5f47f984ef2ce7e4f728042b25268dafbc66d90e data/fantazia/tags/enchantment/exclusive_set/hatchet_behaviour.json
 a7ee639a543520f3e6c53bd967aee4caf5a4861f data/minecraft/tags/enchantment/exclusive_set/damage.json
+8d091b4b4d3e410a7ffca5ed00da6ebd51c0e8c0 data/minecraft/tags/enchantment/non_treasure.json

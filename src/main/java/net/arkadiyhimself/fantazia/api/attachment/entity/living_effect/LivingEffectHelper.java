@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.living_effect;
 import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.MobEffectDurationSyncHolder;
+import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.PuppeteeredEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.SimpleMobEffectSyncHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
@@ -19,6 +20,7 @@ import net.arkadiyhimself.fantazia.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -56,7 +58,7 @@ public class LivingEffectHelper {
         acceptConsumer(entity, SimpleMobEffectSyncHolder.class, holder -> holder.setEffect(mobEffect, present));
     }
 
-    public static void simpleEffectAdded(LivingEntity livingEntity, MobEffectInstance instance) {
+    public static void simpleEffectAdded(LivingEntity livingEntity, MobEffectInstance instance, @Nullable Entity source) {
         MobEffect mobEffect = instance.getEffect().value();
         int ampl = instance.getAmplifier();
         int duration = instance.getDuration();
@@ -67,18 +69,19 @@ public class LivingEffectHelper {
             DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(livingEntity.level());
             if (sources != null) livingEntity.hurt(sources.bleeding(), livingEntity.getHealth() * 0.1f);
             livingEntity.setData(FTZAttachmentTypes.HAEMORRHAGE_TO_HEAL,4f + 2 * instance.getAmplifier());
-        }
-
-        if (mobEffect == FTZMobEffects.LAYERED_BARRIER.value()) {
+        } else if (mobEffect == FTZMobEffects.LAYERED_BARRIER.value()) {
             int layers = livingEntity.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS);
             livingEntity.setData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS, Math.max(layers, ampl + 1));
             if (!livingEntity.level().isClientSide()) IPacket.layeredBarrierChanged(livingEntity, Math.max(layers, ampl + 1));
-        }
-
-        if (mobEffect == FTZMobEffects.BARRIER.value()) {
+        } else if (mobEffect == FTZMobEffects.BARRIER.value()) {
             float health = livingEntity.getData(FTZAttachmentTypes.BARRIER_HEALTH);
             livingEntity.setData(FTZAttachmentTypes.BARRIER_HEALTH, Math.max(health, ampl + 1f));
             IPacket.barrierChanged(livingEntity, Math.max(health, ampl + 1));
+        } else if (mobEffect == FTZMobEffects.PUPPETEERED.value() && source instanceof LivingEntity livingSource) {
+            LivingEffectHelper.acceptConsumer(livingEntity, PuppeteeredEffectHolder.class, holder -> holder.enslave(livingSource));
+            LivingEffectHelper.acceptConsumer(livingSource, PuppeteeredEffectHolder.class, holder -> holder.givePuppet(livingEntity));
+        } else if (mobEffect == FTZMobEffects.DEAFENED.value()) {
+            if (livingEntity instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.RINGING.get());
         }
     }
 
@@ -179,17 +182,7 @@ public class LivingEffectHelper {
         }
     }
 
-    public static void simpleEffectOnHit(LivingDamageEvent.Post event) {
-        LivingEntity livingEntity = event.getEntity();
-        DamageSource source = event.getSource();
-        float amount = event.getNewDamage();
-
-        if (source.is(DamageTypes.SONIC_BOOM) || event.getSource().is(DamageTypeTags.IS_EXPLOSION) && amount > 0) {
-            LivingEffectHelper.makeDeaf(livingEntity, 200);
-            LivingEffectHelper.microStun(livingEntity);
-            if (livingEntity instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.RINGING.get());
-        }
-    }
+    public static void simpleEffectOnHit(LivingDamageEvent.Post event) {}
 
     public static boolean hasEffectSimple(LivingEntity livingEntity, MobEffect mobEffect) {
         SimpleMobEffectSyncHolder holder = takeHolder(livingEntity, SimpleMobEffectSyncHolder.class);
@@ -232,85 +225,14 @@ public class LivingEffectHelper {
         acceptConsumer(livingEntity, StunEffectHolder.class, stunEffectHolder -> stunEffectHolder.healPoints(amount, ignoreDelay));
     }
 
-    public static boolean isDisguised(LivingEntity livingEntity) {
-        return livingEntity.hasEffect(FTZMobEffects.DISGUISED);
-    }
-
     public static boolean hurtRedColor(LivingEntity livingEntity) {
         if (hasBarrier(livingEntity)) return false;
         if (livingEntity.getLastDamageSource() != null && livingEntity.getLastDamageSource().is(FTZDamageTypeTags.NOT_TURNING_RED)) return false;
         return true;
     }
 
-    public static void infiniteEffectWithoutParticles(LivingEntity entity, Holder<MobEffect> effect, int level) {
-        effectWithoutParticles(entity, effect, -1, level);
-    }
-
-    public static void effectWithoutParticles(LivingEntity entity, Holder<MobEffect> effect, int duration, int level) {
-        entity.addEffect(new MobEffectInstance(effect, duration, level, true, false, true));
-    }
-
-    public static void effectWithoutParticles(LivingEntity entity, Holder<MobEffect> effect, int duration) {
-        effectWithoutParticles(entity, effect, duration, 0);
-    }
-
-    public static void puppeteer(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.PUPPETEERED, duration);
-    }
-
-    public static void makeFurious(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.FURY , duration);
-    }
-
-    public static void makeStunned(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.STUN , duration);
-    }
-
-    public static void makeDeaf(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.DEAFENED , duration);
-    }
-
-    public static void makeDoomed(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.DOOMED , duration);
-    }
-
-    public static void makeDisarmed(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.DISARM , duration);
-    }
-
-    public static void makeFrozen(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.FROZEN , duration);
-    }
-
-    public static void giveBarrier(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.ABSOLUTE_BARRIER , duration);
-    }
-
-    public static void giveReflect(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.REFLECT , duration);
-    }
-
-    public static void giveDeflect(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.DEFLECT , duration);
-    }
-
-    public static void giveHaemorrhage(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.HAEMORRHAGE, duration);
-    }
-
-    public static void makeDisguised(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.DISGUISED, duration);
-    }
-
-    public static void microStun(LivingEntity entity) {
-        effectWithoutParticles(entity, FTZMobEffects.MICROSTUN, 1);
-    }
-
-    public static void unDisguise(LivingEntity entity) {
-        EffectCleansing.forceCleanse(entity, FTZMobEffects.DISGUISED);
-    }
-
-    public static void giveAceInTheHole(LivingEntity entity, int duration) {
-        effectWithoutParticles(entity, FTZMobEffects.ACE_IN_THE_HOLE, duration);
+    public static boolean hasStunPoints(LivingEntity livingEntity) {
+        StunEffectHolder holder = takeHolder(livingEntity, StunEffectHolder.class);
+        return holder != null && holder.getPoints() > 0;
     }
 }

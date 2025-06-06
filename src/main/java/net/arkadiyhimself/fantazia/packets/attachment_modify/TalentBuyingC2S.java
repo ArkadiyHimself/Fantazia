@@ -14,7 +14,9 @@ public record TalentBuyingC2S(ResourceLocation location) implements IPacket {
 
     public static final CustomPacketPayload.Type<TalentBuyingC2S> TYPE = new Type<>(Fantazia.res("data_attachment_modify.talent_buying"));
 
-    public static final StreamCodec<ByteBuf, TalentBuyingC2S> CODEC = StreamCodec.composite(ResourceLocation.STREAM_CODEC, TalentBuyingC2S::location, TalentBuyingC2S::new);
+    public static final StreamCodec<ByteBuf, TalentBuyingC2S> CODEC = StreamCodec.composite(
+            ResourceLocation.STREAM_CODEC, TalentBuyingC2S::location,
+            TalentBuyingC2S::new);
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {

@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.api.custom_registry;
 
+import com.mojang.serialization.Lifecycle;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.advanced.healing.HealingType;
@@ -11,7 +12,13 @@ import net.arkadiyhimself.fantazia.data.spawn_effect.EffectSpawnApplier;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentHierarchyBuilder;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardsCombined;
+import net.arkadiyhimself.fantazia.registries.custom.Auras;
+import net.arkadiyhimself.fantazia.registries.custom.Runes;
+import net.arkadiyhimself.fantazia.registries.custom.Spells;
+import net.minecraft.core.DefaultedMappedRegistry;
+import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -35,9 +42,17 @@ public class FantazicRegistries {
         return new Runes(modid);
     }
 
-    public static final Registry<AbstractSpell> SPELLS = new RegistryBuilder<>(Keys.SPELL).sync(true).create();
-    public static final Registry<Aura> AURAS = new RegistryBuilder<>(Keys.AURA).sync(true).create();
-    public static final Registry<Rune> RUNES = new RegistryBuilder<>(Keys.RUNE).sync(true).create();
+    public static final DefaultedRegistry<AbstractSpell> SPELLS =
+            (DefaultedRegistry<AbstractSpell>) new RegistryBuilder<>(Keys.SPELL).sync(true)
+                    .defaultKey(Fantazia.res("all_in")).create();
+
+    public static final DefaultedRegistry<Aura> AURAS =
+            (DefaultedRegistry<Aura>) new RegistryBuilder<>(Keys.AURA).sync(true)
+                    .defaultKey(Fantazia.res("debug")).create();
+
+    public static final DefaultedRegistry<Rune> RUNES =
+            (DefaultedRegistry<Rune>) new RegistryBuilder<>(Keys.RUNE).sync(true)
+                    .defaultKey(Fantazia.res("empty")).create();
 
     public static final class Keys {
 
@@ -51,6 +66,7 @@ public class FantazicRegistries {
         public static final ResourceKey<Registry<TalentHierarchyBuilder>> TALENT_HIERARCHY = Fantazia.resKey("talent_reload/talent_hierarchy");
         public static final ResourceKey<Registry<TalentTab.Builder>> TALENT_TAB = Fantazia.resKey("talent_reload/talent_tab");
         public static final ResourceKey<Registry<WisdomRewardsCombined.Builder>> WISDOM_REWARD_CATEGORY = Fantazia.resKey("talent_reload/wisdom_reward");
+        public static final ResourceKey<Registry<EffectSpawnApplier.Builder>> EFFECT_FROM_DAMAGE = Fantazia.resKey("effect_from_damage");
     }
 
     public static class Spells extends DeferredRegister<AbstractSpell> {

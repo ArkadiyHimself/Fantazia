@@ -20,9 +20,7 @@ import java.util.Map;
 
 public class ServerTalentTabManager extends SimpleJsonResourceReloadListener {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
-            .setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().create();
 
     private static final Map<ResourceLocation, TalentTab> TABS = Maps.newHashMap();
 

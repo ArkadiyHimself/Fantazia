@@ -37,8 +37,17 @@ public final class RuneWielderItem extends Item implements ITooltipBuilder, ICur
 
     public static ItemStack rune(Holder<Rune> rune) {
         ItemStack stack = new ItemStack(FTZItems.RUNE_WIELDER.asItem());
-        stack.update(FTZDataComponentTypes.RUNE, Runes.EMPTY, runeHolder -> rune);
+        stack.set(FTZDataComponentTypes.RUNE, rune);
         return stack;
+    }
+
+    public static ItemStack emptyRune() {
+        return rune(Runes.EMPTY);
+    }
+
+    public static boolean isEmptyRune(ItemStack stack) {
+        Holder<Rune> runeHolder = stack.get(FTZDataComponentTypes.RUNE);
+        return runeHolder != null && runeHolder.value().isEmpty();
     }
 
     @Override

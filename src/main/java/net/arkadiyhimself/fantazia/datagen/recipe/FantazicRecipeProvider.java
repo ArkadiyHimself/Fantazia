@@ -3,10 +3,18 @@ package net.arkadiyhimself.fantazia.datagen.recipe;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.data.recipes.AmplificationRecipeBuilder;
+import net.arkadiyhimself.fantazia.data.recipes.EnchantmentReplaceRecipeBuilder;
+import net.arkadiyhimself.fantazia.data.recipes.RuneCarvingRecipeBuilder;
+import net.arkadiyhimself.fantazia.items.RuneWielderItem;
 import net.arkadiyhimself.fantazia.items.TheWorldlinessItem;
 import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
+import net.arkadiyhimself.fantazia.recipe.RuneCarvingInput;
+import net.arkadiyhimself.fantazia.recipe.RuneCarvingRecipe;
 import net.arkadiyhimself.fantazia.registries.FTZBlocks;
+import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.registries.FTZItems;
+import net.arkadiyhimself.fantazia.registries.custom.Runes;
 import net.arkadiyhimself.fantazia.tags.FTZBlockTags;
 import net.arkadiyhimself.fantazia.tags.FTZItemTags;
 import net.minecraft.core.HolderLookup;
@@ -14,9 +22,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -25,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
 
 public class FantazicRecipeProvider extends RecipeProvider {
@@ -61,8 +73,11 @@ public class FantazicRecipeProvider extends RecipeProvider {
             .recipeUnlockedBy("has_planks")
             .getFamily();
 
+    private final CompletableFuture<HolderLookup.Provider> registries;
+
     public FantazicRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
+        this.registries = registries;
     }
 
     @Override
@@ -103,7 +118,6 @@ public class FantazicRecipeProvider extends RecipeProvider {
         hatchetRecipe(FTZItems.GOLDEN_HATCHET, recipeOutput);
         hatchetRecipe(FTZItems.DIAMOND_HATCHET, recipeOutput);
         netheriteSmithingNoAdvancement(recipeOutput, FTZItems.DIAMOND_HATCHET.asItem(), FTZItems.NETHERITE_HATCHET.asItem());
-
         ShapedRecipeNoAdvancement.shaped(RecipeCategory.COMBAT, FTZItems.FRAGILE_BLADE)
                 .pattern("X#X")
                 .pattern("X#X")
@@ -112,6 +126,31 @@ public class FantazicRecipeProvider extends RecipeProvider {
                 .define('X', FTZItems.OBSCURE_SUBSTANCE)
                 .define('H', Items.NETHERITE_INGOT)
                 .define('B', FTZItems.FANTAZIUM_INGOT)
+                .save(recipeOutput);
+
+        // stuff
+        runeCarving(recipeOutput, registries);
+        try {
+            amplification(recipeOutput, registries);
+            enchantmentReplace(recipeOutput, registries);
+        } catch (ExecutionException | InterruptedException ignored) {}
+        ShapedRecipeNoAdvancement.shaped(RecipeCategory.MISC, RuneWielderItem.rune(Runes.EMPTY))
+                .pattern("O#O")
+                .define('O', FTZItems.OBSCURE_SUBSTANCE)
+                .define('#', Items.STONE)
+                .save(recipeOutput);
+        ShapedRecipeNoAdvancement.shaped(RecipeCategory.DECORATIONS, FTZBlocks.AMPLIFICATION_BENCH)
+                .pattern("OTO")
+                .pattern("O#O")
+                .define('O', Items.OBSIDIAN)
+                .define('T', FTZItems.FANTAZIUM_INGOT)
+                .define('#', FTZBlocks.OBSCURE_PLANKS)
+                .save(recipeOutput);
+        ShapedRecipeNoAdvancement.shaped(RecipeCategory.MISC, FTZItems.AMPLIFIER)
+                .pattern("YH")
+                .pattern("HY")
+                .define('Y', FTZItems.OBSCURE_SUBSTANCE)
+                .define('H', Items.COPPER_INGOT)
                 .save(recipeOutput);
 
         // artifacts
@@ -276,7 +315,6 @@ public class FantazicRecipeProvider extends RecipeProvider {
                 .define('H', Items.GLASS_BOTTLE)
                 .save(recipeOutput);
 
-
     }
 
     protected static void oreSmelting(@NotNull RecipeOutput recipeOutput, List<ItemLike> pIngredients, @NotNull RecipeCategory pCategory,
@@ -332,20 +370,98 @@ public class FantazicRecipeProvider extends RecipeProvider {
     }
 
     protected static void generateRecipes(@NotNull RecipeOutput recipeOutput, BlockFamily blockFamily) {
-        blockFamily.getVariants().forEach((p_313457_, p_313458_) -> {
-            BiFunction<ItemLike, ItemLike, RecipeBuilder> bifunction = SHAPE_BUILDERS.get(p_313457_);
-            ItemLike itemlike = getBaseBlock(blockFamily, p_313457_);
+        blockFamily.getVariants().forEach((variant, block) -> {
+            BiFunction<ItemLike, ItemLike, RecipeBuilder> bifunction = SHAPE_BUILDERS.get(variant);
+            ItemLike itemlike = getBaseBlock(blockFamily, variant);
             if (bifunction != null) {
-                RecipeBuilder recipebuilder = bifunction.apply(p_313458_, itemlike);
-                blockFamily.getRecipeGroupPrefix().ifPresent((p_293701_) -> recipebuilder.group(p_293701_ + (p_313457_ == BlockFamily.Variant.CUT ? "" : "_" + p_313457_.getRecipeGroup())));
+                RecipeBuilder recipebuilder = bifunction.apply(block, itemlike);
+                blockFamily.getRecipeGroupPrefix().ifPresent(string -> recipebuilder.group(string + (variant == BlockFamily.Variant.CUT ? "" : "_" + variant.getRecipeGroup())));
                 recipebuilder.unlockedBy(blockFamily.getRecipeUnlockedBy().orElseGet(() -> getHasName(itemlike)), has(itemlike));
                 recipebuilder.save(recipeOutput);
             }
 
-            if (p_313457_ == BlockFamily.Variant.CRACKED) {
-                smeltingResultFromBase(recipeOutput, p_313458_, itemlike);
+            if (variant == BlockFamily.Variant.CRACKED) {
+                smeltingResultFromBase(recipeOutput, block, itemlike);
             }
         });
+    }
+
+    private static void runeCarving(RecipeOutput output, CompletableFuture<HolderLookup.Provider> registries){
+        RuneCarvingRecipeBuilder.carving(Runes.NOISELESS, 7, 10)
+                .requires(Items.SCULK_SHRIEKER)
+                .save(output);
+
+        RuneCarvingRecipeBuilder.carving(Runes.PROSPERITY, 9, 12)
+                .requires(Items.DIAMOND, 3)
+                .requires(Items.GOLD_INGOT, 3)
+                .save(output);
+
+        RuneCarvingRecipeBuilder.carving(Runes.PIERCER, 11, 13)
+                .requires(Items.CROSSBOW)
+                .save(output);
+
+        RuneCarvingRecipeBuilder.carving(Runes.PURE_VESSEL, 3, 6)
+                .requires(Items.WIND_CHARGE)
+                .save(output);
+
+        RuneCarvingRecipeBuilder.carving(Runes.EXTENSION, 7, 10)
+                .requires(Items.REDSTONE, 6)
+                .save(output);
+
+        RuneCarvingRecipeBuilder.carving(Runes.AEROBAT, 4, 8)
+                .requires(Items.FEATHER, 2)
+                .requires(Items.PHANTOM_MEMBRANE, 2)
+                .save(output);
+
+        RuneCarvingRecipeBuilder.carving(Runes.OMNIDIRECTIONAL, 6, 10)
+                .requires(Items.GHAST_TEAR, 2)
+                .requires(Items.FEATHER, 2)
+                .save(output);
+
+        RuneCarvingRecipeBuilder.carving(Runes.METICULOUS, 10, 13)
+                .requires(FTZItems.AMPLIFIER)
+                .requires(Items.IRON_SWORD)
+                .save(output);
+    }
+
+    private static void amplification(RecipeOutput output, CompletableFuture<HolderLookup.Provider> registries) throws ExecutionException, InterruptedException {
+        HolderLookup.Provider provider = registries.get();
+
+        AmplificationRecipeBuilder.amplification(provider.holderOrThrow(FTZEnchantments.AMPLIFICATION), 10, 7)
+                .requires(FTZItems.AMPLIFIER)
+                .save(output);
+
+        AmplificationRecipeBuilder.amplification(provider.holderOrThrow(Enchantments.LOOTING), 12, 10, 5)
+                .requires(FTZItems.AMPLIFIER)
+                .requires(Items.ROTTEN_FLESH)
+                .requires(Items.BONE)
+                .requires(Items.GUNPOWDER)
+                .requires(Items.SPIDER_EYE)
+                .requires(Items.ENDER_PEARL)
+                .requires(Items.GHAST_TEAR)
+                .requires(Items.BLAZE_ROD)
+                .requires(Items.PHANTOM_MEMBRANE)
+                .save(output, true);
+
+        AmplificationRecipeBuilder.amplification(provider.holderOrThrow(Enchantments.FORTUNE), 12, 10, 5)
+                .requires(FTZItems.AMPLIFIER)
+                .requires(new ItemStack(Items.RAW_IRON), new ItemStack(Items.IRON_INGOT))
+                .requires(new ItemStack(Items.RAW_GOLD), new ItemStack(Items.GOLD_INGOT))
+                .requires(new ItemStack(Items.RAW_COPPER), new ItemStack(Items.COPPER_INGOT))
+                .requires(Items.DIAMOND)
+                .requires(Items.REDSTONE)
+                .requires(Items.LAPIS_LAZULI)
+                .requires(Items.QUARTZ)
+                .requires(Items.COAL)
+                .save(output, true);
+    }
+
+    private static void enchantmentReplace(RecipeOutput output, CompletableFuture<HolderLookup.Provider> registries) throws ExecutionException, InterruptedException {
+        HolderLookup.Provider provider = registries.get();
+
+        EnchantmentReplaceRecipeBuilder.enchantmentReplace(provider.holderOrThrow(Enchantments.FIRE_ASPECT), provider.holderOrThrow(FTZEnchantments.ANCIENT_FLAME), 10, 12)
+                .requires(FTZItems.ANCIENT_SPARK, 3)
+                .save(output);
     }
 
     static {

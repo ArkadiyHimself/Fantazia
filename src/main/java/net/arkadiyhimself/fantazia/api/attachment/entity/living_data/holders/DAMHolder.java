@@ -7,7 +7,9 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataH
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.EuphoriaHolder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -23,8 +25,8 @@ public class DAMHolder extends LivingDataHolder {
     public DAMHolder(LivingEntity livingEntity) {
         super(livingEntity, Fantazia.res("dynamic_attribute_modifiers"));
 
-        addDAM(new DynamicAttributeModifier(Attributes.ATTACK_SPEED, Fantazia.res("euphoria_attack_speed"),0.7f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, EuphoriaHolder.MODIFIER));
-        addDAM(new DynamicAttributeModifier(Attributes.MOVEMENT_SPEED, Fantazia.res("euphoria_movement_speed"),0.35f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, EuphoriaHolder.MODIFIER));
+        addOrReplaceDAM(new DynamicAttributeModifier(Attributes.ATTACK_SPEED, Fantazia.res("euphoria_attack_speed"),0.7f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, EuphoriaHolder.MODIFIER));
+        addOrReplaceDAM(new DynamicAttributeModifier(Attributes.MOVEMENT_SPEED, Fantazia.res("euphoria_movement_speed"),0.35f, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, EuphoriaHolder.MODIFIER));
     }
 
     @Override
@@ -39,11 +41,12 @@ public class DAMHolder extends LivingDataHolder {
 
     @Override
     public void serverTick() {
-        modifierMap.values().forEach(dynamicAttributeModifier -> dynamicAttributeModifier.tick(getEntity()));
+        modifierMap.values().forEach(dynamicAttributeModifier -> dynamicAttributeModifier.tickOn(getEntity()));
     }
 
-    public void addDAM(DynamicAttributeModifier dynamicAttributeModifier) {
+    public void addOrReplaceDAM(DynamicAttributeModifier dynamicAttributeModifier) {
         ResourceLocation id = dynamicAttributeModifier.getId();
+        removeDAM(id);
         if (!modifierMap.containsKey(id)) modifierMap.put(id, dynamicAttributeModifier);
     }
 

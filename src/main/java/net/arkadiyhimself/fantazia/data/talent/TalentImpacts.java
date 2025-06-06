@@ -42,15 +42,18 @@ public class TalentImpacts {
     static {
         MELEE_BLOCK_UNLOCK = register(TalentImpact.builder(Fantazia.res("melee_block.unlock"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setUnlocked(true)))
-                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setUnlocked(false))));
+                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setUnlocked(false)))
+                .defaultDisabling());
 
         MELEE_BLOCK_BLOODLOSS = register(TalentImpact.builder(Fantazia.res("melee_block.bloodloss"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setBloodloss(true)))
-                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setBloodloss(false))));
+                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setBloodloss(false)))
+                .defaultDisabling());
 
         MELEE_BLOCK_DISARM = register(TalentImpact.builder(Fantazia.res("melee_block.disarm"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setDisarm(true)))
-                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setDisarm(false))));
+                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setDisarm(false)))
+                .defaultDisabling());
 
         DASH_UPGRADE = register(TalentImpact.builder(Fantazia.res("dash.upgrade"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, DashHolder.class, DashHolder::upgrade))
@@ -58,7 +61,9 @@ public class TalentImpacts {
 
         DOUBLE_JUMP_UNLOCK = register(TalentImpact.builder(Fantazia.res("double_jump.unlock"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::unlock))
-                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::remove)));
+                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::lock))
+                .enable(player -> PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::setEnabled))
+                .disable(player -> PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::setDisabled)));
 
         DOUBLE_JUMP_ELYTRA = register(TalentImpact.builder(Fantazia.res("double_jump.elytra"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, holder -> holder.setBoostElytra(true)))
@@ -84,14 +89,17 @@ public class TalentImpacts {
 
         WALL_CLIMBING_UNLOCKED = register(TalentImpact.builder(Fantazia.res("wall_climbing.unlock"))
                 .apply(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED, true))
-                .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED, false)));
+                .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED, false))
+                .defaultDisabling());
 
         WALL_CLIMBING_COBWEB = register(TalentImpact.builder(Fantazia.res("wall_climbing.cobweb"))
                 .apply(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB, true))
-                .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB, false)));
+                .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB, false))
+                .defaultDisabling());
 
         WALL_CLIMBING_POISON = register(TalentImpact.builder(Fantazia.res("wall_climbing.poison"))
                 .apply(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_POISON, true))
-                .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_POISON, false)));
+                .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_POISON, false))
+                .defaultDisabling());
     }
 }

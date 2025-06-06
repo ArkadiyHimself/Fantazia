@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.registries;
 
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.blocks.AmplificationBenchBlock;
 import net.arkadiyhimself.fantazia.blocks.AncientFlameBlock;
 import net.arkadiyhimself.fantazia.blocks.CustomRotatedPillarBlock;
 import net.arkadiyhimself.fantazia.blocks.obscure_sign.ObscureHangingSignBlock;
@@ -65,6 +66,7 @@ public class FTZBlocks {
     public static final DeferredBlock<DropExperienceBlock> DEEPSLATE_FANTAZIUM_ORE;
     public static final DeferredBlock<Block> FANTAZIUM_BLOCK;
     public static final DeferredBlock<Block> RAW_FANTAZIUM_BLOCK;
+    public static final DeferredBlock<AmplificationBenchBlock> AMPLIFICATION_BENCH;
 
     public static final DeferredRegister.Blocks REGISTER = DeferredRegister.createBlocks(Fantazia.MODID);
     private static final Map<ResourceLocation, BlockItemSupplier> BLOCK_ITEMS = Maps.newHashMap();
@@ -147,5 +149,6 @@ public class FTZBlocks {
         DEEPSLATE_FANTAZIUM_ORE = registerBlock("deepslate_fantazium_ore", () -> new DropExperienceBlock(UniformInt.of(6, 9), BlockBehaviour.Properties.ofFullCopy(FANTAZIUM_ORE.get()).mapColor(MapColor.DEEPSLATE).strength(4F,2.5F).sound(SoundType.DEEPSLATE).lightLevel(blockState -> 7)), RegularBlockItem::new);
         FANTAZIUM_BLOCK = registerBlock("fantazium_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5.5F,7.0F).sound(SoundType.METAL)), RegularBlockItem::new);
         RAW_FANTAZIUM_BLOCK = registerBlock("raw_fantazium_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.RAW_IRON).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5.5F,7.0F)), RegularBlockItem::new);
+        AMPLIFICATION_BENCH = registerBlock("amplification_bench", AmplificationBenchBlock::new, RegularBlockItem::new);
     }
 }

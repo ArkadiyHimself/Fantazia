@@ -1,0 +1,11 @@
+{
+  "type": "fantazia:rune_carving",
+  "fee": 3,
+  "ingredients": [
+    {
+      "item": "minecraft:wind_charge"
+    }
+  ],
+  "rune": "fantazia:pure_vessel",
+  "wisdom": 6
+}

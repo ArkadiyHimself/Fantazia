@@ -16,6 +16,7 @@ import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AurasInstancesHolder extends LevelAttributeHolder {
@@ -30,6 +31,7 @@ public class AurasInstancesHolder extends LevelAttributeHolder {
 
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
+        /*
         CompoundTag tag = new CompoundTag();
         if (auraInstances.isEmpty()) return tag;
 
@@ -38,10 +40,13 @@ public class AurasInstancesHolder extends LevelAttributeHolder {
 
         tag.put("auras", instances);
         return tag;
+         */
+        return new CompoundTag();
     }
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag compoundTag) {
+        /*
         auraInstances.clear();
 
         if (!(getLevel() instanceof ServerLevel serverLevel)) return;
@@ -52,6 +57,8 @@ public class AurasInstancesHolder extends LevelAttributeHolder {
             AuraInstance auraInstance = AuraInstance.deserializeSave(tags.getCompound(i), serverLevel);
             if (auraInstance != null) auraInstances.add(auraInstance);
         }
+
+         */
     }
 
     @Override
@@ -73,25 +80,25 @@ public class AurasInstancesHolder extends LevelAttributeHolder {
 
     @Override
     public void serverTick() {
-        auraInstances.removeIf(AuraInstance::removed);
         auraInstances.forEach(AuraInstance::tick);
+        auraInstances.removeIf(AuraInstance::removed);
     }
 
     @Override
     public void clientTick() {
-        auraInstances.removeIf(AuraInstance::removed);
         auraInstances.forEach(AuraInstance::tick);
+        auraInstances.removeIf(AuraInstance::removed);
         deserialize();
     }
 
     public List<AuraInstance> getAuraInstances() {
-        return auraInstances;
+        return new ArrayList<>(auraInstances);
     }
 
     public void addAuraInstance(AuraInstance instance) {
-        if (!auraInstances.contains(instance)) auraInstances.add(instance);
-
-        if (getLevel() instanceof ServerLevel serverLevel) IAttachmentSync.updateLevelAttributes(serverLevel);
+        if (!(getLevel() instanceof ServerLevel serverLevel) || auraInstances.contains(instance)) return;
+        auraInstances.add(instance);
+        IAttachmentSync.updateAuraInstances(serverLevel);
     }
 
     private void deserialize() {

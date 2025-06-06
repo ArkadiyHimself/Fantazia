@@ -19,9 +19,7 @@ import java.util.Map;
 
 public class ServerLootModifierManager extends SimpleJsonResourceReloadListener {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
-            .setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().create();
     private static final List<LootModifier.Builder> LOOT_MODIFIER_HOLDERS = Lists.newArrayList();
 
     public ServerLootModifierManager() {

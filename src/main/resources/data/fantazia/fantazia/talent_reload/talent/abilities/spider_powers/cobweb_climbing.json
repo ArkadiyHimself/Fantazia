@@ -1,4 +1,5 @@
 {
+  "background": "fantazia:textures/gui/talent_icons/square_green.png",
   "icon": "fantazia:textures/talent/abilities/spider_powers/cobweb_climbing.png",
   "impacts": [
     "fantazia:wall_climbing.cobweb"

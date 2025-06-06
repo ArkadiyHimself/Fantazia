@@ -28,9 +28,9 @@ public record MobEffectSpawnInstance(@NotNull Holder<MobEffect> mobEffect, int a
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
 
-        ResourceLocation effectID = BuiltInRegistries.MOB_EFFECT.getKey(mobEffect.value());
-        if (effectID == null) throw new IllegalStateException("MobEffect's id has not been found");
-        tag.putString("effect", effectID.toString());
+        ResourceLocation effectId = BuiltInRegistries.MOB_EFFECT.getKey(mobEffect.value());
+        if (effectId == null) throw new IllegalStateException("MobEffect's id has not been found");
+        tag.putString("effect", effectId.toString());
 
         tag.putInt("amplifier", amplifier);
         tag.putBoolean("hidden", hidden);

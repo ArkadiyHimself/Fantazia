@@ -6,6 +6,8 @@ import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEff
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -44,13 +46,13 @@ public class MurasamaItem extends MeleeWeaponItem {
     public void activeAbility(ServerPlayer player) {
         player.getData(FTZAttachmentTypes.MURASAMA_TAUNT_TICKS).set(30);
         IPacket.animatePlayer(player,"taunt");
-        if (LivingEffectHelper.isDisguised(player)) return;
+        if (player.hasEffect(FTZMobEffects.DISGUISED)) return;
         ServerLevel level = (ServerLevel) player.level();
         AABB aabb = player.getBoundingBox().inflate(10);
         List<Mob> mobs = level.getEntitiesOfClass(Mob.class, aabb);
         mobs.removeIf(mob -> !mob.hasLineOfSight(player));
         for (Mob mob : mobs) {
-            LivingEffectHelper.makeFurious(mob, 300);
+            ApplyEffect.makeFurious(mob, 300);
             if (player.isCreative() || player.isSpectator()) continue;
             mob.setTarget(player);
             if (mob instanceof TamableAnimal animal && animal.getOwner() == player) continue;

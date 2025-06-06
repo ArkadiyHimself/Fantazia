@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.datagen.talent_reload.talent_tab.TalentTabBuilderHolder;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
@@ -20,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -34,6 +36,7 @@ public class TalentTab {
     private final List<IHierarchy<Talent>> HIERARCHIES = Lists.newArrayList();
     private final ResourceLocation icon;
     private final String title;
+    private boolean redWisdomText = false;
     @Nullable
     private Talent selectedTalent = null;
 
@@ -70,13 +73,14 @@ public class TalentTab {
     }
 
     public void drawInsides(GuiGraphics guiGraphics, TalentsHolder talentsHolder, Font font, float partialTick, int scrollX, int scrollY, double mouseX, double mouseY, int bgX, int bgY) {
-        float alpha = 0.7f + (float) FantazicMath.intoSin(talentsHolder.getPlayer().tickCount + partialTick, 24) * 0.15f;
+        float alphaPurchase = 0.7f + (float) FantazicMath.intoSin(talentsHolder.getPlayer().tickCount + partialTick, 24) * 0.15f;
 
         int x0 = bgX + scrollX + 12;
         int y0 = bgY + scrollY + 12;
 
         int X = x0;
         this.selectedTalent = null;
+        this.redWisdomText = false;
         guiGraphics.enableScissor(bgX, bgY, bgX + TalentScreen.background, bgY + TalentScreen.background);
         for (IHierarchy<Talent> hierarchy : HIERARCHIES) {
             if (hierarchy instanceof ChainHierarchy<Talent> chainHierarchy) {
@@ -93,12 +97,15 @@ public class TalentTab {
                 }
                 for (Talent talent : talentList) {
                     boolean unlocked = talentsHolder.talentUnlocked(talent);
-                    float color = talentsHolder.canBePurchased(talent) ? alpha : 0.5f;
+                    boolean disabled = talentsHolder.isDisabled(talent);
+                    float color = talentsHolder.canBePurchased(talent) ? alphaPurchase : 0.5f;
                     if (!unlocked) guiGraphics.setColor(color, color, color,1f);
+                    else if (disabled) guiGraphics.setColor(1f, 0.55f,0.55f,0.85f);
                     ResourceLocation icon = talent.background().isPresent() ? talent.background().get() : TALENT_ICON;
                     guiGraphics.blit(icon, X, Y,0,0,24,24,24,24);
                     ResourceLocation talentIcon = talent.icon();
                     if (!unlocked) guiGraphics.setColor(color, color, color,0.5f);
+                    else if (disabled) guiGraphics.setColor(1f, 0.55f,0.55f,0.85f);
                     RenderSystem.enableBlend();
                     RenderSystem.defaultBlendFunc();
                     guiGraphics.blit(talentIcon, X + 2, Y + 2, 0, 0, 20, 20, 20, 20);
@@ -111,12 +118,15 @@ public class TalentTab {
             } else {
                 Talent talent = hierarchy.getMainElement();
                 boolean unlocked = talentsHolder.talentUnlocked(talent);
-                float color = talentsHolder.canBePurchased(talent) ? alpha : 0.5f;
+                boolean disabled = talentsHolder.isDisabled(talent);
+                float color = talentsHolder.canBePurchased(talent) ? alphaPurchase : 0.5f;
                 if (!unlocked) guiGraphics.setColor(color, color, color,1f);
+                else if (disabled) guiGraphics.setColor(1f, 0.55f,0.55f,0.85f);
                 ResourceLocation icon = talent.background().isPresent() ? talent.background().get() : TALENT_ICON;
                 guiGraphics.blit(icon, X, y0, 0,0,24,24,24,24);
                 ResourceLocation talentIcon = talent.icon();
                 if (!unlocked) guiGraphics.setColor(color, color, color, 0.5f);
+                else if (disabled) guiGraphics.setColor(1f, 0.55f,0.55f,0.85f);
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 guiGraphics.blit(talentIcon, X + 2, y0 + 2,0,0,20,20,20,20);
@@ -126,6 +136,7 @@ public class TalentTab {
             }
             X += 48;
         }
+        this.redWisdomText = selectedTalent != null && selectedTalent.purchasable() && !talentsHolder.hasTalent(selectedTalent) && !talentsHolder.enoughWisdom(selectedTalent);
         guiGraphics.disableScissor();
         tryRenderTalentTooltip(talentsHolder, guiGraphics, font, (int) mouseX, (int) mouseY);
     }
@@ -133,6 +144,7 @@ public class TalentTab {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, Font font) {
         if (!Screen.hasShiftDown()) guiGraphics.renderTooltip(font, Component.translatable(title), mouseX, mouseY);
         else {
+            RenderBuffers.NO_TOOLTIP_GAP = true;
             int lines = 0;
             try {
                 String amo = Component.translatable(title + ".lines").getString();
@@ -188,6 +200,10 @@ public class TalentTab {
 
     public ResourceLocation getBackground() {
         return background;
+    }
+
+    public boolean redWisdomText() {
+        return redWisdomText;
     }
 
     public record Builder(ResourceLocation icon, String title, Optional<ResourceLocation> background) {

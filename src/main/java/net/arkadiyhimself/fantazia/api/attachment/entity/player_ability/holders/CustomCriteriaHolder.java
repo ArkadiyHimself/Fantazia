@@ -3,8 +3,12 @@ package net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders
 import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Pair;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.advanced.runes.Rune;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHolder;
+import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.data.criterion.PossessItemTrigger;
+import net.arkadiyhimself.fantazia.data.criterion.PossessRuneTrigger;
+import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -14,17 +18,21 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomCriteriaHolder extends PlayerAbilityHolder {
@@ -32,8 +40,8 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
     // a list of items that were in player's inventory at some point
     private final List<Item> obtainedItems = Lists.newArrayList();
 
-    // each value a list of items with a certain tag that were in player's inventory at one points
-    private final Map<TagKey<Item>, List<Item>> obtainedTaggedItems = Maps.newHashMap();
+    // a list of runes that were in player's inventory at some point
+    private final List<Holder<Rune>> obtainedRunes = Lists.newArrayList();
 
     // string is an identifier of certain "action" performed by player, while integer value shows how many times the action was performed
     private final Map<ResourceLocation, AtomicInteger> timesPerformed = Maps.newHashMap();
@@ -50,17 +58,9 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
         for (Item item : obtainedItems) items.add(StringTag.valueOf(BuiltInRegistries.ITEM.getKey(item).toString()));
         tag.put("obtainedItems", items);
 
-        ListTag itemsByTag = new ListTag();
-        for (Map.Entry<TagKey<Item>, List<Item>> entry : obtainedTaggedItems.entrySet()) {
-            CompoundTag entryTag = new CompoundTag();
-            entryTag.putString("tag", entry.getKey().location().toString());
-
-            ListTag itemsTag = new ListTag();
-            for (Item item : entry.getValue()) itemsTag.add(StringTag.valueOf(BuiltInRegistries.ITEM.getKey(item).toString()));
-            entryTag.put("items", itemsTag);
-            itemsByTag.add(entryTag);
-        }
-        tag.put("obtainedTaggedItems", itemsByTag);
+        ListTag runes = new ListTag();
+        for (Holder<Rune> rune : obtainedRunes) runes.add(StringTag.valueOf(FantazicRegistries.RUNES.getKey(rune.value()).toString()));
+        tag.put("obtainedRunes", runes);
 
         ListTag performedTag = new ListTag();
         for (Map.Entry<ResourceLocation, AtomicInteger> entry : timesPerformed.entrySet()) {
@@ -77,25 +77,16 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
         obtainedItems.clear();
-        obtainedTaggedItems.clear();
+        obtainedRunes.clear();
         timesPerformed.clear();
 
         ListTag items = tag.getList("obtainedItems", Tag.TAG_STRING);
         for (int i = 0; i < items.size(); i++) obtainedItems.add(BuiltInRegistries.ITEM.get(ResourceLocation.parse(items.getString(i))));
 
-        ListTag itemsByTag = tag.getList("obtainedTaggedItems", Tag.TAG_COMPOUND);
-        for (int i = 0; i < itemsByTag.size(); i++) {
-            CompoundTag entryTag = itemsByTag.getCompound(i);
-
-            String key = entryTag.getString("tag");
-            ResourceLocation tagLocation = ResourceLocation.parse(key);
-            TagKey<Item> itemTagKey = TagKey.create(Registries.ITEM, tagLocation);
-
-            List<Item> itemList = Lists.newArrayList();
-            ListTag itemsTag = entryTag.getList("items", Tag.TAG_STRING);
-            for (int j = 0; j < itemsTag.size(); j++) itemList.add(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemsTag.getString(j))));
-
-            getOrCreateTagList(itemTagKey).addAll(itemList);
+        ListTag runes = tag.getList("obtainedRunes", Tag.TAG_STRING);
+        for (int i = 0; i < runes.size(); i++) {
+            Optional<Holder.Reference<Rune>> optional = provider.holder(ResourceKey.create(FantazicRegistries.Keys.RUNE, ResourceLocation.parse(runes.getString(i))));
+            optional.ifPresent(obtainedRunes::add);
         }
 
         ListTag performedTag = tag.getList("timesPerformed", Tag.TAG_COMPOUND);
@@ -105,25 +96,26 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
         }
     }
 
+    public List<Holder<Rune>> getObtainedRunes() {
+        return new ArrayList<>(obtainedRunes);
+    }
+
     public List<Item> getObtainedItems() {
-        return this.obtainedItems;
+        return new ArrayList<>(obtainedItems);
     }
 
-    public List<Item> getOrCreateTagList(TagKey<Item> itemTagKey) {
-        return obtainedTaggedItems.computeIfAbsent(itemTagKey, tagKey -> Lists.newArrayList());
-    }
-
-    public void obtainedItem(Item item) {
-        Holder.Reference<Item> holder = item.builtInRegistryHolder();
+    public void obtainedItem(ItemStack itemStack) {
+        Item item = itemStack.getItem();
         if (!obtainedItems.contains(item)) obtainedItems.add(item);
 
-        for (Pair<TagKey<Item>, HolderSet.Named<Item>> pair : BuiltInRegistries.ITEM.getTags().toList()) {
-            if (!pair.getSecond().contains(holder)) continue;
-            List<Item> itemList = getOrCreateTagList(pair.getFirst());
-            if (!itemList.contains(item)) itemList.add(item);
-        }
+        Holder<Rune> runeHolder = itemStack.get(FTZDataComponentTypes.RUNE);
+        if (runeHolder != null && !obtainedRunes.contains(runeHolder) && !runeHolder.value().isEmpty()) obtainedRunes.add(runeHolder);
 
-        if (getPlayer() instanceof ServerPlayer serverPlayer) PossessItemTrigger.INSTANCE.trigger(serverPlayer,this);
+
+        if (getPlayer() instanceof ServerPlayer serverPlayer) {
+            PossessItemTrigger.INSTANCE.trigger(serverPlayer,this);
+            PossessRuneTrigger.INSTANCE.trigger(serverPlayer,this);
+        }
     }
 
     public AtomicInteger getActionAmount(ResourceLocation action) {
@@ -136,7 +128,7 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
 
     public void reset() {
         obtainedItems.clear();
-        obtainedTaggedItems.clear();
+        obtainedRunes.clear();
         timesPerformed.clear();
     }
 }

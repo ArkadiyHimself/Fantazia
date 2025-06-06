@@ -2,7 +2,9 @@ package net.arkadiyhimself.fantazia.data.predicate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.arkadiyhimself.fantazia.advanced.runes.Rune;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.CustomCriteriaHolder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
@@ -17,23 +19,29 @@ import java.util.Optional;
 
 public record PossessedItemPredicate(List<Item> itemList, Optional<TagKey<Item>> tag, int amount) {
 
-    public static final Codec<PossessedItemPredicate> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(BuiltInRegistries.ITEM.byNameCodec().listOf().optionalFieldOf("items", Lists.newArrayList()).forGetter(PossessedItemPredicate::itemList),
-                    TagKey.codec(Registries.ITEM).optionalFieldOf("tag").forGetter(PossessedItemPredicate::tag),
-                    Codec.INT.optionalFieldOf("amount", 0).forGetter(PossessedItemPredicate::amount)
-            ).apply(instance, PossessedItemPredicate::new));
+    public static final Codec<PossessedItemPredicate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            BuiltInRegistries.ITEM.byNameCodec().listOf().optionalFieldOf("items", Lists.newArrayList()).forGetter(PossessedItemPredicate::itemList),
+            TagKey.codec(Registries.ITEM).optionalFieldOf("tag").forGetter(PossessedItemPredicate::tag),
+            Codec.INT.optionalFieldOf("amount", 0).forGetter(PossessedItemPredicate::amount)
+    ).apply(instance, PossessedItemPredicate::new));
 
     public boolean matches(@NotNull CustomCriteriaHolder holder) {
         List<Item> obtainedItems = new ArrayList<>(holder.getObtainedItems());
-        List<Item> required = new ArrayList<>(List.copyOf(itemList));
+        List<Item> required = new ArrayList<>(itemList);
 
-        required.removeIf(obtainedItems::contains);
-        boolean empty = required.isEmpty();
+        if (!required.isEmpty()) {
+            required.removeIf(obtainedItems::contains);
+            if (!required.isEmpty()) return false;
+        }
 
-        if (tag.isEmpty()) return empty;
+        if (tag.isPresent()) {
+            TagKey<Item> tagKey = tag.get();
+            List<Item> tagged = Lists.newArrayList();
+            for (Item obtained : obtainedItems) if (obtained.builtInRegistryHolder().is(tagKey)) tagged.add(obtained);
+            if (amount > tagged.size()) return false;
+        }
 
-        List<Item> taggedItems = holder.getOrCreateTagList(tag.get());
-        return empty && taggedItems.size() >= amount;
+        return true;
     }
 
     public static Builder builder() {

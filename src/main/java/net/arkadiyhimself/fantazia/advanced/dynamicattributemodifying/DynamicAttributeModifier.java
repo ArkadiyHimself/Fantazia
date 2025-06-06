@@ -27,7 +27,7 @@ import java.util.function.Function;
  * <br>
  * {@link #operation} is the operation for attribute modification
  * <br>
- * {@link #percentGetter} is the function which is called to calculate the percentage of amount that will be applied for attribute modifier every tick. Keep in mind that this function is supposed to return a floating value between 0.0 and 1.0, and even if it returns a negative value or a value greater than one, the value will be {@link Mth#clamp(int, int, int) clamped} in {@link #tryAdd(LivingEntity) applying method}
+ * {@link #percent} is the function which is called to calculate the percentage of amount that will be applied for attribute modifier every tick. Keep in mind that this function is supposed to return a floating value between 0.0 and 1.0, and even if it returns a negative value or a value greater than one, the value will be {@link Mth#clamp(int, int, int) clamped} in {@link #tryAdd(LivingEntity) applying method}
  */
 public class DynamicAttributeModifier {
 
@@ -35,25 +35,25 @@ public class DynamicAttributeModifier {
     private final ResourceLocation id;
     private final double amount;
     private final AttributeModifier.Operation operation;
-    private final Function<LivingEntity, Float> percentGetter;
+    private final Function<LivingEntity, Float> percent;
 
-    public DynamicAttributeModifier(Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation, Function<LivingEntity, Float> percentGetter) {
+    public DynamicAttributeModifier(Holder<Attribute> attribute, ResourceLocation id, double amount, AttributeModifier.Operation operation, Function<LivingEntity, Float> percent) {
         this.attribute = attribute;
         this.id = id;
         this.amount = amount;
         this.operation = operation;
-        this.percentGetter = percentGetter;
+        this.percent = percent;
     }
 
-    public DynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier modifier, Function<LivingEntity, Float> percentGetter) {
-        this(attribute, modifier.id(), modifier.amount(), modifier.operation(), percentGetter);
+    public DynamicAttributeModifier(Holder<Attribute> attribute, AttributeModifier modifier, Function<LivingEntity, Float> percent) {
+        this(attribute, modifier.id(), modifier.amount(), modifier.operation(), percent);
     }
 
-    public AttributeModifier maximumModifier() {
+    public AttributeModifier fullModifier() {
         return new AttributeModifier(id, amount, operation);
     }
 
-    public void tick(LivingEntity entity) {
+    public void tickOn(LivingEntity entity) {
         tryRemove(entity);
         tryAdd(entity);
     }
@@ -67,7 +67,7 @@ public class DynamicAttributeModifier {
     public void tryAdd(LivingEntity entity) {
         AttributeInstance instance = entity.getAttribute(attribute);
         if (instance == null) return;
-        float percent = Mth.clamp(percentGetter.apply(entity), 0f, 1f);
+        float percent = Mth.clamp(this.percent.apply(entity), 0f, 1f);
         double amo = amount * percent;
         instance.addTransientModifier(new AttributeModifier(id, amo, operation));
     }

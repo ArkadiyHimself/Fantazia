@@ -19,9 +19,7 @@ import java.util.Map;
 
 public class ServerSpawnEffectManager extends SimpleJsonResourceReloadListener {
 
-    private static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(ResourceLocation.class, new ResourceLocation.Serializer())
-            .create();
+    private static final Gson GSON = new GsonBuilder().create();
 
     private static final List<EffectSpawnApplier.Builder> effectSpawnHolders = Lists.newArrayList();
 

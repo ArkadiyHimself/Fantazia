@@ -1,4 +1,5 @@
 {
+  "background": "fantazia:textures/gui/talent_icons/square_green.png",
   "damage_multiplies": [
     {
       "damage_type": {

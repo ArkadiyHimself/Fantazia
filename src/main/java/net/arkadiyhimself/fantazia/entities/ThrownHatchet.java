@@ -10,6 +10,8 @@ import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.registries.FTZEntityTypes;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -218,7 +220,7 @@ public class ThrownHatchet extends AbstractArrow {
         Optional<Holder.Reference<Enchantment>> projProt = enchantmentRegistry.getHolder(Enchantments.PROJECTILE_PROTECTION);
         int projProtect = projProt.map(enchantmentReference -> EnchantmentHelper.getEnchantmentLevel(enchantmentReference, livingEntity)).orElse(0);
 
-        if (projProtect < 4) LivingEffectHelper.makeStunned(livingEntity, 15 * (4 - projProtect));
+        if (projProtect < 4) ApplyEffect.makeStunned(livingEntity, 15 * (4 - projProtect));
     }
 
     private void throwingData(ItemStack stack) {
@@ -317,10 +319,10 @@ public class ThrownHatchet extends AbstractArrow {
         entityList.removeIf(ArmorStand.class::isInstance);
         entityList.removeIf(entity1 -> entity1 == getOwner() || entity1.hurtTime > 0);
         if (entityList.isEmpty()) return false;
-        int i = Fantazia.RANDOM.nextInt(0, entityList.size());
+        int i = RandomUtil.nextInt(0, entityList.size());
         LivingEntity target = entityList.get(i);
         Vec3 head = target.getEyePosition();
-        this.setDeltaMovement(chasing(head, 1f));
+        setDeltaMovement(chasing(head, 1f));
         return true;
     }
     public boolean noLOS(Entity pEntity) {

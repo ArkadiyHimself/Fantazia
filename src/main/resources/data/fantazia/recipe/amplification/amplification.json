@@ -1,0 +1,11 @@
+{
+  "type": "fantazia:amplification",
+  "amplified": "fantazia:amplification",
+  "fee": 10,
+  "ingredients": [
+    {
+      "item": "fantazia:amplifier"
+    }
+  ],
+  "wisdom": 7
+}

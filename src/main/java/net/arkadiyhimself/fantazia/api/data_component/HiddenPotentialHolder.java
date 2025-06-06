@@ -14,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 public record HiddenPotentialHolder(float damage, int delay) {
+
     public static final StreamCodec<ByteBuf, HiddenPotentialHolder> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.COMPOUND_TAG,
             HiddenPotentialHolder::serialize,
             HiddenPotentialHolder::deserialize

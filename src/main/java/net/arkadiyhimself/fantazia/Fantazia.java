@@ -57,6 +57,8 @@ public class Fantazia {
         FTZPotions.register(modEventBus);
         FTZBlockEntityTypes.register(modEventBus);
         FTZGameRules.onModSetup();
+        FTZMenuTypes.register(modEventBus);
+        FTZRecipeTypes.register(modEventBus);
 
         for (CurioValidator validator : CurioValidator.VALIDATORS.values()) registerCurioValidator(validator);
 

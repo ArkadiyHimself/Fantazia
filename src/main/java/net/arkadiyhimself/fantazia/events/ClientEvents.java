@@ -7,7 +7,7 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.FantazicConfig;
 import net.arkadiyhimself.fantazia.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.advanced.spell.types.TargetedSpell;
-import net.arkadiyhimself.fantazia.api.KeyBinding;
+import net.arkadiyhimself.fantazia.api.FTZKeyMappings;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
 import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.CurrentAndInitialValue;
@@ -70,7 +70,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
@@ -117,7 +116,7 @@ public class ClientEvents {
         if (overlay.equals(VanillaGuiLayers.SUBTITLE_OVERLAY) && !player.shouldShowDeathScreen()) poseStack.translate(0,-64 - FantazicConfig.staminaBarYoff.get(),0);
 
         if (overlay.equals(VanillaGuiLayers.EXPERIENCE_BAR) || overlay.equals(VanillaGuiLayers.EXPERIENCE_LEVEL)) {
-            if (player.hasEffect(FTZMobEffects.STUN) || player.hasEffect(FTZMobEffects.BARRIER) || player.hasEffect(FTZMobEffects.LAYERED_BARRIER)) event.setCanceled(true);
+            if (LivingEffectHelper.hasStunPoints(player) || player.hasEffect(FTZMobEffects.STUN) || player.hasEffect(FTZMobEffects.BARRIER) || player.hasEffect(FTZMobEffects.LAYERED_BARRIER)) event.setCanceled(true);
         }
     }
 
@@ -256,29 +255,32 @@ public class ClientEvents {
             event.setSwingHand(false);
         }
         if (player.hasEffect(FTZMobEffects.DISARM)) event.setSwingHand(false);
-        if (KeyBinding.BLOCK.isDown() && player.getMainHandItem().is(FTZItemTags.MELEE_BLOCK) && player.getOffhandItem().isEmpty()) PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, MeleeBlockHolder::startBlocking);
+        if (FTZKeyMappings.BLOCK.isDown() && player.getMainHandItem().is(FTZItemTags.MELEE_BLOCK) && player.getOffhandItem().isEmpty()) PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, MeleeBlockHolder::startBlocking);
     }
 
     @SubscribeEvent
     public static void keyInput(InputEvent.Key event) {
-        Player player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (FTZKeyMappings.DASH.isDown()) PlayerAbilityHelper.acceptConsumer(player, DashHolder.class, DashHolder::maybeCancelDash);
+
         if (player == null || ActionsHelper.preventActions(player) || player.isSpectator()) return;
         int action = event.getAction();
 
-        if (KeyBinding.SWORD_ABILITY.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.WEAPON_ABILITY, action);
-        if (KeyBinding.SPELLCAST1.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST1, action);
-        if (KeyBinding.SPELLCAST2.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST2, action);
-        if (KeyBinding.SPELLCAST3.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST3, action);
+        if (FTZKeyMappings.SWORD_ABILITY.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.WEAPON_ABILITY, action);
+        if (FTZKeyMappings.SPELLCAST1.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST1, action);
+        if (FTZKeyMappings.SPELLCAST2.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST2, action);
+        if (FTZKeyMappings.SPELLCAST3.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST3, action);
 
         TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
-        if (KeyBinding.TALENTS.isDown() && talentsHolder != null) Minecraft.getInstance().setScreen(new TalentScreen(talentsHolder));
+        if (FTZKeyMappings.TALENTS.isDown() && talentsHolder != null) Minecraft.getInstance().setScreen(new TalentScreen(talentsHolder));
+
 
         if (event.getKey() == Minecraft.getInstance().options.keyJump.getKey().getValue()) {
             if (action == 1) PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::tryToJumpClient);
             else if (action == 0)  PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::buttonRelease);
         }
 
-        if (KeyBinding.DASH.isDown()) PlayerAbilityHelper.acceptConsumer(player, DashHolder.class, DashHolder::beginDash);
+        if (FTZKeyMappings.DASH.isDown()) PlayerAbilityHelper.acceptConsumer(player, DashHolder.class, DashHolder::beginDash);
     }
 
     // the event is used to remove vanilla's "Attack damage: ..." and "Attack speed: ..." lines

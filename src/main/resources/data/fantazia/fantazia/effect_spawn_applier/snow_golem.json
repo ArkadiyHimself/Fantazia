@@ -1,0 +1,16 @@
+{
+  "entity_types": [
+    "minecraft:snow_golem"
+  ],
+  "spawn_effects": [
+    {
+      "aura_instances": [
+        {
+          "amplifier": 2,
+          "aura": "fantazia:frostbite"
+        }
+      ],
+      "chance": 1.0
+    }
+  ]
+}

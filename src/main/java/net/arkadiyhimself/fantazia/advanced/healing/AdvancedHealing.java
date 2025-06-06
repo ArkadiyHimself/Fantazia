@@ -14,6 +14,7 @@ import net.arkadiyhimself.fantazia.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.tags.FTZHealingTypeTags;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -36,7 +37,7 @@ public class AdvancedHealing {
         if (particleTypes.isEmpty()) return true;
 
         if (source.is(FTZHealingTypeTags.REGEN)) {
-            if (Fantazia.RANDOM.nextFloat() < 0.15) VisualHelper.particleOnEntityServer(entity, particleTypes.random(), ParticleMovement.REGULAR);
+            if (RandomUtil.nextFloat() < 0.15) VisualHelper.particleOnEntityServer(entity, particleTypes.random(), ParticleMovement.REGULAR);
             return true;
         }
 

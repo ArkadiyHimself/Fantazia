@@ -9,6 +9,7 @@ import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
 import net.arkadiyhimself.fantazia.packets.IPacket;
 import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
 import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -24,6 +25,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
@@ -67,10 +69,10 @@ public class VisualHelper {
         float height = entity.getBbHeight();
 
         // the resulting position is supposed to be on a "cylinder" around entity, not sphere, which is why y coordinate is taken separately
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(radius).scale(range);
+        Vec3 vec3 = RandomUtil.randomHorizontalVec3().normalize().scale(radius).scale(range);
         double x = vec3.x();
         double z = vec3.z();
-        double y = Fantazia.RANDOM.nextDouble(height * 0.1,height * 0.8);
+        double y = RandomUtil.nextDouble(height * 0.1,height * 0.8);
 
         double x0 = entity.getX() + x;
         double y0 = entity.getY() + y;
@@ -151,23 +153,23 @@ public class VisualHelper {
     public static void renderEvasionPlayer(AbstractClientPlayer entity, PlayerRenderer renderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
         poseStack.pushPose();
 
-        float scale = Fantazia.RANDOM.nextFloat(-0.75F,0.75F);
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(scale);
+        float scale = RandomUtil.nextFloat(-0.75F,0.75F);
+        Vec3 vec3 = RandomUtil.randomHorizontalVec3().normalize().scale(scale);
         poseStack.scale(-1,-1,1);
         poseStack.translate(vec3.x(), -1.501F, vec3.z());
 
         RenderType renderType = renderer.getModel().renderType(renderer.getTextureLocation(entity));
         VertexConsumer consumer = buffers.getBuffer(renderType);
 
-        int i1 = Fantazia.RANDOM.nextInt(40,120);
-        int i2 = Fantazia.RANDOM.nextInt(40,120);
-        int i3 = Fantazia.RANDOM.nextInt(165,240);
+        int i1 = RandomUtil.nextInt(40, 120);
+        int i2 = RandomUtil.nextInt(40, 120);
+        int i3 = RandomUtil.nextInt(165, 240);
 
         int r;
         int g;
         int b;
 
-        int j = Fantazia.RANDOM.nextInt(1,4);
+        int j = RandomUtil.nextInt(1,4);
         if (j == 1) {
             r = i1;
             g = i2;
@@ -188,23 +190,23 @@ public class VisualHelper {
     public static <T extends LivingEntity, M extends EntityModel<T>> void renderEvasionEntity(T entity, LivingEntityRenderer<T,M> renderer, PoseStack poseStack, MultiBufferSource buffers, int packedLight, int packedOverlay) {
         poseStack.pushPose();
 
-        float scale = Fantazia.RANDOM.nextFloat(-0.75F,0.75F);
-        Vec3 vec3 = new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1)).normalize().scale(scale);
+        float scale = RandomUtil.nextFloat(-0.75F,0.75F);
+        Vec3 vec3 = RandomUtil.randomHorizontalVec3().normalize().scale(scale);
         poseStack.scale(-1,-1,1);
         poseStack.translate(vec3.x(), -1.501F, vec3.z());
 
         RenderType renderType = renderer.getModel().renderType(renderer.getTextureLocation(entity));
         VertexConsumer consumer = buffers.getBuffer(renderType);
 
-        int i1 = Fantazia.RANDOM.nextInt(40,120);
-        int i2 = Fantazia.RANDOM.nextInt(40,120);
-        int i3 = Fantazia.RANDOM.nextInt(165,240);
+        int i1 = RandomUtil.nextInt(40,120);
+        int i2 = RandomUtil.nextInt(40,120);
+        int i3 = RandomUtil.nextInt(165,240);
 
         int r;
         int g;
         int b;
 
-        int j = Fantazia.RANDOM.nextInt(1,4);
+        int j = RandomUtil.nextInt(1,4);
         if (j == 1) {
             r = i1;
             g = i2;
@@ -246,9 +248,14 @@ public class VisualHelper {
         Vec3 pos = locationHolder.position();
         if (locationHolder.empty() || !locationHolder.isIn(level) || !level.isLoaded(BlockPos.containing(pos))) return;
 
-        Vec3 delta = new Vec3(Fantazia.RANDOM.nextDouble(), Fantazia.RANDOM.nextDouble(), Fantazia.RANDOM.nextDouble()).normalize().scale(0.4);
+        Vec3 delta = RandomUtil.randomVec3().normalize().scale(0.4);
         Vec3 finalPos = pos.add(delta).add(0,0.3,0);
 
-        for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() + 2; i++) level.addParticle(ParticleTypes.PORTAL, finalPos.x, finalPos.y, finalPos.z, (Fantazia.RANDOM.nextDouble() - 0.5) * 2.0, -Fantazia.RANDOM.nextDouble(), (Fantazia.RANDOM.nextDouble() - 0.5) * 2.0);
+        for (int i = 0; i < Minecraft.getInstance().options.particles().get().getId() + 2; i++) level.addParticle(ParticleTypes.PORTAL, finalPos.x, finalPos.y, finalPos.z, (RandomUtil.nextDouble(-1, 1) - 0.5) * 2.0, -RandomUtil.nextDouble(), (RandomUtil.nextDouble(-1, 1) - 0.5) * 2.0);
+    }
+
+    public static Component componentLevel(int level) {
+        if (level >= 1 && level <= 10) return Component.translatable("enchantment.level." + level);
+        else return Component.literal(String.valueOf(level));
     }
 }

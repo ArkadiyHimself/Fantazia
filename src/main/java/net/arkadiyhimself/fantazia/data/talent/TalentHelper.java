@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.data.talent;
 import com.google.common.collect.ImmutableList;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.advancements.AdvancementHolder;
@@ -13,17 +14,17 @@ import net.minecraft.world.entity.player.Player;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class TalentHelper {
 
-    private TalentHelper() {}
-
     public static void onTalentUnlock(@NotNull Player player, @NotNull Talent talent) {
         if (player instanceof ServerPlayer serverPlayer) {
             revokeAdvancement(serverPlayer, talent);
             talent.applyModifiers(serverPlayer);
+            Prompts.OPEN_TALENT_SCREEN.maybePromptPlayer(serverPlayer);
         }
         talent.applyImpacts(player);
     }
@@ -48,9 +49,9 @@ public class TalentHelper {
         for(String s : progress.getCompletedCriteria()) player.getAdvancements().revoke(advancement, s);
     }
 
-    public static ImmutableList<Talent> getTalents(@NotNull Player player) {
+    public static List<Talent> getTalents(@NotNull Player player) {
         TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
-        return talentsHolder == null ? ImmutableList.of() : talentsHolder.getTalents();
+        return talentsHolder == null ? ImmutableList.of() : talentsHolder.getAllObtainedTalents();
     }
 
     public static boolean hasTalent(@NotNull Player player, @NotNull Talent talent) {
@@ -82,5 +83,18 @@ public class TalentHelper {
     public static int getUnlockLevel(@NotNull Player player, @NotNull ResourceLocation hierarchyLocation) {
         TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
         return talentsHolder == null ? 0 : talentsHolder.upgradeLevel(hierarchyLocation);
+    }
+
+    public static List<TalentImpact> disabledImpacts(@NotNull Player player) {
+        List<TalentImpact> talentImpacts = Lists.newArrayList();
+        TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
+        if (talentsHolder == null) return talentImpacts;
+        for (Talent talent : talentsHolder.getDisabledTalents()) for (TalentImpact impact : talent.impacts())
+            if (!talentImpacts.contains(impact)) talentImpacts.add(impact);
+        return talentImpacts;
+    }
+
+    public static boolean isDisabled(@NotNull Player player, @NotNull TalentImpact impact) {
+        return disabledImpacts(player).contains(impact);
     }
 }
