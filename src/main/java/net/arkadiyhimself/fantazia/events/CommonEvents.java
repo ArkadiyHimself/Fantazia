@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.events;
 
 import com.mojang.brigadier.CommandDispatcher;
+import it.unimi.dsi.fastutil.Function;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
@@ -135,6 +136,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Fantazia.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class CommonEvents {
@@ -334,7 +336,9 @@ public class CommonEvents {
         if (event.getEntity().level().isClientSide()) return;
         LivingEntity target = event.getEntity();
         DamageSource source = event.getSource();
-        float damage = event.getAmount();
+        Supplier<Float> damage = event::getAmount;
+        float multiplier = 1f;
+
         Entity attacker = source.getEntity();
         if (attacker != null && attacker.getData(FTZAttachmentTypes.DASHSTONE_MINION) && target.getData(FTZAttachmentTypes.DASHSTONE_MINION)) {
             event.setCanceled(true);
@@ -343,10 +347,10 @@ public class CommonEvents {
 
         if (source.is(FTZDamageTypeTags.ELECTRIC)) {
             if (!LivingEffectHelper.hasBarrier(target)) ActionsHelper.interrupt(target);
-            if (SpellHelper.spellAvailable(target, Spells.LIGHTNING_STRIKE)) damage *= 0.6f;
+            if (SpellHelper.spellAvailable(target, Spells.LIGHTNING_STRIKE)) event.setAmount(damage.get() * 0.6f);
         }
 
-        if (source.is(DamageTypeTags.IS_FALL) && FantazicUtil.hasRune(target, Runes.PURE_VESSEL)) damage -= 1.5f;
+        if (source.is(DamageTypeTags.IS_FALL) && FantazicUtil.hasRune(target, Runes.PURE_VESSEL)) event.setAmount(damage.get() - 1.5f);
         if (source.is(DamageTypes.WITHER) && SpellHelper.spellAvailable(target, Spells.SUSTAIN)) event.setCanceled(true);
         if (source.is(FTZDamageTypes.REMOVAL)) event.getContainer().setPostAttackInvulnerabilityTicks(target.invulnerableTime);
 
@@ -358,7 +362,6 @@ public class CommonEvents {
 
         if (FantazicCombat.attemptEvasion(event) || SpellHelper.wardenSonicBoom(event)) return;
         LivingEffectHelper.simpleEffectOnHit(event);
-        event.setAmount(damage);
     }
 
     @SubscribeEvent
@@ -608,7 +611,7 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void livingEntityUseItemFinish(LivingEntityUseItemEvent.Finish event) {
-        ItemStack itemStack = event.getResultStack();
+        ItemStack itemStack = event.getItem();
         Item item = itemStack.getItem();
 
         if (event.getEntity() instanceof ServerPlayer player) {

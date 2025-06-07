@@ -5,6 +5,7 @@
   "refmap": "fantazia.refmap.json",
   "mixins": [
     "MixinArrowItem",
+    "MixinCreeper",
     "MixinCrossbowItem",
     "MixinEntity",
     "MixinFoodData",

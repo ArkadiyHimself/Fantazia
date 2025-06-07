@@ -171,6 +171,11 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
         event.setAmount(damage * finalMultiplier);
     }
 
+    @Override
+    public void respawn() {
+        if (getPlayer() instanceof ServerPlayer serverPlayer) for (Talent talent : allObtainedTalents) talent.applyModifiers(serverPlayer);
+    }
+
     public List<Talent> getAllObtainedTalents() {
         return new ArrayList<>(allObtainedTalents);
     }

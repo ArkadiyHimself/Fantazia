@@ -4,6 +4,7 @@ import net.arkadiyhimself.fantazia.advanced.cleansing.Cleanse;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -14,14 +15,17 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import org.apache.commons.compress.utils.Lists;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mixin(EffectRenderingInventoryScreen.class)
 public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
@@ -100,5 +104,15 @@ public abstract class MixinEffectScreenRenderer<T extends AbstractContainerMenu>
             }
             yPos += pYOffset;
         }
+    }
+
+    @Inject(at = @At("HEAD"), method = "renderLabels", cancellable = true)
+    private void cancelLabels(GuiGraphics guiGraphics, int renderX, int yOffset, Iterable<MobEffectInstance> effects, CallbackInfo ci) {
+        if (Screen.hasShiftDown()) ci.cancel();
+    }
+
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;Ljava/util/Optional;II)V"), method = "renderEffects")
+    private void cancelTooltip(GuiGraphics instance, Font font, List<Component> tooltipLines, Optional<TooltipComponent> visualTooltipComponent, int mouseX, int mouseY) {
+        if (!Screen.hasShiftDown()) instance.renderTooltip(font, tooltipLines, visualTooltipComponent, mouseX, mouseY);
     }
 }
