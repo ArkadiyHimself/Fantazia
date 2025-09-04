@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:bell"
+    },
+    {
+      "item": "minecraft:bone_meal"
+    },
+    {
+      "item": "fantazia:obscure_substance"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "fantazia:ominous_bell"
+  }
+}

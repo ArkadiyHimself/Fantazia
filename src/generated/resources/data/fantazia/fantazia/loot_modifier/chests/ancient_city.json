@@ -1,0 +1,38 @@
+{
+  "loot_instances": [
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:heart_of_sculk"
+      },
+      "chance": 0.15
+    },
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:mystic_mirror"
+      },
+      "chance": 0.08
+    },
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:vitality_fruit"
+      },
+      "first_time": true
+    },
+    {
+      "addedInitial": {
+        "components": {
+          "fantazia:rune": "fantazia:noiseless"
+        },
+        "count": 1,
+        "id": "fantazia:rune_wielder"
+      },
+      "chance": 0.175
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/ancient_city"
+  ]
+}

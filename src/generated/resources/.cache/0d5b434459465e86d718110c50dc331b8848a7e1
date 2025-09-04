@@ -1,12 +1,12 @@
-// 1.21.1	2025-05-25T22:50:21.740866	Tags for minecraft:damage_type mod id fantazia
+// 1.21.1	2025-06-23T12:40:33.1951539	Tags for minecraft:damage_type mod id fantazia
 48f4f0d30cbe30ec11a7712e5222e5d29411059f data/fantazia/tags/damage_type/deafening.json
 276794406d27c3df7a7dc09b3b77533a639d3584 data/fantazia/tags/damage_type/electric.json
 570a241c26af85f28c92eaabf2661b3875e07357 data/fantazia/tags/damage_type/is_ancient_flame.json
-f24a1f63da3bd2ad0eb000be62b41014f73ddb75 data/fantazia/tags/damage_type/no_hurt_sound.json
 22038e79bfdc3f426e6141e7a177a4ff6fefbd22 data/fantazia/tags/damage_type/non_lethal.json
 f24a1f63da3bd2ad0eb000be62b41014f73ddb75 data/fantazia/tags/damage_type/not_shaking_screen.json
 64f6b1c6550b0b6395912fd40a10d5c5ec87fbd1 data/fantazia/tags/damage_type/not_stopping_dash.json
 f24a1f63da3bd2ad0eb000be62b41014f73ddb75 data/fantazia/tags/damage_type/not_turning_red.json
+f24a1f63da3bd2ad0eb000be62b41014f73ddb75 data/fantazia/tags/damage_type/no_hurt_sound.json
 393726a2edc881c5cc71edd4d9ba0f29e7b1a208 data/fantazia/tags/damage_type/pierces_barrier.json
 5b2a44c13df528ae38ac05919eb1da9c80283bb5 data/minecraft/tags/damage_type/bypasses_armor.json
 f24a1f63da3bd2ad0eb000be62b41014f73ddb75 data/minecraft/tags/damage_type/bypasses_cooldown.json
@@ -16,3 +16,7 @@ d42150f56732ef903f87282a11ef7f92b799a074 data/minecraft/tags/damage_type/is_free
 d4f209ad0c8f6bf910d4a306e30c0b29ea24850e data/minecraft/tags/damage_type/is_projectile.json
 93d1f7804df6e447d289d7b8a4460cff3b704caf data/minecraft/tags/damage_type/no_impact.json
 93d1f7804df6e447d289d7b8a4460cff3b704caf data/minecraft/tags/damage_type/no_knockback.json
+bf683efc7cf2b689fb15580f46e3a1cdab3973b5 data/neoforge/tags/damage_type/is_environment.json
+bf683efc7cf2b689fb15580f46e3a1cdab3973b5 data/neoforge/tags/damage_type/is_magic.json
+c63f02bbfb241d01518e0eb8c6983bf047448c5c data/neoforge/tags/damage_type/is_physical.json
+90373260509ab30ce79655ab432e73bda45f0903 data/neoforge/tags/damage_type/no_flinch.json

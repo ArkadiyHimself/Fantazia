@@ -4,11 +4,11 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.arkadiyhimself.fantazia.advanced.healing.AdvancedHealing;
-import net.arkadiyhimself.fantazia.advanced.healing.HealingSource;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
-import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
-import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.common.advanced.healing.AdvancedHealing;
+import net.arkadiyhimself.fantazia.common.advanced.healing.HealingSource;
+import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.HealingSourcesHolder;
+import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -19,8 +19,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public class AdvancedHealCommand {
+
     private AdvancedHealCommand() {}
+
     private static final SimpleCommandExceptionType ERROR_INVULNERABLE = new SimpleCommandExceptionType(Component.translatable("commands.advancedheal.invulnerable"));
+
     public static void register(CommandDispatcher<CommandSourceStack> commandDispatcher, CommandBuildContext context) {
         commandDispatcher.register(Commands.literal("advancedheal").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
                 .then(Commands.argument("target", EntityArgument.entity()).then(Commands.argument("amount", FloatArgumentType.floatArg(0)).executes(ctx -> {

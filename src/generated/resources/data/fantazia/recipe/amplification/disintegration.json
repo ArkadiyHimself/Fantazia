@@ -1,0 +1,30 @@
+{
+  "type": "fantazia:amplification",
+  "amplified": "fantazia:disintegration",
+  "fee": 20,
+  "ingredients": [
+    {
+      "item": "minecraft:experience_bottle"
+    },
+    {
+      "item": "minecraft:experience_bottle"
+    },
+    {
+      "item": "minecraft:experience_bottle"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    },
+    {
+      "item": "fantazia:amplifier"
+    }
+  ],
+  "limit": 5,
+  "wisdom": 65
+}

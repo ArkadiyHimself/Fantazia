@@ -1,0 +1,58 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.fantazia.disintegration"
+  },
+  "effects": {
+    "fantazia:equipment_drops": [
+      {
+        "effect": {
+          "reversed_predicate": {
+            "components": {
+              "fantazia:disintegrate": false
+            }
+          },
+          "tag": [
+            {
+              "expected": false,
+              "id": "fantazia:no_disintegration"
+            }
+          ],
+          "value": {
+            "type": "minecraft:linear",
+            "base": 3.0,
+            "per_level_above_first": 2.0
+          }
+        },
+        "enchanted": "attacker"
+      }
+    ],
+    "minecraft:mob_experience": [
+      {
+        "effect": {
+          "type": "minecraft:multiply",
+          "factor": {
+            "type": "minecraft:linear",
+            "base": 2.0,
+            "per_level_above_first": 0.5
+          }
+        }
+      }
+    ]
+  },
+  "exclusive_set": "#c:increase_entity_drops",
+  "max_cost": {
+    "base": 65,
+    "per_level_above_first": 9
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 9
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:enchantable/sword",
+  "weight": 2
+}

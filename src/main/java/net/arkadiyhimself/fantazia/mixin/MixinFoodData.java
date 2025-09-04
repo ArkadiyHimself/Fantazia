@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
-import net.arkadiyhimself.fantazia.api.attachment.level.holders.HealingSourcesHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.HealingSourcesHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import org.spongepowered.asm.mixin.Mixin;

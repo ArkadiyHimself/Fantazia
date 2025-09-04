@@ -1,0 +1,32 @@
+{
+  "values": {
+    "minecraft:creeper": {
+      "replace": true,
+      "value": "minecraft:creeper_head"
+    },
+    "minecraft:ender_dragon": {
+      "replace": true,
+      "value": "minecraft:dragon_head"
+    },
+    "minecraft:piglin": {
+      "replace": true,
+      "value": "minecraft:piglin_head"
+    },
+    "minecraft:player": {
+      "replace": true,
+      "value": "minecraft:player_head"
+    },
+    "minecraft:skeleton": {
+      "replace": true,
+      "value": "minecraft:skeleton_skull"
+    },
+    "minecraft:wither_skeleton": {
+      "replace": true,
+      "value": "minecraft:wither_skeleton_skull"
+    },
+    "minecraft:zombie": {
+      "replace": true,
+      "value": "minecraft:zombie_head"
+    }
+  }
+}

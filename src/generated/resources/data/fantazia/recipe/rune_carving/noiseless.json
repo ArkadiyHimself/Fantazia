@@ -1,0 +1,11 @@
+{
+  "type": "fantazia:rune_carving",
+  "fee": 9,
+  "ingredients": [
+    {
+      "item": "minecraft:sculk_shrieker"
+    }
+  ],
+  "rune": "fantazia:noiseless",
+  "wisdom": 35
+}

@@ -105,7 +105,24 @@
       }
     ]
   },
-
+  "ui.wisdom_absorb" : {
+    "subtitle" : "fantazia.subtitles.ui.wisdom_absorb",
+    "sounds" : [
+      {
+        "name" : "fantazia:ui/wisdom_transform/absorb",
+        "stream" : false
+      }
+    ]
+  },
+  "ui.wisdom_release" : {
+    "subtitle" : "fantazia.subtitles.ui.wisdom_release",
+    "sounds" : [
+      {
+        "name" : "fantazia:ui/wisdom_transform/release",
+        "stream" : false
+      }
+    ]
+  },
   "dash.dash1": {
     "subtitle" : "fantazia.subtitles.dash.dash1",
     "sounds": [
@@ -564,6 +581,15 @@
       }
     ]
   },
+  "spell.sustain.cast" : {
+    "subtitle" : "fantazia.subtitles.spell.sustain.cast",
+    "sounds" : [
+      {
+        "name" : "minecraft:mob/wither/shoot",
+        "stream" : false
+      }
+    ]
+  },
   "spell.sonic_boom.recharge" : {
     "subtitle" : "fantazia.subtitles.spell.sonic_boom.recharge",
     "sounds" : [
@@ -598,6 +624,15 @@
       },
       {
         "name" : "minecraft:block/sculk_sensor/sculk_clicking6",
+        "stream" : false
+      }
+    ]
+  },
+  "spell.ring_of_doom.cast" : {
+    "subtitle" : "fantazia.subtitles.spell.ring_of_doom.cast",
+    "sounds" : [
+      {
+        "name" : "fantazia:spell/ring_of_doom",
         "stream" : false
       }
     ]

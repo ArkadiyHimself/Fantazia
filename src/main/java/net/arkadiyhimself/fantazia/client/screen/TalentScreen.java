@@ -3,15 +3,15 @@ package net.arkadiyhimself.fantazia.client.screen;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.FTZKeyMappings;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.api.prompt.Prompts;
+import net.arkadiyhimself.fantazia.common.api.FTZKeyMappings;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.common.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentTabManager;
-import net.arkadiyhimself.fantazia.packets.IPacket;
-import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.networking.IPacket;
+import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
@@ -34,10 +34,10 @@ import java.util.Map;
 
 public class TalentScreen extends Screen {
 
-    private static final ResourceLocation DEFAULT_BACKGROUND = Fantazia.res("textures/gui/talent/background.png");
-    private static final ResourceLocation FRAME = Fantazia.res("textures/gui/talent/frame.png");
-    public static final ResourceLocation WISDOM_WIDGET = Fantazia.res("textures/gui/talent/wisdom_widget.png");
-    public static final ResourceLocation WISDOM_ICON = Fantazia.res("textures/gui/talent/wisdom.png");
+    private static final ResourceLocation DEFAULT_BACKGROUND = Fantazia.location("textures/gui/talent/background.png");
+    private static final ResourceLocation FRAME = Fantazia.location("textures/gui/talent/frame.png");
+    public static final ResourceLocation WISDOM_WIDGET = Fantazia.location("textures/gui/talent/wisdom_widget.png");
+    public static final ResourceLocation WISDOM_ICON = Fantazia.location("textures/gui/talent/wisdom.png");
 
     private static final int minX = 0;
     private static final int minY = 0;

@@ -5,20 +5,13 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.FantazicConfig;
-import net.arkadiyhimself.fantazia.advanced.aura.Aura;
-import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
-import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
-import net.arkadiyhimself.fantazia.advanced.spell.SpellInstance;
-import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.CurrentAndInitialValue;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
-import net.arkadiyhimself.fantazia.events.ClientEvents;
-import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.CurrentAndInitialValue;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
+import net.arkadiyhimself.fantazia.client.ClientEvents;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -29,30 +22,24 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
-import top.theillusivec4.curios.api.SlotResult;
-
-import java.awt.*;
-import java.util.List;
 
 public class FTZGuis {
 
     // fury effect
-    private static final ResourceLocation VEINS = Fantazia.res("textures/misc/fury/veins.png");
-    private static final ResourceLocation VEINS_BRIGHT = Fantazia.res("textures/misc/fury/veins_bright.png");
-    private static final ResourceLocation FILLING = Fantazia.res("textures/misc/fury/filling.png");
-    private static final ResourceLocation EDGES = Fantazia.res("textures/misc/fury/edges.png");
+    private static final ResourceLocation VEINS = Fantazia.location("textures/misc/fury/veins.png");
+    private static final ResourceLocation VEINS_BRIGHT = Fantazia.location("textures/misc/fury/veins_bright.png");
+    private static final ResourceLocation FILLING = Fantazia.location("textures/misc/fury/filling.png");
+    private static final ResourceLocation EDGES = Fantazia.location("textures/misc/fury/edges.png");
 
     // ancient flame
-    public static final Material ANCIENT_FLAME_0 = new Material(InventoryMenu.BLOCK_ATLAS, Fantazia.res("block/ancient_flame_0"));
-    public static final Material ANCIENT_FLAME_1 = new Material(InventoryMenu.BLOCK_ATLAS, Fantazia.res("block/ancient_flame_1"));
+    public static final Material ANCIENT_FLAME_0 = new Material(InventoryMenu.BLOCK_ATLAS, Fantazia.location("block/ancient_flame_0"));
+    public static final Material ANCIENT_FLAME_1 = new Material(InventoryMenu.BLOCK_ATLAS, Fantazia.location("block/ancient_flame_1"));
 
     // stuff
     protected static final ResourceLocation POWDER_SNOW_OUTLINE_LOCATION = ResourceLocation.withDefaultNamespace("textures/misc/powder_snow_outline.png");
@@ -98,7 +85,7 @@ public class FTZGuis {
         if (ticks <= 0 || wisdom <= 0) return;
         Component component = GuiHelper.bakeComponent("fantazia.gui.talent.wisdom_granted", new ChatFormatting[]{ChatFormatting.BLUE}, new ChatFormatting[]{ChatFormatting.DARK_BLUE}, wisdom);
         int x0 = (guiGraphics.guiWidth()) / 2;
-        int y0 = guiGraphics.guiHeight() - 48;
+        int y0 = guiGraphics.guiHeight() - 64;
         RenderSystem.enableBlend();
         float alpha = Math.min(1f, (float) ticks / 20);
         guiGraphics.setColor(1f,1f,1f,alpha);
@@ -179,14 +166,18 @@ public class FTZGuis {
         Font font = Minecraft.getInstance().font;
 
         String string1 = "DEVELOPER MODE";
-        int width1 = font.width(string1);
+        int width1 = font.width(string1) + 6;
         guiGraphics.drawString(font, string1, guiGraphics.guiWidth() - width1, 0, 16755200);
         guiGraphics.drawString(font, "Tick count: " + player.tickCount, guiGraphics.guiWidth() - width1, 10, 16755200);
         guiGraphics.drawString(font, "Inv: " + player.invulnerableTime, guiGraphics.guiWidth() - width1, 20, 16755200);
         guiGraphics.drawString(font, "Freeze: " + player.getTicksFrozen(), guiGraphics.guiWidth() - width1, 30, 16755200);
 
+        guiGraphics.drawString(font, "Current cast: " + ClientEvents.currentCast, guiGraphics.guiWidth()- width1, 40, 16755200);
+        guiGraphics.drawString(font, "Required cast: " + ClientEvents.requiredCast, guiGraphics.guiWidth()- width1, 50, 16755200);
+        guiGraphics.drawString(font, "Curio slot:" + ClientEvents.castCurioIndex, guiGraphics.guiWidth() - width1, 60, 16755200);
+
         MeleeBlockHolder meleeBlockHolder = PlayerAbilityHelper.takeHolder(player, MeleeBlockHolder.class);
-        if (meleeBlockHolder != null) {
+        if (meleeBlockHolder != null && false) {
             guiGraphics.drawString(font, "Melee block: ", guiGraphics.guiWidth() - width1, 40, 16755200);
             guiGraphics.drawString(font, "Anim: " + meleeBlockHolder.anim(), guiGraphics.guiWidth() - width1, 50, 16755200);
             guiGraphics.drawString(font, "Cooldown: " + meleeBlockHolder.blockCooldown(), guiGraphics.guiWidth() - width1, 60, 16755200);

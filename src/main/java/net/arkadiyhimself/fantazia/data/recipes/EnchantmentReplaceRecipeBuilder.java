@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.data.recipes;
 
-import net.arkadiyhimself.fantazia.recipe.EnchantmentReplaceRecipe;
+import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.data.recipe.EnchantmentReplaceRecipe;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -94,5 +95,9 @@ public class EnchantmentReplaceRecipeBuilder implements RecipeBuilder {
 
     public void save(@NotNull RecipeOutput output) {
         save(output, next.getKey().location().withPrefix("enchantment_replace/"));
+    }
+
+    public void save(@NotNull RecipeOutput output, @NotNull String name) {
+        save(output, Fantazia.location(name).withPrefix("enchantment_replace/"));
     }
 }

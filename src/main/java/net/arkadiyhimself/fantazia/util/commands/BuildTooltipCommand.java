@@ -2,8 +2,8 @@ package net.arkadiyhimself.fantazia.util.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.packets.IPacket;
+import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

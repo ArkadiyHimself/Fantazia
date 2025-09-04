@@ -2,8 +2,8 @@ package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.arkadiyhimself.fantazia.events.ClientEvents;
-import net.arkadiyhimself.fantazia.registries.FTZAttributes;
+import net.arkadiyhimself.fantazia.client.ClientEvents;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.block.ModelBlockRenderer;

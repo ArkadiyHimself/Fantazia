@@ -3,10 +3,11 @@ package net.arkadiyhimself.fantazia.client.renderers.item;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.runes.Rune;
-import net.arkadiyhimself.fantazia.api.data_component.HiddenPotentialHolder;
-import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
-import net.arkadiyhimself.fantazia.registries.FTZItems;
+import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
+import net.arkadiyhimself.fantazia.common.api.data_component.HiddenPotentialComponent;
+import net.arkadiyhimself.fantazia.common.api.data_component.WisdomTransferComponent;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -31,20 +32,23 @@ import static net.minecraft.client.renderer.entity.ItemRenderer.getFoilBufferDir
 @OnlyIn(Dist.CLIENT)
 public class FantazicItemRenderer extends BlockEntityWithoutLevelRenderer {
 
-    public static final ModelResourceLocation BLADE0 = Fantazia.modelRes("item/fragile_blade/fragile_blade_in_hand0");
-    public static final ModelResourceLocation BLADE1 = Fantazia.modelRes("item/fragile_blade/fragile_blade_in_hand1");
-    public static final ModelResourceLocation BLADE2 = Fantazia.modelRes("item/fragile_blade/fragile_blade_in_hand2");
-    public static final ModelResourceLocation BLADE3 = Fantazia.modelRes("item/fragile_blade/fragile_blade_in_hand3");
-    public static final ModelResourceLocation BLADE4 = Fantazia.modelRes("item/fragile_blade/fragile_blade_in_hand4");
-    public static final ModelResourceLocation BLADE_MODEL = Fantazia.modelRes("item/fragile_blade/fragile_blade_model");
+    public static final ModelResourceLocation BLADE0 = Fantazia.modelLocation("item/fragile_blade/fragile_blade_in_hand0");
+    public static final ModelResourceLocation BLADE1 = Fantazia.modelLocation("item/fragile_blade/fragile_blade_in_hand1");
+    public static final ModelResourceLocation BLADE2 = Fantazia.modelLocation("item/fragile_blade/fragile_blade_in_hand2");
+    public static final ModelResourceLocation BLADE3 = Fantazia.modelLocation("item/fragile_blade/fragile_blade_in_hand3");
+    public static final ModelResourceLocation BLADE4 = Fantazia.modelLocation("item/fragile_blade/fragile_blade_in_hand4");
+    public static final ModelResourceLocation BLADE_MODEL = Fantazia.modelLocation("item/fragile_blade/fragile_blade_model");
 
-    public static final ModelResourceLocation WISDOM_CATCHER_GUI = Fantazia.modelRes("item/wisdom_catcher_gui");
-    public static final ModelResourceLocation WISDOM_CATCHER_MODEL = Fantazia.modelRes("item/wisdom_catcher_model");
-    public static final ModelResourceLocation WISDOM_CATCHER_MODEL_USED = Fantazia.modelRes("item/wisdom_catcher_model_used");
+    public static final ModelResourceLocation WISDOM_CATCHER_GUI = Fantazia.modelLocation("item/wisdom_catcher/wisdom_catcher_gui");
+    public static final ModelResourceLocation WISDOM_CATCHER_MODEL = Fantazia.modelLocation("item/wisdom_catcher/wisdom_catcher_model");
+    public static final ModelResourceLocation WISDOM_CATCHER_MODEL_USED = Fantazia.modelLocation("item/wisdom_catcher/wisdom_catcher_model_used");
+    public static final ModelResourceLocation WISDOM_CATCHER_GUI_RELEASE = Fantazia.modelLocation("item/wisdom_catcher/wisdom_catcher_gui_release");
+    public static final ModelResourceLocation WISDOM_CATCHER_MODEL_RELEASE = Fantazia.modelLocation("item/wisdom_catcher/wisdom_catcher_model_release");
+    public static final ModelResourceLocation WISDOM_CATCHER_MODEL_USED_RELEASE = Fantazia.modelLocation("item/wisdom_catcher/wisdom_catcher_model_used_release");
 
-    public static final ModelResourceLocation DASHSTONE1 = Fantazia.modelRes("item/dashstone/dashstone1");
-    public static final ModelResourceLocation DASHSTONE2 = Fantazia.modelRes("item/dashstone/dashstone2");
-    public static final ModelResourceLocation DASHSTONE3 = Fantazia.modelRes("item/dashstone/dashstone3");
+    public static final ModelResourceLocation DASHSTONE1 = Fantazia.modelLocation("item/dashstone/dashstone1");
+    public static final ModelResourceLocation DASHSTONE2 = Fantazia.modelLocation("item/dashstone/dashstone2");
+    public static final ModelResourceLocation DASHSTONE3 = Fantazia.modelLocation("item/dashstone/dashstone3");
 
     public FantazicItemRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
@@ -116,7 +120,9 @@ public class FantazicItemRenderer extends BlockEntityWithoutLevelRenderer {
         pPoseStack.pushPose();
         BakedModel model;
         if (gui) {
-            model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(WISDOM_CATCHER_GUI);
+            WisdomTransferComponent component = pStack.get(FTZDataComponentTypes.WISDOM_TRANSFER);
+            ModelResourceLocation location = component == WisdomTransferComponent.RELEASE ? WISDOM_CATCHER_GUI_RELEASE : WISDOM_CATCHER_GUI;
+            model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(location);
             RenderType type = RenderTypeHelper.getFallbackItemRenderType(pStack, model, true);
             VertexConsumer vertexconsumer = getFoilBufferDirect(pBuffer, type, true, pStack.hasFoil());
             Minecraft.getInstance().getItemRenderer().renderModelLists(model, pStack, pPackedLight, pPackedOverlay, pPoseStack, vertexconsumer);
@@ -132,22 +138,28 @@ public class FantazicItemRenderer extends BlockEntityWithoutLevelRenderer {
         ClientLevel level = Minecraft.getInstance().level;
         if (player == null || level == null) return;
 
-        ModelResourceLocation location = player.isUsingItem() && player.getUseItem() == pStack ? WISDOM_CATCHER_MODEL_USED : WISDOM_CATCHER_MODEL;
+        WisdomTransferComponent component = pStack.get(FTZDataComponentTypes.WISDOM_TRANSFER);
+        boolean usingItem = player.isUsingItem() && player.getUseItem() == pStack;
+        ModelResourceLocation location = usingItem ? WISDOM_CATCHER_MODEL_USED : WISDOM_CATCHER_MODEL;
+        if (component == WisdomTransferComponent.RELEASE) {
+            location = usingItem ? WISDOM_CATCHER_MODEL_USED_RELEASE : WISDOM_CATCHER_MODEL_RELEASE;
+        }
         BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(location);
         pPoseStack.translate(0.5f,0.5f,0.5f);
         Minecraft.getInstance().getItemRenderer().render(pStack, pDisplayContext, pDisplayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND, pPoseStack, pBuffer, pPackedLight, pPackedOverlay, model);
     }
 
     private static void renderWisdomCatcherThirdPerson(ItemStack pStack, @NotNull ItemDisplayContext pDisplayContext, @NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(WISDOM_CATCHER_MODEL);
+        WisdomTransferComponent component = pStack.get(FTZDataComponentTypes.WISDOM_TRANSFER);
+        BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getModelManager().getModel(component == WisdomTransferComponent.RELEASE ? WISDOM_CATCHER_MODEL_RELEASE : WISDOM_CATCHER_MODEL);
         pPoseStack.translate(0.5f,0.5f,0.5f);
         Minecraft.getInstance().getItemRenderer().render(pStack, pDisplayContext, pDisplayContext == ItemDisplayContext.FIRST_PERSON_LEFT_HAND, pPoseStack, pBuffer, pPackedLight, pPackedOverlay, model);
     }
 
     private static ModelResourceLocation getFragBladeModel(ItemStack stack) {
-        HiddenPotentialHolder hiddenPotentialHolder = stack.get(FTZDataComponentTypes.HIDDEN_POTENTIAL);
-        if (hiddenPotentialHolder == null) return BLADE0;
-        else return switch (hiddenPotentialHolder.damageLevel()) {
+        HiddenPotentialComponent hiddenPotentialComponent = stack.get(FTZDataComponentTypes.HIDDEN_POTENTIAL);
+        if (hiddenPotentialComponent == null) return BLADE0;
+        else return switch (hiddenPotentialComponent.damageLevel()) {
             case STARTING -> BLADE0;
             case LOW -> BLADE1;
             case MEDIUM -> BLADE2;

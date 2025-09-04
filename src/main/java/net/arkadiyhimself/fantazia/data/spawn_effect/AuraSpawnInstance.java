@@ -2,9 +2,9 @@ package net.arkadiyhimself.fantazia.data.spawn_effect;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.advanced.aura.Aura;
-import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.advanced.aura.Aura;
+import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

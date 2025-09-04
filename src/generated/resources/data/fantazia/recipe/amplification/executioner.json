@@ -1,0 +1,14 @@
+{
+  "type": "fantazia:amplification",
+  "amplified": "fantazia:executioner",
+  "fee": 25,
+  "ingredients": [
+    {
+      "item": "fantazia:amplifier"
+    },
+    {
+      "tag": "minecraft:skulls"
+    }
+  ],
+  "wisdom": 90
+}

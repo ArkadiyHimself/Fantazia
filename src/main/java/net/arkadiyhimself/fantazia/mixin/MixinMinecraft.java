@@ -1,24 +1,29 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
-import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.VibrationListenerHolder;
-import net.arkadiyhimself.fantazia.entities.DashStone;
-import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
-import net.arkadiyhimself.fantazia.entities.magic_projectile.AbstractMagicProjectile;
-import net.arkadiyhimself.fantazia.events.ClientEvents;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.arkadiyhimself.fantazia.registries.custom.Auras;
+import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
+import net.arkadiyhimself.fantazia.common.advanced.aura.AuraInstance;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.VibrationListenerHolder;
+import net.arkadiyhimself.fantazia.common.entity.DashStone;
+import net.arkadiyhimself.fantazia.common.entity.ThrownHatchet;
+import net.arkadiyhimself.fantazia.common.entity.magic_projectile.AbstractMagicProjectile;
+import net.arkadiyhimself.fantazia.client.ClientEvents;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Arrow;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -57,18 +62,23 @@ public abstract class MixinMinecraft {
     @Inject(at = @At("HEAD"), method = "shouldEntityAppearGlowing", cancellable = true)
     private void glowing(Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
         if (player == null || pEntity == player) return;
+        boolean lineOfSight = player.hasLineOfSight(pEntity);
         if (pEntity instanceof ThrownHatchet hatchet && hatchet.getOwner() == player) cir.setReturnValue(true);
         if (pEntity instanceof AbstractMagicProjectile projectile && projectile.getOwnerClient() == player) cir.setReturnValue(true);
         else if (pEntity instanceof LivingEntity livingEntity) {
-            if (LivingEffectHelper.hasEffect(livingEntity, FTZMobEffects.FURY.value()) && player.hasLineOfSight(pEntity)) cir.setReturnValue(true);
+            if (LivingEffectHelper.hasEffect(livingEntity, FTZMobEffects.FURY.value()) && lineOfSight) cir.setReturnValue(true);
 
             VibrationListenerHolder vibrationListenerHolder = PlayerAbilityHelper.takeHolder(player, VibrationListenerHolder.class);
             if (vibrationListenerHolder != null && vibrationListenerHolder.isRevealed(livingEntity)) cir.setReturnValue(true);
 
             if (pEntity == ClientEvents.suitableTarget && Screen.hasShiftDown()) cir.setReturnValue(true);
+        } else if (pEntity instanceof ExperienceOrb && FantazicUtil.holdsDataComponent(player, FTZDataComponentTypes.WISDOM_TRANSFER.value())) {
+            if (pEntity.distanceTo(player) <= 20) cir.setReturnValue(true);
+        } else if (pEntity instanceof Arrow arrow) {
+            if (arrow.getData(FTZAttachmentTypes.HAS_FURY) && lineOfSight) cir.setReturnValue(true);
         }
         AuraInstance uncover = AuraHelper.ownedAuraInstance(player, Auras.UNCOVER);
-        if (uncover != null && uncover.isInside(pEntity)) cir.setReturnValue(true);
+        if (uncover != null && uncover.isInside(pEntity) && uncover.matchesFilter(pEntity)) cir.setReturnValue(true);
 
         DashHolder holder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
         if (holder != null) {

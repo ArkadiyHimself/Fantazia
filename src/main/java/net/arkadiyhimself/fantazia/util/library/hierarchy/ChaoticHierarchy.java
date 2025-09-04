@@ -48,7 +48,7 @@ public class ChaoticHierarchy<T> extends ChainHierarchy<T> {
     }
 
     /**
-     * Since this hierarchy is not supposed to have an order, duplicating and null values provided by transformer are ignored and do not cause an error to occur
+     * Since this hierarchy is not supposed to have an order, duplicating and null values provided by transformer are tagPredicates and do not cause an error to occur
      */
     @Override
     public <M> ChaoticHierarchy<M> transform(@NotNull Function<T, M> transformer) {

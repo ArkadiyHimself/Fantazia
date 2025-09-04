@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.data.FTZCodecs;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
-import net.arkadiyhimself.fantazia.datagen.talent_reload.hierarchy.TalentHierarchyHolder;
+import net.arkadiyhimself.fantazia.data.datagen.talent_reload.hierarchy.TalentHierarchyHolder;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.resources.ResourceLocation;

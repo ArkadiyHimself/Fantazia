@@ -31,6 +31,6 @@ public class FTZRenderTypes {
                 .setDepthTestState(RenderStateShard.EQUAL_DEPTH_TEST)
                 .setTransparencyState(RenderStateShard.GLINT_TRANSPARENCY)
                 .setTexturingState(RenderStateShard.GLINT_TEXTURING).createCompositeState(false);
-        return RenderType.create(Fantazia.res("custom_glint").toString(), DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 1536, true, false, compositeState);
+        return RenderType.create(Fantazia.location("custom_glint").toString(), DefaultVertexFormat.POSITION_TEX, VertexFormat.Mode.QUADS, 1536, true, false, compositeState);
     }
 }

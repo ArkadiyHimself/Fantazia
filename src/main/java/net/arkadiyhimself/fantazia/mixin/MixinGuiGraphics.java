@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
-import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;

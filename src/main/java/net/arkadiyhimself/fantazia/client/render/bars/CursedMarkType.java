@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 public class CursedMarkType extends RenderStateShard {
-    public static final ResourceLocation CURSE_MARK = Fantazia.res("textures/render_above/curse_warning.png");
+    public static final ResourceLocation CURSE_MARK = Fantazia.location("textures/render_above/curse_warning.png");
     public static final RenderType CURSE_WARNING_TYPE = curseWarningType();
     public CursedMarkType(String pName, Runnable pSetupState, Runnable pClearState) {
         super(pName, pSetupState, pClearState);

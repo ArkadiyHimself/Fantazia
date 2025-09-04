@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.Entity;
@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
-    @Inject(at = @At("HEAD"), method = "bobHurt", cancellable = true)
+    //@Inject(at = @At("HEAD"), method = "bobHurt", cancellable = true)
     private void bobHurt(PoseStack pPoseStack, float pPartialTicks, CallbackInfo ci) {
         Entity entity = Minecraft.getInstance().getCameraEntity();
         if (entity instanceof LivingEntity livingEntity) {

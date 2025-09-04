@@ -1,0 +1,30 @@
+{
+  "type": "fantazia:amplification",
+  "amplified": "minecraft:unbreaking",
+  "fee": 25,
+  "ingredients": [
+    {
+      "item": "fantazia:amplifier"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "fantazia:fantazium_ingot"
+    },
+    {
+      "item": "fantazia:fantazium_ingot"
+    },
+    {
+      "item": "minecraft:obsidian"
+    },
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "limit": 5,
+  "wisdom": 50
+}

@@ -1,0 +1,18 @@
+{
+  "damage_type": {
+    "damage_types": [
+      "minecraft:lightning_bolt"
+    ]
+  },
+  "mob_effect_instances": [
+    {
+      "duration": 100,
+      "id": "fantazia:electrocuted",
+      "neoforge:cures": [
+        "protected_by_totem",
+        "milk"
+      ],
+      "show_icon": true
+    }
+  ]
+}

@@ -12,11 +12,11 @@ import net.arkadiyhimself.fantazia.integration.jei.categories.AmplificationCateg
 import net.arkadiyhimself.fantazia.integration.jei.categories.EnchantmentReplaceCategory;
 import net.arkadiyhimself.fantazia.integration.jei.categories.RuneCarvingCategory;
 import net.arkadiyhimself.fantazia.integration.jei.categories.wisdom_reward.*;
-import net.arkadiyhimself.fantazia.integration.jei.custom_ingredient.WisdomIngredientType;
-import net.arkadiyhimself.fantazia.items.WisdomCatcherItem;
-import net.arkadiyhimself.fantazia.registries.FTZBlocks;
-import net.arkadiyhimself.fantazia.registries.FTZItems;
+import net.arkadiyhimself.fantazia.common.item.WisdomCatcherItem;
+import net.arkadiyhimself.fantazia.common.registries.FTZBlocks;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -55,13 +55,13 @@ public class FantazicJEIPlugin implements IModPlugin {
         registration.addRecipes(WisdomConsumingRewardCategory.DUMMY, IWisdomRewardCategory.getConsumed());
         registration.addRecipes(WisdomTamedRewardCategory.DUMMY, IWisdomRewardCategory.getTamed());
 
-        registration.addIngredientInfo(new ItemStack(FTZItems.OBSCURE_SUBSTANCE.asItem()), VanillaTypes.ITEM_STACK, FTZItems.OBSCURE_SUBSTANCE.asItem().getDescription());
+        registration.addIngredientInfo(new ItemStack(FTZItems.OBSCURE_SUBSTANCE.asItem()), VanillaTypes.ITEM_STACK, Component.translatable("fantazia.jei.info.obscure_substance"));
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(FTZBlocks.AMPLIFICATION_BENCH), JEIRecipeTypes.AMPLIFICATION, JEIRecipeTypes.ENCHANTMENT_REPLACE, JEIRecipeTypes.RUNE_CARVING);
-        registration.addRecipeCatalyst(WisdomCatcherItem.itemStack(), WisdomConvertingCategory.DUMMY, WisdomSlayingRewardCategory.DUMMY, WisdomCraftingRewardCategory.DUMMY, WisdomBrewingRewardCategory.DUMMY, WisdomConsumingRewardCategory.DUMMY, WisdomTamedRewardCategory.DUMMY);
+        registration.addRecipeCatalyst(FTZItems.WISDOM_CATCHER.toStack(), WisdomConvertingCategory.DUMMY, WisdomSlayingRewardCategory.DUMMY, WisdomCraftingRewardCategory.DUMMY, WisdomBrewingRewardCategory.DUMMY, WisdomConsumingRewardCategory.DUMMY, WisdomTamedRewardCategory.DUMMY);
 
     }
 
@@ -74,7 +74,7 @@ public class FantazicJEIPlugin implements IModPlugin {
 
     @Override
     public ResourceLocation getPluginUid() {
-        return Fantazia.res("jei_plugin");
+        return Fantazia.location("jei_plugin");
     }
 
     public RecipeType<?>[] getWisdomPairs() {

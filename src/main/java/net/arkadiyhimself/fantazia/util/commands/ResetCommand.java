@@ -1,11 +1,11 @@
 package net.arkadiyhimself.fantazia.util.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
-import net.arkadiyhimself.fantazia.api.attachment.level.LevelAttributesHelper;
-import net.arkadiyhimself.fantazia.api.attachment.level.holders.EffectsSpawnAppliersHolder;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
+import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.EffectsSpawnAppliersHolder;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerLevel;
@@ -62,6 +62,13 @@ public class ResetCommand {
                 .then(Commands.literal("prompts").executes(context -> {
                     Player player = context.getSource().getPlayer();
                     if (player != null) player.getData(FTZAttachmentTypes.USED_PROMPTS).clear();
+                    return 1;
+                }))
+                .then(Commands.literal("experience").executes(context -> {
+                    if (context.getSource().getPlayer() instanceof ServerPlayer player) {
+                        player.setExperienceLevels(0);
+                        player.setExperiencePoints(0);
+                    }
                     return 1;
                 })));
     }

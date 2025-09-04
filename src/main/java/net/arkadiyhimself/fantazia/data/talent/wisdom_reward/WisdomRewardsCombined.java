@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.data.talent.wisdom_reward;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.datagen.talent_reload.wisdom_reward.WisdomRewardsCombinedHolder;
+import net.arkadiyhimself.fantazia.data.datagen.talent_reload.wisdom_reward.WisdomRewardsCombinedHolder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;

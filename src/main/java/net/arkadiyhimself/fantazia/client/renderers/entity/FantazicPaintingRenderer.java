@@ -23,7 +23,7 @@ import net.minecraft.world.entity.decoration.PaintingVariant;
 
 public class FantazicPaintingRenderer extends PaintingRenderer {
 
-    private static final ResourceLocation BACK_TEXTURE_ATLAS_LOCATION = Fantazia.res("back");
+    private static final ResourceLocation BACK_TEXTURE_ATLAS_LOCATION = Fantazia.location("back");
 
     public FantazicPaintingRenderer(EntityRendererProvider.Context context) {
         super(context);

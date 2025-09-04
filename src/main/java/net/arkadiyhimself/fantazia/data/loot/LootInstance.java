@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.data.loot;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.util.library.concept_of_consistency.ConCosInstance;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -51,7 +52,7 @@ public class LootInstance {
     public CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
 
-        if (!added.isEmpty()) tag.put("added", added.save(provider));
+        if (!added.isEmpty()) tag.put("addedInitial", added.save(provider));
         if (replaced != null) {
             ResourceLocation replacedID = BuiltInRegistries.ITEM.getKey(replaced);
             tag.putString("replaced", replacedID.toString());
@@ -65,7 +66,7 @@ public class LootInstance {
 
     public static LootInstance deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
 
-        ItemStack added = ItemStack.parseOptional(provider, tag.getCompound("added"));
+        ItemStack added = ItemStack.parseOptional(provider, tag.getCompound("addedInitial"));
 
         ConCosInstance conCosInstance = ConCosInstance.deserialize(tag.getCompound("random"));
         Item replaced = null;
@@ -78,49 +79,51 @@ public class LootInstance {
         return new LootInstance(added, conCosInstance, replaced, firstTime, looted);
     }
 
-    public record Builder(ItemStack item, double chance, ResourceLocation replaced, boolean firstTime) {
+    public record Builder(ItemStack item, double chance, ResourceLocation replaced, boolean firstTime, boolean disintegrate) {
 
         public static final Codec<Builder> CODEC = RecordCodecBuilder.create(builderInstance -> builderInstance.group(
-                ItemStack.CODEC.fieldOf("added").forGetter(Builder::item),
+                ItemStack.CODEC.fieldOf("addedInitial").forGetter(Builder::item),
                 Codec.DOUBLE.optionalFieldOf("chance", 1.0).forGetter(Builder::chance),
                 ResourceLocation.CODEC.lenientOptionalFieldOf("replaced", BuiltInRegistries.ITEM.getKey(Items.AIR)).forGetter(Builder::replaced),
-                Codec.BOOL.optionalFieldOf("first_time", false).forGetter(Builder::firstTime)
+                Codec.BOOL.optionalFieldOf("first_time", false).forGetter(Builder::firstTime),
+                Codec.BOOL.optionalFieldOf("disintegrate", false).forGetter(Builder::disintegrate)
         ).apply(builderInstance, Builder::new));
 
         public static Builder of(Item item, double chance, Item replaced, boolean firstTime) {
-            return new Builder(new ItemStack(item), chance, BuiltInRegistries.ITEM.getKey(replaced), firstTime);
+            return new Builder(new ItemStack(item), chance, BuiltInRegistries.ITEM.getKey(replaced), firstTime, false);
         }
 
         public static Builder of(Item item, double chance, Item replaced) {
-            return new Builder(new ItemStack(item), chance, BuiltInRegistries.ITEM.getKey(replaced), false);
+            return new Builder(new ItemStack(item), chance, BuiltInRegistries.ITEM.getKey(replaced), false, false);
         }
 
         public static Builder of(Item item, double chance, boolean firstTime) {
-            return new Builder(new ItemStack(item), chance, BuiltInRegistries.ITEM.getKey(Items.AIR), firstTime);
+            return new Builder(new ItemStack(item), chance, BuiltInRegistries.ITEM.getKey(Items.AIR), firstTime, false);
         }
 
         public static Builder of(Item item, double chance) {
-            return new Builder(new ItemStack(item), chance, BuiltInRegistries.ITEM.getKey(Items.AIR), false);
+            return new Builder(new ItemStack(item), chance, BuiltInRegistries.ITEM.getKey(Items.AIR), false, false);
         }
 
         public static Builder of(ItemStack item, double chance, Item replaced, boolean firstTime) {
-            return new Builder(item, chance, BuiltInRegistries.ITEM.getKey(replaced), firstTime);
+            return new Builder(item, chance, BuiltInRegistries.ITEM.getKey(replaced), firstTime, false);
         }
 
         public static Builder of(ItemStack item, double chance, Item replaced) {
-            return new Builder(item, chance, BuiltInRegistries.ITEM.getKey(replaced), false);
+            return new Builder(item, chance, BuiltInRegistries.ITEM.getKey(replaced), false, false);
         }
 
         public static Builder of(ItemStack item, double chance, boolean firstTime) {
-            return new Builder(item, chance, BuiltInRegistries.ITEM.getKey(Items.AIR), firstTime);
+            return new Builder(item, chance, BuiltInRegistries.ITEM.getKey(Items.AIR), firstTime, false);
         }
 
         public static Builder of(ItemStack item, double chance) {
-            return new Builder(item, chance, BuiltInRegistries.ITEM.getKey(Items.AIR), false);
+            return new Builder(item, chance, BuiltInRegistries.ITEM.getKey(Items.AIR), false, false);
         }
 
         public LootInstance build() {
-                return new LootInstance(item, new ConCosInstance(chance), replaced, firstTime);
-            }
+            if (!disintegrate) item.set(FTZDataComponentTypes.DISINTEGRATE, false);
+            return new LootInstance(item, new ConCosInstance(chance), replaced, firstTime);
         }
+    }
 }

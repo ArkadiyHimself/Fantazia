@@ -1,0 +1,29 @@
+{
+  "category": "fantazia:slayed",
+  "rewards": {
+    "minecraft:cat": {
+      "reward": 0
+    },
+    "minecraft:ender_dragon": {
+      "reward": 25
+    },
+    "minecraft:ravager": {
+      "reward": 10
+    },
+    "minecraft:villager": {
+      "reward": 0
+    },
+    "minecraft:wandering_trader": {
+      "reward": 100
+    },
+    "minecraft:warden": {
+      "reward": 0
+    },
+    "minecraft:wither": {
+      "reward": 25
+    },
+    "minecraft:wolf": {
+      "reward": 0
+    }
+  }
+}

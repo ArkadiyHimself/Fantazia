@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.CurrentAndInitialValue;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.CurrentAndInitialValue;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -13,7 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class SnowCrystalType extends RenderStateShard {
-    public static final ResourceLocation SNOW_CRYSTAL = Fantazia.res("textures/render_above/snow_crystal.png");
+    public static final ResourceLocation SNOW_CRYSTAL = Fantazia.location("textures/render_above/snow_crystal.png");
     public static final RenderType SNOW_CRYSTAL_TYPE = snowCrystalType();
     public SnowCrystalType(String pName, Runnable pSetupState, Runnable pClearState) {super(pName, pSetupState, pClearState);}
     private static RenderType snowCrystalType() {

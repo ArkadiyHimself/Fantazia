@@ -1,5 +1,7 @@
 package net.arkadiyhimself.fantazia.util.library.concept_of_consistency;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +18,17 @@ import net.minecraft.nbt.CompoundTag;
  */
 
 public class ConCosInstance {
+
+    public static final Codec<ConCosInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            Codec.DOUBLE.fieldOf("chance").forGetter(cosCon -> cosCon.chance),
+            Codec.INT.fieldOf("fails").forGetter(cosCon -> cosCon.fails)
+    ).apply(instance, ConCosInstance::decode));
+
+    private static ConCosInstance decode(double chance, int fails) {
+        ConCosInstance instance = new ConCosInstance(chance);
+        instance.fails = fails;
+        return instance;
+    }
 
     private final double chance;
     private final double initialChance;

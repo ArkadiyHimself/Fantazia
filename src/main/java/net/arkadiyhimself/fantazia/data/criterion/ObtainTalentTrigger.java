@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.data.criterion;
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.predicate.TalentPredicate;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.minecraft.advancements.Criterion;

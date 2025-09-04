@@ -3,12 +3,11 @@ package net.arkadiyhimself.fantazia.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.basis_attachments.LocationHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.LocationHolder;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.packets.IPacket;
-import net.arkadiyhimself.fantazia.particless.options.EntityChasingParticleOption;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.networking.IPacket;
+import net.arkadiyhimself.fantazia.client.particless.options.EntityChasingParticleOption;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -111,7 +110,7 @@ public class VisualHelper {
     public static void fireVertex(PoseStack.Pose pMatrixEntry, VertexConsumer pBuffer, float pX, float pY, float pZ, float pTexU, float pTexV) {
         pBuffer.addVertex(pMatrixEntry.pose(), pX, pY, pZ).setColor(255, 255, 255, 255).setUv(pTexU, pTexV).setUv1(0, 10).setLight(240).setNormal(pMatrixEntry.copy(), 0.0F, 1.0F, 0.0F);
     }
-    public static void renderAncientFlame(PoseStack poseStack, LivingEntity entity, MultiBufferSource buffers) {
+    public static void renderAncientFlame(PoseStack poseStack, Entity entity, MultiBufferSource buffers) {
         poseStack.pushPose();
         TextureAtlasSprite textureatlassprite0 = FTZGuis.ANCIENT_FLAME_0.sprite();
         TextureAtlasSprite textureatlassprite1 = FTZGuis.ANCIENT_FLAME_1.sprite();
@@ -243,7 +242,7 @@ public class VisualHelper {
     public static void wanderersSpiritParticles() {
         ClientLevel level = Minecraft.getInstance().level;
         LocalPlayer player = Minecraft.getInstance().player;
-        if (level == null || player == null) return;
+        if (level == null || player == null || Minecraft.getInstance().isPaused()) return;
         LocationHolder locationHolder = player.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION);
         Vec3 pos = locationHolder.position();
         if (locationHolder.empty() || !locationHolder.isIn(level) || !level.isLoaded(BlockPos.containing(pos))) return;

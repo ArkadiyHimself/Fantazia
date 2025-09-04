@@ -4,8 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
-import net.arkadiyhimself.fantazia.world.inventory.AmplificationMenu;
-import net.arkadiyhimself.fantazia.world.inventory.AmplifyInitialContainer;
+import net.arkadiyhimself.fantazia.common.world.inventory.AmplificationMenu;
+import net.arkadiyhimself.fantazia.common.world.inventory.AmplifyInitialContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -23,7 +23,7 @@ import java.util.List;
 
 public class AmplificationScreen extends AbstractContainerScreen<AmplificationMenu> {
 
-    private static final ResourceLocation AMPLIFICATION_BENCH_LOCATION = Fantazia.res("textures/gui/container/amplification_bench.png");
+    private static final ResourceLocation AMPLIFICATION_BENCH_LOCATION = Fantazia.location("textures/gui/container/amplification_bench.png");
 
     public AmplificationScreen(AmplificationMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -84,7 +84,9 @@ public class AmplificationScreen extends AbstractContainerScreen<AmplificationMe
             } catch (NumberFormatException ignored) {}
             if (lines > 0) {
                 for (int i = 1; i <= lines; i++) components.add(Component.translatable(basicPath + "." + i).withStyle(redText ? ChatFormatting.RED : ChatFormatting.BLUE));
-                if (Screen.hasShiftDown() || redText) RenderBuffers.NO_TOOLTIP_GAP = true;
+                if (Screen.hasShiftDown() || redText) {
+                    RenderBuffers.NO_TOOLTIP_GAP = true;
+                }
                 guiGraphics.pose().pushPose();
                 guiGraphics.pose().translate(0,0,500);
                 guiGraphics.renderComponentTooltip(font, components, mouseX, mouseY);

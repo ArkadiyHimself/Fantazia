@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.datagen.effect_spawn_applier.EffectSpawnApplierHolder;
+import net.arkadiyhimself.fantazia.data.datagen.effect_spawn_applier.EffectSpawnApplierHolder;
 import net.arkadiyhimself.fantazia.util.library.concept_of_consistency.ConCosInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;

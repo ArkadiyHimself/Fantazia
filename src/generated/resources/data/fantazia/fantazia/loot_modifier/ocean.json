@@ -1,0 +1,28 @@
+{
+  "loot_instances": [
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:caught_thunder"
+      },
+      "chance": 0.125
+    },
+    {
+      "addedInitial": {
+        "components": {
+          "fantazia:rune": "fantazia:aquatic"
+        },
+        "count": 1,
+        "id": "fantazia:rune_wielder"
+      },
+      "chance": 0.25
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/underwater_ruin_small",
+    "minecraft:chests/underwater_ruin_big",
+    "minecraft:chests/shipwreck_supply",
+    "minecraft:chests/shipwreck_treasure",
+    "minecraft:chests/buried_treasure"
+  ]
+}

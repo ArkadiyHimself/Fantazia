@@ -6,7 +6,7 @@ logoFile="logo.png"
 [[mods]]
 
 modId="fantazia"
-version="2.3.0-NEOFORGE"
+version="2.3.5-NEOFORGE"
 displayName="Fantazia"
 
 displayURL = 'https://www.curseforge.com/minecraft/mc-mods/fantazia'

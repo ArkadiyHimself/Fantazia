@@ -8,7 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentDataException;
 import net.minecraft.advancements.AdvancementHolder;

@@ -1,39 +1,65 @@
 package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.advanced.runes.Rune;
-import net.arkadiyhimself.fantazia.api.curio.FTZSlots;
-import net.arkadiyhimself.fantazia.items.casters.AuraCasterItem;
-import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
-import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
-import net.arkadiyhimself.fantazia.registries.FTZEnchantments;
-import net.arkadiyhimself.fantazia.registries.FTZItems;
+import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
+import net.arkadiyhimself.fantazia.common.api.curio.FTZSlots;
+import net.arkadiyhimself.fantazia.common.enchantment.effects.ConvertLootToExp;
+import net.arkadiyhimself.fantazia.common.enchantment.effects.RandomChanceOccurrence;
+import net.arkadiyhimself.fantazia.common.item.casters.AuraCasterItem;
+import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataMapTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZEnchantments;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
+import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentEffectComponentTypes;
 import net.minecraft.Util;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.FireworkExplosion;
 import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.TargetedConditionalEffect;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotPredicate;
@@ -172,21 +198,6 @@ public class FantazicUtil {
         return curiosItemHandler.findCurio(ident, id);
     }
 
-    public static List<Holder<Rune>> findRunes(LivingEntity entity) {
-        List<SlotResult> slotResults = findAllCurios(entity, FTZSlots.RUNE);
-        if (slotResults.isEmpty()) return Lists.newArrayList();
-        List<Holder<Rune>> runes = Lists.newArrayList();
-        for (SlotResult slotResult : slotResults) {
-            Holder<Rune> holder = slotResult.stack().get(FTZDataComponentTypes.RUNE);
-            if (holder != null) runes.add(holder);
-        }
-        return runes;
-    }
-
-    public static boolean hasRune(LivingEntity entity, Holder<Rune> rune) {
-        return findRunes(entity).contains(rune);
-    }
-
     public static ItemPredicate itemTagPredicate(TagKey<Item> tagKey) {
         return ItemPredicate.Builder.item().of(tagKey).build();
     }
@@ -219,8 +230,96 @@ public class FantazicUtil {
         return itemStack;
     }
 
-    public static int getCasterAmplifier(ItemStack stack, HolderLookup.Provider provider) {
-        Optional<Holder.Reference<Enchantment>> reference = provider.holder(FTZEnchantments.AMPLIFICATION);
-        return reference.map(stack::getEnchantmentLevel).orElse(0);
+    // credit to Aizirstal for those helpers
+    public static int getPlayerXP(Player player) {
+        return (int) (getExperienceForLevel(player.experienceLevel) + player.experienceProgress * player.getXpNeededForNextLevel());
+    }
+
+    public static void drainPlayerXP(Player player, int amount) {
+        addPlayerXP(player, -amount);
+    }
+
+    public static void addPlayerXP(Player player, int amount) {
+        PlayerXpEvent.XpChange eventXP = new PlayerXpEvent.XpChange(player, amount);
+        NeoForge.EVENT_BUS.post(eventXP);
+        if (eventXP.isCanceled()) return;
+
+        amount = eventXP.getAmount();
+
+        int oldLevel = player.experienceLevel;
+        int newLevel = getLevelForExperience(getPlayerXP(player) + amount);
+        int experience = getPlayerXP(player) + amount;
+
+        if (oldLevel != newLevel) {
+            PlayerXpEvent.LevelChange eventLvl = new PlayerXpEvent.LevelChange(player, newLevel - oldLevel);
+            NeoForge.EVENT_BUS.post(eventLvl);
+            if (eventLvl.isCanceled()) return;
+            int remainder = experience - getExperienceForLevel(newLevel);
+
+            newLevel = oldLevel + eventLvl.getLevels();
+            amount = getExperienceForLevel(newLevel) - getExperienceForLevel(oldLevel) + remainder;
+        }
+
+        player.totalExperience = experience;
+        player.experienceLevel = getLevelForExperience(experience);
+        int expForLevel = getExperienceForLevel(player.experienceLevel);
+        player.experienceProgress = (float) (experience - expForLevel) / (float) player.getXpNeededForNextLevel();
+    }
+
+    public static int getExperienceForLevel(int level) {
+        if (level <= 0) return 0;
+
+        if (level < 17) return (level * level + 6 * level);
+        else if (level < 32) return (int) (2.5 * level * level - 40.5 * level + 360);
+        else return (int) (4.5 * level * level - 162.5 * level + 2220);
+    }
+
+    public static int getLevelForExperience(int experience) {
+        if (experience <= 0) return 0;
+
+        int i = 0;
+        while (getExperienceForLevel(i) <= experience) i++;
+
+        return i - 1;
+    }
+
+    public static boolean holdsDataComponent(LivingEntity entity, DataComponentType<?> type) {
+        return entity.getMainHandItem().has(type) || entity.getOffhandItem().has(type);
+    }
+
+    public static PotionContents getPotionContents(Arrow arrow) {
+        ItemStack stack = arrow.getPickupItemStackOrigin();
+        return stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+    }
+
+    public static boolean hasEffect(Arrow arrow, Holder<MobEffect> effect) {
+        PotionContents contents = getPotionContents(arrow);
+        for (MobEffectInstance instance : contents.getAllEffects())
+            if (instance.is(effect)) return true;
+        return false;
+    }
+
+    public static boolean isColliding(Entity entity, BlockPos pos, BlockState state, AABB aabb) {
+        VoxelShape voxelShape = state.getCollisionShape(entity.level(), pos, CollisionContext.of(entity));
+        VoxelShape voxelShape1 = voxelShape.move(pos.getX(), pos.getY(), pos.getZ());
+        return Shapes.joinIsNotEmpty(voxelShape1, Shapes.create(aabb), BooleanOp.AND);
+    }
+
+    public static boolean dropSkull(ServerLevel serverLevel, ItemStack weapon, LivingEntity target, DamageSource source) {
+        MutableBoolean mutableBoolean = new MutableBoolean(false);
+        EnchantmentHelper.runIterationOnItem(weapon, (holder, level) -> {
+            LootContext lootContext = Enchantment.damageContext(serverLevel, level, target, source);
+            Enchantment enchantment = holder.value();
+            for (TargetedConditionalEffect<RandomChanceOccurrence> conditionalEffect : enchantment.getEffects(FTZEnchantmentEffectComponentTypes.DECAPITATION.value())) {
+                if (conditionalEffect.matches(lootContext) && conditionalEffect.effect().attempt(level, target.getRandom())) mutableBoolean.setTrue();
+            }
+        });
+
+        return mutableBoolean.booleanValue();
+    }
+
+    public static @Nullable Item getSkull(Entity entity) {
+        Optional<ResourceKey<EntityType<?>>> key = BuiltInRegistries.ENTITY_TYPE.getResourceKey(entity.getType());
+        return key.map(entityTypeResourceKey -> BuiltInRegistries.ENTITY_TYPE.getData(FTZDataMapTypes.SKULLS, entityTypeResourceKey)).orElse(null);
     }
 }

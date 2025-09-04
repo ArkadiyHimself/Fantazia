@@ -4,20 +4,22 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.FantazicConfig;
-import net.arkadiyhimself.fantazia.advanced.aura.Aura;
-import net.arkadiyhimself.fantazia.advanced.aura.AuraHelper;
-import net.arkadiyhimself.fantazia.advanced.aura.AuraInstance;
-import net.arkadiyhimself.fantazia.advanced.spell.SpellInstance;
-import net.arkadiyhimself.fantazia.advanced.spell.types.AbstractSpell;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.CurrentAndInitialValue;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.*;
+import net.arkadiyhimself.fantazia.client.ClientEvents;
+import net.arkadiyhimself.fantazia.common.advanced.aura.Aura;
+import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
+import net.arkadiyhimself.fantazia.common.advanced.aura.AuraInstance;
+import net.arkadiyhimself.fantazia.common.advanced.spell.SpellInstance;
+import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.CurrentAndInitialValue;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.StunEffectHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.items.casters.SpellCasterItem;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.data.tags.FTZSpellTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.ChatFormatting;
@@ -47,71 +49,74 @@ import java.util.List;
 public class FantazicGui {
 
     // auras gui
-    private static final ResourceLocation AURA_POSITIVE_COMPONENT = Fantazia.res("container/inventory/aura/positive_component");
-    private static final ResourceLocation AURA_NEGATIVE_COMPONENT = Fantazia.res("container/inventory/aura/negative_component");
-    private static final ResourceLocation AURA_MIXED_COMPONENT = Fantazia.res("container/inventory/aura/mixed_component");
-    private static final ResourceLocation AURA_OWNED_COMPONENT = Fantazia.res("container/inventory/aura/owned_component");
-    private static final ResourceLocation AURA_UNAFFECTING_COMPONENT = Fantazia.res("container/inventory/aura/unaffecting_component");
+    private static final ResourceLocation AURA_POSITIVE_COMPONENT = Fantazia.location("container/inventory/aura/positive_component");
+    private static final ResourceLocation AURA_NEGATIVE_COMPONENT = Fantazia.location("container/inventory/aura/negative_component");
+    private static final ResourceLocation AURA_MIXED_COMPONENT = Fantazia.location("container/inventory/aura/mixed_component");
+    private static final ResourceLocation AURA_OWNED_COMPONENT = Fantazia.location("container/inventory/aura/owned_component");
+    private static final ResourceLocation AURA_UNAFFECTING_COMPONENT = Fantazia.location("container/inventory/aura/unaffecting_component");
 
-    private static final ResourceLocation AURA_POSITIVE = Fantazia.res("hud/aura/positive");
-    private static final ResourceLocation AURA_NEGATIVE = Fantazia.res("hud/aura/negative");
-    private static final ResourceLocation AURA_MIXED = Fantazia.res("hud/aura/mixed");
-    private static final ResourceLocation AURA_OWNED = Fantazia.res("hud/aura/owned");
-    private static final ResourceLocation AURA_UNAFFECTING = Fantazia.res("hud/aura/unaffecting");
+    private static final ResourceLocation AURA_POSITIVE = Fantazia.location("hud/aura/positive");
+    private static final ResourceLocation AURA_NEGATIVE = Fantazia.location("hud/aura/negative");
+    private static final ResourceLocation AURA_MIXED = Fantazia.location("hud/aura/mixed");
+    private static final ResourceLocation AURA_OWNED = Fantazia.location("hud/aura/owned");
+    private static final ResourceLocation AURA_UNAFFECTING = Fantazia.location("hud/aura/unaffecting");
 
     // curio slots
-    private static final ResourceLocation CURIOSLOT = Fantazia.res("hud/curioslots/curioslot");
-    private static final ResourceLocation ACTIVECASTER = Fantazia.res("hud/curioslots/activecaster");
-    private static final ResourceLocation PASSIVECASTER = Fantazia.res("hud/curioslots/passivecaster");
-    private static final ResourceLocation RECHARGE_BAR = Fantazia.res("hud/curioslots/recharge_bar");
-    private static final ResourceLocation RECHARGE_BAR_FILLING = Fantazia.res("hud/curioslots/recharge_bar_filling");
+    private static final ResourceLocation CURIOSLOT = Fantazia.location("hud/curioslots/curioslot");
+    private static final ResourceLocation ACTIVECASTER = Fantazia.location("hud/curioslots/activecaster");
+    private static final ResourceLocation PASSIVECASTER = Fantazia.location("hud/curioslots/passivecaster");
+    private static final ResourceLocation RECHARGE_BAR = Fantazia.location("hud/curioslots/recharge_bar");
+    private static final ResourceLocation RECHARGE_BAR_FILLING = Fantazia.location("hud/curioslots/recharge_bar_filling");
+    private static final ResourceLocation CAST_BAR = Fantazia.location("hud/curioslots/cast_bar");
+    private static final ResourceLocation CAST_BAR_FILLING = Fantazia.location("hud/curioslots/cast_bar_filling");
+    private static final ResourceLocation SPELLCASTER_CHAINED = Fantazia.location("hud/curioslots/spellcaster_chained");
 
     // bars
-    public static final ResourceLocation BARRIER_BAR_BACKGROUND = Fantazia.res("hud/bars/barrier_bar_background");
-    public static final ResourceLocation BARRIER_BAR_DURATION = Fantazia.res("hud/bars/barrier_bar_duration");
-    public static final ResourceLocation LAYERED_BARRIER_BAR_BACKGROUND = Fantazia.res("hud/bars/layered_barrier_bar_background");
-    public static final ResourceLocation LAYERED_BARRIER_BAR_DURATION = Fantazia.res("hud/bars/layered_barrier_bar_duration");
-    public static final ResourceLocation STUN_BAR_BACKGROUND = Fantazia.res("hud/bars/stun_bar_background");
-    public static final ResourceLocation STUN_BAR_DURATION = Fantazia.res("hud/bars/stun_bar_duration");
-    public static final ResourceLocation STUN_POINTS_BAR_BACKGROUND = Fantazia.res("hud/bars/stun_points_bar_background");
-    public static final ResourceLocation STUN_POINTS_BAR_PROGRESS = Fantazia.res("hud/bars/stun_points_bar_progress");
+    public static final ResourceLocation BARRIER_BAR_BACKGROUND = Fantazia.location("hud/bars/barrier_bar_background");
+    public static final ResourceLocation BARRIER_BAR_DURATION = Fantazia.location("hud/bars/barrier_bar_duration");
+    public static final ResourceLocation LAYERED_BARRIER_BAR_BACKGROUND = Fantazia.location("hud/bars/layered_barrier_bar_background");
+    public static final ResourceLocation LAYERED_BARRIER_BAR_DURATION = Fantazia.location("hud/bars/layered_barrier_bar_duration");
+    public static final ResourceLocation STUN_BAR_BACKGROUND = Fantazia.location("hud/bars/stun_bar_background");
+    public static final ResourceLocation STUN_BAR_DURATION = Fantazia.location("hud/bars/stun_bar_duration");
+    public static final ResourceLocation STUN_POINTS_BAR_BACKGROUND = Fantazia.location("hud/bars/stun_points_bar_background");
+    public static final ResourceLocation STUN_POINTS_BAR_PROGRESS = Fantazia.location("hud/bars/stun_points_bar_progress");
 
     // mana bar stuff
-    public static final ResourceLocation MANA_FRAME_TOP = Fantazia.res("textures/gui/mana/mana_frame_top.png");
-    public static final ResourceLocation MANA_FRAME_BOTTOM = Fantazia.res("textures/gui/mana/mana_frame_bottom.png");
-    public static final ResourceLocation MANA_FRAME_SIDE = Fantazia.res("textures/gui/mana/mana_frame_side.png");
-    public static final ResourceLocation MANA_BG = Fantazia.res("textures/gui/mana/mana_background.png");
-    public static final ResourceLocation MANA_ICON_EMPTY = Fantazia.res("hud/mana/mana_icon_empty");
-    public static final ResourceLocation MANA_ICON = Fantazia.res("hud/mana/mana_icon");
-    public static final ResourceLocation MANA_ICON_HALF = Fantazia.res("hud/mana/mana_icon_half");
+    public static final ResourceLocation MANA_FRAME_TOP = Fantazia.location("textures/gui/mana/mana_frame_top.png");
+    public static final ResourceLocation MANA_FRAME_BOTTOM = Fantazia.location("textures/gui/mana/mana_frame_bottom.png");
+    public static final ResourceLocation MANA_FRAME_SIDE = Fantazia.location("textures/gui/mana/mana_frame_side.png");
+    public static final ResourceLocation MANA_BG = Fantazia.location("textures/gui/mana/mana_background.png");
+    public static final ResourceLocation MANA_ICON_EMPTY = Fantazia.location("hud/mana/mana_icon_empty");
+    public static final ResourceLocation MANA_ICON = Fantazia.location("hud/mana/mana_icon");
+    public static final ResourceLocation MANA_ICON_HALF = Fantazia.location("hud/mana/mana_icon_half");
     // stamina bar stuff
 
-    public static final ResourceLocation STAMINA_FRAME_TOP = Fantazia.res("textures/gui/stamina/stamina_frame_top.png");
-    public static final ResourceLocation STAMINA_FRAME_BOTTOM = Fantazia.res("textures/gui/stamina/stamina_frame_bottom.png");
-    public static final ResourceLocation STAMINA_FRAME_SIDE = Fantazia.res("textures/gui/stamina/stamina_frame_side.png");
-    public static final ResourceLocation STAMINA_BG = Fantazia.res("textures/gui/stamina/stamina_background.png");
-    public static final ResourceLocation STAMINA_ICON_EMPTY = Fantazia.res("hud/stamina/stamina_icon_empty");
-    public static final ResourceLocation STAMINA_ICON = Fantazia.res("hud/stamina/stamina_icon");
-    public static final ResourceLocation STAMINA_ICON_HALF = Fantazia.res("hud/stamina/stamina_icon_half");
+    public static final ResourceLocation STAMINA_FRAME_TOP = Fantazia.location("textures/gui/stamina/stamina_frame_top.png");
+    public static final ResourceLocation STAMINA_FRAME_BOTTOM = Fantazia.location("textures/gui/stamina/stamina_frame_bottom.png");
+    public static final ResourceLocation STAMINA_FRAME_SIDE = Fantazia.location("textures/gui/stamina/stamina_frame_side.png");
+    public static final ResourceLocation STAMINA_BG = Fantazia.location("textures/gui/stamina/stamina_background.png");
+    public static final ResourceLocation STAMINA_ICON_EMPTY = Fantazia.location("hud/stamina/stamina_icon_empty");
+    public static final ResourceLocation STAMINA_ICON = Fantazia.location("hud/stamina/stamina_icon");
+    public static final ResourceLocation STAMINA_ICON_HALF = Fantazia.location("hud/stamina/stamina_icon_half");
 
     // dash ability stuff
-    private static final ResourceLocation DASH1_EMPTY = Fantazia.res("hud/ability/dash1_empty");
-    private static final ResourceLocation DASH2_EMPTY = Fantazia.res("hud/ability/dash2_empty");
-    private static final ResourceLocation DASH3_EMPTY = Fantazia.res("hud/ability/dash3_empty");
-    private static final ResourceLocation DASH1 = Fantazia.res("hud/ability/dash1");
-    private static final ResourceLocation DASH2 = Fantazia.res("hud/ability/dash2");
-    private static final ResourceLocation DASH3 = Fantazia.res("hud/ability/dash3");
+    private static final ResourceLocation DASH1_EMPTY = Fantazia.location("hud/ability/dash1_empty");
+    private static final ResourceLocation DASH2_EMPTY = Fantazia.location("hud/ability/dash2_empty");
+    private static final ResourceLocation DASH3_EMPTY = Fantazia.location("hud/ability/dash3_empty");
+    private static final ResourceLocation DASH1 = Fantazia.location("hud/ability/dash1");
+    private static final ResourceLocation DASH2 = Fantazia.location("hud/ability/dash2");
+    private static final ResourceLocation DASH3 = Fantazia.location("hud/ability/dash3");
 
     // double jump stuff
-    private static final ResourceLocation DOUBLE_JUMP = Fantazia.res("hud/ability/double_jump");
-    private static final ResourceLocation DOUBLE_JUMP_EMPTY = Fantazia.res("hud/ability/double_jump_empty");
+    private static final ResourceLocation DOUBLE_JUMP = Fantazia.location("hud/ability/double_jump");
+    private static final ResourceLocation DOUBLE_JUMP_EMPTY = Fantazia.location("hud/ability/double_jump_empty");
 
     // layered barrier stuff
-    private static final ResourceLocation BARRIER_LAYERS = Fantazia.res("hud/barrier_layers");
+    private static final ResourceLocation BARRIER_LAYERS = Fantazia.location("hud/barrier_layers");
 
     // euphoria
-    private static final ResourceLocation EUPHORIA = Fantazia.res("hud/euphoria/icon");
-    private static final ResourceLocation EUPHORIA_EMPTY = Fantazia.res("hud/euphoria/empty");
+    private static final ResourceLocation EUPHORIA = Fantazia.location("hud/euphoria/icon");
+    private static final ResourceLocation EUPHORIA_EMPTY = Fantazia.location("hud/euphoria/empty");
 
     public static boolean renderStunBar(GuiGraphics guiGraphics, int x, int y) {
         StunEffectHolder stunEffectHolder = LivingEffectHelper.takeHolder(Minecraft.getInstance().player, StunEffectHolder.class);
@@ -454,6 +459,8 @@ public class FantazicGui {
         for (int i = 0; i < num1 + num2; i++) guiGraphics.blitSprite(CURIOSLOT, x, y + i * 20,20,20);
 
         int lowManaColor = new Color(65, 180, 255, 95).getRGB();
+        int greyColor = new Color(128,128,128, 165).getRGB();
+        boolean chained = player.hasEffect(FTZMobEffects.CHAINED);
 
         SpellInstancesHolder spellInstancesHolder = PlayerAbilityHelper.takeHolder(player, SpellInstancesHolder.class);
         for (int j = 0; j < num1; j++) {
@@ -467,12 +474,26 @@ public class FantazicGui {
                     Holder<AbstractSpell> spell = spellCasterItem.getSpell();
                     SpellInstance instance = spellInstancesHolder.getOrCreate(spell);
                     int recharge = instance.recharge();
-                    float manaCost = instance.getSpell().value().getManacost();
-                    if (!PlayerAbilityHelper.enoughMana(player, manaCost)) {
-                        poseStack.pushPose();
-                        poseStack.translate(0,0,200);
+                    float manaCost = instance.getSpell().value().manacost();
+
+                    poseStack.pushPose();
+                    poseStack.translate(0,0,200);
+                    if (!PlayerAbilityHelper.enoughMana(player, manaCost))
                         guiGraphics.fill(x + 2, y0 + 2, x + 18, y0 + 18, lowManaColor);
-                        poseStack.popPose();
+
+                    if (chained && spell.is(FTZSpellTags.IS_CHAINED)) {
+                        guiGraphics.fill(x + 2, y0 + 2, x + 18, y0 + 18, greyColor);
+                        guiGraphics.blitSprite(SPELLCASTER_CHAINED, x, y0, 20, 20);
+                    }
+
+                    poseStack.popPose();
+
+
+                    if (ClientEvents.castCurioIndex == j) {
+                        float percent = ((float) ClientEvents.currentCast / ClientEvents.requiredCast);
+                        int fill = (int) Math.max(1, percent * 16);
+                        guiGraphics.blitSprite(CAST_BAR,x + 22, y0 + 1, 6, 18);
+                        guiGraphics.blitSprite(CAST_BAR_FILLING, 6, 18, 6, 18, x + 22 + 5, y0 + 18, -4, -fill);
                     }
 
                     if (recharge <= 0) continue;
@@ -482,35 +503,43 @@ public class FantazicGui {
                     guiGraphics.blitSprite(RECHARGE_BAR,x + 22,y0 + 1,6,18);
                     guiGraphics.blitSprite(RECHARGE_BAR_FILLING, 6, 18, 6, 18, x + 22 + 5, y0 + 18, -4, -fill);
 
-                    if (shift) guiGraphics.drawString(font, Component.literal(GuiHelper.spellRecharge(recharge)).withStyle(ChatFormatting.BOLD), x + 30, y + j * 20 + 6, 16724787);
+                    if (shift) {
+                        guiGraphics.drawString(font, Component.literal(GuiHelper.spellRecharge(recharge)).withStyle(ChatFormatting.BOLD), x + 30, y + j * 20 + 6, 16724787);
+                    }
                 }
             }
         }
         for (int k = 0; k < num2; k++) {
             int y0 = y + k * 20;
             ItemStack item = passivecasters.get(k).stack();
-            if (item.isEmpty()) guiGraphics.blitSprite(PASSIVECASTER, x,y + k * 20 + num1 * 20,20,20);
+            if (item.isEmpty()) guiGraphics.blitSprite(PASSIVECASTER, x,y0 + num1 * 20,20,20);
             else {
-                guiGraphics.renderItem(item, x + 2, y + k * 20 + num1 * 20 + 2);
+                guiGraphics.renderItem(item, x + 2, y0 + num1 * 20 + 2);
 
                 if (item.getItem() instanceof SpellCasterItem spellCasterItem && spellInstancesHolder != null) {
                     Holder<AbstractSpell> spell = spellCasterItem.getSpell();
 
                     SpellInstance instance = spellInstancesHolder.getOrCreate(spell);
                     int recharge = instance.recharge();
-                    float manaCost = instance.getSpell().value().getManacost();
-                    if (!PlayerAbilityHelper.enoughMana(player, manaCost)) {
-                        poseStack.pushPose();
-                        poseStack.translate(0,0,200);
+                    float manaCost = instance.getSpell().value().manacost();
+
+                    poseStack.pushPose();
+                    poseStack.translate(0,0,200);
+                    if (!PlayerAbilityHelper.enoughMana(player, manaCost))
                         guiGraphics.fill(x + 2, y0 + 2, x + 18, y0 + 18, lowManaColor);
-                        poseStack.popPose();
+
+                    if (chained && spell.is(FTZSpellTags.IS_CHAINED)) {
+                        guiGraphics.fill(x + 2, y0 + 2, x + 18, y0 + 18, greyColor);
+                        guiGraphics.blitSprite(SPELLCASTER_CHAINED, x, y0, 20, 20);
                     }
+
+                    poseStack.popPose();
 
                     if (recharge <= 0) continue;
                     float percent = ((float) recharge / spell.value().getDefaultRecharge());
                     int fill = (int) Math.max(1, percent * 16);
 
-                    guiGraphics.blitSprite(RECHARGE_BAR,x + 22,y + k * 20 + 1 + 20 * num1,6,18);
+                    guiGraphics.blitSprite(RECHARGE_BAR,x + 22,y0 + 1 + 20 * num1,6,18);
                     guiGraphics.blitSprite(RECHARGE_BAR_FILLING, 6, 18, 6, 18, x + 22 + 5, y + k * 20 + 18 + 20 * num1, -4, -fill);
 
                     if (shift) guiGraphics.drawString(font, Component.literal(GuiHelper.spellRecharge(recharge)).withStyle(ChatFormatting.BOLD), x + 30, y + k * 20 + 6 + 20 * num1, 16724787);

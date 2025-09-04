@@ -1,8 +1,12 @@
-// 1.21.1	2025-06-01T15:01:27.365108	Tags for minecraft:block mod id fantazia
+// 1.21.1	2025-06-23T12:40:33.1971878	Tags for minecraft:block mod id fantazia
+46bbc0d6117cc4e255154721fd04700585fe0e28 data/c/tags/block/fences/wooden.json
+c7dd8896c30ae4d06de0f342729e4ee6fc0ad570 data/c/tags/block/fence_gates/wooden.json
+1ac7369acb2571e6cd1821c6ba9040fcab8489c0 data/c/tags/block/ores.json
 07a11b431402424368fa5351f5e9f7f763727316 data/fantazia/tags/block/fantazium_ores.json
 66ff697e929cd89afadaeed949e3c078274ba857 data/fantazia/tags/block/from_fantazium.json
 2c18bb6368e0422e96c64d8450d6d79be0f6d7d0 data/fantazia/tags/block/from_obscure_tree.json
 5805ba3d0e150b94b847c5564da562de572f303e data/fantazia/tags/block/obscure_logs.json
+1ac7369acb2571e6cd1821c6ba9040fcab8489c0 data/fantazia/tags/block/ores/fantazium.json
 d732baf55fd50382458eebc91e25f0b6d5ddfe71 data/minecraft/tags/block/beacon_base_blocks.json
 c244f0d23ba444d8484da5bc477eb3c250600af5 data/minecraft/tags/block/ceiling_hanging_signs.json
 c7dd8896c30ae4d06de0f342729e4ee6fc0ad570 data/minecraft/tags/block/fence_gates.json

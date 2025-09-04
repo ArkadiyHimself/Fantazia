@@ -1,0 +1,14 @@
+{
+  "loot_instances": [
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:golden_hatchet"
+      },
+      "chance": 0.35
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/ruined_portal"
+  ]
+}

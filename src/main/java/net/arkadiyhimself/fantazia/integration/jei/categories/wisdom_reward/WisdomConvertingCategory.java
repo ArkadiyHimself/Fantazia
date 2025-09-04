@@ -10,10 +10,11 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.integration.jei.Dummy;
-import net.arkadiyhimself.fantazia.items.WisdomCatcherItem;
+import net.arkadiyhimself.fantazia.common.item.WisdomCatcherItem;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -29,14 +30,14 @@ public record WisdomConvertingCategory(
         IDrawable icon
 ) implements IRecipeCategory<Dummy> {
 
-    private static final ResourceLocation EXPERIENCE_ORB = Fantazia.res("textures/gui/jei/wisdom_reward/experience_orb.png");
+    private static final ResourceLocation EXPERIENCE_ORB = Fantazia.location("textures/gui/jei/wisdom_reward/experience_orb.png");
 
     public static final RecipeType<Dummy> DUMMY = RecipeType.create(Fantazia.MODID, "wisdom_reward.converting", Dummy.class);
 
     public static WisdomConvertingCategory create(IGuiHelper helper) {
-        ResourceLocation backgroundImage = Fantazia.res("textures/gui/jei/wisdom_reward/converting.png");
+        ResourceLocation backgroundImage = Fantazia.location("textures/gui/jei/wisdom_reward/converting.png");
         IDrawable background = helper.createDrawable(backgroundImage, 0, 0, 92, 48);
-        IDrawable icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, WisdomCatcherItem.itemStack());
+        IDrawable icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, FTZItems.WISDOM_CATCHER.toStack());
         return new WisdomConvertingCategory(background, icon);
     }
 
@@ -57,7 +58,7 @@ public record WisdomConvertingCategory(
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull Dummy recipe, @NotNull IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 38, 4).addItemStack(WisdomCatcherItem.itemStack());
+        builder.addSlot(RecipeIngredientRole.INPUT, 38, 4).addItemStack(FTZItems.WISDOM_CATCHER.toStack());
     }
 
     @Override

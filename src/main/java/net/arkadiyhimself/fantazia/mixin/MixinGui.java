@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.damagesource.DamageSource;

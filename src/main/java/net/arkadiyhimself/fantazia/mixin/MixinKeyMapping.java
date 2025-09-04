@@ -1,6 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.FTZKeyMappings;
+import net.arkadiyhimself.fantazia.common.api.FTZKeyMappings;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

@@ -2,9 +2,9 @@ package net.arkadiyhimself.fantazia.data.predicate;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.advanced.runes.Rune;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.CustomCriteriaHolder;
-import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.CustomCriteriaHolder;
+import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.TagKey;
 import org.apache.commons.compress.utils.Lists;

@@ -1,0 +1,22 @@
+{
+  "attribute_modifiers": {
+    "minecraft:generic.jump_strength": {
+      "amount": 0.3,
+      "operation": "add_multiplied_base"
+    }
+  },
+  "background": "fantazia:textures/gui/talent_icons/square_white.png",
+  "damage_multiplies": [
+    {
+      "damage_type": {
+        "damage_types": [
+          "minecraft:fall"
+        ]
+      },
+      "multiplier": 0.5
+    }
+  ],
+  "icon": "fantazia:textures/talent/abilities/aerial/cat_reflexes.png",
+  "title": "talent.fantazia.abilities.aerial.cat_reflexes",
+  "wisdom": 75
+}

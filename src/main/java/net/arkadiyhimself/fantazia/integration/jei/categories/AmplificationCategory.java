@@ -13,13 +13,10 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
-import net.arkadiyhimself.fantazia.integration.jei.Dummy;
 import net.arkadiyhimself.fantazia.integration.jei.JEIRecipeTypes;
-import net.arkadiyhimself.fantazia.integration.jei.custom_ingredient.WisdomIngredientType;
-import net.arkadiyhimself.fantazia.recipe.AmplificationRecipe;
-import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
-import net.arkadiyhimself.fantazia.registries.FTZItems;
-import net.arkadiyhimself.fantazia.registries.FTZRecipeTypes;
+import net.arkadiyhimself.fantazia.data.recipe.AmplificationRecipe;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -48,7 +45,7 @@ public record AmplificationCategory(
 ) implements IRecipeCategory<RecipeHolder<AmplificationRecipe>> {
 
     public static AmplificationCategory create(IGuiHelper helper) {
-        ResourceLocation backgroundImage = Fantazia.res("textures/gui/jei/amplification_bench.png");
+        ResourceLocation backgroundImage = Fantazia.location("textures/gui/jei/amplification_bench.png");
         IDrawable background = helper.createDrawable(backgroundImage, 0, 0, 118, 58);
         IDrawable icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(FTZItems.AMPLIFIER.asItem()));
         return new AmplificationCategory(background, icon);

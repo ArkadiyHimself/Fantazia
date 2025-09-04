@@ -1,0 +1,89 @@
+package net.arkadiyhimself.fantazia.common.item.weapons.Melee;
+
+import com.google.common.collect.Lists;
+import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.api.data_component.HiddenPotentialComponent;
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+public class FragileBladeItem extends MeleeWeaponItem {
+
+    public FragileBladeItem() {
+        super(new Properties().stacksTo(1).durability(1024).component(FTZDataComponentTypes.HIDDEN_POTENTIAL, new HiddenPotentialComponent()),-1.5f, 4, "fragile_blade");
+    }
+
+    @Override
+    public void activeAbility(ServerPlayer player) {}
+
+    @Override
+    public List<Component> itemTooltip(@Nullable ItemStack stack) {
+        List<Component> components = Lists.newArrayList();
+        if (stack == null) return components;
+        HiddenPotentialComponent hiddenPotentialComponent = stack.get(FTZDataComponentTypes.HIDDEN_POTENTIAL);
+        if (hiddenPotentialComponent == null) return components;
+        String basicPath = "weapon.fantazia.hidden_potential";
+        int lines;
+
+        if (!Screen.hasShiftDown()) {
+            String desc = Component.translatable(basicPath + ".desc.lines").getString();
+            try {
+                lines = Integer.parseInt(desc);
+            } catch (NumberFormatException ignored) {
+                return components;
+            }
+
+            ChatFormatting[] noShift = new ChatFormatting[]{ChatFormatting.RED};
+            for (int i = 1; i <= lines; i++)
+                components.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, noShift, null));
+
+            components.add(Component.literal(" "));
+            components.add(GuiHelper.bakeComponent(basicPath + ".current_damage", noShift, hiddenPotentialComponent.getFormatting(), hiddenPotentialComponent.getDamage() + this.getDamage() + 1));
+            return components;
+        }
+
+        components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.weapon.ability", new ChatFormatting[]{ChatFormatting.DARK_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_RED, ChatFormatting.BOLD}, Component.translatable("weapon.fantazia.hidden_potential.name").getString()));
+        components.add(Component.literal(" "));
+        String text = Component.translatable(basicPath + ".lines").getString();
+
+        try {
+            lines = Integer.parseInt(text);
+        } catch (NumberFormatException ignored) {
+            return components;
+        }
+
+        ChatFormatting[] main = new ChatFormatting[]{ChatFormatting.GOLD};
+        for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, main, null));
+
+        components.add(Component.literal(" "));
+        components.add(GuiHelper.bakeComponent(basicPath + ".minimal_damage", new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD}, hiddenPotentialComponent.minDMG() + this.getDamage() + 1));
+        components.add(GuiHelper.bakeComponent(basicPath + ".maximum_damage", new ChatFormatting[]{ChatFormatting.LIGHT_PURPLE}, new ChatFormatting[]{ChatFormatting.DARK_PURPLE, ChatFormatting.BOLD}, hiddenPotentialComponent.maxDMG() + this.getDamage() + 1));
+
+        return components;
+    }
+
+    @Override
+    public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers(@NotNull ItemStack stack) {
+        ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+        builder.add(Attributes.ATTACK_SPEED, new AttributeModifier(Fantazia.location(this.defaultName), this.attackSpeedModifier, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+
+        HiddenPotentialComponent hiddenPotentialComponent = stack.get(FTZDataComponentTypes.HIDDEN_POTENTIAL);
+        if (hiddenPotentialComponent == null) return builder.build();
+
+        float bonusDMG = getDamage() + hiddenPotentialComponent.getDamage();
+        builder.add(Attributes.ATTACK_DAMAGE, new AttributeModifier(Fantazia.location(this.defaultName), bonusDMG, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+        return builder.build();
+    }
+}

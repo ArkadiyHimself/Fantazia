@@ -1,0 +1,25 @@
+{
+  "loot_instances": [
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:leaders_horn"
+      },
+      "chance": 0.15,
+      "replaced": "minecraft:goat_horn"
+    },
+    {
+      "addedInitial": {
+        "components": {
+          "fantazia:rune": "fantazia:piercer"
+        },
+        "count": 1,
+        "id": "fantazia:rune_wielder"
+      },
+      "chance": 0.3
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/pillager_outpost"
+  ]
+}

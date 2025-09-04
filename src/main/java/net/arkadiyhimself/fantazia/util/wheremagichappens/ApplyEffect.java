@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
-import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,6 +37,10 @@ public class ApplyEffect {
         entity.addEffect(new MobEffectInstance(FTZMobEffects.FROZEN, duration));
     }
 
+    public static void makeChained(LivingEntity entity, int duration) {
+        entity.addEffect(new MobEffectInstance(FTZMobEffects.CHAINED, duration));
+    }
+
     public static void giveAbsoluteBarrier(LivingEntity entity, int duration) {
         entity.addEffect(new MobEffectInstance(FTZMobEffects.ABSOLUTE_BARRIER, duration));
     }
@@ -60,8 +64,8 @@ public class ApplyEffect {
         entity.addEffect(new MobEffectInstance(FTZMobEffects.ACE_IN_THE_HOLE, duration));
     }
 
-    public static void makeElectrocuted(LivingEntity entity, int duration) {
-        entity.addEffect(new MobEffectInstance(FTZMobEffects.ELECTROCUTED, duration));
+    public static void giveWithersBarrier(LivingEntity entity, int duration) {
+        entity.addEffect(new MobEffectInstance(FTZMobEffects.WITHERS_BARRIER, duration));
     }
 
 }

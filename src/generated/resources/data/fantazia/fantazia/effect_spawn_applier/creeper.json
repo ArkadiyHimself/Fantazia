@@ -1,0 +1,16 @@
+{
+  "entity_types": [
+    "minecraft:creeper"
+  ],
+  "spawn_effects": [
+    {
+      "chance": 0.15,
+      "mob_effect_instances": [
+        {
+          "amplifier": 4,
+          "mob_effect": "fantazia:layered_barrier"
+        }
+      ]
+    }
+  ]
+}

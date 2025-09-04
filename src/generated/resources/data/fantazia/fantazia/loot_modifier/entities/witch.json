@@ -1,0 +1,21 @@
+{
+  "loot_instances": [
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:insight_essence"
+      },
+      "first_time": true
+    },
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:acid_bottle"
+      },
+      "chance": 0.225
+    }
+  ],
+  "loot_tables": [
+    "minecraft:entities/witch"
+  ]
+}

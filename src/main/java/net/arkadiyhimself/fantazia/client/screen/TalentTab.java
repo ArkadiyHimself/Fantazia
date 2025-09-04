@@ -4,15 +4,16 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
-import net.arkadiyhimself.fantazia.datagen.talent_reload.talent_tab.TalentTabBuilderHolder;
+import net.arkadiyhimself.fantazia.data.datagen.talent_reload.talent_tab.TalentTabBuilderHolder;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,7 +22,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -30,8 +30,8 @@ public class TalentTab {
 
     private static final int width = 32;
     private static final int height = 48;
-    private static final ResourceLocation EMPTY_TAB = Fantazia.res("textures/gui/talent/talent_tab_empty.png");
-    private static final ResourceLocation TALENT_ICON = Fantazia.res("textures/gui/talent/talent_icon_default.png");
+    private static final ResourceLocation EMPTY_TAB = Fantazia.location("textures/gui/talent/talent_tab_empty.png");
+    private static final ResourceLocation TALENT_ICON = Fantazia.location("textures/gui/talent/talent_icon_default.png");
     private final ResourceLocation background;
     private final List<IHierarchy<Talent>> HIERARCHIES = Lists.newArrayList();
     private final ResourceLocation icon;
@@ -175,8 +175,8 @@ public class TalentTab {
     private void tryRenderTalentTooltip(TalentsHolder holder, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
         if (this.selectedTalent == null) return;
         List<Component> components = selectedTalent.buildTooltip();
-        boolean obtained = holder.hasTalent(selectedTalent);
-        if (obtained) components.add(Component.translatable("fantazia.gui.talent.obtained"));
+        if (holder.isDisabled(selectedTalent)) components.add(Component.translatable("fantazia.gui.talent.disabled").withStyle(ChatFormatting.DARK_RED, ChatFormatting.BOLD, ChatFormatting.ITALIC));
+        else if (holder.hasTalent(selectedTalent)) components.add(Component.translatable("fantazia.gui.talent.obtained").withStyle(ChatFormatting.DARK_GREEN, ChatFormatting.BOLD, ChatFormatting.ITALIC));
         guiGraphics.renderComponentTooltip(font, components, mouseX, mouseY);
     }
 
@@ -215,7 +215,7 @@ public class TalentTab {
         ).apply(instance, Builder::new));
 
         public TalentTab build() {
-                return new TalentTab(icon, title, background.orElse(Fantazia.res("textures/gui/talent/background_default.png")));
+                return new TalentTab(icon, title, background.orElse(Fantazia.location("textures/gui/talent/background_default.png")));
         }
 
         public TalentTabBuilderHolder holder(ResourceLocation id) {

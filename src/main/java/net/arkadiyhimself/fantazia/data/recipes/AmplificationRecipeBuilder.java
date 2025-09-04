@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.data.recipes;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.recipe.AmplificationRecipe;
-import net.arkadiyhimself.fantazia.registries.FTZItems;
+import net.arkadiyhimself.fantazia.data.recipe.AmplificationRecipe;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -34,12 +34,12 @@ public class AmplificationRecipeBuilder implements RecipeBuilder {
         this.wisdom = wisdom;
         this.limit = limit;
     }
-    public static AmplificationRecipeBuilder amplification(Holder<Enchantment> rune, int fee, int wisdom, int limit) {
-        return new AmplificationRecipeBuilder(rune, fee, wisdom, limit);
+    public static AmplificationRecipeBuilder amplification(Holder<Enchantment> enchantmentHolder, int fee, int wisdom, int limit) {
+        return new AmplificationRecipeBuilder(enchantmentHolder, fee, wisdom, limit);
     }
 
-    public static AmplificationRecipeBuilder amplification(Holder<Enchantment> rune, int fee, int wisdom) {
-        return amplification(rune, fee, wisdom, 0);
+    public static AmplificationRecipeBuilder amplification(Holder<Enchantment> enchantment, int fee, int wisdom) {
+        return amplification(enchantment, fee, wisdom, 0);
     }
 
     public AmplificationRecipeBuilder requires(TagKey<Item> tag) {

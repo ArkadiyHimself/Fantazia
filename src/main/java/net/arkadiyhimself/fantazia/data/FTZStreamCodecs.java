@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.data;
 
-import net.arkadiyhimself.fantazia.advanced.runes.Rune;
-import net.arkadiyhimself.fantazia.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
+import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;

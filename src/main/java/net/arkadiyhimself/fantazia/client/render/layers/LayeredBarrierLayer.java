@@ -5,21 +5,20 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.holders.EvasionHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -29,10 +28,10 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class LayeredBarrierLayer {
-    public static final ResourceLocation BARRIER_LAYER = Fantazia.res("textures/entity_layers/layered_barrier/barrier_armor.png");
-    public static final ResourceLocation BARRIER_BG = Fantazia.res("textures/entity_layers/layered_barrier/barrier_bg.png");
-    public static final ResourceLocation BARRIER_LAYER_FURY = Fantazia.res("textures/entity_layers/layered_barrier/barrier_armor_fury.png");
-    public static final ResourceLocation BARRIER_BG_FURY = Fantazia.res("textures/entity_layers/layered_barrier/barrier_bg_fury.png");
+    public static final ResourceLocation BARRIER_LAYER = Fantazia.location("textures/entity_layers/layered_barrier/barrier_armor.png");
+    public static final ResourceLocation BARRIER_BG = Fantazia.location("textures/entity_layers/layered_barrier/barrier_bg.png");
+    public static final ResourceLocation BARRIER_LAYER_FURY = Fantazia.location("textures/entity_layers/layered_barrier/barrier_armor_fury.png");
+    public static final ResourceLocation BARRIER_BG_FURY = Fantazia.location("textures/entity_layers/layered_barrier/barrier_bg_fury.png");
     protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENERGY_SWIRL_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEnergySwirlShader);
     protected static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
         RenderSystem.enableBlend();
@@ -41,15 +40,18 @@ public class LayeredBarrierLayer {
         RenderSystem.disableBlend();
         RenderSystem.defaultBlendFunc();
     });
-    protected static final RenderStateShard.CullStateShard NO_CULL = new RenderStateShard.CullStateShard(false);
+
     protected static final RenderStateShard.LightmapStateShard LIGHTMAP = new RenderStateShard.LightmapStateShard(true);
-    protected static final RenderStateShard.OverlayStateShard OVERLAY = new RenderStateShard.OverlayStateShard(true);
+
     public static class LayerBarrier<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T,M> {
-        private final RenderLayerParent<T, M> renderer;
+
+        private final M entityModel;
+
         public LayerBarrier(LivingEntityRenderer<T, M> renderer) {
             super(renderer);
-            this.renderer = renderer;
+            this.entityModel = renderer.getModel();
         }
+
         @Override
         public void render(@NotNull PoseStack pPoseStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull T pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
             if (pLivingEntity.isInvisible()) return;
@@ -67,7 +69,6 @@ public class LayeredBarrierLayer {
             boolean furious = LivingEffectHelper.hasEffect(pLivingEntity, FTZMobEffects.FURY.value());
 
             float f = (float)pLivingEntity.tickCount + pPartialTick;
-            M entityModel = this.renderer.getModel();
             entityModel.prepareMobModel(pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
             this.getParentModel().copyPropertiesTo(entityModel);
             float pU = VisualHelper.layerOffset(f) % 1.0F;

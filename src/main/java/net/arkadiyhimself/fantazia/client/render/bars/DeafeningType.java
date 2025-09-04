@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public class DeafeningType extends RenderStateShard {
     public static ResourceLocation getFrame(int number, String type) {
         String num = String.valueOf(number);
-        return Fantazia.res( "textures/render_above/deafening/" + type + "_circle/" + type + "_circle" + num + ".png");
+        return Fantazia.location( "textures/render_above/deafening/" + type + "_circle/" + type + "_circle" + num + ".png");
     }
     public static RenderType SOUND_WAVE_TYPE(int number, String type) { return soundWaveType(number, type); }
     public DeafeningType(String pName, Runnable pSetupState, Runnable pClearState) {super(pName, pSetupState, pClearState);}

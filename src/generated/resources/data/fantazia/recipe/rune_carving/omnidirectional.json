@@ -1,0 +1,20 @@
+{
+  "type": "fantazia:rune_carving",
+  "fee": 16,
+  "ingredients": [
+    {
+      "item": "minecraft:ghast_tear"
+    },
+    {
+      "item": "minecraft:ghast_tear"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:feather"
+    }
+  ],
+  "rune": "fantazia:omnidirectional",
+  "wisdom": 45
+}

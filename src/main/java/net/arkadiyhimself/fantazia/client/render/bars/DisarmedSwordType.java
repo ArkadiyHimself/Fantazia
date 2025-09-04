@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class DisarmedSwordType extends RenderStateShard {
-    public static final ResourceLocation BROKEN_SWORD = Fantazia.res("textures/render_above/broken_sword.png");
+    public static final ResourceLocation BROKEN_SWORD = Fantazia.location("textures/render_above/broken_sword.png");
     public static final RenderType BROKEN_SWORD_TYPE = brokenSwordType();
     public DisarmedSwordType(String pName, Runnable pSetupState, Runnable pClearState) {super(pName, pSetupState, pClearState);}
     private static RenderType brokenSwordType() {

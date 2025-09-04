@@ -3,8 +3,8 @@ package net.arkadiyhimself.fantazia.client.renderers.entity;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.util.Pair;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.entities.CustomBoat;
-import net.arkadiyhimself.fantazia.entities.CustomChestBoat;
+import net.arkadiyhimself.fantazia.common.entity.CustomBoat;
+import net.arkadiyhimself.fantazia.common.entity.CustomChestBoat;
 import net.minecraft.client.model.BoatModel;
 import net.minecraft.client.model.ChestBoatModel;
 import net.minecraft.client.model.ListModel;
@@ -21,14 +21,14 @@ import java.util.stream.Stream;
 
 public class CustomBoatRenderer extends BoatRenderer {
 
-    public static final ModelLayerLocation OBSCURE_BOAT_LAYER = new ModelLayerLocation(Fantazia.res("boat/obscure"), "main");
-    public static final ModelLayerLocation OBSCURE_CHEST_BOAT_LAYER = new ModelLayerLocation(Fantazia.res("chest_boat/obscure"), "main");
+    public static final ModelLayerLocation OBSCURE_BOAT_LAYER = new ModelLayerLocation(Fantazia.location("boat/obscure"), "main");
+    public static final ModelLayerLocation OBSCURE_CHEST_BOAT_LAYER = new ModelLayerLocation(Fantazia.location("chest_boat/obscure"), "main");
     private final Map<CustomBoat.Type, Pair<ResourceLocation, ListModel<Boat>>> boatResources;
 
     public CustomBoatRenderer(EntityRendererProvider.Context context, boolean chestBoat) {
         super(context, chestBoat);
         this.boatResources = Stream.of(CustomBoat.Type.values()).collect(ImmutableMap.toImmutableMap(type -> type,
-                type -> Pair.of(Fantazia.res(getTextureLocation(type, chestBoat)), this.createBoatModel(context, type, chestBoat))));
+                type -> Pair.of(Fantazia.location(getTextureLocation(type, chestBoat)), this.createBoatModel(context, type, chestBoat))));
 
     }
 
@@ -51,7 +51,7 @@ public class CustomBoatRenderer extends BoatRenderer {
     }
 
     private static ModelLayerLocation createLocation(String pPath) {
-        return new ModelLayerLocation(Fantazia.res(pPath), "main");
+        return new ModelLayerLocation(Fantazia.location(pPath), "main");
     }
 
     public @NotNull Pair<ResourceLocation, ListModel<Boat>> getModelWithLocation(@NotNull Boat boat) {

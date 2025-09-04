@@ -1,0 +1,20 @@
+{
+  "type": "fantazia:rune_carving",
+  "fee": 10,
+  "ingredients": [
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "minecraft:phantom_membrane"
+    },
+    {
+      "item": "minecraft:phantom_membrane"
+    }
+  ],
+  "rune": "fantazia:aerobat",
+  "wisdom": 25
+}

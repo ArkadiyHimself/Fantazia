@@ -1,0 +1,14 @@
+{
+  "type": "fantazia:rune_carving",
+  "fee": 18,
+  "ingredients": [
+    {
+      "item": "fantazia:amplifier"
+    },
+    {
+      "item": "minecraft:iron_sword"
+    }
+  ],
+  "rune": "fantazia:meticulous",
+  "wisdom": 55
+}

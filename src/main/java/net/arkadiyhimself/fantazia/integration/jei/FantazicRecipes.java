@@ -1,14 +1,13 @@
 package net.arkadiyhimself.fantazia.integration.jei;
 
-import net.arkadiyhimself.fantazia.recipe.AmplificationRecipe;
-import net.arkadiyhimself.fantazia.recipe.EnchantmentReplaceRecipe;
-import net.arkadiyhimself.fantazia.recipe.RuneCarvingRecipe;
-import net.arkadiyhimself.fantazia.registries.FTZRecipeTypes;
+import net.arkadiyhimself.fantazia.data.recipe.AmplificationRecipe;
+import net.arkadiyhimself.fantazia.data.recipe.EnchantmentReplaceRecipe;
+import net.arkadiyhimself.fantazia.data.recipe.RuneCarvingRecipe;
+import net.arkadiyhimself.fantazia.common.registries.FTZRecipeTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
-import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
 

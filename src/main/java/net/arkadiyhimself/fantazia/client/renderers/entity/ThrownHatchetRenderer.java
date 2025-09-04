@@ -3,8 +3,8 @@ package net.arkadiyhimself.fantazia.client.renderers.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.entities.ThrownHatchet;
-import net.arkadiyhimself.fantazia.items.weapons.Range.HatchetItem;
+import net.arkadiyhimself.fantazia.common.entity.ThrownHatchet;
+import net.arkadiyhimself.fantazia.common.item.weapons.Range.HatchetItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -22,12 +22,12 @@ import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
-    public static final ModelResourceLocation WOODEN = Fantazia.modelRes("item/wooden_hatchet");
-    public static final ModelResourceLocation STONE = Fantazia.modelRes("item/stone_hatchet");
-    public static final ModelResourceLocation GOLDEN = Fantazia.modelRes("item/golden_hatchet");
-    public static final ModelResourceLocation IRON = Fantazia.modelRes("item/iron_hatchet");
-    public static final ModelResourceLocation DIAMOND = Fantazia.modelRes("item/diamond_hatchet");
-    public static final ModelResourceLocation NETHERITE = Fantazia.modelRes("item/netherite_hatchet");
+    public static final ModelResourceLocation WOODEN = Fantazia.modelLocation("item/wooden_hatchet");
+    public static final ModelResourceLocation STONE = Fantazia.modelLocation("item/stone_hatchet");
+    public static final ModelResourceLocation GOLDEN = Fantazia.modelLocation("item/golden_hatchet");
+    public static final ModelResourceLocation IRON = Fantazia.modelLocation("item/iron_hatchet");
+    public static final ModelResourceLocation DIAMOND = Fantazia.modelLocation("item/diamond_hatchet");
+    public static final ModelResourceLocation NETHERITE = Fantazia.modelLocation("item/netherite_hatchet");
 
     public ThrownHatchetRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
@@ -48,7 +48,7 @@ public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull ThrownHatchet pEntity) {
-        return Fantazia.res("textures/item/weapons/wooden_hatchet");
+        return Fantazia.location("textures/item/weapons/wooden_hatchet");
     }
 
     private static ModelResourceLocation hatchetModel(ThrownHatchet hatchet) {

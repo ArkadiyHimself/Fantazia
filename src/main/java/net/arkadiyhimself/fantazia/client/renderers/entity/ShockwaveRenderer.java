@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.entities.Shockwave;
+import net.arkadiyhimself.fantazia.common.entity.Shockwave;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -16,17 +16,17 @@ import org.jetbrains.annotations.NotNull;
 
 public class ShockwaveRenderer extends EntityRenderer<Shockwave> {
 
-    private static final ResourceLocation REGULAR1 = Fantazia.res("textures/entity/shockwave/regular1.png");
-    private static final ResourceLocation REGULAR2 = Fantazia.res("textures/entity/shockwave/regular2.png");
-    private static final ResourceLocation REGULAR3 = Fantazia.res("textures/entity/shockwave/regular3.png");
-    private static final ResourceLocation REGULAR4 = Fantazia.res("textures/entity/shockwave/regular4.png");
-    private static final ResourceLocation REGULAR5 = Fantazia.res("textures/entity/shockwave/regular5.png");
+    private static final ResourceLocation REGULAR1 = Fantazia.location("textures/entity/shockwave/regular1.png");
+    private static final ResourceLocation REGULAR2 = Fantazia.location("textures/entity/shockwave/regular2.png");
+    private static final ResourceLocation REGULAR3 = Fantazia.location("textures/entity/shockwave/regular3.png");
+    private static final ResourceLocation REGULAR4 = Fantazia.location("textures/entity/shockwave/regular4.png");
+    private static final ResourceLocation REGULAR5 = Fantazia.location("textures/entity/shockwave/regular5.png");
 
-    private static final ResourceLocation FURY1 = Fantazia.res("textures/entity/shockwave/fury1.png");
-    private static final ResourceLocation FURY2 = Fantazia.res("textures/entity/shockwave/fury2.png");
-    private static final ResourceLocation FURY3 = Fantazia.res("textures/entity/shockwave/fury3.png");
-    private static final ResourceLocation FURY4 = Fantazia.res("textures/entity/shockwave/fury4.png");
-    private static final ResourceLocation FURY5 = Fantazia.res("textures/entity/shockwave/fury5.png");
+    private static final ResourceLocation FURY1 = Fantazia.location("textures/entity/shockwave/fury1.png");
+    private static final ResourceLocation FURY2 = Fantazia.location("textures/entity/shockwave/fury2.png");
+    private static final ResourceLocation FURY3 = Fantazia.location("textures/entity/shockwave/fury3.png");
+    private static final ResourceLocation FURY4 = Fantazia.location("textures/entity/shockwave/fury4.png");
+    private static final ResourceLocation FURY5 = Fantazia.location("textures/entity/shockwave/fury5.png");
 
     private static RenderType createRenderType(RenderType.CompositeState glState) {
         return RenderType.create("stun_bar", com.mojang.blaze3d.vertex.DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256, true, true, glState);

@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.arkadiyhimself.fantazia.advanced.dynamicattributemodifying.DynamicAttributeModifier;
-import net.arkadiyhimself.fantazia.simpleobjects.PercentageAttribute;
+import net.arkadiyhimself.fantazia.common.advanced.dynamic_attribute_modifier.DynamicAttributeModifier;
+import net.arkadiyhimself.fantazia.util.simpleobjects.PercentageAttribute;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;

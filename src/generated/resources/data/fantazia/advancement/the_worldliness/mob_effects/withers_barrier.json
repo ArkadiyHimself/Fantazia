@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "withers_barrier": {
+      "conditions": {
+        "effects": {
+          "fantazia:withers_barrier": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "requirements": [
+    [
+      "withers_barrier"
+    ]
+  ]
+}

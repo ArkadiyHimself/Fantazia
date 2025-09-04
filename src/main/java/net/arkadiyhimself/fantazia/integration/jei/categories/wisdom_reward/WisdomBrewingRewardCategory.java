@@ -9,23 +9,17 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Optional;
 
 public record WisdomBrewingRewardCategory(
@@ -36,7 +30,7 @@ public record WisdomBrewingRewardCategory(
     public static final RecipeType<RewardPair> DUMMY = RecipeType.create(Fantazia.MODID, "wisdom_reward.brewing", RewardPair.class);
 
     public static WisdomBrewingRewardCategory create(IGuiHelper helper) {
-        ResourceLocation backgroundImage = Fantazia.res("textures/gui/jei/wisdom_reward/category.png");
+        ResourceLocation backgroundImage = Fantazia.location("textures/gui/jei/wisdom_reward/category.png");
         IDrawable background = helper.createDrawable(backgroundImage, 0, 0, 92, 48);
         IDrawable icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.BREWING_STAND));
         return new WisdomBrewingRewardCategory(background, icon);

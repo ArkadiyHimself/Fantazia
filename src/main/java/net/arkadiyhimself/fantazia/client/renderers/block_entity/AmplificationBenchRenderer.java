@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.client.renderers.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.arkadiyhimself.fantazia.entities.AmplificationBenchBlockEntity;
+import net.arkadiyhimself.fantazia.common.entity.AmplificationBenchBlockEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

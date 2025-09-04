@@ -1,21 +1,37 @@
-// 1.21.1	2025-05-28T15:15:39.340005	Tags for minecraft:item mod id fantazia
-7d05a2eb836381c992e2c55318fd1943a200b54b data/fantazia/tags/item/enchantable/caster.json
+// 1.21.1	2025-09-04T17:22:30.7507727	Tags for minecraft:item mod id fantazia
+b1d60c956f33062eca82f8baf816239b99c782d2 data/c/tags/item/dusts.json
+5d5c47cc045d34f55ef726601450d7a9aad56035 data/c/tags/item/enchantables.json
+46bbc0d6117cc4e255154721fd04700585fe0e28 data/c/tags/item/fences/wooden.json
+c7dd8896c30ae4d06de0f342729e4ee6fc0ad570 data/c/tags/item/fence_gates/wooden.json
+fa3663990008e79def43859de6c382b02575f1cf data/c/tags/item/foods.json
+59be175e28cdd891981936aed4247c27c917a97c data/c/tags/item/foods/fruit.json
+006cf96c8e69fe40560c98ad9e7ca8f4bfb21ec7 data/c/tags/item/ingots.json
+1ac7369acb2571e6cd1821c6ba9040fcab8489c0 data/c/tags/item/ores.json
+8c4316e1e38dbba952172824105e721a0d730c8c data/c/tags/item/raw_materials.json
+d4723b7cd0e720a6dfd01188340c473b0d88c49c data/c/tags/item/tools/ranged_weapon.json
+0af6c953bad23689d207c1caf86170311282bfa4 data/fantazia/tags/item/disabled_by_disarm.json
+4eded238cc169507c3ee1964422fed9bcd54b1f7 data/fantazia/tags/item/enchantable/ancient_flame.json
+5b7318cc7919d72a344c8d663f6444c251f253d7 data/fantazia/tags/item/enchantable/caster.json
 5d5c47cc045d34f55ef726601450d7a9aad56035 data/fantazia/tags/item/enchantable/hatchet.json
 07a11b431402424368fa5351f5e9f7f763727316 data/fantazia/tags/item/fantazium_ores.json
-1d96d90328b7737649984791191a2ee47f7c47a1 data/fantazia/tags/item/for_activecaster.json
+b4fef93f7c00cddbbe32ed63e9855ac7de92e28c data/fantazia/tags/item/for_activecaster.json
 2eae8fec980fa63be1bdb33de271e41cb12b0044 data/fantazia/tags/item/for_dashstone.json
-abb25e2c08cbd0535482011ea0ccef2e1af69c4a data/fantazia/tags/item/for_passivecaster.json
+23cfbd0a589114d136b42989342aa527f4c16f25 data/fantazia/tags/item/for_passivecaster.json
 26f948fcc2442d6c81e082dff9aaf28955077d6d data/fantazia/tags/item/for_rune.json
 3f262ccd03ae61799024b49a294f1aed7800112e data/fantazia/tags/item/from_fantazium.json
 eb9f760cbd16fc004ff7382d4042b82f6780690c data/fantazia/tags/item/from_obscure_tree.json
 9a74d7b401652937a945946c415c50d0d6f9d033 data/fantazia/tags/item/hatchets.json
+4945fdd99f77a0fd74762ab4d49e8f26e7c1a593 data/fantazia/tags/item/ingots/fantazium.json
 4baeccdc9cf5331d0de93887d1e03910cb815bf2 data/fantazia/tags/item/melee_block.json
 d9fa8492b3cf95f697b9823051abd6f56771b81b data/fantazia/tags/item/no_disintegration.json
 5805ba3d0e150b94b847c5564da562de572f303e data/fantazia/tags/item/obscure_logs.json
-d5c0a83af5df58238e323b0f5362e52a1684fd1f data/fantazia/tags/item/range_weapon.json
+32b83f4b3586b012eff8919702b9da089c948e15 data/fantazia/tags/item/raw_materials/fantazium.json
+0f7d93217a0782b218ec78e157ff547881f384b5 data/fantazia/tags/item/slowed_by_frozen.json
 4945fdd99f77a0fd74762ab4d49e8f26e7c1a593 data/minecraft/tags/item/beacon_payment_items.json
 6ed38f069bed35d7b9c4b2edbd32f5c7d18d7c3c data/minecraft/tags/item/boats.json
 1020eec7504d2b15166d785e840a59a48dfa26d6 data/minecraft/tags/item/chest_boats.json
+ba9125aa546790a0582445879c658b228dbb763c data/minecraft/tags/item/enchantable/axe.json
+e21193f9566e3c8771f8ba982214958a6e10284e data/minecraft/tags/item/enchantable/durability.json
 c7dd8896c30ae4d06de0f342729e4ee6fc0ad570 data/minecraft/tags/item/fence_gates.json
 82ca5134bfefaa48c5849acce19416d1ce3fd216 data/minecraft/tags/item/leaves.json
 0091978ec93e730a6a056189d0d4b9352933d410 data/minecraft/tags/item/logs_that_burn.json
@@ -28,3 +44,4 @@ eaf604aa86f6fef6613e0187cb1fbe4e0f567a17 data/minecraft/tags/item/wooden_doors.j
 fc88abe8f668234dea4b38003ee4adc0a230f180 data/minecraft/tags/item/wooden_slabs.json
 89a86bff2f6fef06e526bdac932257859f20c69e data/minecraft/tags/item/wooden_stairs.json
 512229365bb34daa4b9e481a6d45c5fc818b9b64 data/minecraft/tags/item/wooden_trapdoors.json
+b1d60c956f33062eca82f8baf816239b99c782d2 data/neoforge/tags/item/enchanting_fuels.json

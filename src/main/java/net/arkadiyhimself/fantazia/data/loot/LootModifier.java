@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.arkadiyhimself.fantazia.datagen.loot_modifier.LootModifierHolder;
+import net.arkadiyhimself.fantazia.data.datagen.loot_modifier.LootModifierHolder;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

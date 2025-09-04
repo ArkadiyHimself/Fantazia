@@ -27,7 +27,7 @@ public record WisdomSlayingRewardCategory(
     public static final RecipeType<RewardPair> DUMMY = RecipeType.create(Fantazia.MODID, "category.slaying", RewardPair.class);
 
     public static WisdomSlayingRewardCategory create(IGuiHelper helper) {
-        ResourceLocation backgroundImage = Fantazia.res("textures/gui/jei/wisdom_reward/category.png");
+        ResourceLocation backgroundImage = Fantazia.location("textures/gui/jei/wisdom_reward/category.png");
         IDrawable background = helper.createDrawable(backgroundImage, 0, 0, 92, 48);
         IDrawable icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.IRON_SWORD));
         return new WisdomSlayingRewardCategory(background, icon);

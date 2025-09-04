@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.entities.magic_projectile.SimpleChasingProjectile;
+import net.arkadiyhimself.fantazia.common.entity.magic_projectile.SimpleChasingProjectile;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SimpleChasingProjectileRenderer extends EntityRenderer<SimpleChasingProjectile> {
 
-    public static final ModelLayerLocation SIMPLE_CHASING_PROJECTILE_LAYER = new ModelLayerLocation(Fantazia.res("simple_chasing_projectile"), "main");
+    public static final ModelLayerLocation SIMPLE_CHASING_PROJECTILE_LAYER = new ModelLayerLocation(Fantazia.location("simple_chasing_projectile"), "main");
     private final SimpleChasingProjectileModel model;
 
     public SimpleChasingProjectileRenderer(EntityRendererProvider.Context context) {
@@ -40,6 +40,6 @@ public class SimpleChasingProjectileRenderer extends EntityRenderer<SimpleChasin
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull SimpleChasingProjectile simpleChasingProjectile) {
-        return Fantazia.res("textures/entity/simple_chasing_projectile.png");
+        return Fantazia.location("textures/entity/simple_chasing_projectile.png");
     }
 }

@@ -3,7 +3,7 @@ package net.arkadiyhimself.fantazia.data.spawn_effect;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.advanced.aura.Aura;
+import net.arkadiyhimself.fantazia.common.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;

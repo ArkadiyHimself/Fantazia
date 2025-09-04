@@ -5,13 +5,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.LivingEffectHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.holders.EvasionHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,10 +29,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class AbsoluteBarrier {
 
-    public static final ResourceLocation BARRIER_LAYER = Fantazia.res("textures/entity_layers/absolute_barrier/barrier_armor.png");
-    public static final ResourceLocation BARRIER_BG = Fantazia.res("textures/entity_layers/absolute_barrier/barrier_bg.png");
-    public static final ResourceLocation BARRIER_LAYER_FURY = Fantazia.res("textures/entity_layers/absolute_barrier/barrier_armor_fury.png");
-    public static final ResourceLocation BARRIER_BG_FURY = Fantazia.res("textures/entity_layers/absolute_barrier/barrier_bg_fury.png");
+    public static final ResourceLocation BARRIER_LAYER = Fantazia.location("textures/entity_layers/absolute_barrier/barrier_armor.png");
+    public static final ResourceLocation BARRIER_BG = Fantazia.location("textures/entity_layers/absolute_barrier/barrier_bg.png");
+    public static final ResourceLocation BARRIER_LAYER_FURY = Fantazia.location("textures/entity_layers/absolute_barrier/barrier_armor_fury.png");
+    public static final ResourceLocation BARRIER_BG_FURY = Fantazia.location("textures/entity_layers/absolute_barrier/barrier_bg_fury.png");
     protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENERGY_SWIRL_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEnergySwirlShader);
     protected static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
         RenderSystem.enableBlend();

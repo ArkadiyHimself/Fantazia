@@ -5,10 +5,10 @@ import net.minecraft.resources.ResourceLocation;
 
 public class WisdomRewardCategories {
 
-    public static final ResourceLocation BREWED = Fantazia.res("brewed");
-    public static final ResourceLocation CONSUMED = Fantazia.res("consumed");
-    public static final ResourceLocation CRAFTED = Fantazia.res("crafted");
-    public static final ResourceLocation SLAYED = Fantazia.res("slayed");
-    public static final ResourceLocation TAMED = Fantazia.res("tamed");
-    public static final ResourceLocation VISITED = Fantazia.res("visited");
+    public static final ResourceLocation BREWED = Fantazia.location("brewed");
+    public static final ResourceLocation CONSUMED = Fantazia.location("consumed");
+    public static final ResourceLocation CRAFTED = Fantazia.location("crafted");
+    public static final ResourceLocation SLAYED = Fantazia.location("slayed");
+    public static final ResourceLocation TAMED = Fantazia.location("tamed");
+    public static final ResourceLocation VISITED = Fantazia.location("visited");
 }

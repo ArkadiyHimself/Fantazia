@@ -7,12 +7,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.basis_attachments.ReflectLayerRenderHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.LivingDataHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_data.holders.EvasionHolder;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.ReflectLayerRenderHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.holders.EvasionHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -29,7 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class MysticMirror {
-    public static final ResourceLocation MIRROR_LAYER = Fantazia.res("textures/entity_layers/mystic_mirror/mystic_mirror.png");
+    public static final ResourceLocation MIRROR_LAYER = Fantazia.location("textures/entity_layers/mystic_mirror/mystic_mirror.png");
     protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENERGY_SWIRL_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getRendertypeEnergySwirlShader);
     protected static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
         RenderSystem.enableBlend();

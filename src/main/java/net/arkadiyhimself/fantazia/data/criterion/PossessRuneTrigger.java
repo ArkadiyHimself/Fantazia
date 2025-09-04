@@ -2,8 +2,8 @@ package net.arkadiyhimself.fantazia.data.criterion;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.advanced.runes.Rune;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.CustomCriteriaHolder;
+import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.CustomCriteriaHolder;
 import net.arkadiyhimself.fantazia.data.predicate.PossessedRunePredicate;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
@@ -14,7 +14,6 @@ import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public class PossessRuneTrigger extends SimpleCriterionTrigger<PossessRuneTrigger.TriggerInstance> {
 

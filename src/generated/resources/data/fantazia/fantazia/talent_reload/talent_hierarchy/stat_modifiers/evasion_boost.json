@@ -1,0 +1,15 @@
+{
+  "chain_element": {
+    "attribute_modifiers": {
+      "fantazia:evasion": {
+        "amount": 5.0,
+        "operation": "add_value"
+      }
+    },
+    "icon": "fantazia:textures/talent/stat_modifiers/evasion_boost.png",
+    "title": "talent.fantazia.stat_modifiers.evasion_boost",
+    "wisdom": 65
+  },
+  "simple_chain": 5,
+  "tab": "fantazia:stat_modifiers"
+}

@@ -1,0 +1,48 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "enchantment.fantazia.decisive_strike"
+  },
+  "effects": {
+    "fantazia:critical_damage_modify": [
+      {
+        "effect": {
+          "add_initial": {
+            "type": "minecraft:linear",
+            "base": 0.5,
+            "per_level_above_first": 0.5
+          },
+          "is_vanilla": true
+        },
+        "enchanted": "attacker"
+      }
+    ],
+    "fantazia:parry_modify": [
+      {
+        "effect": {
+          "add_initial": {
+            "type": "minecraft:linear",
+            "base": 0.5,
+            "per_level_above_first": 0.5
+          }
+        },
+        "enchanted": "attacker"
+      }
+    ]
+  },
+  "exclusive_set": "minecraft:sweeping_edge",
+  "max_cost": {
+    "base": 20,
+    "per_level_above_first": 9
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 5,
+    "per_level_above_first": 9
+  },
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": "#minecraft:enchantable/sword",
+  "weight": 2
+}

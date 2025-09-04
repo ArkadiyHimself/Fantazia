@@ -1,10 +1,11 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.advanced.cleansing.EffectCleansing;
-import net.arkadiyhimself.fantazia.packets.IPacket;
-import net.arkadiyhimself.fantazia.registries.FTZAttachmentTypes;
-import net.arkadiyhimself.fantazia.registries.FTZMobEffects;
-import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
+import net.arkadiyhimself.fantazia.networking.IPacket;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
@@ -44,6 +45,7 @@ public abstract class MixinCreeper extends LivingEntity {
                 instance.level().playSound(null, instance.blockPosition(), FTZSoundEvents.EFFECT_LAYERED_BARRIER_BREAK.get(), SoundSource.AMBIENT);
             } else instance.level().playSound(null, instance.blockPosition(), FTZSoundEvents.EFFECT_LAYERED_BARRIER_DAMAGE.get(), SoundSource.AMBIENT);
             instance.setData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS, layers);
+            ActionsHelper.interrupt(instance);
             if (!level().isClientSide()) IPacket.layeredBarrierDamaged(instance);
             return;
         }

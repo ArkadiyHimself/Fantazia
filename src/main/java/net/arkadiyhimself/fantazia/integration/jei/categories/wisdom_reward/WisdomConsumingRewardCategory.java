@@ -17,11 +17,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 public record WisdomConsumingRewardCategory(
         IDrawable background,
@@ -31,7 +28,7 @@ public record WisdomConsumingRewardCategory(
     public static final RecipeType<RewardPair> DUMMY = RecipeType.create(Fantazia.MODID, "wisdom_reward.consuming", RewardPair.class);
 
     public static WisdomConsumingRewardCategory create(IGuiHelper helper) {
-        ResourceLocation backgroundImage = Fantazia.res("textures/gui/jei/wisdom_reward/category.png");
+        ResourceLocation backgroundImage = Fantazia.location("textures/gui/jei/wisdom_reward/category.png");
         IDrawable background = helper.createDrawable(backgroundImage, 0, 0, 92, 48);
         IDrawable icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(Items.WHEAT));
         return new WisdomConsumingRewardCategory(background, icon);

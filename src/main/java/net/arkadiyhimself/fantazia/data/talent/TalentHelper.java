@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.data.talent;
 
 import com.google.common.collect.ImmutableList;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.api.prompt.Prompts;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
+import net.arkadiyhimself.fantazia.common.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.advancements.AdvancementHolder;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.player.Player;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

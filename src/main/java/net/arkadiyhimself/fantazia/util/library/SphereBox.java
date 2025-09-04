@@ -29,10 +29,6 @@ public class SphereBox {
         this.centerZ = z;
     }
 
-    public SphereBox(float radius, float centerX, float centerY, float centerZ) {
-        this((double) radius, (double) centerX, (double) centerY, (double) centerZ);
-    }
-
     public SphereBox(double radius, Vec3 center) {
         this(radius, center.x(), center.y(), center.z());
     }

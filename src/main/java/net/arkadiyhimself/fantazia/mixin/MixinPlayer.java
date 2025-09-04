@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.mixin;
 
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.api.attachment.entity.player_ability.holders.StaminaHolder;
-import net.arkadiyhimself.fantazia.registries.FTZDamageTypes;
-import net.arkadiyhimself.fantazia.registries.FTZSoundEvents;
-import net.arkadiyhimself.fantazia.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.StaminaHolder;
+import net.arkadiyhimself.fantazia.common.registries.FTZDamageTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;

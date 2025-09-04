@@ -3,7 +3,6 @@ package net.arkadiyhimself.fantazia.data.predicate;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.data.FTZCodecs;
-import net.arkadiyhimself.fantazia.data.PredicateListHandler;
 import net.minecraft.advancements.critereon.TagPredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;

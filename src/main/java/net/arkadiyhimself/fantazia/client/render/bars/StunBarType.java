@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.api.attachment.entity.living_effect.holders.StunEffectHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class StunBarType extends RenderStateShard {
 
-    private static final ResourceLocation STUN_BAR = Fantazia.res("textures/render_above/stun_bar.png");
+    private static final ResourceLocation STUN_BAR = Fantazia.location("textures/render_above/stun_bar.png");
     public static final RenderType BAR_TEXTURE_TYPE = emptyStunBarType();
 
     public StunBarType(String pName, Runnable pSetupState, Runnable pClearState) {

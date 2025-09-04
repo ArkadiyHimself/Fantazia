@@ -13,11 +13,9 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
 import net.arkadiyhimself.fantazia.integration.jei.JEIRecipeTypes;
-import net.arkadiyhimself.fantazia.items.RuneWielderItem;
-import net.arkadiyhimself.fantazia.recipe.RuneCarvingRecipe;
-import net.arkadiyhimself.fantazia.registries.FTZBlocks;
-import net.arkadiyhimself.fantazia.registries.FTZItems;
-import net.arkadiyhimself.fantazia.registries.FTZRecipeTypes;
+import net.arkadiyhimself.fantazia.common.item.RuneWielderItem;
+import net.arkadiyhimself.fantazia.data.recipe.RuneCarvingRecipe;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -26,7 +24,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +37,7 @@ public record RuneCarvingCategory(
 ) implements IRecipeCategory<RecipeHolder<RuneCarvingRecipe>> {
 
     public static RuneCarvingCategory create(IGuiHelper helper) {
-        ResourceLocation backgroundImage = Fantazia.res("textures/gui/jei/amplification_bench.png");
+        ResourceLocation backgroundImage = Fantazia.location("textures/gui/jei/amplification_bench.png");
         IDrawable background = helper.createDrawable(backgroundImage, 0, 0, 118, 58);
         IDrawable icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, RuneWielderItem.emptyRune());
         return new RuneCarvingCategory(background, icon);

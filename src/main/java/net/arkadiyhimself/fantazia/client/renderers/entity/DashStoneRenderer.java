@@ -9,9 +9,8 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.render.FTZRenderTypes;
 import net.arkadiyhimself.fantazia.client.render.layers.AbsoluteBarrier;
 import net.arkadiyhimself.fantazia.client.renderers.item.FantazicItemRenderer;
-import net.arkadiyhimself.fantazia.entities.DashStone;
-import net.arkadiyhimself.fantazia.registries.FTZDataComponentTypes;
-import net.minecraft.client.Minecraft;
+import net.arkadiyhimself.fantazia.common.entity.DashStone;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -69,7 +68,7 @@ public class DashStoneRenderer extends EntityRenderer<DashStone> {
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull DashStone pEntity) {
-        return Fantazia.res("");
+        return Fantazia.location("");
     }
 
     private static ModelResourceLocation getModel(DashStone entity) {

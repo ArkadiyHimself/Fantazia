@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.integration.jei.categories.wisdom_reward;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.arkadiyhimself.fantazia.Fantazia;
@@ -9,12 +8,12 @@ import net.arkadiyhimself.fantazia.data.talent.reload.ServerWisdomRewardManager;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardCategories;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardInstance;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardsCombined;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,7 @@ public interface IWisdomRewardCategory extends IRecipeCategory<RewardPair> {
             int reward = builder.defaultReward();
             if (reward > defaultReward) defaultReward = reward;
         }
-        list.add(new RewardPair(Fantazia.res("default"), new WisdomRewardInstance.Builder(defaultReward), true));
+        list.add(new RewardPair(Fantazia.location("default"), new WisdomRewardInstance.Builder(defaultReward), true));
         return list;
     }
 
@@ -48,7 +47,7 @@ public interface IWisdomRewardCategory extends IRecipeCategory<RewardPair> {
             int reward = builder.defaultReward();
             if (reward > defaultReward) defaultReward = reward;
         }
-        list.add(new RewardPair(Fantazia.res("default"), new WisdomRewardInstance.Builder(defaultReward), true));
+        list.add(new RewardPair(Fantazia.location("default"), new WisdomRewardInstance.Builder(defaultReward), true));
         return list;
     }
 
@@ -62,7 +61,7 @@ public interface IWisdomRewardCategory extends IRecipeCategory<RewardPair> {
             int reward = builder.defaultReward();
             if (reward > defaultReward) defaultReward = reward;
         }
-        list.add(new RewardPair(Fantazia.res("default"), new WisdomRewardInstance.Builder(defaultReward), true));
+        list.add(new RewardPair(Fantazia.location("default"), new WisdomRewardInstance.Builder(defaultReward), true));
         return list;
     }
 
@@ -76,7 +75,7 @@ public interface IWisdomRewardCategory extends IRecipeCategory<RewardPair> {
             int reward = builder.defaultReward();
             if (reward > defaultReward) defaultReward = reward;
         }
-        list.add(new RewardPair(Fantazia.res("default"), new WisdomRewardInstance.Builder(defaultReward), true));
+        list.add(new RewardPair(Fantazia.location("default"), new WisdomRewardInstance.Builder(defaultReward), true));
         return list;
     }
 
@@ -90,15 +89,16 @@ public interface IWisdomRewardCategory extends IRecipeCategory<RewardPair> {
             int reward = builder.defaultReward();
             if (reward > defaultReward) defaultReward = reward;
         }
-        list.add(new RewardPair(Fantazia.res("default"), new WisdomRewardInstance.Builder(defaultReward), true));
+        list.add(new RewardPair(Fantazia.location("default"), new WisdomRewardInstance.Builder(defaultReward), true));
         return list;
     }
 
     @Override
     default void draw(@NotNull RewardPair recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY) {
         Font font = Minecraft.getInstance().font;
-        Component component;
+        MutableComponent component;
         if (recipe.isDefault()) component = Component.translatable("fantazia.jei.default_wisdom_reward", recipe.getB().reward()).withStyle(ChatFormatting.BLUE);
+        else if (recipe.getB().reward() <= 0) component = Component.translatable("fantazia.jei.no_wisdom_reward").withStyle(ChatFormatting.RED);
         else component = Component.literal(String.valueOf(recipe.getB().reward())).withStyle(ChatFormatting.BLUE);
         int width = font.width(component) + 11;
         int x0 = (92 - width) / 2;

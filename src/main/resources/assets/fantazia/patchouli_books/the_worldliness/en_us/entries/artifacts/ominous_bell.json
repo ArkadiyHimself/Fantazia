@@ -1,0 +1,22 @@
+{
+  "advancement": "fantazia:the_worldliness/artifacts/ominous_bell",
+  "category": "fantazia:artifacts",
+  "icon": "fantazia:ominous_bell",
+  "name": "item.fantazia.ominous_bell",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.ominous_bell.page.1"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "fantazia:ominous_bell",
+      "text": "book.fantazia.the_worldliness.artifacts.ominous_bell.page.2",
+      "title": "book.fantazia.heading.artifacts.spellcaster"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.artifacts.ominous_bell.page.3"
+    }
+  ]
+}

@@ -1,19 +1,24 @@
 package net.arkadiyhimself.fantazia;
 
 import com.mojang.logging.LogUtils;
-import net.arkadiyhimself.fantazia.api.curio.CurioValidator;
+import net.arkadiyhimself.fantazia.common.api.curio.CurioValidator;
 import net.arkadiyhimself.fantazia.client.renderers.item.FantazicItemRenderer;
+import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentEffectComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentEntityEffects;
+import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentLocationBasedEffects;
+import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentValueEffects;
 import net.arkadiyhimself.fantazia.mixin.BossHealthOverlayAccessor;
-import net.arkadiyhimself.fantazia.registries.*;
-import net.arkadiyhimself.fantazia.registries.custom.Auras;
-import net.arkadiyhimself.fantazia.registries.custom.Runes;
-import net.arkadiyhimself.fantazia.registries.custom.Spells;
+import net.arkadiyhimself.fantazia.common.registries.*;
+import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
+import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
+import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -45,7 +50,7 @@ public class Fantazia {
         FTZAttributes.register(modEventBus);
         FTZBlocks.register(modEventBus);
         FTZCreativeModeTabs.register(modEventBus);
-        FTZCriterionTtiggers.register(modEventBus);
+        FTZCriterionTriggers.register(modEventBus);
         FTZDataComponentTypes.register(modEventBus);
         FTZEntityTypes.register(modEventBus);
         FTZItems.register(modEventBus);
@@ -60,6 +65,11 @@ public class Fantazia {
         FTZMenuTypes.register(modEventBus);
         FTZRecipeTypes.register(modEventBus);
 
+        FTZEnchantmentEffectComponentTypes.register(modEventBus);
+        FTZEnchantmentLocationBasedEffects.register(modEventBus);
+        FTZEnchantmentEntityEffects.register(modEventBus);
+        FTZEnchantmentValueEffects.register(modEventBus);
+
         for (CurioValidator validator : CurioValidator.VALIDATORS.values()) registerCurioValidator(validator);
 
     }
@@ -73,7 +83,7 @@ public class Fantazia {
         return CUSTOM_RENDERER;
     }
 
-    public static ResourceLocation res(String id) {
+    public static ResourceLocation location(String id) {
         return ResourceLocation.fromNamespaceAndPath(MODID, id);
     }
 
@@ -81,16 +91,20 @@ public class Fantazia {
         return ResourceLocation.fromNamespaceAndPath(MODID, id.getPath());
     }
 
-    public static ModelResourceLocation modelRes(ResourceLocation id) {
+    public static ModelResourceLocation modelLocation(ResourceLocation id) {
         return ModelResourceLocation.standalone(id);
     }
 
-    public static ModelResourceLocation modelRes(String id) {
-        return modelRes(res(id));
+    public static ModelResourceLocation modelLocation(String id) {
+        return modelLocation(location(id));
     }
 
     public static <T> ResourceKey<Registry<T>> resKey(String name) {
-        return ResourceKey.createRegistryKey(Fantazia.res(name));
+        return ResourceKey.createRegistryKey(Fantazia.location(name));
+    }
+
+    public static <T> TagKey<T> tagKey(ResourceKey<Registry<T>> registry, String name) {
+        return TagKey.create(registry, location(name));
     }
 
     public static BossHealthOverlayAccessor getBossBarOverlay() {

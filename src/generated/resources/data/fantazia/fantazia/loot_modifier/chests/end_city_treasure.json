@@ -1,0 +1,14 @@
+{
+  "loot_instances": [
+    {
+      "addedInitial": {
+        "count": 1,
+        "id": "fantazia:vitality_fruit"
+      },
+      "first_time": true
+    }
+  ],
+  "loot_tables": [
+    "minecraft:chests/end_city_treasure"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "criteria": {
+    "bell": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:bell"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "found_ominous_bell": {
+      "conditions": {
+        "items": [
+          {
+            "items": "fantazia:ominous_bell"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "obscure_substance": {
+      "conditions": {
+        "possessed": {
+          "items": [
+            "fantazia:obscure_substance"
+          ]
+        }
+      },
+      "trigger": "fantazia:possess_item"
+    }
+  },
+  "requirements": [
+    [
+      "bell",
+      "found_ominous_bell"
+    ],
+    [
+      "found_ominous_bell",
+      "obscure_substance"
+    ]
+  ]
+}

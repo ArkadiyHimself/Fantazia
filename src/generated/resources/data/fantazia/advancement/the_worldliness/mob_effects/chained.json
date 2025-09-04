@@ -1,0 +1,17 @@
+{
+  "criteria": {
+    "chained": {
+      "conditions": {
+        "effects": {
+          "fantazia:chained": {}
+        }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "requirements": [
+    [
+      "chained"
+    ]
+  ]
+}
