@@ -518,6 +518,7 @@ public class RegistryEvents {
         generator.addProvider(event.includeClient(), new FantazicItemModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new FantazicRuneModelProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new FantazicBlueprintModelProvider(packOutput, existingFileHelper));
+        generator.addProvider(event.includeClient(), new FantazicParticleProvider(packOutput, existingFileHelper));
 
         // tags providers
         FantazicBlockTagsProvider blockTagsProvider = new FantazicBlockTagsProvider(packOutput, dataPackProvider.getRegistryProvider(), existingFileHelper);
