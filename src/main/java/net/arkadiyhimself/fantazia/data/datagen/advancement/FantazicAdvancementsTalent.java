@@ -1,14 +1,14 @@
 package net.arkadiyhimself.fantazia.data.datagen.advancement;
 
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.MeleeBlockTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.PossessItemTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.PossessRuneTrigger;
+import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
 import net.arkadiyhimself.fantazia.data.talent.TalentHierarchies;
 import net.arkadiyhimself.fantazia.data.talent.Talents;
-import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
-import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -52,7 +52,10 @@ public class FantazicAdvancementsTalent implements AdvancementProvider.Advanceme
         talent().addCriterion("enough_runes", PossessRuneTrigger.TriggerInstance.amountOfRunes(6)).save(consumer, Talents.RUNE_SLOTS);
 
         talent().addCriterion("ate_fruit", ConsumeItemTrigger.TriggerInstance.usedItem(FTZItems.VITALITY_FRUIT)).save(consumer, TalentHierarchies.HEALTH_BOOST);
-        talent().addCriterion("ate_fruit", ConsumeItemTrigger.TriggerInstance.usedItem(FTZItems.INSIGHT_ESSENCE)).save(consumer, TalentHierarchies.MANA_BOOST);
+        talent().addCriterion("drank_essence", ConsumeItemTrigger.TriggerInstance.usedItem(FTZItems.INSIGHT_ESSENCE)).save(consumer, TalentHierarchies.MANA_BOOST);
+
+        talent().addCriterion("obtained_tools", PossessItemTrigger.TriggerInstance.itemsOfTag(FTZItemTags.RECHARGEABLE_TOOL, 3)).save(consumer, Talents.TOOL_CAPACITY_UPGRADE1);
+        //talent().addCriterion("", ).save(consumer, Talents.TOOL_CAPACITY_UPGRADE2);
     }
 
     private static TalentAdvancementHolder talent() {

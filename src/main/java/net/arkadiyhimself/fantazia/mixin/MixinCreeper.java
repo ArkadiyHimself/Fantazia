@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.sounds.SoundSource;

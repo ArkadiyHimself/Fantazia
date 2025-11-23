@@ -1,9 +1,0 @@
-{
-  "advancement": "fantazia:talents/abilities/dash/dash2",
-  "background": "fantazia:textures/gui/talent_icons/octagon_blue.png",
-  "icon": "fantazia:textures/talent/abilities/dash/dash2.png",
-  "impacts": [
-    "fantazia:dash.upgrade"
-  ],
-  "title": "talent.fantazia.abilities.dash.dash2"
-}

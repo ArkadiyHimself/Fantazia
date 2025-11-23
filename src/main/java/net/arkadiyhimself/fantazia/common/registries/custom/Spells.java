@@ -1,25 +1,30 @@
 package net.arkadiyhimself.fantazia.common.registries.custom;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.Cleanse;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellCastResult;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.*;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.CombHealthHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.LocationHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.PuppeteeredEffectHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.DeferredSpell;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.entity.magic_projectile.SimpleChasingProjectile;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.common.registries.FTZParticleTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.data.tags.FTZEntityTypeTags;
 import net.arkadiyhimself.fantazia.networking.IPacket;
-import net.arkadiyhimself.fantazia.common.registries.*;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
@@ -35,7 +40,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -48,7 +52,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.WitherSkull;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import org.apache.commons.compress.utils.Lists;
@@ -83,6 +86,7 @@ public class Spells {
     public static final DeferredSpell<PassiveSpell> DAMNED_WRATH;
     public static final DeferredSpell<PassiveSpell> SHOCKWAVE;
     public static final DeferredSpell<PassiveSpell> REINFORCE;
+    public static final DeferredSpell<PassiveSpell> RESTORE;
 
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);
@@ -261,8 +265,6 @@ public class Spells {
                     if (owner.getHealth() <= owner.getMaxHealth() * 0.5) ApplyEffect.giveWithersBarrier(owner, 2);
                 }).cleanse());
 
-
-
         // targeted
         DEVOUR = register("devour", TargetedSpell.builder(5f, 2000, FTZSoundEvents.DEVOUR_CAST, null, Mob.class, 8f)
                 .conditions((caster, target) -> target.getMaxHealth() <= 100 && !target.isDeadOrDying())
@@ -361,6 +363,11 @@ public class Spells {
                     monster.addEffect(new MobEffectInstance(FTZMobEffects.MIGHT, dur, 1 + ampl));
                     FantazicCombat.clearTarget(monster, caster);
                     caster.level().playSound(null, caster.blockPosition(), FTZSoundEvents.PUPPETEER_CAST.value(), SoundSource.NEUTRAL);
+                })
+                .canUnEquip(livingEntity -> {
+                    PuppeteeredEffectHolder holder = LivingEffectHelper.takeHolder(livingEntity, PuppeteeredEffectHolder.class);
+                    if (holder == null) return true;
+                    return !holder.hasPuppet();
                 }));
 
         KNOCK_OUT = register("knock_out", TargetedSpell.builder(4f,300, null, FTZSoundEvents.KNOCK_OUT_RECHARGE, LivingEntity.class, 12f)
@@ -394,16 +401,21 @@ public class Spells {
 
                     if (murder) {
                         target.setHealth(0f);
-                        target.die(target.damageSources().source(DamageTypes.FELL_OUT_OF_WORLD, caster));
+                        LevelAttributesHelper.dieFrom(target, caster, DamageSourcesHolder::ominousBell);
                         SphereBox sphereBox = new SphereBox(8f, target.position());
 
                         List<LivingEntity> entities = sphereBox.entitiesInside(target.level(), LivingEntity.class);
 
+                        int i = 0;
                         for (LivingEntity entity : entities) {
-                            if (entity == caster) continue;
+                            if (entity == caster || entity == target) continue;
+                            i++;
                             ApplyEffect.makeDoomed(entity, 100);
                             VisualHelper.entityChasingParticle(entity, FTZParticleTypes.DOOMED_SOULS.random(), 15);
                         }
+
+                        int barrier = 40 + i * 20;
+                        ApplyEffect.giveAbsoluteBarrier(caster, barrier);
                     } else {
                         LevelAttributesHelper.hurtEntity(target, 2f + 0.25f * ampl, DamageSourcesHolder::removal);
                     }
@@ -424,7 +436,7 @@ public class Spells {
                     ApplyEffect.giveAbsoluteBarrier(owner,20 + ampl * 5);
                     if (owner instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DAMNED_WRATH.value());
                     return SpellCastResult.DEFAULT;
-                }).cleanse(Cleanse.MEDIUM));
+                }).canUnEquip(livingEntity -> !livingEntity.hasEffect(FTZMobEffects.FURY)).cleanse(Cleanse.MEDIUM));
 
         SHOCKWAVE = register("shockwave", PassiveSpell.builder(0.8f, 0, null, null));
 
@@ -434,5 +446,13 @@ public class Spells {
                     owner.level().playSound(null, owner.blockPosition(), FTZSoundEvents.REINFORCE_BLOCK.value(), SoundSource.AMBIENT);
                     return SpellCastResult.DEFAULT;
                 }));
+        
+        RESTORE = register("restore", PassiveSpell.builder(2f, 0, null, null)
+                .canUnEquip(livingEntity -> {
+                    CombHealthHolder holder = livingEntity.getData(FTZAttachmentTypes.COMB_HEALTH);
+                    return holder.ticks() <= 0 || holder.toHeal() <= 0;
+                }));
+
+
     }
 }

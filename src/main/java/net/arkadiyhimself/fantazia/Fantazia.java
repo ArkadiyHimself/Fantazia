@@ -1,17 +1,15 @@
 package net.arkadiyhimself.fantazia;
 
 import com.mojang.logging.LogUtils;
-import net.arkadiyhimself.fantazia.common.api.curio.CurioValidator;
 import net.arkadiyhimself.fantazia.client.renderers.item.FantazicItemRenderer;
+import net.arkadiyhimself.fantazia.common.api.curio.CurioValidator;
+import net.arkadiyhimself.fantazia.common.registries.*;
+import net.arkadiyhimself.fantazia.common.registries.custom.*;
 import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentEffectComponentTypes;
 import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentEntityEffects;
 import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentLocationBasedEffects;
 import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentValueEffects;
 import net.arkadiyhimself.fantazia.mixin.BossHealthOverlayAccessor;
-import net.arkadiyhimself.fantazia.common.registries.*;
-import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
-import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
-import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -21,19 +19,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
 import top.theillusivec4.curios.api.CuriosApi;
-
-import java.util.Random;
 
 @Mod(Fantazia.MODID)
 public class Fantazia {
 
     public static final String MODID = "fantazia";
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static final Random RANDOM = new Random();
-    public static final boolean DEVELOPER_MODE = false;
+    public static final boolean DEVELOPER_MODE = true;
     private static FantazicItemRenderer CUSTOM_RENDERER = null;
     private static BossHealthOverlayAccessor accessor = null;
 
@@ -44,6 +40,9 @@ public class Fantazia {
         Spells.register(modEventBus);
         Auras.register(modEventBus);
         Runes.register(modEventBus);
+        ToolCapacityFunctions.register(modEventBus);
+        ToolDamageFunctions.register(modEventBus);
+        Blueprints.register(modEventBus);
 
         // vanilla registry
         FTZAttachmentTypes.register(modEventBus);
@@ -70,12 +69,9 @@ public class Fantazia {
         FTZEnchantmentEntityEffects.register(modEventBus);
         FTZEnchantmentValueEffects.register(modEventBus);
 
-        for (CurioValidator validator : CurioValidator.VALIDATORS.values()) registerCurioValidator(validator);
 
-    }
-
-    private static void registerCurioValidator(CurioValidator validator) {
-        CuriosApi.registerCurioPredicate(validator.id(), validator.function());
+        for (CurioValidator validator : CurioValidator.VALIDATORS.values())
+            CuriosApi.registerCurioPredicate(validator.id(), validator.function());
     }
 
     public static BlockEntityWithoutLevelRenderer getItemsRenderer() {
@@ -110,6 +106,10 @@ public class Fantazia {
     public static BossHealthOverlayAccessor getBossBarOverlay() {
         if (accessor == null) accessor = (BossHealthOverlayAccessor) Minecraft.getInstance().gui.getBossOverlay();
         return accessor;
+    }
+
+    public static boolean loadedJEI() {
+        return ModList.get().isLoaded("jei");
     }
 
 }

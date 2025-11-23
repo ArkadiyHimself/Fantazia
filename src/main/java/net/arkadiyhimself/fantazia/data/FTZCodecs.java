@@ -3,7 +3,6 @@ package net.arkadiyhimself.fantazia.data;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.ListCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.HierarchyType;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;

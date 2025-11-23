@@ -8,8 +8,8 @@ import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHe
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.HealingSourcesHolder;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.DeferredAura;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.arkadiyhimself.fantazia.common.registries.*;
+import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
@@ -56,7 +56,6 @@ public class Auras {
     static {
         DEBUG = register("debug", Aura.builder(Aura.TYPE.NEGATIVE, 10f)
                 .addProximityAttributeModifier(Attributes.MAX_HEALTH, Fantazia.location("aura.debug"), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, ampl -> -0.9)
-                .addDamageImmunity(DamageTypePredicate.builder().addDamageTypes(FTZDamageTypes.BLEEDING, FTZDamageTypes.ANCIENT_FLAME).build())
         );
 
         LEADERSHIP = register("leadership", Aura.builder(Aura.TYPE.POSITIVE, 12f)
@@ -79,9 +78,7 @@ public class Auras {
                     return flag1 || flag;
                 })
                 .secondaryFilter((entity, owner) -> {
-                    if (owner instanceof Player player && player.getCooldowns().isOnCooldown(FTZItems.TRANQUIL_HERB.get())) return false;
                     if (owner instanceof LivingEntity livingOwner && livingOwner.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).value() > 0) return false;
-
                     if (entity.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).value() > 0) return false;
 
                     return entity instanceof LivingEntity livingEntity && !AuraHelper.ownsAura(livingEntity, Auras.TRANQUIL) && livingEntity.getMaxHealth() > livingEntity.getHealth();
@@ -131,7 +128,7 @@ public class Auras {
                     TickingIntegerHolder ancientFlame = livingEntity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS);
                     if (ancientFlame.value() == 1) ancientFlame.set(21);
                 })
-                .putDamageMultiplier(DamageTypePredicate.builder().addTagPredicates(FTZDamageTypeTags.IS_ANCIENT_FLAME).build(), 1.5f)
+                .putDamageMultiplier(DamageTypePredicate.builder().addTagPredicates(FTZDamageTypeTags.ANCIENT_FLAME).build(), 1.5f)
                 .putDamageMultiplier(DamageTypePredicate.builder().addTagPredicates(DamageTypeTags.IS_FIRE).build(), 1.75f));
 
         FROSTBITE = register("frostbite", Aura.builder(Aura.TYPE.NEGATIVE, 8f)

@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public abstract class SpellBuilder<T extends AbstractSpell> {
 
@@ -22,6 +23,7 @@ public abstract class SpellBuilder<T extends AbstractSpell> {
     // ticking
     protected AbstractSpell.TickingConditions tickingConditions = AbstractSpell.TickingConditions.ALWAYS;
     protected Consumer<LivingEntity> ownerTick = owner -> {};
+
     protected Consumer<LivingEntity> uponEquipping = owner -> {};
     protected Cleanse cleanse = Cleanse.BASIC;
     protected boolean doCleanse = false;
@@ -29,6 +31,7 @@ public abstract class SpellBuilder<T extends AbstractSpell> {
 
     // extra
     protected Function<LivingEntity, List<Component>> extendTooltip = livingEntity -> Lists.newArrayList();
+    protected Predicate<LivingEntity> canUnEquip = livingEntity -> true;
 
     protected SpellBuilder(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound) {
         this.manacost = manacost;
@@ -74,8 +77,13 @@ public abstract class SpellBuilder<T extends AbstractSpell> {
         return this;
     }
 
-    public SpellBuilder<T>  extendTooltip(Function<LivingEntity, List<Component>> extendTooltip) {
+    public SpellBuilder<T> extendTooltip(Function<LivingEntity, List<Component>> extendTooltip) {
         this.extendTooltip = extendTooltip;
+        return this;
+    }
+
+    public SpellBuilder<T> canUnEquip(Predicate<LivingEntity> canUnEquip) {
+        this.canUnEquip = canUnEquip;
         return this;
     }
 

@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.common.advanced.spell.types;
 
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.Cleanse;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellCastResult;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -17,13 +17,26 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class PassiveSpell extends AbstractSpell {
 
     private final BiFunction<LivingEntity, Integer, SpellCastResult> onActivation;
 
-    protected PassiveSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, BiFunction<LivingEntity, Integer, SpellCastResult> onActivation) {
-        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList());
+    protected PassiveSpell(
+            float manacost,
+            int defaultRecharge,
+            @Nullable Holder<SoundEvent> castSound,
+            @Nullable Holder<SoundEvent> rechargeSound,
+            TickingConditions tickingConditions,
+            Consumer<LivingEntity> ownerTick,
+            Consumer<LivingEntity> uponEquipping,
+            Cleanse cleanse,
+            boolean doCleanse,
+            Function<LivingEntity, Integer> recharge,
+            Predicate<LivingEntity> canUnEquip,
+            BiFunction<LivingEntity, Integer, SpellCastResult> onActivation) {
+        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList(), canUnEquip);
         this.onActivation = onActivation;
     }
 
@@ -35,7 +48,6 @@ public class PassiveSpell extends AbstractSpell {
     @Override
     public List<Component> buildTooltip() {
         List<Component> components = Lists.newArrayList();
-        if (getID() == null) return components;
         String basicPath = "spell." + getID().getNamespace() + "." + getID().getPath();
 
         components.add(Component.literal(" "));
@@ -153,8 +165,26 @@ public class PassiveSpell extends AbstractSpell {
             return onActivation((livingEntity, integer) -> onActivation.apply(livingEntity));
         }
 
+        @Override
+        public Builder canUnEquip(Predicate<LivingEntity> canUnEquip) {
+            super.canUnEquip(canUnEquip);
+            return this;
+        }
+
         public PassiveSpell build() {
-            return new PassiveSpell(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, onActivation);
+            return new PassiveSpell(
+                    manacost,
+                    defaultRecharge,
+                    castSound,
+                    rechargeSound,
+                    tickingConditions,
+                    ownerTick,
+                    uponEquipping,
+                    cleanse,
+                    doCleanse,
+                    recharge,
+                    canUnEquip,
+                    onActivation);
         }
     }
 }

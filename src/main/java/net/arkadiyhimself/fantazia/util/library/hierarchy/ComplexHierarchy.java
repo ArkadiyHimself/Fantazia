@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * {@link ComplexHierarchy}, as the name suggests, is by far the most complicated type of hierarchy, where each element can have several «children»
+ * {@link ComplexHierarchy}, as the ident suggests, is by far the most complicated type of hierarchy, where each element can have several «children»
  * <br>
  * Each element of the hierarchy has its own «rank» which depends on how deep is the element in the hierarchy:
  * <br>

@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.common.advanced.spell.types;
 
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.Cleanse;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
 import net.arkadiyhimself.fantazia.common.advanced.spell.IChanneled;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellCastResult;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -45,12 +45,13 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell impleme
             Cleanse cleanse,
             boolean doCleanse,
             Function<LivingEntity, Integer> recharge,
+            Predicate<LivingEntity> canUnEquip,
             BiPredicate<LivingEntity, T> conditions,
             TriFunction<LivingEntity, T, Integer, SpellCastResult> beforeBlockCheck,
             TriConsumer<LivingEntity, T, Integer> afterBlockCheck,
             int castTime
     ) {
-        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList());
+        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, (owner) -> Lists.newArrayList(), canUnEquip);
         this.affected = affected;
         this.range = range;
         this.conditions = conditions;
@@ -115,7 +116,7 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell impleme
         String manacost = String.format("%.1f", manacost());
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.manacost", heading, ability, manacost));
         // spell cast time
-        String castTime = String.format("%.1f", ((float) castTime() / 20));
+        String castTime = String.format("%.2f", ((float) castTime() / 20));
         components.add(Component.translatable("tooltip.fantazia.common.spell.cast_time", Component.literal(castTime).withStyle(ability)).withStyle(heading));
         // spell range
         Component addRangeComponent = bakeRangeComponent();
@@ -223,6 +224,12 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell impleme
             return this;
         }
 
+        @Override
+        public Builder<T> canUnEquip(Predicate<LivingEntity> canUnEquip) {
+            super.canUnEquip(canUnEquip);
+            return this;
+        }
+
         public Builder<T> conditions(BiPredicate<LivingEntity, T> value) {
             this.conditions = value;
             return this;
@@ -265,6 +272,7 @@ public class TargetedSpell<T extends LivingEntity> extends AbstractSpell impleme
                     targetCleanse,
                     doCleanse,
                     recharge,
+                    canUnEquip,
                     conditions,
                     beforeBlockCheck,
                     afterBlockCheck,

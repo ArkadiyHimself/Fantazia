@@ -1,7 +1,0 @@
-{
-  "icon": "fantazia:slot/dashstone",
-  "size": 1,
-  "validators": [
-    "fantazia:for_dashstone"
-  ]
-}

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class ThrownHatchetRenderer extends EntityRenderer<ThrownHatchet> {
+
     public static final ModelResourceLocation WOODEN = Fantazia.modelLocation("item/wooden_hatchet");
     public static final ModelResourceLocation STONE = Fantazia.modelLocation("item/stone_hatchet");
     public static final ModelResourceLocation GOLDEN = Fantazia.modelLocation("item/golden_hatchet");

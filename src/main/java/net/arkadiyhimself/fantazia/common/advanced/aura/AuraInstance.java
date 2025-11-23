@@ -1,14 +1,14 @@
 package net.arkadiyhimself.fantazia.common.advanced.aura;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.FantazicHooks;
 import net.arkadiyhimself.fantazia.common.advanced.dynamic_attribute_modifier.DynamicAttributeModifier;
 import net.arkadiyhimself.fantazia.common.api.AttributeTemplate;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.holders.DAMHolder;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.common.FantazicHooks;
-import net.arkadiyhimself.fantazia.networking.attachment_syncing.IAttachmentSync;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
+import net.arkadiyhimself.fantazia.networking.attachment_syncing.IAttachmentSync;
 import net.arkadiyhimself.fantazia.util.library.SphereBox;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;

@@ -1,8 +1,0 @@
-{
-  "advancement": "fantazia:talents/abilities/melee_block/melee_block",
-  "icon": "fantazia:textures/talent/abilities/melee_block/melee_block.png",
-  "impacts": [
-    "fantazia:melee_block.unlock"
-  ],
-  "title": "talent.fantazia.abilities.melee_block.melee_block"
-}

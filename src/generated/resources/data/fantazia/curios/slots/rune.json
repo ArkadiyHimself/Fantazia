@@ -1,7 +1,0 @@
-{
-  "icon": "fantazia:slot/rune",
-  "size": 1,
-  "validators": [
-    "fantazia:for_rune"
-  ]
-}

@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 public interface FTZItemTags {
 
@@ -27,6 +28,8 @@ public interface FTZItemTags {
     TagKey<Item> SLOWED_BY_FROZEN = create("slowed_by_frozen");
     TagKey<Item> INGOTS_FANTAZIUM = create("ingots/fantazium");
     TagKey<Item> RAW_MATERIALS_FANTAZIUM = create("raw_materials/fantazium");
+    TagKey<Item> RECHARGEABLE_TOOL = create("rechargeable_tool");
+    TagKey<Item> ENGINEERING_TABLES = create("engineering_tables");
 
     // minecraft extension
     TagKey<Item> AXE_ENCHANTABLE = extension("enchantable/axe");

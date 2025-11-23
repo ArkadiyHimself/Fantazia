@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class Runes {
 
-    private static final FantazicRegistries.Runes REGISTER = FantazicRegistries.createRunes(Fantazia.MODID);
+    public static final FantazicRegistries.Runes REGISTER = FantazicRegistries.createRunes(Fantazia.MODID);
 
     public static final DeferredRune<Rune> EMPTY;
     public static final DeferredRune<Rune> OMNIDIRECTIONAL;

@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.networking.attachment_modify;
 
+import net.arkadiyhimself.fantazia.client.ClientEvents;
 import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.LocationHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.TickingIntegerHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
@@ -8,15 +9,14 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.Li
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.PuppeteeredEffectHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
-import net.arkadiyhimself.fantazia.data.talent.Talent;
-import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
-import net.arkadiyhimself.fantazia.client.ClientEvents;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.data.talent.Talent;
+import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -105,6 +105,10 @@ interface AttachmentModifyHandlers {
          PlayerAbilityHelper.acceptConsumer(Minecraft.getInstance().player, ManaHolder.class, manaHolder -> manaHolder.setMana(value));
     }
 
+    static void obtainedReward(ResourceLocation category, ResourceLocation instance) {
+         PlayerAbilityHelper.acceptConsumer(Minecraft.getInstance().player, TalentsHolder.class, holder -> holder.awardWisdomClient(category, instance));
+    }
+
     static void parryAttack(float amount) {
         PlayerAbilityHelper.acceptConsumer(Minecraft.getInstance().player, MeleeBlockHolder.class, holder -> holder.parryAttack(amount));
     }
@@ -130,6 +134,10 @@ interface AttachmentModifyHandlers {
 
     static void resetEuphoria() {
          PlayerAbilityHelper.acceptConsumer(Minecraft.getInstance().player, EuphoriaHolder.class, EuphoriaHolder::reset);
+    }
+
+    static void resetWisdomRewards() {
+         PlayerAbilityHelper.acceptConsumer(Minecraft.getInstance().player, TalentsHolder.class, TalentsHolder::resetWisdomRewards);
     }
 
     static void revokeAllTalents() {
@@ -204,7 +212,7 @@ interface AttachmentModifyHandlers {
         if (player == null) return;
         LocationHolder holder = player.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION);
         holder.deserialize(tag);
-        if (!holder.empty() && sound) Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(FTZSoundEvents.WANDERERS_SPIRIT_MARKED,1f));
+        if (!holder.empty() && sound) FantazicUtil.playSoundUI(FTZSoundEvents.WANDERERS_SPIRIT_MARKED.value());
     }
 
     static void wisdomObtained(int amount) {

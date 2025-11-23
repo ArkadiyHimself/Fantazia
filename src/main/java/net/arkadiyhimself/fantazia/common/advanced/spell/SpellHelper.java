@@ -1,5 +1,7 @@
 package net.arkadiyhimself.fantazia.common.advanced.spell;
 
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.Cleanse;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
@@ -7,10 +9,9 @@ import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.PassiveSpell;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.TargetedSpell;
+import net.arkadiyhimself.fantazia.common.api.IMixinShulkerBullet;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
@@ -18,7 +19,6 @@ import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
 import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.data.tags.FTZSpellTags;
-import net.arkadiyhimself.fantazia.common.api.IMixinShulkerBullet;
 import net.arkadiyhimself.fantazia.util.library.RandomList;
 import net.arkadiyhimself.fantazia.util.library.Vector3;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;

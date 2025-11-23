@@ -5,9 +5,9 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHolder;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.data.criterion.PossessItemTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.PossessRuneTrigger;
-import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -50,9 +50,9 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.@NotNull Provider provider) {
         CompoundTag tag = new CompoundTag();
 
-        ListTag items = new ListTag();
-        for (Item item : obtainedItems) items.add(StringTag.valueOf(BuiltInRegistries.ITEM.getKey(item).toString()));
-        tag.put("obtainedItems", items);
+        ListTag obtainedTag = new ListTag();
+        for (Item item : obtainedItems) obtainedTag.add(StringTag.valueOf(BuiltInRegistries.ITEM.getKey(item).toString()));
+        tag.put("obtainedItems", obtainedTag);
 
         ListTag runes = new ListTag();
         for (Holder<Rune> rune : obtainedRunes) runes.add(StringTag.valueOf(FantazicRegistries.RUNES.getKey(rune.value()).toString()));
@@ -76,8 +76,8 @@ public class CustomCriteriaHolder extends PlayerAbilityHolder {
         obtainedRunes.clear();
         timesPerformed.clear();
 
-        ListTag items = tag.getList("obtainedItems", Tag.TAG_STRING);
-        for (int i = 0; i < items.size(); i++) obtainedItems.add(BuiltInRegistries.ITEM.get(ResourceLocation.parse(items.getString(i))));
+        ListTag obtainedTag = tag.getList("obtainedItems", Tag.TAG_STRING);
+        for (int i = 0; i < obtainedTag.size(); i++) obtainedItems.add(BuiltInRegistries.ITEM.get(ResourceLocation.parse(obtainedTag.getString(i))));
 
         ListTag runes = tag.getList("obtainedRunes", Tag.TAG_STRING);
         for (int i = 0; i < runes.size(); i++) {

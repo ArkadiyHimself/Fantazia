@@ -4,19 +4,21 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.ToolUtilisationHolder;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.data.item.rechargeable_tool.RechargeableToolData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -34,24 +36,9 @@ public abstract class MixinGuiGraphics {
 
     @Shadow public abstract int drawString(Font font, Component text, int x, int y, int color);
 
-    @Unique
-    private static int fantazia$line = 0;
-
     @Redirect(at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;"), method = "renderTooltipInternal")
     private <E> E getLine(List<E> instance, int i) {
-        fantazia$line = i;
         return instance.get(i);
-    }
-
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipComponent;getHeight()I"), method = "renderTooltipInternal")
-    private int changeLine(ClientTooltipComponent instance) {
-        int hgt = instance.getHeight();
-        if (fantazia$line != 0) return hgt;
-        if (RenderBuffers.NO_TOOLTIP_GAP) {
-            RenderBuffers.NO_TOOLTIP_GAP = false;
-            hgt -= 2;
-        }
-        return hgt;
     }
 
     @Inject(
@@ -95,5 +82,33 @@ public abstract class MixinGuiGraphics {
             drawString(minecraft.font, component, x + 11, y - 1, 16777215);
             pose.popPose();
         }
+    }
+
+    @Inject(at = @At("HEAD"), method = "renderItemDecorations(Lnet/minecraft/client/gui/Font;Lnet/minecraft/world/item/ItemStack;IILjava/lang/String;)V")
+    private void renderItemDecorations(Font font, ItemStack stack, int x, int y, String s, CallbackInfo ci) {
+        if (!RenderBuffers.RENDER_RECHARGEABLE_TOOL_DATA) return;
+        RenderBuffers.RENDER_RECHARGEABLE_TOOL_DATA = false;
+        if (stack.isEmpty()) return;
+
+        Item item = stack.getItem();
+        RechargeableToolData data = RechargeableToolData.getToolData(item);
+        ToolUtilisationHolder holder = PlayerAbilityHelper.takeHolder(Minecraft.getInstance().player, ToolUtilisationHolder.class);
+
+        if (holder == null || data == null) return;
+
+
+        int amount = holder.getCapacity(stack.getItem());
+        if (amount == -1) return;
+
+        pose.pushPose();
+        String text = String.valueOf(amount);
+
+        int color = 16777215;
+        if (amount >= holder.maxCapacity(item)) color = 16755200;
+        else if (amount == 0) color = 16733525;
+        pose.translate(0,0,200);
+        drawString(font, text, x, y, color, true);
+
+        pose.popPose();
     }
 }

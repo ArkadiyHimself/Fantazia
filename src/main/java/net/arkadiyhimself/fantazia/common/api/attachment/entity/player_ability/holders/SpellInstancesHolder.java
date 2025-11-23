@@ -143,7 +143,6 @@ public class SpellInstancesHolder extends PlayerAbilityHolder implements ICurioL
 
     public SpellCastResult tryToCast(Holder<AbstractSpell> spellHolder) {
         SpellInstance instance = getOrCreate(spellHolder);
-
         return instance.isAvailable() ? instance.attemptCast() : SpellCastResult.FAIL;
     }
 

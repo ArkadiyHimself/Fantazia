@@ -24,6 +24,10 @@ public class WisdomRewardInstance {
         return reward;
     }
 
+    public boolean isAwarded() {
+        return awarded;
+    }
+
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("reward", reward);

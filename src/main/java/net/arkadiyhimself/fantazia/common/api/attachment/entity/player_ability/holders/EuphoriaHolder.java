@@ -4,11 +4,11 @@ import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
-import net.arkadiyhimself.fantazia.common.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZGameRules;
+import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
+import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -116,7 +116,7 @@ public class EuphoriaHolder extends PlayerAbilityHolder implements IDamageEventL
     @Override
     public void onHit(LivingDamageEvent.Post event) {
         DamageSource source = event.getSource();
-        if (!source.is(FTZDamageTypes.REMOVAL) && event.getNewDamage() > 0) remainingTicks = Math.max(0, remainingTicks - 80);
+        if (!source.is(FTZDamageTypeTags.NO_EUPHORIA_DECAY) && event.getNewDamage() > 0) remainingTicks = Math.max(0, remainingTicks - 80);
     }
 
     public void processAttack(LivingDamageEvent.Pre event) {

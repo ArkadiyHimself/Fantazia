@@ -3,12 +3,11 @@ package net.arkadiyhimself.fantazia.common.api.attachment.entity;
 import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.TickingIntegerHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSourcesHolder;
-import net.arkadiyhimself.fantazia.networking.attachment_syncing.IAttachmentSync;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.networking.attachment_syncing.IAttachmentSync;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 
 public class AttachmentsSyncing {
 
@@ -30,6 +29,8 @@ public class AttachmentsSyncing {
             livingEntity.getData(FTZAttachmentTypes.DATA_MANAGER).tick();
 
             livingEntity.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).tick();
+            livingEntity.getData(FTZAttachmentTypes.COMB_HEALTH).tick();
+            livingEntity.getData(FTZAttachmentTypes.BIFROST_HEALTH).tick();
         }
 
         TickingIntegerHolder ancientFlameTicks = entity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS);

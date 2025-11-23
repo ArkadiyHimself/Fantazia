@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.common.world.inventory;
 
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.networking.IPacket;
-import net.arkadiyhimself.fantazia.data.recipe.*;
 import net.arkadiyhimself.fantazia.common.registries.FTZRecipeTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.data.recipe.*;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;

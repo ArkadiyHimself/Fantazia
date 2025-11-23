@@ -23,7 +23,7 @@ public class Prompts {
     public static final Prompt USE_SPELLCAST1 = spellCastButton(1, () -> FTZKeyMappings.SPELLCAST1.getKey().getDisplayName());
     public static final Prompt USE_SPELLCAST2 = spellCastButton(2, () -> FTZKeyMappings.SPELLCAST2.getKey().getDisplayName());
     public static final Prompt USE_SPELLCAST3 = spellCastButton(3, () -> FTZKeyMappings.SPELLCAST3.getKey().getDisplayName());
-
+    public static final Prompt RECHARGE_TOOL = create("recharge_tool", List.of(), List.of());
 
     public static Prompt getPrompt(ResourceLocation id) {
         return PROMPTS.get(id);

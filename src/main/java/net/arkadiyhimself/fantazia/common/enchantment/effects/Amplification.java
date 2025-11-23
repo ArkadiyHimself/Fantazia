@@ -9,7 +9,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.LevelBasedValue;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.apache.logging.log4j.core.time.MutableInstant;
 
 public record Amplification(LevelBasedValue value) {
 

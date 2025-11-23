@@ -3,8 +3,8 @@ package net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.h
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.ILivingEffectHolder;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;

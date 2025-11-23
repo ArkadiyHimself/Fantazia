@@ -23,6 +23,7 @@ public class HealingSourcesHolder extends LevelAttributeHolder {
     private final HealingSource naturalRegen;
     private final HealingSource mobEffectRegen;
     private final HealingSource mobEffect;
+    private final HealingSource comb;
 
     public HealingSourcesHolder(Level level) {
         super(level, Fantazia.location("healing_sources"));
@@ -32,6 +33,7 @@ public class HealingSourcesHolder extends LevelAttributeHolder {
         this.naturalRegen = source(HealingTypes.NATURAL_REGEN);
         this.mobEffectRegen = source(HealingTypes.MOB_EFFECT_REGEN);
         this.mobEffect = source(HealingTypes.MOB_EFFECT);
+        this.comb = source(HealingTypes.COMB);
     }
 
     private HealingSource source(ResourceKey<HealingType> healingTypeResourceKey) {
@@ -51,6 +53,9 @@ public class HealingSourcesHolder extends LevelAttributeHolder {
     }
     public HealingSource mobEffect() {
         return mobEffect;
+    }
+    public HealingSource comb() {
+        return comb;
     }
 
     // heal from entities

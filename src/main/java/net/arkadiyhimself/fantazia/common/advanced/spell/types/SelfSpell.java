@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.common.advanced.spell.types;
 
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.Cleanse;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
 import net.arkadiyhimself.fantazia.common.advanced.spell.IChanneled;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellCastResult;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -38,14 +38,14 @@ public class SelfSpell extends AbstractSpell implements IChanneled {
             Consumer<LivingEntity> uponEquipping,
             Cleanse cleanse, boolean doCleanse,
             Function<LivingEntity, Integer> recharge,
+            Predicate<LivingEntity> canUnEquip,
             Predicate<LivingEntity> conditions,
             BiFunction<LivingEntity,
             Integer, SpellCastResult> onCast,
-            Function<LivingEntity,
-            List<Component>> extendTooltip,
+            Function<LivingEntity, List<Component>> extendTooltip,
             int castTime
     ) {
-        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, extendTooltip);
+        super(manacost, defaultRecharge, castSound, rechargeSound, tickingConditions, ownerTick, uponEquipping, cleanse, doCleanse, recharge, extendTooltip, canUnEquip);
         this.conditions = conditions;
         this.onCast = onCast;
         this.castTime = castTime;
@@ -84,7 +84,7 @@ public class SelfSpell extends AbstractSpell implements IChanneled {
         String manacost = String.format("%.1f", manacost());
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.manacost", heading, ability, manacost));
         // spell cast time
-        String castTime = String.format("%.1f", ((float) castTime() / 20));
+        String castTime = String.format("%.2f", ((float) castTime() / 20));
         components.add(Component.translatable("tooltip.fantazia.common.spell.cast_time", Component.literal(castTime).withStyle(ability)).withStyle(heading));
         // spell cleanse
         if (doCleanse()) components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.spell.cleanse_strength", heading, ability, cleanse().getDescription()));
@@ -204,6 +204,12 @@ public class SelfSpell extends AbstractSpell implements IChanneled {
             return this;
         }
 
+        @Override
+        public Builder canUnEquip(Predicate<LivingEntity> canUnEquip) {
+            super.canUnEquip(canUnEquip);
+            return this;
+        }
+
         public Builder castTime(int castTime) {
             this.castTime = castTime;
             return this;
@@ -222,6 +228,7 @@ public class SelfSpell extends AbstractSpell implements IChanneled {
                     doCleanse,
                     recharge,
                     conditions,
+                    canUnEquip,
                     onCast,
                     extendTooltip,
                     castTime

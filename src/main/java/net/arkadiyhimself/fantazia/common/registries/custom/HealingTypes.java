@@ -16,6 +16,7 @@ public interface HealingTypes {
     ResourceKey<HealingType> MOB_EFFECT_REGEN = create("mob_effect_regen");
     ResourceKey<HealingType> NATURAL_REGEN = create("natural_regen");
     ResourceKey<HealingType> REGEN_AURA = create("regen_aura");
+    ResourceKey<HealingType> COMB = create("comb");
 
     private static ResourceKey<HealingType> create(String string) {
         return ResourceKey.create(FantazicRegistries.Keys.HEALING_TYPE, Fantazia.location(string));
@@ -29,5 +30,6 @@ public interface HealingTypes {
         context.register(MOB_EFFECT_REGEN, new HealingType("mobEffectRegen"));
         context.register(NATURAL_REGEN, new HealingType("naturalRegen",0.005f));
         context.register(REGEN_AURA, new HealingType("regenAura",0f, FTZParticleTypes.REGEN1.getId(), FTZParticleTypes.REGEN2.getId(), FTZParticleTypes.REGEN3.getId()));
+        context.register(COMB, new HealingType("comb"));
     }
 }

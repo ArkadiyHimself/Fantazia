@@ -1,32 +1,49 @@
 package net.arkadiyhimself.fantazia.integration.jei;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.registration.*;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.screen.AmplificationScreen;
+import net.arkadiyhimself.fantazia.common.registries.FTZBlocks;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
+import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
 import net.arkadiyhimself.fantazia.integration.jei.categories.AmplificationCategory;
 import net.arkadiyhimself.fantazia.integration.jei.categories.EnchantmentReplaceCategory;
 import net.arkadiyhimself.fantazia.integration.jei.categories.RuneCarvingCategory;
+import net.arkadiyhimself.fantazia.integration.jei.categories.tool_recharge.ToolDataHolder;
+import net.arkadiyhimself.fantazia.integration.jei.categories.tool_recharge.ToolRechargeCategory;
 import net.arkadiyhimself.fantazia.integration.jei.categories.wisdom_reward.*;
-import net.arkadiyhimself.fantazia.common.item.WisdomCatcherItem;
-import net.arkadiyhimself.fantazia.common.registries.FTZBlocks;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @JeiPlugin
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @SuppressWarnings("unused")
 public class FantazicJEIPlugin implements IModPlugin {
+
+    public static @Nullable IJeiRuntime RUNTIME = null;
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registry) {
@@ -40,6 +57,13 @@ public class FantazicJEIPlugin implements IModPlugin {
         registry.addRecipeCategories(WisdomBrewingRewardCategory.create(registry.getJeiHelpers().getGuiHelper()));
         registry.addRecipeCategories(WisdomConsumingRewardCategory.create(registry.getJeiHelpers().getGuiHelper()));
         registry.addRecipeCategories(WisdomTamedRewardCategory.create(registry.getJeiHelpers().getGuiHelper()));
+
+        registry.addRecipeCategories(ToolRechargeCategory.create(registry.getJeiHelpers().getGuiHelper()));
+    }
+
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+        RUNTIME = jeiRuntime;
     }
 
     @Override
@@ -54,6 +78,7 @@ public class FantazicJEIPlugin implements IModPlugin {
         registration.addRecipes(WisdomBrewingRewardCategory.DUMMY, IWisdomRewardCategory.getBrewed());
         registration.addRecipes(WisdomConsumingRewardCategory.DUMMY, IWisdomRewardCategory.getConsumed());
         registration.addRecipes(WisdomTamedRewardCategory.DUMMY, IWisdomRewardCategory.getTamed());
+        registration.addRecipes(ToolRechargeCategory.DUMMY, ToolDataHolder.getAllRecipes());
 
         registration.addIngredientInfo(new ItemStack(FTZItems.OBSCURE_SUBSTANCE.asItem()), VanillaTypes.ITEM_STACK, Component.translatable("fantazia.jei.info.obscure_substance"));
     }
@@ -63,13 +88,17 @@ public class FantazicJEIPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(FTZBlocks.AMPLIFICATION_BENCH), JEIRecipeTypes.AMPLIFICATION, JEIRecipeTypes.ENCHANTMENT_REPLACE, JEIRecipeTypes.RUNE_CARVING);
         registration.addRecipeCatalyst(FTZItems.WISDOM_CATCHER.toStack(), WisdomConvertingCategory.DUMMY, WisdomSlayingRewardCategory.DUMMY, WisdomCraftingRewardCategory.DUMMY, WisdomBrewingRewardCategory.DUMMY, WisdomConsumingRewardCategory.DUMMY, WisdomTamedRewardCategory.DUMMY);
 
+        HolderSet.Named<Item> engineeringTables = BuiltInRegistries.ITEM.getOrCreateTag(FTZItemTags.ENGINEERING_TABLES);
+        ItemLike[] tables = new ItemLike[engineeringTables.size()];
+        for (int i = 0; i < engineeringTables.size(); i++)
+            tables[i] = engineeringTables.get(i).value();
+        registration.addRecipeCatalysts(ToolRechargeCategory.DUMMY, tables);
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addRecipeClickArea(AmplificationScreen.class, 6, 8, 42, 12, JEIRecipeTypes.RUNE_CARVING, JEIRecipeTypes.AMPLIFICATION, JEIRecipeTypes.ENCHANTMENT_REPLACE);
-        registration.addRecipeClickArea(AmplificationScreen.class, -110, 10, 100, 30, getWisdomPairs());
-
+        registration.addRecipeClickArea(AmplificationScreen.class, -110, 10, 101, 31, getWisdomPairs());
     }
 
     @Override
@@ -77,7 +106,7 @@ public class FantazicJEIPlugin implements IModPlugin {
         return Fantazia.location("jei_plugin");
     }
 
-    public RecipeType<?>[] getWisdomPairs() {
+    public static RecipeType<?>[] getWisdomPairs() {
         return new RecipeType[]{
                 WisdomBrewingRewardCategory.DUMMY,
                 WisdomConsumingRewardCategory.DUMMY,

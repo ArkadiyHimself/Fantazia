@@ -1,28 +1,18 @@
 package net.arkadiyhimself.fantazia.integration.jei.categories;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
-import net.arkadiyhimself.fantazia.integration.jei.JEIRecipeTypes;
-import net.arkadiyhimself.fantazia.data.recipe.AmplificationRecipe;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.arkadiyhimself.fantazia.data.recipe.AmplificationRecipe;
+import net.arkadiyhimself.fantazia.integration.jei.JEIRecipeTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -42,7 +32,7 @@ import java.util.Optional;
 public record AmplificationCategory(
         IDrawable background,
         IDrawable icon
-) implements IRecipeCategory<RecipeHolder<AmplificationRecipe>> {
+) implements IAmplificationBenchCategory<AmplificationRecipe> {
 
     public static AmplificationCategory create(IGuiHelper helper) {
         ResourceLocation backgroundImage = Fantazia.location("textures/gui/jei/amplification_bench.png");
@@ -70,8 +60,7 @@ public record AmplificationCategory(
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull RecipeHolder<AmplificationRecipe> recipeHolder, @NotNull IFocusGroup focuses) {
         AmplificationRecipe recipe = recipeHolder.value();
         Holder<Enchantment> amplifier = recipe.amplified();
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level == null) return;
+
         Optional<Integer> limit = recipe.limit();
         int maxLevel = limit.orElse(amplifier.value().getMaxLevel());
 
@@ -102,7 +91,7 @@ public record AmplificationCategory(
         Ingredient output = Ingredient.of(outputList.stream());
 
         builder.addSlot(RecipeIngredientRole.INPUT, 6, 12).addIngredients(input);
-        builder.addSlot(RecipeIngredientRole.INPUT, 6, 30).addItemStack(new ItemStack(FTZItems.OBSCURE_SUBSTANCE.asItem(), recipe.fee()));
+        builder.addSlot(RecipeIngredientRole.CATALYST, 6, 30).addItemStack(new ItemStack(FTZItems.OBSCURE_SUBSTANCE.asItem(), recipe.fee()));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 94, 21).addIngredients(output);
 
         List<IRecipeSlotBuilder> inputSlots = new ArrayList<>();
@@ -114,35 +103,6 @@ public record AmplificationCategory(
         }
         RecipeHelper.setIngredients(inputSlots, recipe.getIngredients(), 3, 3);
     }
-
-    @Override
-    public void draw(@NotNull RecipeHolder<AmplificationRecipe> recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        int x0 = 90;
-        int y0 = 5;
-        guiGraphics.blit(TalentScreen.WISDOM_ICON, x0, y0, 0,0,10,10,10,10);
-        Font font = Minecraft.getInstance().font;
-        String str = String.valueOf(recipe.value().wisdom());
-        Component component = Component.literal(str).withStyle(ChatFormatting.BLUE);
-        guiGraphics.drawString(font, component, 101, 7, 0);
-        int wdt = font.width(component);
-        int windowWidth = 11 + wdt;
-        if (FantazicMath.within(x0, x0 + windowWidth, mouseX) && FantazicMath.within(y0, y0 + 10, mouseY))
-            guiGraphics.renderTooltip(font, Component.translatable("fantazia.jei.required_wisdom").withStyle(ChatFormatting.BLUE), (int) mouseX, (int) mouseY);
-    }
-
-    @Override
-    public boolean handleInput(@NotNull RecipeHolder<AmplificationRecipe> recipe, double mouseX, double mouseY, InputConstants.@NotNull Key input) {
-        String str = String.valueOf(recipe.value().wisdom());
-        Component component = Component.literal(str).withStyle(ChatFormatting.BLUE);
-        int width = Minecraft.getInstance().font.width(component);
-        if (FantazicMath.within(90, 90 + 11 + width, mouseX) && FantazicMath.within(5, 15, mouseY)) {
-
-            return true;
-        }
-        return false;
-    }
-
-
 
     @Override
     public @Nullable IDrawable getBackground() {

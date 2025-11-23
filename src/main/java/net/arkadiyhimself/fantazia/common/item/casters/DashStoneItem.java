@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.common.item.casters;
 
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -45,7 +46,7 @@ public class DashStoneItem extends Item {
             if (lines > 0) for (int i = 1; i <= lines; i++) pTooltipComponents.add(GuiHelper.bakeComponent(basicPath + ".desc." + i, null, null));
             return;
         }
-        // dash name
+        // dash ident
         pTooltipComponents.add(GuiHelper.bakeComponent("tooltip.fantazia.common.dash.active", list, ability, Component.translatable(basicPath + ".name").getString()));
 
         String desc = Component.translatable(basicPath + ".lines").getString();
@@ -72,5 +73,11 @@ public class DashStoneItem extends Item {
     public @NotNull String getDescriptionId(@NotNull ItemStack stack) {
         Integer level = stack.get(FTZDataComponentTypes.DASH_LEVEL);
         return super.getDescriptionId() + (level == null ? "" : level);
+    }
+
+    public static ItemStack dashStone(int level) {
+        ItemStack itemStack = new ItemStack(FTZItems.DASHSTONE.value());
+        itemStack.update(FTZDataComponentTypes.DASH_LEVEL, 1, integer -> level);
+        return itemStack;
     }
 }

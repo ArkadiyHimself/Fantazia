@@ -3,6 +3,7 @@ package net.arkadiyhimself.fantazia.data.datagen.tag_providers;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.item.casters.AuraCasterItem;
 import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
+import net.arkadiyhimself.fantazia.common.item.skong.RechargeableToolItem;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.data.tags.FTZBlockTags;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
@@ -52,11 +53,13 @@ public class FantazicItemTagsProvider extends ItemTagsProvider {
         IntrinsicTagAppender<Item> activecaster = tag(FTZItemTags.CURIOS_ACTIVECASTER);
         IntrinsicTagAppender<Item> passivecaster = tag(FTZItemTags.CURIOS_PASSIVECASTER);
         IntrinsicTagAppender<Item> caster = tag(FTZItemTags.CASTER_ENCHANTABLE);
+        IntrinsicTagAppender<Item> rechargeableTool = tag(FTZItemTags.RECHARGEABLE_TOOL);
         for (DeferredHolder<Item, ? extends Item> itemHolder : FTZItems.REGISTER.getEntries()) {
             Item item = itemHolder.value();
             if (FantazicUtil.isActiveCaster(item)) activecaster.add(item);
             if (FantazicUtil.isPassiveCaster(item)) passivecaster.add(item);
             if (item instanceof AuraCasterItem || item instanceof SpellCasterItem) caster.add(item);
+            if (item instanceof RechargeableToolItem) rechargeableTool.add(item);
         }
 
         // neo forge
@@ -109,6 +112,7 @@ public class FantazicItemTagsProvider extends ItemTagsProvider {
         copy(FTZBlockTags.FANTAZIUM_ORES, FTZItemTags.FANTAZIUM_ORES);
         copy(FTZBlockTags.FROM_OBSCURE_TREE, FTZItemTags.FROM_OBSCURE_TREE);
         copy(FTZBlockTags.FROM_FANTAZIUM, FTZItemTags.FROM_FANTAZIUM);
+        copy(FTZBlockTags.ENGINEERING_TABLES, FTZItemTags.ENGINEERING_TABLES);
 
         copy(Tags.Blocks.FENCE_GATES_WOODEN, Tags.Items.FENCE_GATES_WOODEN);
         copy(Tags.Blocks.FENCES_WOODEN, Tags.Items.FENCES_WOODEN);

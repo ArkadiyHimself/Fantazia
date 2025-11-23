@@ -5,9 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.LootTableModifiersHolder;
+import net.arkadiyhimself.fantazia.common.item.casters.DashStoneItem;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.LootTablesUtil;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.resources.ResourceLocation;
@@ -47,7 +47,7 @@ public class FantazicLootModifier extends LootModifier {
 
         if (!player.getData(FTZAttachmentTypes.OBTAINED_DASHSTONE) && chest) {
             player.setData(FTZAttachmentTypes.OBTAINED_DASHSTONE,true);
-            generatedLoot.add(FantazicUtil.dashStone(1));
+            generatedLoot.add(DashStoneItem.dashStone(1));
         }
 
         return generatedLoot;

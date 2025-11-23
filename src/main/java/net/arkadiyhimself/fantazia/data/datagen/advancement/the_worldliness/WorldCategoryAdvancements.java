@@ -1,11 +1,11 @@
 package net.arkadiyhimself.fantazia.data.datagen.advancement.the_worldliness;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
-import net.arkadiyhimself.fantazia.data.talent.Talents;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
+import net.arkadiyhimself.fantazia.data.talent.Talents;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;

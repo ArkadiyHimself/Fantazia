@@ -2,8 +2,8 @@ package net.arkadiyhimself.fantazia.data.effect_from_damage;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.arkadiyhimself.fantazia.data.datagen.effect_from_damage.EffectFromDamageHolder;
+import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;

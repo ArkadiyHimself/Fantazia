@@ -1,14 +1,14 @@
 package net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability;
 
+import net.arkadiyhimself.fantazia.common.FantazicHooks;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellInstance;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
-import net.arkadiyhimself.fantazia.common.FantazicHooks;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;

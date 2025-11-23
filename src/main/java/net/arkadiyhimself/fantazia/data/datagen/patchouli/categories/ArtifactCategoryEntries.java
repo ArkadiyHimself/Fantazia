@@ -1,12 +1,12 @@
 package net.arkadiyhimself.fantazia.data.datagen.patchouli.categories;
 
+import net.arkadiyhimself.fantazia.common.item.casters.AuraCasterItem;
+import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.data.datagen.loot_modifier.TheWorldlinessEntryHelper;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.Categories;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntryHolder;
-import net.arkadiyhimself.fantazia.common.item.casters.AuraCasterItem;
-import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.registries.DeferredItem;
 

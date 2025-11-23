@@ -26,6 +26,7 @@ public record PlayerAttachmentInitialSyncSC2(int id, CompoundTag tag) implements
         compoundTag.put("living_data_manager", serverPlayer.getData(FTZAttachmentTypes.DATA_MANAGER).serializeInitial());
         compoundTag.putInt("layered_barrier_layers", serverPlayer.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS));
         compoundTag.putFloat("barrier_health", serverPlayer.getData(FTZAttachmentTypes.BARRIER_HEALTH));
+        compoundTag.putString("amplification_tab", serverPlayer.getData(FTZAttachmentTypes.LAST_SELECTED_AMPLIFICATION_TAB).ident());
 
         compoundTag.put("ability_manager", serverPlayer.getData(FTZAttachmentTypes.ABILITY_MANAGER).serializeInitial());
         compoundTag.put("wanderers_spirit_location", serverPlayer.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION).serialize());

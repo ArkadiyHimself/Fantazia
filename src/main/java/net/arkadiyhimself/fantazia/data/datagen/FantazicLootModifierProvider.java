@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.data.datagen;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.data.loot.FantazicLootModifier;
 import net.arkadiyhimself.fantazia.common.registries.FTZLootModifiers;
+import net.arkadiyhimself.fantazia.data.loot.FantazicLootModifier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;

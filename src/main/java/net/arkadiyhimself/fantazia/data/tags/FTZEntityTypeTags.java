@@ -10,6 +10,7 @@ public interface FTZEntityTypeTags {
     TagKey<EntityType<?>> RANGED_ATTACK = create("ranged_attack");
     TagKey<EntityType<?>> AERIAL = create("aerial");
     TagKey<EntityType<?>> VALID_WANDERERS_SPIRIT_TARGET = create("valid_wanderers_spirit_target");
+    TagKey<EntityType<?>> IS_FROM_A_RECHARGEABLE_TOOL = create("is_from_a_rechargeable_tool");
 
     private static TagKey<EntityType<?>> create(String pName) {
         return TagKey.create(Registries.ENTITY_TYPE, Fantazia.location(pName));

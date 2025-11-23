@@ -1,11 +1,14 @@
 package net.arkadiyhimself.fantazia.common.item.weapons.Range;
 
+import dev.kosmx.playerAnim.api.IPlayable;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
+import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.renderers.PlayerAnimations;
 import net.arkadiyhimself.fantazia.common.entity.ThrownHatchet;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +28,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.Objects;
 
 public class HatchetItem extends TieredItem {
@@ -47,7 +51,7 @@ public class HatchetItem extends TieredItem {
         if (pLivingEntity instanceof LocalPlayer player) {
             int i = getUseDuration(pStack, pLivingEntity) - pRemainingUseDuration;
             if (i == 0) PlayerAnimations.animatePlayer(player, PlayerAnimations.WINDUP_START());
-            else if (i == 14) PlayerAnimations.animatePlayer(player, PlayerAnimations.WINDUP_CONTINUE);
+            else if (i == 13) PlayerAnimations.animatePlayer(player, PlayerAnimations.WINDUP_CONTINUE);
         }
     }
 

@@ -5,16 +5,18 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.FantazicConfig;
+import net.arkadiyhimself.fantazia.client.ClientEvents;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.CombHealthHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.CurrentAndInitialValue;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
-import net.arkadiyhimself.fantazia.client.ClientEvents;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -177,13 +179,19 @@ public class FTZGuis {
         guiGraphics.drawString(font, "Curio slot:" + ClientEvents.castCurioIndex, guiGraphics.guiWidth() - width1, 60, 16755200);
 
         MeleeBlockHolder meleeBlockHolder = PlayerAbilityHelper.takeHolder(player, MeleeBlockHolder.class);
-        if (meleeBlockHolder != null && false) {
-            guiGraphics.drawString(font, "Melee block: ", guiGraphics.guiWidth() - width1, 40, 16755200);
-            guiGraphics.drawString(font, "Anim: " + meleeBlockHolder.anim(), guiGraphics.guiWidth() - width1, 50, 16755200);
-            guiGraphics.drawString(font, "Cooldown: " + meleeBlockHolder.blockCooldown(), guiGraphics.guiWidth() - width1, 60, 16755200);
-            guiGraphics.drawString(font, "Block ticks: " + meleeBlockHolder.blockTicks(), guiGraphics.guiWidth() - width1, 70, 16755200);
-            guiGraphics.drawString(font, "Parry ticks: " + meleeBlockHolder.parryTicks(), guiGraphics.guiWidth() - width1, 80, 16755200);
+        if (meleeBlockHolder != null) {
+            guiGraphics.drawString(font, "Melee block: ", guiGraphics.guiWidth() - width1, 70, 16755200);
+            guiGraphics.drawString(font, "Anim: " + meleeBlockHolder.anim(), guiGraphics.guiWidth() - width1, 80, 16755200);
+            guiGraphics.drawString(font, "Cooldown: " + meleeBlockHolder.blockCooldown(), guiGraphics.guiWidth() - width1, 90, 16755200);
+            guiGraphics.drawString(font, "Block ticks: " + meleeBlockHolder.blockTicks(), guiGraphics.guiWidth() - width1, 100, 16755200);
+            guiGraphics.drawString(font, "Parry ticks: " + meleeBlockHolder.parryTicks(), guiGraphics.guiWidth() - width1, 110, 16755200);
         }
+
+        CombHealthHolder combHealthHolder = player.getData(FTZAttachmentTypes.COMB_HEALTH);
+        int combTicks = combHealthHolder.ticks();
+        float combToHeal = combHealthHolder.toHeal();
+        guiGraphics.drawString(font, "Comb ticks: " + combTicks, guiGraphics.guiWidth() - width1, 120, 16755200);
+        guiGraphics.drawString(font, "Comb heal: " + combToHeal, guiGraphics.guiWidth() - width1, 130, 16755200);
     };
 
     public static final LayeredDraw.Layer FURY_VEINS = (guiGraphics, deltaTracker) -> {
@@ -194,18 +202,18 @@ public class FTZGuis {
         if (holder == null) return;
         int dur = holder.value();
         if (dur <= 0 && dur != -1) return;
-        int value = player.tickCount % 21;
+        int value = player.tickCount % 18;
 
         float veinTr;
-        if (value > 10) veinTr = 1f - (float) (value - 10) / 10;
+        if (value > 9) veinTr = 1f - (float) (value - 9) / 10;
         else veinTr = 1f - (float) value / 10;
 
         float allTR = (float) Math.min(20, dur == -1 ? 20 : dur) / 20;
 
-        GuiHelper.wholeScreen(guiGraphics, VEINS,1.0F,0,0,0.4F * allTR);
-        GuiHelper.wholeScreen(guiGraphics, VEINS_BRIGHT,1.0F,0,0,veinTr * allTR);
-        GuiHelper.wholeScreen(guiGraphics, FILLING,1.0F,0,0,0.45F * allTR);
-        GuiHelper.wholeScreen(guiGraphics, EDGES,1.0F,0,0,0.925F * allTR);
+        wholeScreen(guiGraphics, VEINS,1.0F,0,0,0.4F * allTR);
+        wholeScreen(guiGraphics, VEINS_BRIGHT,1.0F,0,0,veinTr * allTR);
+        wholeScreen(guiGraphics, FILLING,1.0F,0,0,0.45F * allTR);
+        wholeScreen(guiGraphics, EDGES,1.0F,0,0,0.925F * allTR);
     };
 
     public static final LayeredDraw.Layer FROZEN_EFFECT = (guiGraphics, deltaTracker) -> {
@@ -213,7 +221,7 @@ public class FTZGuis {
         if (player == null) return;
         CurrentAndInitialValue holder = LivingEffectHelper.getDurationHolder(player, FTZMobEffects.FROZEN.value());
         if (holder == null || holder.value() <= 0 || holder.percent() < player.getPercentFrozen()) return;
-        GuiHelper.wholeScreen(guiGraphics, POWDER_SNOW_OUTLINE_LOCATION, 1f,1f,1f, holder.percent());
+        wholeScreen(guiGraphics, POWDER_SNOW_OUTLINE_LOCATION, 1f,1f,1f, holder.percent());
     };
 
     public static final LayeredDraw.Layer CUSTOM_BARS = (guiGraphics, deltaTracker) -> {
@@ -225,4 +233,20 @@ public class FTZGuis {
         if (FantazicGui.renderBarrierBar(guiGraphics, x, y)) return;
         if (FantazicGui.renderLayeredBarrierBar(guiGraphics, x, y)) return;
     };
+
+    public static void wholeScreen(GuiGraphics guiGraphics, ResourceLocation resourceLocation, float red, float green, float blue, float alpha) {
+        float[] previousSC = RenderSystem.getShaderColor().clone();
+
+        RenderSystem.disableDepthTest();
+        RenderSystem.depthMask(false);
+        RenderSystem.enableBlend();
+
+        RenderSystem.setShaderColor(red, green, blue, alpha);
+        guiGraphics.blit(resourceLocation,0,0, -90, 0,0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), guiGraphics.guiWidth(), guiGraphics.guiHeight());
+
+        RenderSystem.disableBlend();
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
+        RenderSystem.setShaderColor(previousSC[0], previousSC[1], previousSC[2], previousSC[3]);
+    }
 }

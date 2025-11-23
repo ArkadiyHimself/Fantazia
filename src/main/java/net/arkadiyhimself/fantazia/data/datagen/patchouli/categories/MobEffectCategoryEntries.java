@@ -1,15 +1,15 @@
 package net.arkadiyhimself.fantazia.data.datagen.patchouli.categories;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.mob_effect.IPatchouliEntry;
+import net.arkadiyhimself.fantazia.common.mob_effect.SimpleMobEffect;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.data.datagen.loot_modifier.TheWorldlinessEntryHelper;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.Categories;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntry;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntryHolder;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoPage;
-import net.arkadiyhimself.fantazia.common.mob_effect.IPatchouliEntry;
-import net.arkadiyhimself.fantazia.common.mob_effect.SimpleMobEffect;
-import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;

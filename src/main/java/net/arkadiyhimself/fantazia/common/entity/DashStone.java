@@ -1,19 +1,19 @@
 package net.arkadiyhimself.fantazia.common.entity;
 
 import com.google.common.collect.Lists;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.api.FantazicBossEvent;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
 import net.arkadiyhimself.fantazia.common.api.curio.FTZSlots;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.networking.IPacket;
+import net.arkadiyhimself.fantazia.common.item.casters.DashStoneItem;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -302,7 +302,7 @@ public class DashStone extends Entity {
                 this.ownerUUID = player.getUUID();
                 this.level = 2;
                 this.soundRecharge = 0;
-                entityData.set(DASHSTONE, FantazicUtil.dashStone(2));
+                entityData.set(DASHSTONE, DashStoneItem.dashStone(2));
                 entityData.set(OWNER, player.getId());
 
                 summonProtector(-2.5, -2.5, Items.IRON_SWORD);
@@ -337,7 +337,7 @@ public class DashStone extends Entity {
         if (protector == null) return;
         protector.setPos(getX() + xOff, getY() + (double) -1, getZ() + zOff);
         int barr = 20 + 5 * level().getDifficulty().getId();
-        ApplyEffect.giveAbsoluteBarrier(protector,30);
+        ApplyEffect.giveAbsoluteBarrier(protector,40);
         protector.addEffect(new MobEffectInstance(FTZMobEffects.BARRIER, -1, barr - 1, true, true));
         protectorsServer.add(protector.getUUID());
         level().addFreshEntity(protector);

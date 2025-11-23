@@ -1,9 +1,0 @@
-{
-  "advancement": "fantazia:talents/abilities/euphoria/relentless",
-  "background": "fantazia:textures/gui/talent_icons/square_red.png",
-  "icon": "fantazia:textures/talent/abilities/euphoria/relentless.png",
-  "impacts": [
-    "fantazia:euphoria.relentless"
-  ],
-  "title": "talent.fantazia.abilities.euphoria.relentless"
-}

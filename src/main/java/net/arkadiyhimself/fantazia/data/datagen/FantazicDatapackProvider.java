@@ -2,11 +2,11 @@ package net.arkadiyhimself.fantazia.data.datagen;
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
+import net.arkadiyhimself.fantazia.common.registries.*;
+import net.arkadiyhimself.fantazia.common.registries.custom.HealingTypes;
 import net.arkadiyhimself.fantazia.data.datagen.worldgen.FantazicBiomeModifiers;
 import net.arkadiyhimself.fantazia.data.datagen.worldgen.FantazicConfiguredFeatures;
 import net.arkadiyhimself.fantazia.data.datagen.worldgen.FantazicPlacedFeatures;
-import net.arkadiyhimself.fantazia.common.registries.*;
-import net.arkadiyhimself.fantazia.common.registries.custom.HealingTypes;
 import net.arkadiyhimself.fantazia.data.tags.FTZPools;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;

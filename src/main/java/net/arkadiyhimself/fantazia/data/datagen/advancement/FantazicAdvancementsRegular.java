@@ -1,16 +1,17 @@
 package net.arkadiyhimself.fantazia.data.datagen.advancement;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.item.TheWorldlinessItem;
+import net.arkadiyhimself.fantazia.common.item.casters.DashStoneItem;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.data.criterion.EuphoriaTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.criterion.UseSpellTrigger;
-import net.arkadiyhimself.fantazia.data.talent.Talents;
-import net.arkadiyhimself.fantazia.common.item.TheWorldlinessItem;
-import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
-import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
+import net.arkadiyhimself.fantazia.data.talent.Talents;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
@@ -87,21 +88,21 @@ public class FantazicAdvancementsRegular implements AdvancementProvider.Advancem
 
         String dashstone1 = FTZItems.DASHSTONE.getId().getPath() + "1";
         AdvancementHolder dashstone1Holder = Advancement.Builder.advancement().parent(rootHolder)
-                .display(FantazicUtil.dashStone(1), title(dashstone1), desc(dashstone1),
+                .display(DashStoneItem.dashStone(1), title(dashstone1), desc(dashstone1),
                         null, AdvancementType.GOAL, true, true, true)
                 .addCriterion("equip", FantazicUtil.equipCurioTrigger(FTZDataComponentTypes.DASH_LEVEL.value(), 1, "dashstone"))
                 .save(consumer, location(dashstone1));
 
         String dashstone2 = FTZItems.DASHSTONE.getId().getPath() + "2";
         AdvancementHolder dashstone2Holder = Advancement.Builder.advancement().parent(dashstone1Holder)
-                .display(FantazicUtil.dashStone(2), title(dashstone2), desc(dashstone2),
+                .display(DashStoneItem.dashStone(2), title(dashstone2), desc(dashstone2),
                         null, AdvancementType.GOAL, true, true, true)
                 .addCriterion("equip", FantazicUtil.equipCurioTrigger(FTZDataComponentTypes.DASH_LEVEL.value(), 2, "dashstone"))
                 .save(consumer, location(dashstone2));
 
         String dashstone3 = FTZItems.DASHSTONE.getId().getPath() + "3";
         AdvancementHolder dashstone3Holder = Advancement.Builder.advancement().parent(dashstone2Holder)
-                .display(FantazicUtil.dashStone(3), title(dashstone3), desc(dashstone3),
+                .display(DashStoneItem.dashStone(3), title(dashstone3), desc(dashstone3),
                         null, AdvancementType.GOAL, true, true, true)
                 .addCriterion("equip", FantazicUtil.equipCurioTrigger(FTZDataComponentTypes.DASH_LEVEL.value(), 3, "dashstone"))
                 .save(consumer, location(dashstone3));

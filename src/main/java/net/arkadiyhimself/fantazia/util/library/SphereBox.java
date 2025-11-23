@@ -1,6 +1,5 @@
 package net.arkadiyhimself.fantazia.util.library;
 
-import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.core.BlockPos;

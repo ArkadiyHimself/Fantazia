@@ -8,6 +8,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardCategories;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -67,6 +68,11 @@ public record WisdomBrewingRewardCategory(
         ItemStack stack = PotionContents.createItemStack(Items.POTION, potion.get());
 
         builder.addSlot(RecipeIngredientRole.INPUT, 37, 6).addItemStack(stack);
+    }
+
+    @Override
+    public ResourceLocation category() {
+        return WisdomRewardCategories.BREWED;
     }
 
     @Override

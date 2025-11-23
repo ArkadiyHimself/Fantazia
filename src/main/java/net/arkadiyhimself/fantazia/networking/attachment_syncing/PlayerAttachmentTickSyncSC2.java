@@ -26,6 +26,8 @@ public record PlayerAttachmentTickSyncSC2(int id, CompoundTag tag) implements IA
         compoundTag.put("living_data_manager", serverPlayer.getData(FTZAttachmentTypes.DATA_MANAGER).serializeTick());
 
         compoundTag.put("ability_manager", serverPlayer.getData(FTZAttachmentTypes.ABILITY_MANAGER).serializeTick());
+        compoundTag.put("comb_health", serverPlayer.getData(FTZAttachmentTypes.COMB_HEALTH).serializeTick());
+        compoundTag.put("bifrost_health", serverPlayer.getData(FTZAttachmentTypes.BIFROST_HEALTH).serializeTick());
         return new PlayerAttachmentTickSyncSC2(serverPlayer.getId(), compoundTag);
     }
 

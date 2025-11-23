@@ -1,8 +1,9 @@
 package net.arkadiyhimself.fantazia.data.datagen.talent_reload.wisdom_reward;
 
+import net.arkadiyhimself.fantazia.common.registries.FTZEntityTypes;
+import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardCategories;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardsCombined;
-import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffects;
@@ -46,9 +47,11 @@ public class DefaultWisdomRewardsCombined implements SubProvider<WisdomRewardsCo
                 .addReward(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WARDEN), 0)
                 .addReward(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.CAT), 0)
                 .addReward(BuiltInRegistries.ENTITY_TYPE.getKey(EntityType.WOLF), 0)
+                .addReward(FTZEntityTypes.BLOCK_FLY.getId(),0)
                 .save(consumer, WisdomRewardCategories.SLAYED);
 
-        WisdomRewardsCombined.builder(WisdomRewardCategories.TAMED, 10).save(consumer, WisdomRewardCategories.TAMED);
+        WisdomRewardsCombined.builder(WisdomRewardCategories.TAMED, 10)
+                .save(consumer, WisdomRewardCategories.TAMED);
 
         WisdomRewardsCombined.builder(WisdomRewardCategories.VISITED, 50).save(consumer, WisdomRewardCategories.VISITED);
     }

@@ -3,9 +3,7 @@ package net.arkadiyhimself.fantazia.data.datagen.recipe;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.data.recipes.AmplificationRecipeBuilder;
-import net.arkadiyhimself.fantazia.data.recipes.EnchantmentReplaceRecipeBuilder;
-import net.arkadiyhimself.fantazia.data.recipes.RuneCarvingRecipeBuilder;
+import net.arkadiyhimself.fantazia.common.item.EngineeringTableBlock;
 import net.arkadiyhimself.fantazia.common.item.RuneWielderItem;
 import net.arkadiyhimself.fantazia.common.item.TheWorldlinessItem;
 import net.arkadiyhimself.fantazia.common.item.weapons.Range.HatchetItem;
@@ -13,9 +11,13 @@ import net.arkadiyhimself.fantazia.common.registries.FTZBlocks;
 import net.arkadiyhimself.fantazia.common.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
+import net.arkadiyhimself.fantazia.data.recipes.AmplificationRecipeBuilder;
+import net.arkadiyhimself.fantazia.data.recipes.EnchantmentReplaceRecipeBuilder;
+import net.arkadiyhimself.fantazia.data.recipes.RuneCarvingRecipeBuilder;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.BlockFamilies;
 import net.minecraft.data.BlockFamily;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -27,6 +29,8 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import org.jetbrains.annotations.NotNull;
 
@@ -103,7 +107,7 @@ public class FantazicRecipeProvider extends RecipeProvider {
             amplification(recipeOutput, registries);
             enchantmentReplace(recipeOutput, registries);
         } catch (ExecutionException | InterruptedException ignored) {}
-        ShapedRecipeNoAdvancement.shaped(RecipeCategory.MISC, RuneWielderItem.rune(Runes.EMPTY))
+        ShapedRecipeNoAdvancement.shaped(RecipeCategory.DECORATIONS, RuneWielderItem.rune(Runes.EMPTY))
                 .pattern("O#O")
                 .define('O', FTZItems.OBSCURE_SUBSTANCE)
                 .define('#', Items.STONE)
@@ -121,6 +125,19 @@ public class FantazicRecipeProvider extends RecipeProvider {
                 .define('Y', FTZItems.OBSCURE_SUBSTANCE)
                 .define('H', Items.COPPER_INGOT)
                 .save(recipeOutput);
+
+        engineeringTable(recipeOutput, FTZBlocks.OAK_ENGINEERING_TABLE, Blocks.OAK_LOG, Blocks.STRIPPED_OAK_LOG, BlockFamilies.OAK_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.SPRUCE_ENGINEERING_TABLE, Blocks.SPRUCE_LOG, Blocks.STRIPPED_SPRUCE_LOG, BlockFamilies.SPRUCE_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.BIRCH_ENGINEERING_TABLE, Blocks.BIRCH_LOG, Blocks.STRIPPED_BIRCH_LOG, BlockFamilies.BIRCH_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.JUNGLE_ENGINEERING_TABLE, Blocks.JUNGLE_LOG, Blocks.STRIPPED_JUNGLE_LOG, BlockFamilies.JUNGLE_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.ACACIA_ENGINEERING_TABLE, Blocks.ACACIA_LOG, Blocks.STRIPPED_ACACIA_LOG, BlockFamilies.ACACIA_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.CHERRY_ENGINEERING_TABLE, Blocks.CHERRY_LOG, Blocks.STRIPPED_CHERRY_LOG, BlockFamilies.CHERRY_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.DARK_OAK_ENGINEERING_TABLE, Blocks.DARK_OAK_LOG, Blocks.STRIPPED_DARK_OAK_LOG, BlockFamilies.DARK_OAK_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.MANGROVE_ENGINEERING_TABLE, Blocks.MANGROVE_LOG, Blocks.STRIPPED_MANGROVE_LOG, BlockFamilies.MANGROVE_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.BAMBOO_ENGINEERING_TABLE, Blocks.BAMBOO_BLOCK, Blocks.STRIPPED_BAMBOO_BLOCK, BlockFamilies.BAMBOO_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.CRIMSON_ENGINEERING_TABLE, Blocks.CRIMSON_STEM, Blocks.STRIPPED_CRIMSON_STEM, BlockFamilies.CRIMSON_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.WARPED_ENGINEERING_TABLE, Blocks.WARPED_STEM, Blocks.STRIPPED_WARPED_STEM, BlockFamilies.WARPED_PLANKS);
+        engineeringTable(recipeOutput, FTZBlocks.OBSCURE_ENGINEERING_TABLE, FTZBlocks.OBSCURE_LOG.value(), FTZBlocks.STRIPPED_OBSCURE_LOG.value(), OBSCURE_PLANKS);
 
         // artifacts
         ShapedRecipeNoAdvancement.shaped(RecipeCategory.MISC, FTZItems.AMPLIFIED_ICE)
@@ -295,6 +312,42 @@ public class FantazicRecipeProvider extends RecipeProvider {
                 .requires(FTZItems.OBSCURE_SUBSTANCE)
                 .save(recipeOutput);
 
+        ShapedRecipeNoAdvancement.shaped(RecipeCategory.MISC, FTZItems.ABNORMAL_BEEHIVE)
+                .pattern("U#U")
+                .pattern("UYU")
+                .define('Y', FTZItems.OBSCURE_SUBSTANCE)
+                .define('U', Items.IRON_NUGGET)
+                .define('#', Items.BEE_NEST)
+                .save(recipeOutput);
+
+        // rechargeable tools
+        ShapedRecipeNoAdvancement.shaped(RecipeCategory.MISC, FTZItems.PIMPILLO)
+                .pattern(" Y ")
+                .pattern("YXY")
+                .pattern("#H#")
+                .define('X', Items.GUNPOWDER)
+                .define('Y', Items.STRING)
+                .define('H', Items.LEATHER)
+                .define('#', FTZItems.OBSCURE_SUBSTANCE)
+                .save(recipeOutput);
+
+        ShapedRecipeNoAdvancement.shaped(RecipeCategory.MISC, FTZItems.THROWING_PIN)
+                .pattern(" X ")
+                .pattern("XYX")
+                .pattern("XHX")
+                .define('X', Items.IRON_NUGGET)
+                .define('Y', Items.STICK)
+                .define('H', FTZItems.FANTAZIUM_INGOT)
+                .save(recipeOutput);
+
+        ShapedRecipeNoAdvancement.shaped(RecipeCategory.MISC, FTZItems.BLOCK_FLY)
+                .pattern("JXJ")
+                .pattern("HUH")
+                .define('H', Items.COPPER_INGOT)
+                .define('U', Items.REDSTONE)
+                .define('J', FTZItems.FANTAZIUM_INGOT)
+                .define('X', Items.SOUL_TORCH)
+                .save(recipeOutput);
     }
 
     protected static void oreSmelting(@NotNull RecipeOutput recipeOutput, List<ItemLike> pIngredients, @NotNull RecipeCategory pCategory,
@@ -489,6 +542,27 @@ public class FantazicRecipeProvider extends RecipeProvider {
                 )
                 .requires(FTZItems.ANCIENT_SPARK, 3)
                 .save(output, "ancient_flame_bows");
+    }
+
+    private static void engineeringTable(
+            RecipeOutput output,
+            DeferredBlock<EngineeringTableBlock> block,
+            Block log,
+            Block strippedLog,
+            BlockFamily family
+    ) {
+        Map<BlockFamily.Variant, Block> variants = family.getVariants();
+        ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, block)
+                .unlockedBy("has_wood", has(family.getBaseBlock()))
+                .unlockedBy("has_iron_block", has(Items.IRON_BLOCK))
+                .pattern(" Y ")
+                .pattern("UHU")
+                .pattern("XXX")
+                .define('Y', variants.get(BlockFamily.Variant.SIGN))
+                .define('H', strippedLog)
+                .define('U', log)
+                .define('X', variants.get(BlockFamily.Variant.SLAB))
+                .save(output);
     }
 
     static {

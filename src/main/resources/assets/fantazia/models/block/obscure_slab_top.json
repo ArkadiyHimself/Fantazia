@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "fantazia:block/obscure_planks",
-    "side": "fantazia:block/obscure_planks",
-    "top": "fantazia:block/obscure_planks"
-  }
-}

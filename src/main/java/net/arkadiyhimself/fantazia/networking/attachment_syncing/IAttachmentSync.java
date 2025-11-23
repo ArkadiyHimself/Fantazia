@@ -1,11 +1,12 @@
 package net.arkadiyhimself.fantazia.networking.attachment_syncing;
 
+import net.arkadiyhimself.fantazia.client.screen.AmplificationTab;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.SimpleMobEffectSyncHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.AurasInstancesHolder;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -14,7 +15,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -43,6 +43,7 @@ public interface IAttachmentSync extends IPacket {
         player.getData(FTZAttachmentTypes.DATA_MANAGER).deserializeInitial(compoundTag.getCompound("living_data_manager"));
         player.setData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS, compoundTag.getInt("layered_barrier_layers"));
         player.setData(FTZAttachmentTypes.BARRIER_HEALTH, compoundTag.getFloat("barrier_health"));
+        player.setData(FTZAttachmentTypes.LAST_SELECTED_AMPLIFICATION_TAB, AmplificationTab.getTab(compoundTag.getString("amplification_tab")));
 
         player.getData(FTZAttachmentTypes.ABILITY_MANAGER).deserializeInitial(compoundTag.getCompound("ability_manager"));
         player.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION).deserialize(compoundTag.getCompound("wanderers_spirit_location"));
@@ -58,6 +59,8 @@ public interface IAttachmentSync extends IPacket {
         localPlayer.getData(FTZAttachmentTypes.DATA_MANAGER).deserializeTick(compoundTag.getCompound("living_data_manager"));
 
         localPlayer.getData(FTZAttachmentTypes.ABILITY_MANAGER).deserializeTick(compoundTag.getCompound("ability_manager"));
+        localPlayer.getData(FTZAttachmentTypes.COMB_HEALTH).deserializeTick(compoundTag.getCompound("comb_health"));
+        localPlayer.getData(FTZAttachmentTypes.BIFROST_HEALTH).deserializeTick(compoundTag.getCompound("bifrost_health"));
     }
 
     default void levelAttributes(CompoundTag tag) {

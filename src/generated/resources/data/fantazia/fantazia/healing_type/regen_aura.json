@@ -1,8 +1,0 @@
-{
-  "id": "regenAura",
-  "particles": [
-    "fantazia:regen1",
-    "fantazia:regen2",
-    "fantazia:regen3"
-  ]
-}

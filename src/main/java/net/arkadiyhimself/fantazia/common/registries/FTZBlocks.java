@@ -2,21 +2,24 @@ package net.arkadiyhimself.fantazia.common.registries;
 
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.RegistryEvents;
 import net.arkadiyhimself.fantazia.common.blocks.AmplificationBenchBlock;
 import net.arkadiyhimself.fantazia.common.blocks.AncientFlameBlock;
-import net.arkadiyhimself.fantazia.common.blocks.CustomRotatedPillarBlock;
+import net.arkadiyhimself.fantazia.common.blocks.WoodLogBlock;
 import net.arkadiyhimself.fantazia.common.blocks.obscure_sign.ObscureHangingSignBlock;
 import net.arkadiyhimself.fantazia.common.blocks.obscure_sign.ObscureStandingSignBlock;
 import net.arkadiyhimself.fantazia.common.blocks.obscure_sign.ObscureWallHangingSignBlock;
 import net.arkadiyhimself.fantazia.common.blocks.obscure_sign.ObscureWallSignBlock;
-import net.arkadiyhimself.fantazia.data.datagen.worldgen.tree.FTZTreeGrowers;
-import net.arkadiyhimself.fantazia.common.RegistryEvents;
+import net.arkadiyhimself.fantazia.common.item.EngineeringTableBlock;
 import net.arkadiyhimself.fantazia.common.item.RegularBlockItem;
+import net.arkadiyhimself.fantazia.data.datagen.worldgen.tree.FTZTreeGrowers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DoubleHighBlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -44,14 +47,14 @@ public class FTZBlocks {
     public static final DeferredBlock<AncientFlameBlock> ANCIENT_FLAME;
     public static final DeferredBlock<Block> OBSCURE_PLANKS;
     public static final DeferredBlock<SaplingBlock> OBSCURE_SAPLING;
-    public static final DeferredBlock<CustomRotatedPillarBlock> OBSCURE_LOG;
-    public static final DeferredBlock<CustomRotatedPillarBlock> OBSCURE_WOOD;
+    public static final DeferredBlock<WoodLogBlock> OBSCURE_LOG;
+    public static final DeferredBlock<WoodLogBlock> OBSCURE_WOOD;
     public static final DeferredBlock<LeavesBlock> OBSCURE_LEAVES;
     public static final DeferredBlock<StairBlock> OBSCURE_STAIRS;
-    public static final DeferredBlock<SignBlock> OBSCURE_SIGN;
-    public static final DeferredBlock<WallSignBlock> OBSCURE_WALL_SIGN;
-    public static final DeferredBlock<CustomRotatedPillarBlock> STRIPPED_OBSCURE_LOG;
-    public static final DeferredBlock<CustomRotatedPillarBlock> STRIPPED_OBSCURE_WOOD;
+    public static final DeferredBlock<ObscureStandingSignBlock> OBSCURE_SIGN;
+    public static final DeferredBlock<ObscureWallSignBlock> OBSCURE_WALL_SIGN;
+    public static final DeferredBlock<WoodLogBlock> STRIPPED_OBSCURE_LOG;
+    public static final DeferredBlock<WoodLogBlock> STRIPPED_OBSCURE_WOOD;
     public static final DeferredBlock<ObscureHangingSignBlock> OBSCURE_HANGING_SIGN;
     public static final DeferredBlock<ObscureWallHangingSignBlock> OBSCURE_WALL_HANGING_SIGN;
     public static final DeferredBlock<PressurePlateBlock> OBSCURE_PRESSURE_PLATE;
@@ -67,6 +70,18 @@ public class FTZBlocks {
     public static final DeferredBlock<Block> FANTAZIUM_BLOCK;
     public static final DeferredBlock<Block> RAW_FANTAZIUM_BLOCK;
     public static final DeferredBlock<AmplificationBenchBlock> AMPLIFICATION_BENCH;
+    public static final DeferredBlock<EngineeringTableBlock> OAK_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> SPRUCE_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> BIRCH_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> JUNGLE_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> ACACIA_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> CHERRY_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> DARK_OAK_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> MANGROVE_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> BAMBOO_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> CRIMSON_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> WARPED_ENGINEERING_TABLE;
+    public static final DeferredBlock<EngineeringTableBlock> OBSCURE_ENGINEERING_TABLE;
 
     public static final DeferredRegister.Blocks REGISTER = DeferredRegister.createBlocks(Fantazia.MODID);
     private static final Map<ResourceLocation, BlockItemSupplier> BLOCK_ITEMS = Maps.newHashMap();
@@ -78,6 +93,10 @@ public class FTZBlocks {
             RegistryEvents.BLOCKS.add(block);
         }
         return block;
+    }
+
+    private static DeferredBlock<EngineeringTableBlock> registerEngineeringTable(String wood) {
+        return registerBlock(wood + "_engineering_table", EngineeringTableBlock::new, block -> new DoubleHighBlockItem(block, new Item.Properties()));
     }
 
     private static <T extends Block> DeferredBlock<T> registerWoodBlock(final String name, final Supplier<T> blockSupplier, final BlockItemSupplier sup) {
@@ -123,12 +142,12 @@ public class FTZBlocks {
         ANCIENT_FLAME = registerBlock("ancient_flame", () -> new AncientFlameBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.FIRE).noLootTable()),null);
 
         // obscure wood
-        STRIPPED_OBSCURE_LOG = registerWoodBlock("stripped_obscure_log", () -> new CustomRotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(value -> value.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MapColor.COLOR_PURPLE : MapColor.TERRACOTTA_PURPLE).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava()), RegularBlockItem::new);
-        STRIPPED_OBSCURE_WOOD = registerWoodBlock("stripped_obscure_wood", () -> new CustomRotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava()), RegularBlockItem::new);
+        STRIPPED_OBSCURE_LOG = registerWoodBlock("stripped_obscure_log", () -> new WoodLogBlock(BlockBehaviour.Properties.of().mapColor(value -> value.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MapColor.COLOR_PURPLE : MapColor.TERRACOTTA_PURPLE).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava()), RegularBlockItem::new);
+        STRIPPED_OBSCURE_WOOD = registerWoodBlock("stripped_obscure_wood", () -> new WoodLogBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava()), RegularBlockItem::new);
         OBSCURE_PLANKS = registerWoodBlock("obscure_planks", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava()), RegularBlockItem::new);
         OBSCURE_SAPLING = registerBlock("obscure_sapling", () -> new SaplingBlock(FTZTreeGrowers.OBSCURE, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.GRASS).pushReaction(PushReaction.DESTROY)), RegularBlockItem::new);
-        OBSCURE_LOG = registerWoodBlock("obscure_log", () -> new CustomRotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(value -> value.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MapColor.COLOR_PURPLE : MapColor.TERRACOTTA_PURPLE).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava(), STRIPPED_OBSCURE_LOG.value()), RegularBlockItem::new);
-        OBSCURE_WOOD = registerWoodBlock("obscure_wood", () -> new CustomRotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava(), STRIPPED_OBSCURE_WOOD.value()), RegularBlockItem::new);
+        OBSCURE_LOG = registerWoodBlock("obscure_log", () -> new WoodLogBlock(BlockBehaviour.Properties.of().mapColor(value -> value.getValue(RotatedPillarBlock.AXIS) == Direction.Axis.Y ? MapColor.COLOR_PURPLE : MapColor.TERRACOTTA_PURPLE).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava(), STRIPPED_OBSCURE_LOG.value()), RegularBlockItem::new);
+        OBSCURE_WOOD = registerWoodBlock("obscure_wood", () -> new WoodLogBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).instrument(NoteBlockInstrument.BASS).strength(2.5F,5F).sound(SoundType.WOOD).ignitedByLava(), STRIPPED_OBSCURE_WOOD.value()), RegularBlockItem::new);
         OBSCURE_LEAVES = registerBlock("obscure_leaves", () -> new LeavesBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).strength(0.2F).randomTicks().sound(SoundType.GRASS).noOcclusion().isValidSpawn(Blocks::ocelotOrParrot).isSuffocating(FTZBlocks::never).isViewBlocking(FTZBlocks::never).ignitedByLava().pushReaction(PushReaction.DESTROY).isRedstoneConductor(FTZBlocks::never)), RegularBlockItem::new);
         OBSCURE_STAIRS = registerWoodBlock("obscure_stairs", () -> new StairBlock(OBSCURE_PLANKS.get().defaultBlockState(), BlockBehaviour.Properties.ofFullCopy(OBSCURE_PLANKS.get()).strength(2.5F,5F)), RegularBlockItem::new);
         OBSCURE_SIGN = registerBlock("obscure_sign", () -> new ObscureStandingSignBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).forceSolidOn().instrument(NoteBlockInstrument.BASS).noCollission().strength(2.5F, 5F).ignitedByLava()),null);
@@ -149,6 +168,21 @@ public class FTZBlocks {
         DEEPSLATE_FANTAZIUM_ORE = registerBlock("deepslate_fantazium_ore", () -> new DropExperienceBlock(UniformInt.of(6, 9), BlockBehaviour.Properties.ofFullCopy(FANTAZIUM_ORE.get()).mapColor(MapColor.DEEPSLATE).strength(4F,2.5F).sound(SoundType.DEEPSLATE).lightLevel(blockState -> 7)), RegularBlockItem::new);
         FANTAZIUM_BLOCK = registerBlock("fantazium_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).instrument(NoteBlockInstrument.IRON_XYLOPHONE).requiresCorrectToolForDrops().strength(5.5F,7.0F).sound(SoundType.METAL)), RegularBlockItem::new);
         RAW_FANTAZIUM_BLOCK = registerBlock("raw_fantazium_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.RAW_IRON).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(5.5F,7.0F)), RegularBlockItem::new);
+
         AMPLIFICATION_BENCH = registerBlock("amplification_bench", AmplificationBenchBlock::new, RegularBlockItem::new);
+
+        // engineering tables
+        OAK_ENGINEERING_TABLE = registerEngineeringTable("oak");
+        SPRUCE_ENGINEERING_TABLE = registerEngineeringTable("spruce");
+        BIRCH_ENGINEERING_TABLE = registerEngineeringTable("birch");
+        JUNGLE_ENGINEERING_TABLE = registerEngineeringTable("jungle");
+        ACACIA_ENGINEERING_TABLE = registerEngineeringTable("acacia");
+        CHERRY_ENGINEERING_TABLE = registerEngineeringTable("cherry");
+        DARK_OAK_ENGINEERING_TABLE = registerEngineeringTable("dark_oak");
+        MANGROVE_ENGINEERING_TABLE = registerEngineeringTable("mangrove");
+        BAMBOO_ENGINEERING_TABLE = registerEngineeringTable("bamboo");
+        CRIMSON_ENGINEERING_TABLE = registerEngineeringTable("crimson");
+        WARPED_ENGINEERING_TABLE = registerEngineeringTable("warped");
+        OBSCURE_ENGINEERING_TABLE = registerEngineeringTable("obscure");
     }
 }

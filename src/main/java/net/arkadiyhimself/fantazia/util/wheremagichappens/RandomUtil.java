@@ -1,39 +1,50 @@
 package net.arkadiyhimself.fantazia.util.wheremagichappens;
 
-import net.arkadiyhimself.fantazia.Fantazia;
 import net.minecraft.world.phys.Vec3;
+
+import java.util.Random;
 
 public class RandomUtil {
 
+    private static final Random RANDOM = new Random();
+
     public static Vec3 randomHorizontalVec3() {
-        return new Vec3(Fantazia.RANDOM.nextDouble(-1,1), 0, Fantazia.RANDOM.nextDouble(-1,1));
+        return new Vec3(RANDOM.nextDouble(-1,1), 0, RANDOM.nextDouble(-1,1));
     }
 
     public static Vec3 randomVec3() {
-        return new Vec3(Fantazia.RANDOM.nextDouble(-1,1), Fantazia.RANDOM.nextDouble(-1,1), Fantazia.RANDOM.nextDouble(-1,1));
+        return new Vec3(RANDOM.nextDouble(-1,1), RANDOM.nextDouble(-1,1), RANDOM.nextDouble(-1,1));
     }
 
     public static int nextInt(int min, int max) {
-        return Fantazia.RANDOM.nextInt(min, max);
+        return RANDOM.nextInt(min, max);
     }
 
     public static float nextFloat(float min, float max) {
-        return Fantazia.RANDOM.nextFloat(min, max);
+        return RANDOM.nextFloat(min, max);
     }
 
     public static float nextFloat() {
-        return Fantazia.RANDOM.nextFloat();
+        return RANDOM.nextFloat();
     }
 
     public static double nextDouble(double min, double max) {
-        return Fantazia.RANDOM.nextDouble(min, max);
+        return RANDOM.nextDouble(min, max);
     }
 
     public static double nextDouble(double max) {
-        return Fantazia.RANDOM.nextDouble(max);
+        return RANDOM.nextDouble(max);
     }
 
     public static double nextDouble() {
-        return Fantazia.RANDOM.nextDouble();
+        return RANDOM.nextDouble();
+    }
+
+    public static long nextLong() {
+        return RANDOM.nextLong();
+    }
+
+    public static boolean nextBoolean() {
+        return RANDOM.nextBoolean();
     }
 }

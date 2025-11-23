@@ -2,8 +2,8 @@ package net.arkadiyhimself.fantazia.data.recipes;
 
 import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.DeferredRune;
-import net.arkadiyhimself.fantazia.data.recipe.RuneCarvingRecipe;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
+import net.arkadiyhimself.fantazia.data.recipe.RuneCarvingRecipe;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;

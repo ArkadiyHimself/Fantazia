@@ -1,13 +1,13 @@
 package net.arkadiyhimself.fantazia.data.datagen.loot_modifier;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.data.loot.LootInstance;
-import net.arkadiyhimself.fantazia.data.loot.LootModifier;
-import net.arkadiyhimself.fantazia.data.datagen.DynamicResourceLocation;
-import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.common.item.RuneWielderItem;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
+import net.arkadiyhimself.fantazia.data.datagen.DynamicResourceLocation;
+import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
+import net.arkadiyhimself.fantazia.data.loot.LootInstance;
+import net.arkadiyhimself.fantazia.data.loot.LootModifier;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.LootTablesUtil;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;

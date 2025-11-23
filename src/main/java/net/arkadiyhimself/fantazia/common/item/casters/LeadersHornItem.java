@@ -29,7 +29,7 @@ public class LeadersHornItem extends AuraCasterItem {
         pPlayer.startUsingItem(pUsedHand);
         pPlayer.getCooldowns().addCooldown(this, 400);
         pPlayer.awardStat(Stats.ITEM_USED.get(this));
-        pPlayer.level().playSound(null, pPlayer.blockPosition(), FTZSoundEvents.LEADERS_HORN.get(), SoundSource.NEUTRAL);
+        pPlayer.level().playSound(null, pPlayer.blockPosition(), FTZSoundEvents.LEADERS_HORN_BLOW.get(), SoundSource.NEUTRAL);
 
         AABB aabb = pPlayer.getBoundingBox().inflate(128);
         if (pLevel instanceof ServerLevel serverLevel) {
@@ -37,7 +37,7 @@ public class LeadersHornItem extends AuraCasterItem {
             tamableAnimals.removeIf(tamableAnimal -> tamableAnimal.getOwner() != pPlayer || !tamableAnimal.isInSittingPose());
             tamableAnimals.forEach(tamableAnimal -> tamableAnimal.interact(pPlayer, InteractionHand.MAIN_HAND));
         }
-        return InteractionResultHolder.success(pPlayer.getItemInHand(pUsedHand));
+        return InteractionResultHolder.consume(pPlayer.getItemInHand(pUsedHand));
     }
 
     @Override

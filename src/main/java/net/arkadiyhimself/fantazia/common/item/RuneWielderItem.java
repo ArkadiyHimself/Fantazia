@@ -6,7 +6,6 @@ import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

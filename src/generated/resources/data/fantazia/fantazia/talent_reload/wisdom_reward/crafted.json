@@ -1,9 +1,0 @@
-{
-  "category": "fantazia:crafted",
-  "default_reward": 1,
-  "rewards": {
-    "minecraft:beacon": {
-      "reward": 30
-    }
-  }
-}

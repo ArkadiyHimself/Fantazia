@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.data.datagen.loot_modifier;
 
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.data.loot.LootModifier;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
+import net.arkadiyhimself.fantazia.data.loot.LootModifier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;

@@ -1,9 +1,0 @@
-{
-  "advancement": "fantazia:talents/abilities/aerial/finished_wings",
-  "background": "fantazia:textures/gui/talent_icons/square_white.png",
-  "icon": "fantazia:textures/talent/abilities/aerial/finished_wings.png",
-  "impacts": [
-    "fantazia:double_jump.elytra"
-  ],
-  "title": "talent.fantazia.abilities.aerial.finished_wings"
-}

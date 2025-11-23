@@ -1,14 +1,14 @@
 package net.arkadiyhimself.fantazia.data.datagen.patchouli.categories;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.registries.FTZBlocks;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.data.datagen.loot_modifier.TheWorldlinessEntryHelper;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.Categories;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntry;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntryHolder;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoPage;
-import net.arkadiyhimself.fantazia.common.registries.FTZBlocks;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -48,7 +48,7 @@ public class WorldCategoryEntries implements SubProvider<PseudoEntryHolder> {
         String basicString = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + world + "." + entry + ".";
         ResourceLocation advancement = unlocked ? Fantazia.location(TheWorldlinessEntryHelper.THE_WORLDLINESS + "/" + world + "/" + entry) : null;
 
-        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicString + "name").category(Categories.WORLD).advancement(advancement).icon(item);
+        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicString + "ident").category(Categories.WORLD).advancement(advancement).icon(item);
 
         for (int i = 1; i <= pages; i++) builder.addPseudoPage(PseudoPage.builder().type(TheWorldlinessEntryHelper.TEXT).text(basicString + "page." + i).build());
 
@@ -60,7 +60,7 @@ public class WorldCategoryEntries implements SubProvider<PseudoEntryHolder> {
         String basicString = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + world + "." + entry + ".";
         ResourceLocation advancement = unlocked ? Fantazia.location(TheWorldlinessEntryHelper.THE_WORLDLINESS + "/" + world + "/" + entry) : null;
 
-        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicString + "name").category(Categories.WORLD).advancement(advancement).icon(icon);
+        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicString + "ident").category(Categories.WORLD).advancement(advancement).icon(icon);
 
         for (int i = 1; i <= pages; i++) builder.addPseudoPage(PseudoPage.builder().type(TheWorldlinessEntryHelper.TEXT).text(basicString + "page." + i).build());
 
@@ -72,7 +72,7 @@ public class WorldCategoryEntries implements SubProvider<PseudoEntryHolder> {
         String basicString = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + world + "." + entry + ".";
         ResourceLocation advancement = unlocked ? Fantazia.location(TheWorldlinessEntryHelper.THE_WORLDLINESS + "/" + world + "/" + entry) : null;
 
-        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicString + "name").category(Categories.WORLD).advancement(advancement).icon(icon);
+        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicString + "ident").category(Categories.WORLD).advancement(advancement).icon(icon);
 
         for (int i = 1; i <= pages; i++) {
             PseudoPage.Builder pseudoPage = PseudoPage.builder().text(basicString + "page." + i);
@@ -90,7 +90,7 @@ public class WorldCategoryEntries implements SubProvider<PseudoEntryHolder> {
         String basicString = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + world + "." + entry + ".";
         ResourceLocation advancement = unlocked ? Fantazia.location(TheWorldlinessEntryHelper.THE_WORLDLINESS + "/" + world + "/" + entry) : null;
 
-        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicString + "name").category(Categories.WORLD).advancement(advancement).icon(icon);
+        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicString + "ident").category(Categories.WORLD).advancement(advancement).icon(icon);
 
         for (int i = 1; i <= pages; i++) {
             PseudoPage.Builder pseudoPage = PseudoPage.builder().text(basicString + "page." + i);

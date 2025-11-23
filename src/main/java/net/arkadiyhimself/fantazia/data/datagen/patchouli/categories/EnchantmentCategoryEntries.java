@@ -1,13 +1,13 @@
 package net.arkadiyhimself.fantazia.data.datagen.patchouli.categories;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.data.datagen.loot_modifier.TheWorldlinessEntryHelper;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.Categories;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntry;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntryHolder;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoPage;
-import net.arkadiyhimself.fantazia.common.registries.FTZEnchantments;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
@@ -78,7 +78,7 @@ public class EnchantmentCategoryEntries implements SubProvider<PseudoEntryHolder
         String enchantments = Categories.ENCHANTMENTS.getPath();
 
         PseudoEntry.Builder builder = PseudoEntry.builder();
-        String name = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + Categories.ENCHANTMENTS.getPath() + "." + entryName + ".name";
+        String name = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + Categories.ENCHANTMENTS.getPath() + "." + entryName + ".ident";
         builder.name(name).advancement(advancement).icon(Items.ENCHANTED_BOOK).category(Categories.ENCHANTMENTS);
 
         String basicTitle = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + enchantments + "." + entryName + ".page.";

@@ -1,0 +1,21 @@
+{
+  "advancement": "fantazia:the_worldliness/rechargeable_tools/pimpillo",
+  "category": "fantazia:rechargeable_tools",
+  "icon": "fantazia:pimpillo",
+  "name": "item.fantazia.pimpillo",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.rechargeable_tools.pimpillo.page.1"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "fantazia:pimpillo",
+      "text": "book.fantazia.the_worldliness.rechargeable_tools.pimpillo.page.2"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "book.fantazia.the_worldliness.rechargeable_tools.pimpillo.page.3"
+    }
+  ]
+}

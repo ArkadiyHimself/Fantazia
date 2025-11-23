@@ -1,12 +1,16 @@
 package net.arkadiyhimself.fantazia.common.api.custom_registry;
 
+import com.mojang.serialization.MapCodec;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.screen.TalentTab;
 import net.arkadiyhimself.fantazia.common.advanced.aura.Aura;
+import net.arkadiyhimself.fantazia.common.advanced.blueprint.Blueprint;
 import net.arkadiyhimself.fantazia.common.advanced.healing.HealingType;
 import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
-import net.arkadiyhimself.fantazia.client.screen.TalentTab;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.SpellBuilder;
+import net.arkadiyhimself.fantazia.data.item.rechargeable_tool.ToolCapacityLevelFunction;
+import net.arkadiyhimself.fantazia.data.item.rechargeable_tool.ToolDamageLevelFunction;
 import net.arkadiyhimself.fantazia.data.loot.LootModifier;
 import net.arkadiyhimself.fantazia.data.spawn_effect.EffectSpawnApplier;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
@@ -18,7 +22,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegistryBuilder;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
@@ -38,6 +41,10 @@ public class FantazicRegistries {
         return new Runes(modid);
     }
 
+    public static Blueprints createBlueprints(String modid) {
+        return new Blueprints(modid);
+    }
+
     public static final DefaultedRegistry<AbstractSpell> SPELLS =
             (DefaultedRegistry<AbstractSpell>) new RegistryBuilder<>(Keys.SPELL).sync(true)
                     .defaultKey(Fantazia.location("all_in")).create();
@@ -48,6 +55,18 @@ public class FantazicRegistries {
 
     public static final DefaultedRegistry<Rune> RUNES =
             (DefaultedRegistry<Rune>) new RegistryBuilder<>(Keys.RUNE).sync(true)
+                    .defaultKey(Fantazia.location("empty")).create();
+
+    public static final DefaultedRegistry<MapCodec<? extends ToolCapacityLevelFunction>> TOOL_CAPACITY_LEVEL_FUNCTIONS =
+            (DefaultedRegistry<MapCodec<? extends ToolCapacityLevelFunction>>)
+                    new RegistryBuilder<>(Keys.TOOL_CAPACITY_LEVEL_FUNCTION).defaultKey(Fantazia.location("linear")).sync(true).create();
+
+    public static final DefaultedRegistry<MapCodec<? extends ToolDamageLevelFunction>> TOOL_DAMAGE_LEVEL_FUNCTIONS =
+            (DefaultedRegistry<MapCodec<? extends ToolDamageLevelFunction>>)
+                    new RegistryBuilder<>(Keys.TOOL_DAMAGE_LEVEL_FUNCTION).defaultKey(Fantazia.location("linear")).sync(true).create();
+
+    public static final DefaultedRegistry<Blueprint> BLUEPRINTS =
+            (DefaultedRegistry<Blueprint>) new RegistryBuilder<>(Keys.BLUEPRINT).sync(true)
                     .defaultKey(Fantazia.location("empty")).create();
 
     public static final class Keys {
@@ -63,6 +82,9 @@ public class FantazicRegistries {
         public static final ResourceKey<Registry<TalentTab.Builder>> TALENT_TAB = Fantazia.resKey("talent_reload/talent_tab");
         public static final ResourceKey<Registry<WisdomRewardsCombined.Builder>> WISDOM_REWARD_CATEGORY = Fantazia.resKey("talent_reload/wisdom_reward");
         public static final ResourceKey<Registry<EffectSpawnApplier.Builder>> EFFECT_FROM_DAMAGE = Fantazia.resKey("effect_from_damage");
+        public static final ResourceKey<Registry<MapCodec<? extends ToolCapacityLevelFunction>>> TOOL_CAPACITY_LEVEL_FUNCTION = Fantazia.resKey("tool_capacity_level_function");
+        public static final ResourceKey<Registry<MapCodec<? extends ToolDamageLevelFunction>>> TOOL_DAMAGE_LEVEL_FUNCTION = Fantazia.resKey("tool_damage_level_function");
+        public static final ResourceKey<Registry<Blueprint>> BLUEPRINT = Fantazia.resKey("blueprint");
     }
 
     public static class Spells extends DeferredRegister<AbstractSpell> {
@@ -134,6 +156,30 @@ public class FantazicRegistries {
 
         protected <T extends Rune> @NotNull DeferredRune<T> createHolder(@NotNull ResourceKey<? extends Registry<Rune>> registryKey, @NotNull ResourceLocation key) {
             return DeferredRune.createAura(ResourceKey.create(registryKey, key));
+        }
+    }
+
+    public static class Blueprints extends DeferredRegister<Blueprint> {
+
+        protected Blueprints(String namespace) {
+            super(Keys.BLUEPRINT, namespace);
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T extends Blueprint> @NotNull DeferredBlueprint<T> register(@NotNull String name, @NotNull Function<ResourceLocation, ? extends T> func) {
+            return (DeferredBlueprint<T>)super.register(name, func);
+        }
+
+        public <T extends Blueprint> @NotNull DeferredBlueprint<T> register(@NotNull String name, @NotNull Supplier<? extends T> sup) {
+            return register(name, key -> sup.get());
+        }
+
+        public @NotNull DeferredBlueprint<Blueprint> register(@NotNull String name, @NotNull Blueprint.Builder builder) {
+            return register(name, builder::build);
+        }
+
+        protected <T extends Blueprint> @NotNull DeferredBlueprint<T> createHolder(@NotNull ResourceKey<? extends Registry<Blueprint>> registryKey, @NotNull ResourceLocation key) {
+            return DeferredBlueprint.createBlueprint(ResourceKey.create(registryKey, key));
         }
     }
 }

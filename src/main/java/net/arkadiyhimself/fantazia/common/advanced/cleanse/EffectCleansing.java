@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.common.advanced.cleanse;
 
-import net.arkadiyhimself.fantazia.common.api.custom_events.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.common.FantazicHooks;
+import net.arkadiyhimself.fantazia.common.api.custom_events.VanillaEventsExtension;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;

@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 public record PseudoEntry(String name, PseudoIcon pseudoIcon, ResourceLocation category, Optional<ResourceLocation> advancement, List<PseudoPage> pseudoPages) {
 
     public static final Codec<PseudoEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(PseudoEntry::name),
+            Codec.STRING.fieldOf("ident").forGetter(PseudoEntry::name),
             ResourceLocation.CODEC.fieldOf("icon").forGetter(entry -> entry.pseudoIcon.getId()),
             ResourceLocation.CODEC.fieldOf("category").forGetter(PseudoEntry::category),
             ResourceLocation.CODEC.optionalFieldOf("advancement").forGetter(PseudoEntry::advancement),
@@ -71,7 +71,7 @@ public record PseudoEntry(String name, PseudoIcon pseudoIcon, ResourceLocation c
         }
 
         public PseudoEntry build() {
-            if (name == null) throw new IllegalStateException("Could not build entry: the name is null");
+            if (name == null) throw new IllegalStateException("Could not build entry: the ident is null");
             if (pseudoIcon == null) throw new IllegalStateException("Could not build entry: the icon is null");
             if (category == null) throw new IllegalStateException("Could not build entry: the category is null");
             if (pseudoPages.isEmpty()) throw new IllegalStateException("Could not build entry: the pages are empty");

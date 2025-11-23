@@ -101,7 +101,11 @@ public class AncientFlameBlock extends BaseFireBlock {
 
     @Override
     public boolean canSurvive(@NotNull BlockState pState, @NotNull LevelReader pLevel, @NotNull BlockPos pPos) {
-        return true;
+        for (Direction direction : Direction.values()) {
+            BlockState state = pLevel.getBlockState(pPos.relative(direction));
+            if (state.isFaceSturdy(pLevel, pPos, direction.getOpposite())) return true;
+        }
+        return false;
     }
 
     @Override
@@ -162,5 +166,10 @@ public class AncientFlameBlock extends BaseFireBlock {
             blockstate.onCaughtFire(level, pos, face, null);
             if (random.nextInt(age + 10) > 5) level.removeBlock(pos, false);
         }
+    }
+
+    public static boolean canBePlacedAt(Level level, @NotNull BlockPos pos) {
+        BlockState blockstate = level.getBlockState(pos);
+        return blockstate.isAir() && FTZBlocks.ANCIENT_FLAME.value().canSurvive(blockstate, level, pos);
     }
 }

@@ -3,24 +3,24 @@ package net.arkadiyhimself.fantazia.client.screen;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.gui.TextComponents;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.api.FTZKeyMappings;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.common.api.prompt.Prompts;
-import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
+import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentTabManager;
+import net.arkadiyhimself.fantazia.integration.jei.JEIHelper;
 import net.arkadiyhimself.fantazia.networking.IPacket;
-import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.GameNarrator;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -113,18 +113,23 @@ public class TalentScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(double mouseX, double mouseY, int pButton) {
         if (pButton == 0) {
+            int x0 = frX - 100 - 10;
+            int y0 = frY + 10;
+            if (Fantazia.loadedJEI() && FantazicMath.isWithin(x0, x0 + 101, mouseX) && FantazicMath.isWithin(y0, y0 + 31, mouseY)) {
+                JEIHelper.tryOpenAllWisdomRewards();
+            }
             for (int i = 0; i < TABS.size(); i++) {
                 TalentTab talentTab = TABS.get(i);
                 if (talentTab == selectedTab) continue;
-                if (talentTab.isMouseOver(frX, frY, pMouseX, pMouseY, false, i)) {
+                if (talentTab.isMouseOver(frX, frY, mouseX, mouseY, false, i)) {
                     tabIndex = i;
                     selectedTab = talentTab;
-                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK.value(), 1f,1f));
+                    FantazicUtil.playSoundUI(SoundEvents.UI_BUTTON_CLICK.value());
                     scrollX = 0;
                     scrollY = 0;
-                    return super.mouseClicked(pMouseX, pMouseY, pButton);
+                    return super.mouseClicked(mouseX, mouseY, pButton);
                 }
             }
             if (Screen.hasShiftDown()) {
@@ -132,7 +137,7 @@ public class TalentScreen extends Screen {
             } else tryPurchasing();
 
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(mouseX, mouseY, pButton);
     }
 
     private void tryDisableTalent() {
@@ -217,7 +222,7 @@ public class TalentScreen extends Screen {
         boolean redText = selectedTab != null && selectedTab.redWisdomText();
         Component component = Component.literal(String.valueOf(wisdom)).withStyle(redText ? ChatFormatting.RED : ChatFormatting.BLUE);
         guiGraphics.drawString(font, component, x0 + 24, y0 + 11, 0);
-        if (FantazicMath.within(x0, x0 + 100, mouseX) && FantazicMath.within(y0, y0 + 30, mouseY)) {
+        if (FantazicMath.isWithin(x0, x0 + 100, mouseX) && FantazicMath.isWithin(y0, y0 + 30, mouseY)) {
             int lines = 0;
             String basicPath = "fantazia.gui.talent.wisdom";
             List<Component> components = Lists.newArrayList();
@@ -229,8 +234,13 @@ public class TalentScreen extends Screen {
             } catch (NumberFormatException ignored) {}
             if (lines > 0) {
                 for (int i = 1; i <= lines; i++) components.add(Component.translatable(basicPath + "." + i).withStyle(redText ? ChatFormatting.RED : ChatFormatting.BLUE));
-                if (Screen.hasShiftDown()) RenderBuffers.NO_TOOLTIP_GAP = true;
-                guiGraphics.renderComponentTooltip(font, components, mouseX, mouseY);
+                if (Screen.hasShiftDown()) {
+                    if (Fantazia.loadedJEI()) components.add(TextComponents.JEI_PRESS_TO_SEE_WISDOM_REWARDS);
+                    VisualHelper.renderTooltipNoHeading(guiGraphics, components, font, mouseX, mouseY);
+                } else {
+                    components.add(TextComponents.HOLD_SHIFT_TO_SEE_MORE_COMPONENT);
+                    guiGraphics.renderComponentTooltip(font, components, mouseX, mouseY);
+                }
             }
         }
     }

@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 public record PseudoCategory(String name, String description, PseudoIcon icon) {
 
     public static final Codec<PseudoCategory> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("name").forGetter(PseudoCategory::name),
+            Codec.STRING.fieldOf("ident").forGetter(PseudoCategory::name),
             Codec.STRING.fieldOf("description").forGetter(PseudoCategory::description),
             ResourceLocation.CODEC.fieldOf("icon").forGetter(category -> category.icon.getId())
     ).apply(instance, PseudoCategory::decode));
@@ -54,7 +54,7 @@ public record PseudoCategory(String name, String description, PseudoIcon icon) {
         }
 
         public PseudoCategory build() {
-            if (name == null) throw new IllegalStateException("Could not build category: the name is null");
+            if (name == null) throw new IllegalStateException("Could not build category: the ident is null");
             if (description == null) throw new IllegalStateException("Could not build category: the description is null");
             if (pseudoIcon == null) throw new IllegalStateException("Could not build category: the icon is null");
 

@@ -4,12 +4,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.screen.AmplificationTab;
 import net.arkadiyhimself.fantazia.common.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraInstance;
-import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.LocationHolder;
-import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.ReflectLayerRenderHolder;
-import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.RewindParametersHolder;
-import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.TickingIntegerHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.*;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataManager;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectManager;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.niche_data_holders.AddedAurasHolder;
@@ -65,6 +63,9 @@ public class FTZAttachmentTypes {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> WALL_CLIMBING_COBWEB = register("talent.wall_climbing.cobweb", AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> WALL_CLIMBING_POISON = register("talent.wall_climbing.poison", AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> HAS_FURY = register("arrow.fury_effect", AttachmentType.builder(() -> false).serialize(Codec.BOOL));
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<CombHealthHolder>> COMB_HEALTH = register("spell.restore.health", AttachmentType.serializable(CombHealthHolder::new));
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<BifrostHealthHolder>> BIFROST_HEALTH = register("generic.bifrost_health", AttachmentType.serializable(BifrostHealthHolder::new));
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<AmplificationTab>> LAST_SELECTED_AMPLIFICATION_TAB = register("generic.last_selected_amplification_tab", AttachmentType.<AmplificationTab>builder(() -> AmplificationTab.RUNE_CARVING).serialize(AmplificationTab.CODEC));
 
     // a map of auras that entity is inside, prioritising those that affect the entity
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<HashMap<Holder<Aura>, AuraInstance>>> AFFECTING_AURAS = register("generic.affecting_auras", AttachmentType.builder(() -> Maps.newHashMap()));

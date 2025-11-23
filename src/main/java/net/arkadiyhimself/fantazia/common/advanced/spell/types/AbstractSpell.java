@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.common.advanced.spell.types;
 
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.Cleanse;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public abstract class AbstractSpell implements ISpell {
 
@@ -35,8 +36,22 @@ public abstract class AbstractSpell implements ISpell {
     private final boolean doCleanse;
     private final Function<LivingEntity, Integer> recharge;
     private final Function<LivingEntity, List<Component>> extendTooltip;
+    private final Predicate<LivingEntity> canUnEquip;
 
-    protected AbstractSpell(float manacost, int defaultRecharge, @Nullable Holder<SoundEvent> castSound, @Nullable Holder<SoundEvent> rechargeSound, TickingConditions tickingConditions, Consumer<LivingEntity> ownerTick, Consumer<LivingEntity> uponEquipping, Cleanse cleanse, boolean doCleanse, Function<LivingEntity, Integer> recharge, Function<LivingEntity, List<Component>> extendTooltip) {
+    protected AbstractSpell(
+            float manacost,
+            int defaultRecharge,
+            @Nullable Holder<SoundEvent> castSound,
+            @Nullable Holder<SoundEvent> rechargeSound,
+            TickingConditions tickingConditions,
+            Consumer<LivingEntity> ownerTick,
+            Consumer<LivingEntity> uponEquipping,
+            Cleanse cleanse,
+            boolean doCleanse,
+            Function<LivingEntity, Integer> recharge,
+            Function<LivingEntity, List<Component>> extendTooltip,
+            Predicate<LivingEntity> canUnEquip
+    ) {
         this.manacost = manacost;
         this.defaultRecharge = defaultRecharge;
 
@@ -51,6 +66,7 @@ public abstract class AbstractSpell implements ISpell {
         this.recharge = recharge;
 
         this.extendTooltip = extendTooltip;
+        this.canUnEquip = canUnEquip;
     }
 
     public final float manacost() {
@@ -115,6 +131,10 @@ public abstract class AbstractSpell implements ISpell {
         return extendTooltip.apply(owner);
     }
 
+    public boolean canUnEquip(LivingEntity livingEntity) {
+        return canUnEquip.test(livingEntity);
+    }
+
     public Cleanse cleanse() {
         return cleanse;
     }
@@ -129,7 +149,6 @@ public abstract class AbstractSpell implements ISpell {
     }
 
     public final boolean is(TagKey<AbstractSpell> tagKey) {
-        if (getID() == null) return false;
         Optional<Holder.Reference<AbstractSpell>> holder = FantazicRegistries.SPELLS.getHolder(getID());
         return holder.map(abstractSpellReference -> abstractSpellReference.is(tagKey)).orElse(false);
     }

@@ -3,7 +3,7 @@
     "subtitle" : "fantazia.subtitles.ui.heartbeat",
     "sounds": [
       {
-        "name": "fantazia:ui/heartbeat1",
+        "name": "fantazia:ui/heart_beat1",
         "stream": false
       }
     ]
@@ -12,7 +12,7 @@
     "subtitle" : "fantazia.subtitles.ui.heartbeat",
     "sounds": [
       {
-        "name": "fantazia:ui/heartbeat2",
+        "name": "fantazia:ui/heart_beat2",
         "stream": false
       }
     ]
@@ -655,6 +655,32 @@
       }
     ]
   },
+  "entity.pimpillo.fuse_burn" : {
+    "subtitle" : "fantazia.subtitles.entity.pimpillo.fuse_burn",
+    "sounds" : [
+      {
+        "name" : "fantazia:entity/pimpillo/fuse_burn",
+        "stream" : false
+      }
+    ]
+  },
+  "entity.thrown_pin.break" : {
+    "subtitles" : "fantazia.subtitles.entity.thrown_pin.break",
+    "sounds" : [
+      {
+        "name" : "fantazia:entity/thrown_pin/break1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/thrown_pin/break2",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/thrown_pin/break3",
+        "stream" : false
+      }
+    ]
+  },
   "entity.dashstone.appear" : {
     "subtitle": "fantazia.subtitles.entity.dashstone.appear",
     "sounds": [
@@ -685,6 +711,54 @@
       },
       {
         "name" : "fantazia:entity/dashstone/wind5",
+        "stream" : false
+      }
+    ]
+  },
+  "entity.block_fly.buzzing" : {
+    "subtitle": "fantazia.subtitles.entity.block_fly.buzzing",
+    "sounds" : [
+      {
+        "name" : "fantazia:entity/block_fly/buzzing",
+        "stream" : false
+      }
+    ]
+  },
+  "entity.block_fly.hurt" : {
+    "subtitle": "fantazia.subtitles.entity.block_fly.hurt",
+    "sounds" : [
+      {
+        "name" : "fantazia:entity/block_fly/hurt1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/block_fly/hurt2",
+        "stream" : false
+      }
+    ]
+  },
+  "entity.block_fly.punch" : {
+    "subtitle": "fantazia.subtitles.entity.block_fly.punch",
+    "sounds" : [
+      {
+        "name" : "fantazia:entity/block_fly/punch1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/block_fly/punch2",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:entity/block_fly/punch3",
+        "stream" : false
+      }
+    ]
+  },
+  "entity.block_fly.death" : {
+    "subtitle": "fantazia.subtitles.entity.block_fly.death",
+    "sounds" : [
+      {
+        "name" : "fantazia:entity/block_fly/death",
         "stream" : false
       }
     ]
@@ -738,11 +812,46 @@
     "subtitle": "fantazia.subtitles.item.ancient_spark",
     "sounds": [
       {
-        "name" : "fantazia:item/ancient_spark1",
+        "name" : "fantazia:item/ancient_spark/use1",
         "stream" : false
       },
       {
-        "name" : "fantazia:item/ancient_spark2",
+        "name" : "fantazia:item/ancient_spark/use2",
+        "stream" : false
+      }
+    ]
+  },
+  "item.pimpillo.throw" : {
+    "subtitle": "fantazia.subtitles.item.pimpillo",
+    "sounds": [
+      {
+        "name" : "fantazia:item/pimpillo/throw1",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:item/pimpillo/throw2",
+        "stream" : false
+      },
+      {
+        "name" : "fantazia:item/pimpillo/throw3",
+        "stream" : false
+      }
+    ]
+  },
+  "item.throwing_pin.throw" : {
+    "subtitle": "fantazia.subtitles.item.throwing_pin",
+    "sounds" : [
+      {
+        "name" : "fantazia:item/throwing_pin",
+        "stream" : false
+      }
+    ]
+  },
+  "item.block_fly.wind_up" : {
+    "subtitle": "fantazia.subtitles.item.block_fly.wind_up",
+    "sounds" : [
+      {
+        "name" : "fantazia:item/block_fly",
         "stream" : false
       }
     ]

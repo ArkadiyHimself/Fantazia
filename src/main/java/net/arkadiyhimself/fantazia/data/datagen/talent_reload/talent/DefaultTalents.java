@@ -3,14 +3,14 @@ package net.arkadiyhimself.fantazia.data.datagen.talent_reload.talent;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.api.AttributeModifierBuilder;
 import net.arkadiyhimself.fantazia.common.api.curio.FTZSlots;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
+import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
+import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentImpacts;
 import net.arkadiyhimself.fantazia.data.talent.Talents;
-import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
-import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -40,14 +40,14 @@ public class DefaultTalents implements SubProvider<TalentBuilderHolder> {
         createBuilder(Talents.DOUBLE_JUMP,true).addImpact(TalentImpacts.DOUBLE_JUMP_UNLOCK).background(SQUARE_WHITE).save(consumer, Talents.DOUBLE_JUMP);
         createBuilder(Talents.CAT_REFLEXES,false).background(SQUARE_WHITE)
                 .addAttributeModifier(Attributes.JUMP_STRENGTH, new AttributeModifierBuilder(0.3, AttributeModifier.Operation.ADD_MULTIPLIED_BASE))
-                .addDamageMultiplier(0.5f, DamageTypes.FALL)
+                .addDamageMultiplier(0.5f, FTZDamageTypeTags.REDUCED_BY_CAT_REFLEXES_TALENT)
                 .wisdom(75).save(consumer, Talents.CAT_REFLEXES);
         createBuilder(Talents.FINISHED_WINGS, true).addImpact(TalentImpacts.DOUBLE_JUMP_ELYTRA).background(SQUARE_WHITE).save(consumer, Talents.FINISHED_WINGS);
 
         createBuilder(Talents.DASH1,true).addImpact(TalentImpacts.DASH_UPGRADE).background(OCTAGON_WHITE).save(consumer, Talents.DASH1);
         createBuilder(Talents.DASH2,true).addImpact(TalentImpacts.DASH_UPGRADE).background(OCTAGON_BLUE).save(consumer, Talents.DASH2);
         createBuilder(Talents.DASH3,true).addImpact(TalentImpacts.DASH_UPGRADE)
-                .addDamageImmunities(DamageTypes.IN_WALL).background(OCTAGON_PURPLE).save(consumer, Talents.DASH3);
+                .addDamageImmunities(FTZDamageTypeTags.NEGATED_BY_THIRD_LEVEL_DASH_TALENT).background(OCTAGON_PURPLE).save(consumer, Talents.DASH3);
 
         createBuilder(Talents.RELENTLESS,true).addImpact(TalentImpacts.EUPHORIA_RELENTLESS).background(SQUARE_RED).save(consumer, Talents.RELENTLESS);
         createBuilder(Talents.SAVAGE,false).addImpact(TalentImpacts.EUPHORIA_SAVAGE).wisdom(50).background(SQUARE_RED).save(consumer, Talents.SAVAGE);
@@ -87,6 +87,15 @@ public class DefaultTalents implements SubProvider<TalentBuilderHolder> {
         createBuilder(Talents.POISON_ATTACK,false).addImpact(TalentImpacts.WALL_CLIMBING_POISON)
                 .addDamageMultiplier(0.5f, NeoForgeMod.POISON_DAMAGE)
                 .background(SQUARE_GREEN).wisdom(80).save(consumer, Talents.POISON_ATTACK);
+
+        createBuilder(Talents.TOOL_CAPACITY_UPGRADE1,true).addImpact(TalentImpacts.UPGRADE_TOOL_CAPACITY)
+                .save(consumer, Talents.TOOL_CAPACITY_UPGRADE1);
+        createBuilder(Talents.TOOL_CAPACITY_UPGRADE2,true).addImpact(TalentImpacts.UPGRADE_TOOL_CAPACITY)
+                .save(consumer, Talents.TOOL_CAPACITY_UPGRADE2);
+        createBuilder(Talents.TOOL_CAPACITY_UPGRADE3,true).addImpact(TalentImpacts.UPGRADE_TOOL_CAPACITY)
+                .save(consumer, Talents.TOOL_CAPACITY_UPGRADE3);
+        createBuilder(Talents.TOOL_CAPACITY_UPGRADE4,true).addImpact(TalentImpacts.UPGRADE_TOOL_CAPACITY)
+                .save(consumer, Talents.TOOL_CAPACITY_UPGRADE4);
     }
     
     private static Talent.Builder createBuilder(ResourceLocation location, boolean advancement) {

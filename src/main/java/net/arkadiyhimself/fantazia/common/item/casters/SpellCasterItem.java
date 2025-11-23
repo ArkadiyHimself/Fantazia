@@ -1,10 +1,11 @@
 package net.arkadiyhimself.fantazia.common.item.casters;
 
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.client.gui.TextComponents;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellCastResult;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -50,10 +51,13 @@ public class SpellCasterItem extends Item {
             } catch (NumberFormatException ignored) {}
             if (lines > 0) {
                 components.add(Component.literal(" "));
-                for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(basicPath + "." + i, null, null));
+                for (int i = 1; i <= lines; i++) components.add(
+                        GuiHelper.bakeComponent(basicPath + "." + i, null, null)
+                );
             }
+            components.add(Component.literal(" "));
+            components.add(TextComponents.HOLD_SHIFT_TO_SEE_MORE_COMPONENT);
         } else components.addAll(getSpell().value().buildTooltip());
-
 
         return components;
     }

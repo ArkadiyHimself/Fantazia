@@ -3,13 +3,18 @@ package net.arkadiyhimself.fantazia.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.LocationHolder;
 import net.arkadiyhimself.fantazia.client.gui.FTZGuis;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.client.particless.options.EntityChasingParticleOption;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.LocationHolder;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.TooltipRenderUtil;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -30,13 +35,19 @@ import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2ic;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @OnlyIn(Dist.CLIENT)
@@ -256,5 +267,53 @@ public class VisualHelper {
     public static Component componentLevel(int level) {
         if (level >= 1 && level <= 10) return Component.translatable("enchantment.level." + level);
         else return Component.literal(String.valueOf(level));
+    }
+
+    public static void renderTooltipNoHeading(GuiGraphics guiGraphics, List<Component> components, Font font, int x, int y) {
+        if (components.isEmpty()) return;
+
+        List<ClientTooltipComponent> list = ClientHooks.gatherTooltipComponents(ItemStack.EMPTY, components, Optional.empty(), x, guiGraphics.guiWidth(), guiGraphics.guiHeight(), font);
+        int i = 0;
+        int j = 0;
+        PoseStack poseStack = guiGraphics.pose();
+
+        ClientTooltipComponent clienttooltipcomponent;
+        for(Iterator<ClientTooltipComponent> var9 = list.iterator(); var9.hasNext(); j += clienttooltipcomponent.getHeight()) {
+            clienttooltipcomponent = var9.next();
+            int k = clienttooltipcomponent.getWidth(font);
+            if (k > i) {
+                i = k;
+            }
+        }
+
+        Vector2ic vector2ic = DefaultTooltipPositioner.INSTANCE.positionTooltip(guiGraphics.guiWidth(), guiGraphics.guiHeight(), x, y, i, j);
+        int l = vector2ic.x();
+        int i1 = vector2ic.y();
+        poseStack.pushPose();
+        RenderTooltipEvent.Color colorEvent = ClientHooks.onRenderTooltipColor(ItemStack.EMPTY, guiGraphics, l, i1, font, list);
+
+        int finalI = i;
+        int finalJ = j;
+        guiGraphics.drawManaged(() -> TooltipRenderUtil.renderTooltipBackground(guiGraphics, l, i1, finalI, finalJ - 2, 400, colorEvent.getBackgroundStart(), colorEvent.getBackgroundEnd(), colorEvent.getBorderStart(), colorEvent.getBorderEnd()));
+        poseStack.translate(0.0F, 0.0F, 400.0F);
+        int k1 = i1;
+
+        int k2;
+        ClientTooltipComponent clienttooltipcomponent2;
+        for(k2 = 0; k2 < list.size(); ++k2) {
+            clienttooltipcomponent2 = list.get(k2);
+            clienttooltipcomponent2.renderText(font, l, k1, poseStack.last().pose(), guiGraphics.bufferSource());
+            k1 += clienttooltipcomponent2.getHeight();
+        }
+
+        k1 = i1;
+
+        for(k2 = 0; k2 < list.size(); ++k2) {
+            clienttooltipcomponent2 = list.get(k2);
+            clienttooltipcomponent2.renderImage(font, l, k1, guiGraphics);
+            k1 += clienttooltipcomponent2.getHeight();
+        }
+
+        poseStack.popPose();
     }
 }

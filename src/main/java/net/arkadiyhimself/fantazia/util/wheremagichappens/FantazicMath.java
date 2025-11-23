@@ -5,15 +5,15 @@ import net.minecraft.world.phys.Vec3;
 
 public class FantazicMath {
 
-    public static boolean within(int min, int max, int num) {
+    public static boolean isWithin(int min, int max, int num) {
         return num >= min && num <= max;
     }
 
-    public static boolean within(float min, float max, float num) {
+    public static boolean isWithin(float min, float max, float num) {
         return num >= min && num <= max;
     }
 
-    public static boolean within(double min, double max, double num) {
+    public static boolean isWithin(double min, double max, double num) {
         return num >= min && num <= max;
     }
 

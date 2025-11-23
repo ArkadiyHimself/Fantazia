@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.common.entity.magic_projectile;
 
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSourcesHolder;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.registries.FTZEntityTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.common.registries.custom.Spells;

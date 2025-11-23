@@ -8,6 +8,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardCategories;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -62,6 +63,11 @@ public record WisdomTamedRewardCategory(
         if (!BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)|| (eggItem = SpawnEggItem.byId(entityType)) == null) return;
 
         builder.addSlot(RecipeIngredientRole.INPUT, 37, 6).addItemStack(new ItemStack(eggItem));
+    }
+
+    @Override
+    public ResourceLocation category() {
+        return WisdomRewardCategories.TAMED;
     }
 
     @Override

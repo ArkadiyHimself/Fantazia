@@ -1,5 +1,7 @@
 package net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect;
 
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.MobEffectDurationSyncHolder;
@@ -11,15 +13,13 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.h
 import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.HealingSourcesHolder;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.FTZParticleTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;

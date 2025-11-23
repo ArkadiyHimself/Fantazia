@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.integration.jei;
 
+import net.arkadiyhimself.fantazia.common.registries.FTZRecipeTypes;
 import net.arkadiyhimself.fantazia.data.recipe.AmplificationRecipe;
 import net.arkadiyhimself.fantazia.data.recipe.EnchantmentReplaceRecipe;
 import net.arkadiyhimself.fantazia.data.recipe.RuneCarvingRecipe;
-import net.arkadiyhimself.fantazia.common.registries.FTZRecipeTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -34,4 +34,5 @@ public class FantazicRecipes {
     public List<RecipeHolder<EnchantmentReplaceRecipe>> getEnchantmentReplaceRecipes() {
         return recipeManager.getAllRecipesFor(FTZRecipeTypes.ENCHANTMENT_REPLACE.get());
     }
+
 }

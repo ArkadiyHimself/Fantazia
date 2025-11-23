@@ -1,13 +1,13 @@
 package net.arkadiyhimself.fantazia.data.datagen.patchouli.categories;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.data.datagen.loot_modifier.TheWorldlinessEntryHelper;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.Categories;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntry;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoEntryHolder;
 import net.arkadiyhimself.fantazia.data.datagen.patchouli.PseudoPage;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -51,13 +51,13 @@ public class WeaponCategoryEntries implements SubProvider<PseudoEntryHolder> {
     }
 
     private void weaponType(String entry, Item icon, String heading) {
-        String name = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + Categories.WEAPONS.getPath() + "." + entry + ".name";
+        String name = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + Categories.WEAPONS.getPath() + "." + entry + ".ident";
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(icon);
         ResourceLocation advancement = Fantazia.location(TheWorldlinessEntryHelper.THE_WORLDLINESS + "/" + Categories.WEAPONS.getPath() + "/" + entry);
 
         String basicText = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + Categories.WEAPONS.getPath() + "." + entry + ".";
 
-        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicText + "name").icon(itemId).advancement(advancement).category(Categories.WEAPONS);
+        PseudoEntry.Builder builder = PseudoEntry.builder().name(basicText + "ident").icon(itemId).advancement(advancement).category(Categories.WEAPONS);
 
 
         builder.addPseudoPage(PseudoPage.builder().type(TheWorldlinessEntryHelper.TEXT).text(basicText + "page." + 1).build());

@@ -9,6 +9,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardCategories;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -67,6 +68,11 @@ public record WisdomConsumingRewardCategory(
     @Override
     public void draw(@NotNull RewardPair recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY) {
         IWisdomRewardCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
+    }
+
+    @Override
+    public ResourceLocation category() {
+        return WisdomRewardCategories.CONSUMED;
     }
 
     @Override

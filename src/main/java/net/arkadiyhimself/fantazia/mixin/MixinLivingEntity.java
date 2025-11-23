@@ -1,22 +1,20 @@
 package net.arkadiyhimself.fantazia.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import net.arkadiyhimself.fantazia.common.FantazicHooks;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.Cleanse;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
 import net.arkadiyhimself.fantazia.common.advanced.rune.RuneHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.common.FantazicHooks;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
-import net.arkadiyhimself.fantazia.common.registries.FTZDamageTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
 import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.data.tags.FTZMobEffectTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
@@ -32,11 +30,9 @@ import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.EffectCure;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,14 +46,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
 
     @Shadow public abstract void remove(@NotNull RemovalReason reason);
 
-    @Shadow @javax.annotation.Nullable public abstract MobEffectInstance getEffect(Holder<MobEffect> effect);
+    @Shadow @Nullable public abstract MobEffectInstance getEffect(Holder<MobEffect> effect);
 
     @Unique
     private @Nullable DamageSource fantazia$hurtSource = null;
@@ -77,7 +71,7 @@ public abstract class MixinLivingEntity extends Entity {
         if (source == null) return;
         if (!source.is(FTZDamageTypeTags.PIERCES_BARRIER)) for (MobEffectInstance mobEffectInstance : fantazia$entity.getActiveEffects()) if (mobEffectInstance.getEffect().is(FTZMobEffectTags.BARRIER)) ci.cancel();
         if (source.is(FTZDamageTypeTags.NO_HURT_SOUND)) ci.cancel();
-        if (source.is(FTZDamageTypes.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) fantazia$entity.level().playSound(null, fantazia$entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
+        if (source.is(FTZDamageTypeTags.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) fantazia$entity.level().playSound(null, fantazia$entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;makeSound(Lnet/minecraft/sounds/SoundEvent;)V"), method = "hurt")
@@ -113,7 +107,7 @@ public abstract class MixinLivingEntity extends Entity {
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/WalkAnimationState;setSpeed(F)V", args = {"damagesource"}), method = "handleDamageEvent")
     private void walkAnimation(WalkAnimationState instance, float speed, @Local(argsOnly = true) DamageSource damageSourceLocalRef) {
-        if (!damageSourceLocalRef.is(FTZDamageTypes.REMOVAL)) instance.setSpeed(speed);
+        if (!damageSourceLocalRef.is(FTZDamageTypeTags.NO_COOLDOWN)) instance.setSpeed(speed);
     }
 
     @Inject(at = @At("RETURN"), method = "getCurrentSwingDuration", cancellable = true)

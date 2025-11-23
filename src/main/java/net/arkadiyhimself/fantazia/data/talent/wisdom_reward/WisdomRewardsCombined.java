@@ -8,7 +8,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.compress.utils.Lists;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -17,6 +19,14 @@ public record WisdomRewardsCombined(ResourceLocation category, Map<ResourceLocat
     public WisdomRewardInstance getReward(ResourceLocation id) {
         if (!rewardMap.containsKey(id)) rewardMap.put(id, new WisdomRewardInstance(defaultReward));
         return rewardMap.get(id);
+    }
+
+    public List<ResourceLocation> getObtainedRewards() {
+        List<ResourceLocation> obtained = Lists.newArrayList();
+        for (Map.Entry<ResourceLocation, WisdomRewardInstance> entry : rewardMap.entrySet()) {
+            if (entry.getValue().isAwarded()) obtained.add(entry.getKey());
+        }
+        return obtained;
     }
 
     public CompoundTag serialize() {

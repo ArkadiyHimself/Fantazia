@@ -27,6 +27,7 @@ public class FTZParticleTypes {
     public static final RandomList<ParticleType<EntityChasingParticleOption<?>>> DOOMED_SOULS = RandomList.emptyRandomList();
     public static final RandomList<SimpleParticleType> PIECES = RandomList.emptyRandomList();
     public static final RandomList<SimpleParticleType> PIECES_FURY = RandomList.emptyRandomList();
+    public static final RandomList<SimpleParticleType> METAL_SCRAP = RandomList.emptyRandomList();
     
     private static final DeferredRegister<ParticleType<?>> REGISTER = DeferredRegister.create(Registries.PARTICLE_TYPE, Fantazia.MODID);
     
@@ -41,46 +42,40 @@ public class FTZParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BLOOD3 = registerAndList("blood3", () -> new SimpleParticleType(true), BLOOD); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BLOOD4 = registerAndList("blood4", () -> new SimpleParticleType(true), BLOOD); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BLOOD5 = registerAndList("blood5", () -> new SimpleParticleType(true), BLOOD); // finished and implemented
-
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FALLEN_SOUL = REGISTER.register("fallen_soul", () -> new SimpleParticleType(true)); // finished and implemented
-
     public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> DOOMED_SOUL1 = registerAndList("doomed_soul1", () -> FTZParticleTypes.particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), DOOMED_SOULS); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> DOOMED_SOUL2 = registerAndList("doomed_soul2", () -> FTZParticleTypes.particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), DOOMED_SOULS); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> DOOMED_SOUL3 = registerAndList("doomed_soul3", () -> FTZParticleTypes.particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), DOOMED_SOULS); // finished and implemented
-
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE1 = registerAndList("barrier_piece1", () -> new SimpleParticleType(true), PIECES); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE2 = registerAndList("barrier_piece2", () -> new SimpleParticleType(true), PIECES); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE3 = registerAndList("barrier_piece3", () -> new SimpleParticleType(true), PIECES); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE4 = registerAndList("barrier_piece4", () -> new SimpleParticleType(true), PIECES); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE5 = registerAndList("barrier_piece5", () -> new SimpleParticleType(true), PIECES); // finished and implemented
-
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE1_FURY = registerAndList("barrier_piece1_fury", () -> new SimpleParticleType(true), PIECES_FURY); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE2_FURY = registerAndList("barrier_piece2_fury", () -> new SimpleParticleType(true), PIECES_FURY); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE3_FURY = registerAndList("barrier_piece3_fury", () -> new SimpleParticleType(true), PIECES_FURY); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE4_FURY = registerAndList("barrier_piece4_fury", () -> new SimpleParticleType(true), PIECES_FURY); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BARRIER_PIECE5_FURY = registerAndList("barrier_piece5_fury", () -> new SimpleParticleType(true), PIECES_FURY); // finished and implemented
-
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIFESTEAL1 = REGISTER.register("lifesteal1", () -> new SimpleParticleType(true)); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIFESTEAL2 = REGISTER.register("lifesteal2", () -> new SimpleParticleType(true)); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIFESTEAL3 = REGISTER.register("lifesteal3", () -> new SimpleParticleType(true)); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIFESTEAL4 = REGISTER.register("lifesteal4", () -> new SimpleParticleType(true)); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> LIFESTEAL5 = REGISTER.register("lifesteal5", () -> new SimpleParticleType(true)); // finished and implemented
-
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> REGEN1 = REGISTER.register("regen1", () -> new SimpleParticleType(true)); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> REGEN2 = REGISTER.register("regen2", () -> new SimpleParticleType(true)); // finished and implemented
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> REGEN3 = REGISTER.register("regen3", () -> new SimpleParticleType(true)); // finished and implemented
-
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TIME_TRAVEL = REGISTER.register("time_travel", () -> new SimpleParticleType(true));
-
-    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO1 = registerAndList("electro1", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO);
-    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO2 = registerAndList("electro2", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO);
-    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO3 = registerAndList("electro3", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO);
-    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO4 = registerAndList("electro4", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO);
-    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO5 = registerAndList("electro5", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO);
-
-    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> WITHER = REGISTER.register("wither", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec));
-
-    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CHAINED = REGISTER.register("chained", () -> new SimpleParticleType(true));
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TIME_TRAVEL = REGISTER.register("time_travel", () -> new SimpleParticleType(true)); // finished and implemented
+    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO1 = registerAndList("electro1", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO); // finished and implemented
+    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO2 = registerAndList("electro2", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO); // finished and implemented
+    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO3 = registerAndList("electro3", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO); // finished and implemented
+    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO4 = registerAndList("electro4", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO); // finished and implemented
+    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> ELECTRO5 = registerAndList("electro5", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec), ELECTRO); // finished and implemented
+    public static final DeferredHolder<ParticleType<?>, ParticleType<EntityChasingParticleOption<?>>> WITHER = REGISTER.register("wither", () -> particleTypeCodec(EntityChasingParticleOption::basicCodec, EntityChasingParticleOption::basicStreamCodec)); // finished and implemented
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CHAINED = REGISTER.register("chained", () -> new SimpleParticleType(true)); // finished and implemented
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> METAL_SCRAP1 = registerAndList("metal_scrap1", () -> new SimpleParticleType(true), METAL_SCRAP);
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> METAL_SCRAP2 = registerAndList("metal_scrap2", () -> new SimpleParticleType(true), METAL_SCRAP);
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> METAL_SCRAP3 = registerAndList("metal_scrap3", () -> new SimpleParticleType(true), METAL_SCRAP);
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> METAL_SCRAP4 = registerAndList("metal_scrap4", () -> new SimpleParticleType(true), METAL_SCRAP);
 
     private static <T extends ParticleOptions> ParticleType<T> particleTypeCodec(final Function<ParticleType<T>, MapCodec<T>> codecGetter, final Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodecGetter) {
         return new ParticleType<>(true) {

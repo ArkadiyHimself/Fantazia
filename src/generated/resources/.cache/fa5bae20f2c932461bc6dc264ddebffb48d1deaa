@@ -1,9 +1,0 @@
-// 1.21.1	2025-05-17T23:54:00.612003	Tags for fantazia:healing_type mod id fantazia
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/fantazia/tags/fantazia/healing_type/bypasses_invulnerability.json
-e74262e3fd4bda63ff88b09f0df85a9c977d9344 data/fantazia/tags/fantazia/healing_type/consensual.json
-52cc152eecb152974224891cb0d646ecce39ac6a data/fantazia/tags/fantazia/healing_type/mob_effect.json
-35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/fantazia/tags/fantazia/healing_type/not_cancellable.json
-2407dc5de297338aaabad4e61d343ca0d5d47b6d data/fantazia/tags/fantazia/healing_type/regen.json
-47176e4d3568fb53e76a73ad6bb5ba92915bcfd8 data/fantazia/tags/fantazia/healing_type/scales_from_saturation.json
-bf262ae1a02cbc4ec7ba65c27a3bc6c9daf2aa7c data/fantazia/tags/fantazia/healing_type/self.json
-84c7ac348983ecc29a30b004c8d30ee8fc44d072 data/fantazia/tags/fantazia/healing_type/unholy.json

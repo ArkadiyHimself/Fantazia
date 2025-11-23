@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/leaves",
-  "textures": {
-    "all": "fantazia:block/obscure_leaves"
-  }
-}

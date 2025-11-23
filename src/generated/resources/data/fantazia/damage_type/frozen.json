@@ -1,6 +1,0 @@
-{
-  "effects": "freezing",
-  "exhaustion": 0.25,
-  "message_id": "frozen",
-  "scaling": "never"
-}

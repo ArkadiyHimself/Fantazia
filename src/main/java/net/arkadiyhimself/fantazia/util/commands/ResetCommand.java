@@ -70,6 +70,11 @@ public class ResetCommand {
                         player.setExperiencePoints(0);
                     }
                     return 1;
+                }))
+                .then(Commands.literal("capacities").executes(context -> {
+                    if (context.getSource().getPlayer() instanceof ServerPlayer player)
+                        PlayerAbilityHelper.acceptConsumer(player, ToolUtilisationHolder.class, ToolUtilisationHolder::reset);
+                    return 1;
                 })));
     }
 }

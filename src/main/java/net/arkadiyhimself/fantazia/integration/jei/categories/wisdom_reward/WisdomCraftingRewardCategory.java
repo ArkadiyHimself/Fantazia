@@ -8,6 +8,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardCategories;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -64,6 +65,11 @@ public record WisdomCraftingRewardCategory(
         if (!BuiltInRegistries.ITEM.containsKey(itemId)) return;
 
         builder.addSlot(RecipeIngredientRole.INPUT, 37, 6).addItemStack(new ItemStack(item));
+    }
+
+    @Override
+    public ResourceLocation category() {
+        return WisdomRewardCategories.CRAFTED;
     }
 
     @Override

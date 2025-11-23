@@ -4,23 +4,15 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
-import net.arkadiyhimself.fantazia.integration.jei.JEIRecipeTypes;
 import net.arkadiyhimself.fantazia.common.item.RuneWielderItem;
-import net.arkadiyhimself.fantazia.data.recipe.RuneCarvingRecipe;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.arkadiyhimself.fantazia.data.recipe.RuneCarvingRecipe;
+import net.arkadiyhimself.fantazia.integration.jei.JEIRecipeTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +26,7 @@ import java.util.List;
 public record RuneCarvingCategory(
         IDrawable background,
         IDrawable icon
-) implements IRecipeCategory<RecipeHolder<RuneCarvingRecipe>> {
+) implements IAmplificationBenchCategory<RuneCarvingRecipe> {
 
     public static RuneCarvingCategory create(IGuiHelper helper) {
         ResourceLocation backgroundImage = Fantazia.location("textures/gui/jei/amplification_bench.png");
@@ -78,21 +70,4 @@ public record RuneCarvingCategory(
         }
         RecipeHelper.setIngredients(inputSlots, recipe.value().getIngredients(), 3, 3);
     }
-
-    @Override
-    public void draw(@NotNull RecipeHolder<RuneCarvingRecipe> recipe, @NotNull IRecipeSlotsView recipeSlotsView, @NotNull GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        int x0 = 90;
-        int y0 = 5;
-        guiGraphics.blit(TalentScreen.WISDOM_ICON, x0, y0, 0,0,10,10,10,10);
-        Font font = Minecraft.getInstance().font;
-        String str = String.valueOf(recipe.value().wisdom());
-        Component component = Component.literal(str).withStyle(ChatFormatting.BLUE);
-        guiGraphics.drawString(font, component, 101, 7, 0);
-        int wdt = font.width(component);
-        int windowWidth = 11 + wdt;
-        if (FantazicMath.within(x0, x0 + windowWidth, mouseX) && FantazicMath.within(y0, y0 + 10, mouseY))
-            guiGraphics.renderTooltip(font, Component.translatable("fantazia.jei.required_wisdom").withStyle(ChatFormatting.BLUE), (int) mouseX, (int) mouseY);
-    }
-
-
 }

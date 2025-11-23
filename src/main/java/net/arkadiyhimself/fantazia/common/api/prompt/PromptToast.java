@@ -20,7 +20,7 @@ public record PromptToast(Prompt prompt) implements Toast {
     private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
 
     @Override
-    public @NotNull Object getToken() {
+    public @NotNull Prompt getToken() {
         return prompt;
     }
 

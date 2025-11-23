@@ -2,8 +2,9 @@ package net.arkadiyhimself.fantazia.common.item.weapons.Melee;
 
 import com.google.common.collect.Lists;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.common.api.data_component.HiddenPotentialComponent;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
+import net.arkadiyhimself.fantazia.client.gui.TextComponents;
+import net.arkadiyhimself.fantazia.common.api.data_component.HiddenPotentialComponent;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -51,6 +52,8 @@ public class FragileBladeItem extends MeleeWeaponItem {
 
             components.add(Component.literal(" "));
             components.add(GuiHelper.bakeComponent(basicPath + ".current_damage", noShift, hiddenPotentialComponent.getFormatting(), hiddenPotentialComponent.getDamage() + this.getDamage() + 1));
+            components.add(Component.literal(" "));
+            components.add(TextComponents.HOLD_SHIFT_TO_SEE_MORE_COMPONENT);
             return components;
         }
 

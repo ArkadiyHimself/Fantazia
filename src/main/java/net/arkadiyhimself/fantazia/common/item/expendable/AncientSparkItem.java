@@ -18,18 +18,18 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class AncientSparkItem extends ExpendableItem {
+
     public AncientSparkItem() {
         super(Rarity.UNCOMMON);
     }
+
     @Override
     public @NotNull InteractionResult useOn(UseOnContext pContext) {
         Level level = pContext.getLevel();
         BlockPos blockpos = pContext.getClickedPos();
         BlockPos actual = blockpos.relative(pContext.getClickedFace());
-        BlockState blockstate = level.getBlockState(blockpos);
         boolean flag = false;
-        if (!CampfireBlock.canLight(blockstate) && !CandleBlock.canLight(blockstate) && !CandleCakeBlock.canLight(blockstate) && AncientFlameBlock.canBePlacedAt(level, actual, pContext.getClickedFace())) {
-
+        if (AncientFlameBlock.canBePlacedAt(level, actual)) {
             this.playSound(level, actual);
 
             level.setBlockAndUpdate(actual, FTZBlocks.ANCIENT_FLAME.get().getStateForPlacement(level, actual));
@@ -42,8 +42,9 @@ public class AncientSparkItem extends ExpendableItem {
             return InteractionResult.sidedSuccess(level.isClientSide);
         } else return InteractionResult.FAIL;
     }
+
     private void playSound(Level pLevel, BlockPos pPos) {
         RandomSource randomsource = pLevel.getRandom();
-        pLevel.playSound(null, pPos, FTZSoundEvents.ANCIENT_SPARK.get(), SoundSource.BLOCKS, 0.5F, (randomsource.nextFloat() - randomsource.nextFloat()) * 0.2F + 1.0F);
+        pLevel.playSound(null, pPos, FTZSoundEvents.ANCIENT_SPARK_COMBUST.get(), SoundSource.BLOCKS, 0.5F, (randomsource.nextFloat() - randomsource.nextFloat()) * 0.2F + 1.0F);
     }
 }

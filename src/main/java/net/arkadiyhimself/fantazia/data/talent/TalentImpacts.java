@@ -3,10 +3,7 @@ package net.arkadiyhimself.fantazia.data.talent;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DoubleJumpHolder;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.EuphoriaHolder;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.MeleeBlockHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.minecraft.resources.ResourceLocation;
 
@@ -28,6 +25,8 @@ public class TalentImpacts {
     public static final TalentImpact WALL_CLIMBING_UNLOCKED;
     public static final TalentImpact WALL_CLIMBING_COBWEB;
     public static final TalentImpact WALL_CLIMBING_POISON;
+    public static final TalentImpact UPGRADE_TOOL_CAPACITY;
+    public static final TalentImpact UPGRADE_TOOL_DAMAGE;
 
     public static TalentImpact register(TalentImpact.Builder builder) {
         TalentImpact impact = builder.build();
@@ -101,5 +100,14 @@ public class TalentImpacts {
                 .apply(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_POISON, true))
                 .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_POISON, false))
                 .defaultDisabling());
+
+        UPGRADE_TOOL_CAPACITY = register(TalentImpact.builder(Fantazia.location("upgrade_tool_capacity"))
+                .apply(player -> PlayerAbilityHelper.acceptConsumer(player, ToolUtilisationHolder.class, ToolUtilisationHolder::upgradeCapacity))
+                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, ToolUtilisationHolder.class, ToolUtilisationHolder::downgradeCapacity)));
+
+        UPGRADE_TOOL_DAMAGE = register(TalentImpact.builder(Fantazia.location("upgrade_tool_damage"))
+                .apply(player -> PlayerAbilityHelper.acceptConsumer(player, ToolUtilisationHolder.class, ToolUtilisationHolder::upgradeDamage))
+                .remove(player -> PlayerAbilityHelper.acceptConsumer(player, ToolUtilisationHolder.class, ToolUtilisationHolder::downgradeDamage)));
+
     }
 }

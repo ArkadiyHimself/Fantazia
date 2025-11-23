@@ -18,4 +18,5 @@ public class TalentHierarchies {
     public static final ResourceLocation EVASION_BOOST = Fantazia.location("stat_modifiers/evasion_boost");
     public static final ResourceLocation HEALTH_BOOST = Fantazia.location("stat_modifiers/health_boost");
     public static final ResourceLocation MANA_BOOST = Fantazia.location("stat_modifiers/mana_boost");
+    public static final ResourceLocation CAPACITY_UPGRADE = Fantazia.location("stat_modifiers/capacity_upgrade");
 }

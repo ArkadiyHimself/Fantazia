@@ -1,11 +1,11 @@
 package net.arkadiyhimself.fantazia.common.advanced.healing;
 
-import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
-import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
-import net.arkadiyhimself.fantazia.common.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.FantazicHooks;
+import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
+import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
+import net.arkadiyhimself.fantazia.common.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
@@ -24,6 +24,7 @@ public class AdvancedHealing {
     private AdvancedHealing() {}
 
     public static boolean tryHeal(LivingEntity entity, HealingSource source, float amount) {
+        if (entity.isDeadOrDying()) return false;
         float j = FantazicHooks.ForgeExtension.onAdvancedHealing(entity, source, amount);
         if (!canHeal(entity, source)) return false;
         if (AuraHelper.affected(entity, Auras.DESPAIR.get()) && !source.is(FTZHealingTypeTags.UNHOLY)) j *= 0.5f;

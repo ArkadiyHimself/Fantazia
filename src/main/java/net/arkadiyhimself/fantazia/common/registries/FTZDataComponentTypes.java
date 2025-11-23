@@ -2,6 +2,7 @@ package net.arkadiyhimself.fantazia.common.registries;
 
 import com.mojang.serialization.Codec;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.advanced.blueprint.Blueprint;
 import net.arkadiyhimself.fantazia.common.advanced.rune.Rune;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.common.api.data_component.HiddenPotentialComponent;
@@ -26,7 +27,7 @@ public class FTZDataComponentTypes {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> JEI_AMPLIFIED_ENCHANTMENT;
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<WisdomTransferComponent>> WISDOM_TRANSFER;
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DISINTEGRATE;
-
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Holder<Blueprint>>> BLUEPRINT;
 
     public static void register(IEventBus iEventBus) {
         REGISTER.register(iEventBus);
@@ -43,6 +44,6 @@ public class FTZDataComponentTypes {
         JEI_AMPLIFIED_ENCHANTMENT = register("jei_amplified_enchantment", Codec.INT, ByteBufCodecs.INT);
         WISDOM_TRANSFER = register("wisdom_transfer", WisdomTransferComponent.CODEC, WisdomTransferComponent.STREAM_CODEC);
         DISINTEGRATE = register("disintegrate", Codec.BOOL, ByteBufCodecs.BOOL);
-
+        BLUEPRINT = register("blueprint", FantazicRegistries.BLUEPRINTS.holderByNameCodec(), ByteBufCodecs.holderRegistry(FantazicRegistries.Keys.BLUEPRINT));
     }
 }

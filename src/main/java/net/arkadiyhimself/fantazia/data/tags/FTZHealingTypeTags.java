@@ -6,6 +6,7 @@ import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries
 import net.minecraft.tags.TagKey;
 
 public interface FTZHealingTypeTags {
+
     TagKey<HealingType> REGEN = create("regen");
     TagKey<HealingType> MOB_EFFECT = create("mob_effect");
     TagKey<HealingType> BYPASSES_INVULNERABILITY = create("bypasses_invulnerability");

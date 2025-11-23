@@ -1,11 +1,11 @@
 package net.arkadiyhimself.fantazia.data.datagen.effect_spawn_applier;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.data.spawn_effect.CombinedSpawnEffects;
-import net.arkadiyhimself.fantazia.data.spawn_effect.EffectSpawnApplier;
-import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
+import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
+import net.arkadiyhimself.fantazia.data.spawn_effect.CombinedSpawnEffects;
+import net.arkadiyhimself.fantazia.data.spawn_effect.EffectSpawnApplier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

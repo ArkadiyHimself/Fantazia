@@ -22,13 +22,13 @@ public class FantazicHealingTypeTagsProvider extends TagsProvider<HealingType> {
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
-        tag(FTZHealingTypeTags.BYPASSES_INVULNERABILITY).add();
+        tag(FTZHealingTypeTags.BYPASSES_INVULNERABILITY).add(HealingTypes.COMB);
         tag(FTZHealingTypeTags.CONSENSUAL).add(HealingTypes.REGEN_AURA);
         tag(FTZHealingTypeTags.MOB_EFFECT).add(HealingTypes.MOB_EFFECT, HealingTypes.MOB_EFFECT_REGEN);
-        tag(FTZHealingTypeTags.NOT_CANCELLABLE).add();
+        tag(FTZHealingTypeTags.NOT_CANCELLABLE).add(HealingTypes.COMB);
         tag(FTZHealingTypeTags.REGEN).add(HealingTypes.REGEN_AURA, HealingTypes.NATURAL_REGEN, HealingTypes.MOB_EFFECT_REGEN);
         tag(FTZHealingTypeTags.SCALES_FROM_SATURATION).add(HealingTypes.NATURAL_REGEN);
-        tag(FTZHealingTypeTags.SELF).add(HealingTypes.NATURAL_REGEN, HealingTypes.MOB_EFFECT_REGEN, HealingTypes.GENERIC);
+        tag(FTZHealingTypeTags.SELF).add(HealingTypes.NATURAL_REGEN, HealingTypes.MOB_EFFECT_REGEN, HealingTypes.GENERIC, HealingTypes.COMB);
         tag(FTZHealingTypeTags.UNHOLY).add(HealingTypes.DEVOUR, HealingTypes.LIFESTEAL);
     }
 }

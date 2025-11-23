@@ -2,9 +2,9 @@ package net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.
 
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;

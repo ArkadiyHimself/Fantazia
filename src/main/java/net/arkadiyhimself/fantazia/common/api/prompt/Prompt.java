@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.common.api.prompt;
 
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZGameRules;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;

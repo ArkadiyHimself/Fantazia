@@ -1,6 +1,8 @@
 package net.arkadiyhimself.fantazia.common.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.CurrentAndInitialValue;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
@@ -8,26 +10,18 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.h
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.StaminaHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSourcesHolder;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.mob_effect.BarrierMobEffect;
 import net.arkadiyhimself.fantazia.common.mob_effect.DisarmMobEffect;
 import net.arkadiyhimself.fantazia.common.mob_effect.SimpleMobEffect;
 import net.arkadiyhimself.fantazia.networking.IPacket;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -35,9 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 
 public class FTZMobEffects {
@@ -53,16 +45,16 @@ public class FTZMobEffects {
 
     private static final BiConsumer<LivingEntity, Integer> furyTick = (livingEntity, integer) -> {
         if (livingEntity != Minecraft.getInstance().player) return;
-        int value = livingEntity.tickCount % 21;
+        int value = livingEntity.tickCount % 18;
         float volume = 1f;
         CurrentAndInitialValue holder = LivingEffectHelper.getDurationHolder(livingEntity, FTZMobEffects.FURY.value());
         if (holder != null) {
             int dur = holder.value();
-            volume = dur == -1 ? 1f : Math.min(dur, 20f) / 20;
+            volume = dur == -1 ? 1f : (float) Math.min(dur, 20) / 20;
         }
 
-        if (value == 0) Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(FTZSoundEvents.HEART_BEAT1.value(),1f, volume));
-        else if (value == 10) Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(FTZSoundEvents.HEART_BEAT2.value(),1f, volume));
+        if (value == 0) FantazicUtil.playSoundUI(FTZSoundEvents.HEART_BEAT1.value(),1f, volume * 0.85f);
+        else if (value == 9) FantazicUtil.playSoundUI(FTZSoundEvents.HEART_BEAT2.value(),1f, volume * 0.85f);
     };
 
     private static final BiConsumer<LivingEntity, Integer> mightTick = (livingEntity, integer) -> {
@@ -91,13 +83,9 @@ public class FTZMobEffects {
         if ((livingEntity.tickCount % 3) == 0 && !livingEntity.level().isClientSide()) VisualHelper.entityChasingParticle(livingEntity, FTZParticleTypes.ELECTRO.random(), (int) Math.min(integer * 1.5 + 3, 3), 0.65f);
     };
 
-    private static final BiConsumer<LivingEntity, Integer> puppeteeredTick = (livingEntity, integer) -> {
-        VisualHelper.particleOnEntityServer(livingEntity, ParticleTypes.SMOKE, ParticleMovement.FALL, 3);
-    };
+    private static final BiConsumer<LivingEntity, Integer> puppeteeredTick = (livingEntity, integer) -> VisualHelper.particleOnEntityServer(livingEntity, ParticleTypes.SMOKE, ParticleMovement.FALL, 3);
 
-    private static final BiConsumer<LivingEntity, Integer> chainedTick = (livingEntity, integer) -> {
-        VisualHelper.particleOnEntityServer(livingEntity, FTZParticleTypes.CHAINED.get(), ParticleMovement.REGULAR, 2);
-    };
+    private static final BiConsumer<LivingEntity, Integer> chainedTick = (livingEntity, integer) -> VisualHelper.particleOnEntityServer(livingEntity, FTZParticleTypes.CHAINED.get(), ParticleMovement.REGULAR, 2);
 
     public static final DeferredHolder<MobEffect, SimpleMobEffect> ABSOLUTE_BARRIER = REGISTER.register("absolute_barrier", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 7995643,true).addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, Fantazia.location("effect.absolute_barrier"), 0.5, AttributeModifier.Operation.ADD_VALUE)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> ACE_IN_THE_HOLE = REGISTER.register("ace_in_the_hole", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 16057348, true, false));
@@ -131,49 +119,4 @@ public class FTZMobEffects {
         REGISTER.register(eventBus);
     }
 
-    public static class Application {
-        private Application() {}
-
-        public static boolean isApplicable(EntityType<?> entityType, Holder<MobEffect> mobEffect) {
-            return isAffected(entityType, mobEffect) && !isImmune(entityType, mobEffect);
-        }
-
-        public static boolean isAffected(EntityType<?> entityType, Holder<MobEffect> mobEffect) {
-            if (!hasWhiteList(mobEffect)) return true;
-            return entityType.is(getWhiteList(mobEffect));
-        }
-
-        public static boolean isImmune(EntityType<?> entityType, Holder<MobEffect> mobEffect) {
-            if (!hasBlackList(mobEffect)) return false;
-            return entityType.is(getBlackList(mobEffect));
-        }
-
-        @NotNull
-        public static TagKey<EntityType<?>> getWhiteList(Holder<MobEffect> mobEffect) {
-            ResourceLocation resLoc = BuiltInRegistries.MOB_EFFECT.getKey(mobEffect.value());
-            if (resLoc == null) return create("empty");
-            return create("affected/" + resLoc.getNamespace() + "/" + resLoc.getPath());
-        }
-
-        @NotNull
-        public static TagKey<EntityType<?>> getBlackList(Holder<MobEffect> mobEffect) {
-            ResourceLocation resLoc = BuiltInRegistries.MOB_EFFECT.getKey(mobEffect.value());
-            if (resLoc == null) return create("empty");
-            return create("immune/" + resLoc.getNamespace() + "/" + resLoc.getPath());
-        }
-
-        private static boolean hasWhiteList(Holder<MobEffect> mobEffect) {
-            Optional<HolderSet.Named<EntityType<?>>> iTagManager = BuiltInRegistries.ENTITY_TYPE.getTag(getWhiteList(mobEffect));
-            return iTagManager.isPresent() && !iTagManager.get().stream().toList().isEmpty();
-        }
-
-        private static boolean hasBlackList(Holder<MobEffect> mobEffect) {
-            Optional<HolderSet.Named<EntityType<?>>> iTagManager = BuiltInRegistries.ENTITY_TYPE.getTag(getBlackList(mobEffect));
-            return iTagManager.isPresent() && !iTagManager.get().stream().toList().isEmpty();
-        }
-
-        private static TagKey<EntityType<?>> create(String pName) {
-            return TagKey.create(Registries.ENTITY_TYPE, Fantazia.location(pName));
-        }
-    }
 }

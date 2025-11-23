@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.data.recipes;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.data.recipe.AmplificationRecipe;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
+import net.arkadiyhimself.fantazia.data.recipe.AmplificationRecipe;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;

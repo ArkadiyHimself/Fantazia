@@ -4,11 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.client.gui.RenderBuffers;
-import net.arkadiyhimself.fantazia.data.talent.Talent;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.data.datagen.talent_reload.talent_tab.TalentTabBuilderHolder;
+import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChainHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.ChaoticHierarchy;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
@@ -20,6 +20,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.compress.utils.Lists;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -35,14 +36,24 @@ public class TalentTab {
     private final ResourceLocation background;
     private final List<IHierarchy<Talent>> HIERARCHIES = Lists.newArrayList();
     private final ResourceLocation icon;
-    private final String title;
+    private final String ident;
+    private final ChatFormatting[] title;
+    private final ChatFormatting[] desc;
     private boolean redWisdomText = false;
     @Nullable
     private Talent selectedTalent = null;
 
-    public TalentTab(ResourceLocation icon, String title, ResourceLocation background) {
+    public TalentTab(
+            ResourceLocation icon,
+            String ident,
+            List<ChatFormatting> title,
+            List<ChatFormatting> desc,
+            ResourceLocation background
+    ) {
         this.icon = icon;
-        this.title = title;
+        this.ident = ident;
+        this.title = title.toArray(new ChatFormatting[]{});
+        this.desc = desc.toArray(new ChatFormatting[]{});
         this.background = background;
     }
 
@@ -62,7 +73,7 @@ public class TalentTab {
 
     public boolean isMouseOver(int cornerX, int cornerY, double pMouseX, double pMouseY, boolean selected, int index) {
         int i = cornerX + cornerOffsetX(index);
-        return FantazicMath.within(i, i + width, pMouseX) && FantazicMath.within(cornerY + cornerOffsetY(selected), cornerY, pMouseY);
+        return FantazicMath.isWithin(i, i + width, pMouseX) && FantazicMath.isWithin(cornerY + cornerOffsetY(selected), cornerY, pMouseY);
     }
 
     public void drawTab(int cornerX, int cornerY, GuiGraphics guiGraphics, boolean selected, int index) {
@@ -136,35 +147,35 @@ public class TalentTab {
             }
             X += 48;
         }
-        this.redWisdomText = selectedTalent != null && selectedTalent.purchasable() && !talentsHolder.hasTalent(selectedTalent) && !talentsHolder.enoughWisdom(selectedTalent);
+        this.redWisdomText = selectedTalent != null && selectedTalent.purchasable() && !talentsHolder.hasTalent(selectedTalent) && !talentsHolder.enoughWisdom(selectedTalent) && !talentsHolder.getPlayer().hasInfiniteMaterials();
         guiGraphics.disableScissor();
         tryRenderTalentTooltip(talentsHolder, guiGraphics, font, (int) mouseX, (int) mouseY);
     }
 
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, Font font) {
-        if (!Screen.hasShiftDown()) guiGraphics.renderTooltip(font, Component.translatable(title), mouseX, mouseY);
+        if (!Screen.hasShiftDown())
+            guiGraphics.renderTooltip(font, Component.translatable(ident).withStyle(title), mouseX, mouseY);
         else {
-            RenderBuffers.NO_TOOLTIP_GAP = true;
             int lines = 0;
             try {
-                String amo = Component.translatable(title + ".lines").getString();
+                String amo = Component.translatable(ident + ".lines").getString();
                 lines = Integer.parseInt(amo);
             } catch (NumberFormatException ignored) {}
             if (lines > 0) {
                 List<Component> components = Lists.newArrayList();
-                for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(title + "." + i, null, null));
-                guiGraphics.renderComponentTooltip(font, components, mouseX, mouseY);
+                for (int i = 1; i <= lines; i++) components.add(Component.translatable(ident + "." + i).withStyle(desc));
+                VisualHelper.renderTooltipNoHeading(guiGraphics, components, font, mouseX, mouseY);
             }
         }
         guiGraphics.flush();
     }
 
     private boolean mouseHoversTalent(int x0, int y0, double mouseX, double mouseY) {
-        return FantazicMath.within(x0, x0 + 24, mouseX) && FantazicMath.within(y0, y0 + 24, mouseY);
+        return FantazicMath.isWithin(x0, x0 + 24, mouseX) && FantazicMath.isWithin(y0, y0 + 24, mouseY);
     }
 
     private boolean mouseInsideBG(int x0, int y0, double mouseX, double mouseY) {
-        return FantazicMath.within(x0, x0 + TalentScreen.background, mouseX) && FantazicMath.within(y0, y0 + TalentScreen.background, mouseY);
+        return FantazicMath.isWithin(x0, x0 + TalentScreen.background, mouseX) && FantazicMath.isWithin(y0, y0 + TalentScreen.background, mouseY);
     }
 
     @Nullable
@@ -206,16 +217,30 @@ public class TalentTab {
         return redWisdomText;
     }
 
-    public record Builder(ResourceLocation icon, String title, Optional<ResourceLocation> background) {
+    public record Builder(
+            ResourceLocation icon,
+            String ident,
+            List<ChatFormatting> title,
+            List<ChatFormatting> desc,
+            Optional<ResourceLocation> background
+    ) {
 
         public static final Codec<Builder> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                    ResourceLocation.CODEC.fieldOf("icon").forGetter(Builder::icon),
-                    Codec.STRING.fieldOf("title").forGetter(Builder::title),
-                    ResourceLocation.CODEC.optionalFieldOf("background").forGetter(Builder::background)
+                ResourceLocation.CODEC.fieldOf("icon").forGetter(Builder::icon),
+                Codec.STRING.fieldOf("ident").forGetter(Builder::ident),
+                ChatFormatting.CODEC.listOf().fieldOf("title_formatting").forGetter(Builder::title),
+                ChatFormatting.CODEC.listOf().fieldOf("desc_formatting").forGetter(Builder::desc),
+                ResourceLocation.CODEC.optionalFieldOf("background").forGetter(Builder::background)
         ).apply(instance, Builder::new));
 
         public TalentTab build() {
-                return new TalentTab(icon, title, background.orElse(Fantazia.location("textures/gui/talent/background_default.png")));
+                return new TalentTab(
+                        icon,
+                        ident,
+                        title,
+                        desc,
+                        background.orElse(Fantazia.location("textures/gui/talent/background_default.png"))
+                );
         }
 
         public TalentTabBuilderHolder holder(ResourceLocation id) {

@@ -6,10 +6,12 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.IDamageEventList
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.ComplexLivingEffectHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.EuphoriaHolder;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.*;
+import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -17,7 +19,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -95,11 +96,12 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
 
     @Override
     public void onHit(LivingDamageEvent.Post event) {
+        if (!FantazicUtil.isAffected(getEntity(), FTZMobEffects.STUN)) return;
         if (FantazicCombat.blocksDamage(getEntity()) || event.getNewDamage() <= 0 || stunned() || !(getEntity().level() instanceof ServerLevel serverLevel)) return;
         DamageSource source = event.getSource();
         float amount = event.getNewDamage();
 
-        if (!source.is(FTZDamageTypes.REMOVAL) && !source.is(FTZDamageTypes.BLEEDING)) delay = Math.max(delay, 16);
+        if (!source.is(FTZDamageTypeTags.NO_DELAY_BEFORE_DECAYING_STUN_POINTS)) delay = Math.max(delay, 16);
 
         if (serverLevel.getGameRules().getBoolean(FTZGameRules.STUN_FROM_ATTACKS) && meleeHit(source, amount)) return;
 
@@ -130,8 +132,8 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
 
     // returns false if damage source was not a melee attack
     private boolean meleeHit(DamageSource source, float amount) {
-        boolean attack = source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.PLAYER_ATTACK);
-        boolean parry = source.is(FTZDamageTypes.PARRY);
+        boolean attack = source.is(FTZDamageTypeTags.MELEE_ATTACK_CAUSES_STUN);
+        boolean parry = source.is(FTZDamageTypeTags.PARRY_ATTACK_CAUSES_STUN);
 
         if (!attack && !parry) return false;
 

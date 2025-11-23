@@ -1,9 +1,0 @@
-{
-  "type": "fantazia:simple_nether_structure",
-  "biomes": "#fantazia:has_structure/blackstone_altar",
-  "size_to_check": 5,
-  "spawn_overrides": {},
-  "start_pool": "fantazia:blackstone_altar/start_pool",
-  "step": "surface_structures",
-  "terrain_adaptation": "beard_thin"
-}

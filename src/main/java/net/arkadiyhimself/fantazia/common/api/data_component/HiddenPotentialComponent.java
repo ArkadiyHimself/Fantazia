@@ -3,15 +3,17 @@ package net.arkadiyhimself.fantazia.common.api.data_component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import net.arkadiyhimself.fantazia.common.registries.FTZDamageTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 
 public record HiddenPotentialComponent(float damage, int delay) {
 
@@ -38,7 +40,7 @@ public record HiddenPotentialComponent(float damage, int delay) {
 
     public HiddenPotentialComponent tick() {
         int newDelay = delay - 1;
-        if (newDelay <= 0) return reset();
+        if (newDelay <= 0) return DEFAULT;
         else return new HiddenPotentialComponent(this.damage, newDelay);
     }
 
@@ -50,10 +52,6 @@ public record HiddenPotentialComponent(float damage, int delay) {
     }
     public static HiddenPotentialComponent deserialize(CompoundTag tag) {
         return new HiddenPotentialComponent(tag.getFloat("damage"), tag.getInt("delay"));
-    }
-
-    public HiddenPotentialComponent onHit(LivingDamageEvent.Post event) {
-        return event.getSource().is(FTZDamageTypes.REMOVAL) && event.getNewDamage() <= 0 ? this : reset();
     }
 
     public DAMAGE damageLevel() {
@@ -69,8 +67,8 @@ public record HiddenPotentialComponent(float damage, int delay) {
         return damage / MAX;
     }
 
-    public HiddenPotentialComponent onAttack(boolean parry, LivingEntity victim) {
-        int bonus = parry ? 2 : 1;
+    public HiddenPotentialComponent onAttack(boolean double_increase, LivingEntity victim) {
+        int bonus = double_increase ? 2 : 1;
         DAMAGE old = damageLevel();
 
         float newDMG = Math.min(damage + bonus, MAX);
@@ -104,7 +102,7 @@ public record HiddenPotentialComponent(float damage, int delay) {
         };
     }
 
-    public HiddenPotentialComponent reset() {
+    public static HiddenPotentialComponent reset() {
         return new HiddenPotentialComponent();
     }
 
@@ -139,5 +137,15 @@ public record HiddenPotentialComponent(float damage, int delay) {
     @Override
     public int hashCode() {
         return this.serialize().hashCode();
+    }
+
+    public static void playerTookDamage(ServerPlayer player) {
+        Inventory inventory = player.getInventory();
+        for (int i = 0; i <= inventory.getContainerSize(); i++) {
+            ItemStack stack = inventory.getItem(i);
+            if (stack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL))
+                stack.set(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialComponent.DEFAULT);
+
+        }
     }
 }

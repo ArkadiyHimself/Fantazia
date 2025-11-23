@@ -36,7 +36,7 @@ public class AmplificationBenchBlock extends BaseEntityBlock {
                 .mapColor(MapColor.COLOR_RED)
                 .instrument(NoteBlockInstrument.BASEDRUM)
                 .requiresCorrectToolForDrops()
-                .lightLevel(p_152692_ -> 3)
+                .lightLevel(blockState -> 3)
                 .strength(6.5F, 2400.0F));
     }
 

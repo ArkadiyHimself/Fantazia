@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.FantazicConfig;
 import net.arkadiyhimself.fantazia.client.ClientEvents;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraInstance;
@@ -15,10 +16,10 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.Li
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.data.item.rechargeable_tool.RechargeableToolData;
 import net.arkadiyhimself.fantazia.data.tags.FTZSpellTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
@@ -118,6 +119,9 @@ public class FantazicGui {
     private static final ResourceLocation EUPHORIA = Fantazia.location("hud/euphoria/icon");
     private static final ResourceLocation EUPHORIA_EMPTY = Fantazia.location("hud/euphoria/empty");
 
+    // rechargeable tool ingredients
+    private static final ResourceLocation INGREDIENT_SLOT = Fantazia.location("container/inventory/rechargeable_tool_ingredient_slot");
+
     public static boolean renderStunBar(GuiGraphics guiGraphics, int x, int y) {
         StunEffectHolder stunEffectHolder = LivingEffectHelper.takeHolder(Minecraft.getInstance().player, StunEffectHolder.class);
         if (stunEffectHolder == null || !stunEffectHolder.renderBar()) return false;
@@ -207,13 +211,12 @@ public class FantazicGui {
             boolean owned = instance.getOwner() == player;
 
             int y = topPos + i * 22;
-            ResourceLocation location = switch (aura.value().getType()) {
+            ResourceLocation location = owned ? AURA_OWNED_COMPONENT : switch (aura.value().getType()) {
                 case POSITIVE -> AURA_POSITIVE_COMPONENT;
                 case NEGATIVE -> AURA_NEGATIVE_COMPONENT;
                 case MIXED -> AURA_MIXED_COMPONENT;
             };
-            if (owned) location = AURA_OWNED_COMPONENT;
-            else if (!instance.primaryFilter(player)) location = AURA_UNAFFECTING_COMPONENT;
+            if (!instance.primaryFilter(player)) location = AURA_UNAFFECTING_COMPONENT;
 
             guiGraphics.blitSprite(location, x, y,80,20);
             ResourceLocation icon = Aura.getIcon(aura);
@@ -225,7 +228,8 @@ public class FantazicGui {
                 if (owned) name.withStyle(ChatFormatting.GOLD);
 
                 int length = font.width(name);
-                if (!aura.value().secondary(player, instance.getOwner()))
+                boolean conditions = owned ? aura.value().ownerCond(instance.getOwner()) : aura.value().secondary(player, instance.getOwner());
+                if (!conditions)
                     RenderSystem.setShaderColor(0.65f, 0.65f, 0.65f, 0.65f);
                 guiGraphics.blit(icon, x + 2, y + 2, 0, 0, 16, 16, 16, 16);
                 RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -238,14 +242,17 @@ public class FantazicGui {
             if (!aura.value().buildIconTooltip().isEmpty()) {
                 int mouseX = (int)(Minecraft.getInstance().mouseHandler.xpos() * (double)guiGraphics.guiWidth() / (double)Minecraft.getInstance().getWindow().getScreenWidth());
                 int mouseY = (int)(Minecraft.getInstance().mouseHandler.ypos() * (double)guiGraphics.guiHeight() / (double)Minecraft.getInstance().getWindow().getScreenHeight());
-                if (FantazicMath.within(x,x + 80, mouseX) && FantazicMath.within(y,y + 20, mouseY)) {
-                    RenderBuffers.NO_TOOLTIP_GAP = true;
+                if (FantazicMath.isWithin(x,x + 80, mouseX) && FantazicMath.isWithin(y,y + 20, mouseY)) {
+                    //RenderBuffers.NO_TOOLTIP_GAP = true;
                     List<Component> components = aura.value().buildIconTooltip();
                     if (Fantazia.DEVELOPER_MODE) {
                         components.add(Component.literal(" "));
                         components.add(Component.literal("Owner: ").append(instance.getOwner().getName()));
                     }
-                    guiGraphics.renderComponentTooltip(Minecraft.getInstance().font, components, mouseX, mouseY);
+                    guiGraphics.pose().pushPose();
+                    guiGraphics.pose().translate(0,0,200);
+                    VisualHelper.renderTooltipNoHeading(guiGraphics, components, font, mouseX, mouseY);
+
                 }
             }
 
@@ -263,28 +270,29 @@ public class FantazicGui {
         List<AuraInstance> auras = AuraHelper.getAurasForGui(player);
         if (auras.isEmpty()) return;
         for (int i = 0; i < Math.min(auras.size(), 6); i++) {
-            AuraInstance auraInstance = auras.get(i);
-            Holder<Aura> aura = auraInstance.getAura();
+            AuraInstance instance = auras.get(i);
+            Holder<Aura> aura = instance.getAura();
 
-            boolean owned = auraInstance.getOwner() == player;
+            boolean owned = instance.getOwner() == player;
 
             int x = 2 + i * 22;
             int y = 2;
-            ResourceLocation location = switch (aura.value().getType()) {
+            ResourceLocation location = owned ? AURA_OWNED : switch (aura.value().getType()) {
                 case POSITIVE -> AURA_POSITIVE;
                 case NEGATIVE -> AURA_NEGATIVE;
                 case MIXED -> AURA_MIXED;
             };
-            if (owned) location = AURA_OWNED;
-            else if (!auraInstance.primaryFilter(player)) location = AURA_UNAFFECTING;
+            if (!instance.primaryFilter(player)) location = AURA_UNAFFECTING;
 
             guiGraphics.blitSprite(location, x, y, 20,20);
             ResourceLocation icon = Aura.getIcon(aura);
-            if (!aura.value().secondary(player, auraInstance.getOwner())) RenderSystem.setShaderColor(0.65f,0.65f,0.65f,0.65f);
+
+            boolean conditions = owned ? aura.value().ownerCond(instance.getOwner()) : aura.value().secondary(player, instance.getOwner());
+            if (!conditions) RenderSystem.setShaderColor(0.65f,0.65f,0.65f,0.65f);
             guiGraphics.blit(icon, x + 2, y + 2, 0,0,16,16,16,16);
 
             RenderSystem.setShaderColor(1f,1f,1f,1f);
-            int ampl = auraInstance.getAmplifier();
+            int ampl = instance.getAmplifier();
             if (ampl <= 0) continue;
             Component amplifier = VisualHelper.componentLevel(ampl + 1);
             guiGraphics.drawString(Minecraft.getInstance().font, amplifier, x + 14, y + 2, 16777215);
@@ -504,7 +512,7 @@ public class FantazicGui {
                     guiGraphics.blitSprite(RECHARGE_BAR_FILLING, 6, 18, 6, 18, x + 22 + 5, y0 + 18, -4, -fill);
 
                     if (shift) {
-                        guiGraphics.drawString(font, Component.literal(GuiHelper.spellRecharge(recharge)).withStyle(ChatFormatting.BOLD), x + 30, y + j * 20 + 6, 16724787);
+                        guiGraphics.drawString(font, Component.literal(spellRecharge(recharge)).withStyle(ChatFormatting.BOLD), x + 30, y + j * 20 + 6, 16724787);
                     }
                 }
             }
@@ -526,11 +534,11 @@ public class FantazicGui {
                     poseStack.pushPose();
                     poseStack.translate(0,0,200);
                     if (!PlayerAbilityHelper.enoughMana(player, manaCost))
-                        guiGraphics.fill(x + 2, y0 + 2, x + 18, y0 + 18, lowManaColor);
+                        guiGraphics.fill(x + 2, y0 + 2 + 20 * num1, x + 18, y0 + 18 + 20 * num1, lowManaColor);
 
                     if (chained && spell.is(FTZSpellTags.IS_CHAINED)) {
-                        guiGraphics.fill(x + 2, y0 + 2, x + 18, y0 + 18, greyColor);
-                        guiGraphics.blitSprite(SPELLCASTER_CHAINED, x, y0, 20, 20);
+                        guiGraphics.fill(x + 2, y0 + 2 + 20 * num1, x + 18, y0 + 18 + 20 * num1, greyColor);
+                        guiGraphics.blitSprite(SPELLCASTER_CHAINED, x, y0 + 20 * num1, 20, 20);
                     }
 
                     poseStack.popPose();
@@ -542,9 +550,46 @@ public class FantazicGui {
                     guiGraphics.blitSprite(RECHARGE_BAR,x + 22,y0 + 1 + 20 * num1,6,18);
                     guiGraphics.blitSprite(RECHARGE_BAR_FILLING, 6, 18, 6, 18, x + 22 + 5, y + k * 20 + 18 + 20 * num1, -4, -fill);
 
-                    if (shift) guiGraphics.drawString(font, Component.literal(GuiHelper.spellRecharge(recharge)).withStyle(ChatFormatting.BOLD), x + 30, y + k * 20 + 6 + 20 * num1, 16724787);
+                    if (shift) guiGraphics.drawString(font, Component.literal(spellRecharge(recharge)).withStyle(ChatFormatting.BOLD), x + 30, y + k * 20 + 6 + 20 * num1, 16724787);
                 }
             }
         }
+    }
+
+    public static void renderRechargeAbleToolIngredients(ItemStack stack, GuiGraphics guiGraphics, int x, int y) {
+        RechargeableToolData data = RechargeableToolData.getToolData(stack.getItem());
+        if (data == null) return;
+
+        PoseStack poseStack = guiGraphics.pose();
+        poseStack.pushPose();
+        poseStack.translate(0,0,400);
+        Font font = Minecraft.getInstance().font;
+        int canBeCrafted = -1;
+        for (int i = 0; i < data.ingredients().size(); i++) {
+            RechargeableToolData.SimpleIngredient ingredient = data.ingredients().get(i);
+            guiGraphics.blitSprite(INGREDIENT_SLOT, x + i * 20, y - 20,20,20);
+            guiGraphics.renderItem(ingredient.toStack(), x + 2 + i * 20, y - 20 + 2);
+            int amo = FantazicUtil.howManyItems(Minecraft.getInstance().player, ingredient.item(), ingredient.amount());
+            if (canBeCrafted == -1 || canBeCrafted > amo) canBeCrafted = amo;
+            int color = amo > 0 ? 5636095 : 16733525;
+
+            poseStack.pushPose();
+            poseStack.translate(0,0,200);
+            String text = String.valueOf(ingredient.amount());
+            guiGraphics.drawString(font, text, x + i * 20 + 19 - 1 - font.width(text), y - 20 + 10, color, true);
+            poseStack.popPose();
+        }
+        if (canBeCrafted > 0) {
+            String amount = "×" + canBeCrafted;
+            int x0 = x + data.ingredients().size() * 20 + 4;
+            int y0 = y - 20 + 6;
+            guiGraphics.drawString(font, amount, x0, y0, 5636095);
+        }
+        poseStack.popPose();
+    }
+
+    public static String spellRecharge(int remainingTicks) {
+        float seconds = ((float) remainingTicks) / 20;
+        return String.format("%.1f", seconds);
     }
 }

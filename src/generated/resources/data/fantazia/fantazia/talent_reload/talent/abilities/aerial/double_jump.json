@@ -1,9 +1,0 @@
-{
-  "advancement": "fantazia:talents/abilities/aerial/double_jump",
-  "background": "fantazia:textures/gui/talent_icons/square_white.png",
-  "icon": "fantazia:textures/talent/abilities/aerial/double_jump.png",
-  "impacts": [
-    "fantazia:double_jump.unlock"
-  ],
-  "title": "talent.fantazia.abilities.aerial.double_jump"
-}

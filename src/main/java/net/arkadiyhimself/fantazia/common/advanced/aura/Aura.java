@@ -5,12 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.ints.Int2DoubleFunction;
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.api.AttributeTemplate;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.arkadiyhimself.fantazia.common.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
+import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -231,7 +231,7 @@ public class Aura implements ITooltipBuilder {
             case NEGATIVE -> new ChatFormatting[]{ChatFormatting.RED};
             case POSITIVE -> new ChatFormatting[]{ChatFormatting.GREEN};
         };
-        // spell name
+        // spell ident
         String namePath = basicPath + ".name";
         components.add(GuiHelper.bakeComponent("tooltip.fantazia.common.aura", heading, ability, Component.translatable(namePath)));
 

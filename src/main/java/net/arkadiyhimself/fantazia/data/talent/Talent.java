@@ -7,12 +7,12 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.common.api.AttributeModifierBuilder;
 import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.data.FTZCodecs;
-import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
-import net.arkadiyhimself.fantazia.data.datagen.talent_reload.talent.TalentBuilderHolder;
+import net.arkadiyhimself.fantazia.common.api.AttributeModifierBuilder;
 import net.arkadiyhimself.fantazia.common.item.ITooltipBuilder;
+import net.arkadiyhimself.fantazia.data.FTZCodecs;
+import net.arkadiyhimself.fantazia.data.datagen.talent_reload.talent.TalentBuilderHolder;
+import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.critereon.TagPredicate;
@@ -252,6 +252,12 @@ public record Talent(ResourceLocation id, ResourceLocation icon, String title, i
             return this;
         }
 
+        @SafeVarargs
+        public final Builder addDamageImmunities(TagKey<DamageType>... tagKeys) {
+            this.damageImmunities.add(DamageTypePredicate.builder().addTagPredicates(tagKeys).or().build());
+            return this;
+        }
+
         public Builder addDamageMultiplier(float multiplier, DamageTypePredicate predicate) {
             this.damageMultipliers.add(new Pair<>(multiplier, predicate));
             return this;
@@ -260,6 +266,13 @@ public record Talent(ResourceLocation id, ResourceLocation icon, String title, i
         @SafeVarargs
         public final Builder addDamageMultiplier(float multiplier, ResourceKey<DamageType>... damageTypes) {
             DamageTypePredicate.Builder builder = DamageTypePredicate.builder().addDamageTypes(damageTypes);
+            this.damageMultipliers.add(new Pair<>(multiplier, builder.build()));
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder addDamageMultiplier(float multiplier, TagKey<DamageType>... damageTypes) {
+            DamageTypePredicate.Builder builder = DamageTypePredicate.builder().addTagPredicates(damageTypes).or();
             this.damageMultipliers.add(new Pair<>(multiplier, builder.build()));
             return this;
         }

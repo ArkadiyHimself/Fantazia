@@ -13,8 +13,8 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.h
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.common.api.curio.FTZSlots;
 import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.networking.stuff.KeyInputC2S;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;

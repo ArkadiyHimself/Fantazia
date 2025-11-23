@@ -5,8 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.FantazicConfig;
+import net.arkadiyhimself.fantazia.client.gui.FantazicClientBossEvent;
+import net.arkadiyhimself.fantazia.client.gui.FantazicGui;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.client.render.bars.*;
+import net.arkadiyhimself.fantazia.client.render.layers.BarrierLayer;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellHelper;
-import net.arkadiyhimself.fantazia.common.advanced.spell.types.SelfSpell;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.common.api.FTZKeyMappings;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
@@ -15,30 +20,19 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.Cu
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.StunEffectHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DoubleJumpHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.MeleeBlockHolder;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.client.gui.FantazicClientBossEvent;
-import net.arkadiyhimself.fantazia.client.gui.FantazicGui;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
-import net.arkadiyhimself.fantazia.client.render.bars.*;
-import net.arkadiyhimself.fantazia.client.render.layers.BarrierLayer;
-import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
+import net.arkadiyhimself.fantazia.common.item.BlueprintItem;
 import net.arkadiyhimself.fantazia.common.item.RuneWielderItem;
 import net.arkadiyhimself.fantazia.common.item.casters.AuraCasterItem;
 import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
+import net.arkadiyhimself.fantazia.common.item.skong.RechargeableToolItem;
 import net.arkadiyhimself.fantazia.common.item.weapons.Melee.MeleeWeaponItem;
-import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
-import net.arkadiyhimself.fantazia.networking.IPacket;
-import net.arkadiyhimself.fantazia.networking.stuff.KeyInputC2S;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
 import net.arkadiyhimself.fantazia.data.tags.FTZSoundEventTags;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.util.library.Vector3;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
@@ -69,7 +63,6 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
@@ -80,6 +73,7 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.joml.Quaternionf;
 
@@ -148,38 +142,43 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void renderPlayerPre(RenderPlayerEvent.Pre event) {
-        Player entity = event.getEntity();
+        Player player = event.getEntity();
         PoseStack poseStack = event.getPoseStack();
         Quaternionf cameraOrientation = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
         MultiBufferSource buffers = event.getMultiBufferSource();
 
-        if (entity instanceof Player player && player.isSpectator()) return;
-        if (!entity.getPassengers().isEmpty()) return;
+        if (player.isSpectator()) return;
+        if (!player.getPassengers().isEmpty()) return;
 
         float yOffset = -1f;
-        if (entity == Minecraft.getInstance().player) return;
+        if (player == Minecraft.getInstance().player) return;
 
         poseStack.pushPose();
 
-        poseStack.translate(0, entity.getBbHeight() + 0.75, 0);
+        poseStack.translate(0, player.getBbHeight() + 0.75, 0);
         poseStack.mulPose(cameraOrientation);
 
         poseStack.scale(1,-1,1);
 
-        StunEffectHolder stunEffect = LivingEffectHelper.takeHolder(entity, StunEffectHolder.class);
-        if (stunEffect != null && stunEffect.renderBar()) {
+        StunEffectHolder stunEffect = LivingEffectHelper.takeHolder(player, StunEffectHolder.class);
+        if (stunEffect != null && stunEffect.renderBar() && FantazicUtil.isAffected(player, FTZMobEffects.STUN)) {
             yOffset = -1.45f;
             StunBarType.render(stunEffect, poseStack, buffers);
         }
 
-        CurrentAndInitialValue frozenDuration = LivingEffectHelper.getDurationHolder(entity, FTZMobEffects.FROZEN.value());
+        CurrentAndInitialValue frozenDuration = LivingEffectHelper.getDurationHolder(player, FTZMobEffects.FROZEN.value());
 
-        if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.CURSED_MARK.value())) CursedMarkType.render(poseStack, buffers, yOffset);
-        else if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.DISARM.value())) DisarmedSwordType.render(poseStack, buffers, yOffset);
-        else if (frozenDuration != null && (frozenDuration.value() > 0 || entity.getPercentFrozen() > 0)) SnowCrystalType.render(entity, frozenDuration, poseStack, buffers, yOffset);
-        else if (LivingEffectHelper.hasEffectSimple(entity, FTZMobEffects.DEAFENED.value())) DeafeningType.render(entity, poseStack, buffers, yOffset);
+        if (LivingEffectHelper.hasEffectSimple(player, FTZMobEffects.CURSED_MARK.value())) CursedMarkType.render(poseStack, buffers, yOffset);
+        else if (LivingEffectHelper.hasEffectSimple(player, FTZMobEffects.DISARM.value())) DisarmedSwordType.render(poseStack, buffers, yOffset);
+        else if (frozenDuration != null && (frozenDuration.value() > 0 || player.getPercentFrozen() > 0)) SnowCrystalType.render(player, frozenDuration, poseStack, buffers, yOffset);
+        else if (LivingEffectHelper.hasEffectSimple(player, FTZMobEffects.DEAFENED.value())) DeafeningType.render(player, poseStack, buffers, yOffset);
 
         poseStack.popPose();
+    }
+
+    @SubscribeEvent
+    public static void leftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+        IPacket.summonShockwave();
     }
 
     @SubscribeEvent
@@ -214,7 +213,7 @@ public class ClientEvents {
         poseStack.scale(1,-1,1);
 
         StunEffectHolder stunEffect = LivingEffectHelper.takeHolder(entity, StunEffectHolder.class);
-        if (stunEffect != null && stunEffect.renderBar()) {
+        if (stunEffect != null && stunEffect.renderBar() && FantazicUtil.isAffected(entity, FTZMobEffects.STUN)) {
             yOffset = -1.45f;
             StunBarType.render(stunEffect, poseStack, buffers);
         }
@@ -270,59 +269,6 @@ public class ClientEvents {
         if (FTZKeyMappings.BLOCK.isDown() && player.getMainHandItem().is(FTZItemTags.MELEE_BLOCK) && player.getOffhandItem().isEmpty()) PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, MeleeBlockHolder::startBlocking);
     }
 
-   // @SubscribeEvent
-    public static void keyInput(InputEvent.Key event) {
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (FTZKeyMappings.DASH.isDown()) PlayerAbilityHelper.acceptConsumer(player, DashHolder.class, DashHolder::maybeCancelDash);
-
-        if (player == null || ActionsHelper.preventActions(player) || player.isSpectator()) return;
-        int action = event.getAction();
-        int key = event.getKey();
-
-        if (FTZKeyMappings.SWORD_ABILITY.consumeClick()) IPacket.keyInput(KeyInputC2S.INPUT.WEAPON_ABILITY, action);
-        if (FTZKeyMappings.SPELLCAST1.getKey().getValue() == key) {
-            if (FTZKeyMappings.SPELLCAST1.isDown()) {
-                if (ActionsHelper.doSpellInputTick(0))
-                    IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST1, action);
-            }
-            else if (action == 0) {
-                currentCast = 0;
-                castCurioIndex = -1;
-            }
-        }
-
-        if (FTZKeyMappings.SPELLCAST2.getKey().getValue() == key) {
-            if (FTZKeyMappings.SPELLCAST2.isDown()) {
-                if (ActionsHelper.doSpellInputTick(1))
-                    IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST2, action);
-            }
-            else {
-                currentCast = 0;
-                castCurioIndex = -1;
-            }
-        }
-
-        if (FTZKeyMappings.SPELLCAST3.getKey().getValue() == key) {
-            if (FTZKeyMappings.SPELLCAST3.consumeClick() && ActionsHelper.doSpellInputTick(2))
-                IPacket.keyInput(KeyInputC2S.INPUT.SPELLCAST3, action);
-            else {
-                currentCast = 0;
-                castCurioIndex = -1;
-            }
-        }
-
-        TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
-        if (FTZKeyMappings.TALENTS.isDown() && talentsHolder != null) Minecraft.getInstance().setScreen(new TalentScreen(talentsHolder));
-
-
-        if (event.getKey() == Minecraft.getInstance().options.keyJump.getKey().getValue()) {
-            if (action == 1) PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::tryToJumpClient);
-            else if (action == 0)  PlayerAbilityHelper.acceptConsumer(player, DoubleJumpHolder.class, DoubleJumpHolder::buttonRelease);
-        }
-
-        if (FTZKeyMappings.DASH.isDown()) PlayerAbilityHelper.acceptConsumer(player, DashHolder.class, DashHolder::beginDash);
-    }
-
     // the event is used to remove vanilla's "Attack damage: ..." and "Attack speed: ..." lines
     @SubscribeEvent
     public static void itemTooltip(ItemTooltipEvent event) {
@@ -332,17 +278,25 @@ public class ClientEvents {
         if (item instanceof SpellCasterItem spellCasterItem) tooltip.addAll(spellCasterItem.buildTooltip());
         if (item instanceof AuraCasterItem auraCasterItem) tooltip.addAll(auraCasterItem.buildTooltip());
         if (item instanceof MeleeWeaponItem meleeWeaponItem) {
-            Component name = event.getToolTip().getFirst().copy();
             tooltip.clear();
-            tooltip.add(GuiHelper.bakeComponent(name.getString(), null, null));
+            tooltip.add(meleeWeaponItem.getName(stack));
             tooltip.add(Component.literal(" "));
             tooltip.addAll(meleeWeaponItem.itemTooltip(stack));
         } else if (item instanceof RuneWielderItem runeWielderItem) {
-            Component name = event.getToolTip().getFirst().copy();
             tooltip.clear();
-            tooltip.add(name);
+            tooltip.add(runeWielderItem.getName(stack));
             tooltip.add(Component.literal(" "));
             tooltip.addAll(runeWielderItem.itemTooltip(stack));
+        } else if (item instanceof RechargeableToolItem rechargeableToolItem) {
+            tooltip.clear();
+            tooltip.add(rechargeableToolItem.getName(stack));
+            tooltip.add(Component.literal(" "));
+            tooltip.addAll(rechargeableToolItem.buildTooltip());
+        } else if (item instanceof BlueprintItem blueprintItem) {
+            tooltip.clear();
+            tooltip.add(blueprintItem.getName(stack));
+            tooltip.add(Component.literal(" "));
+            tooltip.addAll(blueprintItem.itemTooltip(stack));
         }
     }
 
@@ -361,6 +315,15 @@ public class ClientEvents {
         if (player == null) return;
         if (event.getOverlayType() == RenderBlockScreenEffectEvent.OverlayType.FIRE && player.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS).value() > 0)
             event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void renderTooltip(RenderTooltipEvent.Color event) {
+        GuiGraphics guiGraphics = event.getGraphics();
+        ItemStack stack = event.getItemStack();
+        int x = event.getX();
+        int y = event.getY();
+        FantazicGui.renderRechargeAbleToolIngredients(stack, guiGraphics, x - 4, y - 4);
     }
 
     @SubscribeEvent

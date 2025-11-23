@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.data.datagen.talent_reload.wisdom_reward;
 
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardsCombined;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
+import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardsCombined;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;

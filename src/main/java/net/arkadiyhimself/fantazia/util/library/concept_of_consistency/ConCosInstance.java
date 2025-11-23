@@ -2,7 +2,6 @@ package net.arkadiyhimself.fantazia.util.library.concept_of_consistency;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.nbt.CompoundTag;
 

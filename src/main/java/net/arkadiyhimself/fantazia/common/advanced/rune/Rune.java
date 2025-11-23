@@ -4,9 +4,9 @@ package net.arkadiyhimself.fantazia.common.advanced.rune;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.api.AttributeModifierBuilder;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
 import net.minecraft.ChatFormatting;
@@ -57,7 +57,7 @@ public final class Rune implements ITooltipBuilder {
         } catch (NumberFormatException ignored) {}
 
         if (lines > 0) {
-            for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(desc + "." + i, getDescFormatting(), null));
+            for (int i = 1; i <= lines; i++) components.add(Component.translatable(desc + "." + i).withStyle(getDescFormatting()));
         }
 
         lines = 0;
@@ -68,7 +68,7 @@ public final class Rune implements ITooltipBuilder {
 
         if (lines > 0) {
             components.add(Component.literal(" "));
-            for (int i = 1; i <= lines; i++) components.add(GuiHelper.bakeComponent(desc + ".extra." + i, getDescFormatting(), null));
+            for (int i = 1; i <= lines; i++) components.add(Component.translatable(desc + ".extra." + i).withStyle(getDescFormatting()));
         }
 
         return components;

@@ -19,7 +19,12 @@ public interface FTZDamageTypes {
     ResourceKey<DamageType> PARRY = register("parry"); // implemented
     ResourceKey<DamageType> REMOVAL = register("removal"); // implemented
     ResourceKey<DamageType> SHOCKWAVE = register("shockwave"); // implemented
-    ResourceKey<DamageType> SIMPLE_CHASING_PROJECTILE = register("simple_chasing_projectile");
+    ResourceKey<DamageType> SIMPLE_CHASING_PROJECTILE = register("simple_chasing_projectile"); // implemented
+    ResourceKey<DamageType> BIFROST = register("bifrost"); // implemented
+    ResourceKey<DamageType> PIMPILLO_EXPLOSION = register("pimpillo_explosion");
+    ResourceKey<DamageType> THROWN_PIN = register("thrown_pin"); // implemented
+    ResourceKey<DamageType> BLOCK_FLY = register("block_fly"); // implemented
+    ResourceKey<DamageType> OMINOUS_BELL = register("ominous_bell");
 
     static void bootStrap(BootstrapContext<DamageType> context) {
         context.register(ANCIENT_BURNING, new DamageType("ancient_burning", DamageScaling.NEVER,0.1f, DamageEffects.BURNING));
@@ -32,6 +37,11 @@ public interface FTZDamageTypes {
         context.register(REMOVAL, new DamageType("removal", DamageScaling.NEVER,0f));
         context.register(SHOCKWAVE, new DamageType("shockwave", DamageScaling.NEVER,0.25f));
         context.register(SIMPLE_CHASING_PROJECTILE, new DamageType("simple_chasing_projectile", DamageScaling.NEVER, 0.3f));
+        context.register(BIFROST, new DamageType("bifrost", DamageScaling.NEVER,1f));
+        context.register(PIMPILLO_EXPLOSION, new DamageType("pimpillo_explosion", DamageScaling.NEVER, 0.1f));
+        context.register(THROWN_PIN, new DamageType("thrown_pin", DamageScaling.NEVER,0.25f));
+        context.register(BLOCK_FLY, new DamageType("block_fly", DamageScaling.NEVER,0f));
+        context.register(OMINOUS_BELL, new DamageType("ominous_bell", DamageScaling.NEVER,0f));
     }
 
     private static ResourceKey<DamageType> register(String name) {

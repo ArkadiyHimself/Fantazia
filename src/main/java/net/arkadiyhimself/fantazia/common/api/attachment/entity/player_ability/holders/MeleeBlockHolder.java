@@ -1,6 +1,7 @@
 package net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.FantazicHooks;
 import net.arkadiyhimself.fantazia.common.advanced.rune.RuneHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
@@ -10,13 +11,13 @@ import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSou
 import net.arkadiyhimself.fantazia.common.api.custom_events.BlockingEvent;
 import net.arkadiyhimself.fantazia.common.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.common.enchantment.effects.ParryModify;
-import net.arkadiyhimself.fantazia.data.criterion.MeleeBlockTrigger;
 import net.arkadiyhimself.fantazia.common.entity.magic_projectile.AbstractMagicProjectile;
-import net.arkadiyhimself.fantazia.common.FantazicHooks;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
+import net.arkadiyhimself.fantazia.data.criterion.MeleeBlockTrigger;
+import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -25,7 +26,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -215,7 +215,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
         boolean cancel = false;
         if (sourcePos == null || !PlayerAbilityHelper.facesAttack(getPlayer(), sourcePos)) return;
 
-        if ((source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.PLAYER_ATTACK)) && attacker instanceof LivingEntity livingAtt) {
+        if ((source.is(FTZDamageTypeTags.BLOCKABLE)) && attacker instanceof LivingEntity livingAtt) {
             if (blockTicks > 0) {
                 lastAttacker = livingAtt;
                 dmgTaken = event.getAmount();

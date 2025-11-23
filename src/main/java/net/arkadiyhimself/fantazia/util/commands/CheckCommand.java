@@ -10,6 +10,7 @@ import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.CustomCriteriaHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.SpellInstancesHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.ToolUtilisationHolder;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.common.api.prompt.Prompt;
 import net.arkadiyhimself.fantazia.common.api.prompt.Prompts;
@@ -21,6 +22,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +30,7 @@ import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CheckCommand {
@@ -50,7 +53,9 @@ public class CheckCommand {
                         .then(Commands.literal("used").executes(CheckCommand::checkUsedPrompts)))
                 .then(Commands.literal("custom_criteria")
                         .then(Commands.literal("obtained_items").executes(CheckCommand::checkObtainedItems))
-                        .then(Commands.literal("obtained_runes").executes(CheckCommand::checkObtainedRunes))));
+                        .then(Commands.literal("obtained_runes").executes(CheckCommand::checkObtainedRunes)))
+                .then(Commands.literal("capacities")
+                        .executes(CheckCommand::checkCapacities)));
     }
 
     private static int checkConCos(CommandContext<CommandSourceStack> context) {
@@ -169,6 +174,22 @@ public class CheckCommand {
             serverPlayer.sendSystemMessage(Component.literal("All obtained runes:"));
             for (Holder<Rune> runeHolder : obtained) serverPlayer.sendSystemMessage(Component.literal(FantazicRegistries.RUNES.getKey(runeHolder.value()).toString()));
         }
+        return 1;
+    }
+
+    private static int checkCapacities(CommandContext<CommandSourceStack> context) {
+        ServerPlayer serverPlayer = context.getSource().getPlayer();
+        if (serverPlayer == null) return 0;
+        ToolUtilisationHolder holder = PlayerAbilityHelper.takeHolder(serverPlayer, ToolUtilisationHolder.class);
+        if (holder == null) return 0;
+        Map<Item, Integer> capacities = holder.getCapacities();
+
+        serverPlayer.sendSystemMessage(Component.literal("Remaining amounts of tools:"));
+        for (Map.Entry<Item, Integer> entry : capacities.entrySet()) {
+            MutableComponent item = entry.getKey().getDescription().copy();
+            serverPlayer.sendSystemMessage(item.append(", " + entry.getValue()));
+        }
+
         return 1;
     }
 

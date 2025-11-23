@@ -1,9 +1,9 @@
 package net.arkadiyhimself.fantazia.data.datagen.patchouli;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.data.datagen.loot_modifier.TheWorldlinessEntryHelper;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -31,13 +31,13 @@ public class TheWorldlinessCategories implements SubProvider<PseudoCategoryHolde
     }
 
     private void bakeCategory(ResourceLocation category, Item icon) {
-        String name = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + category.getPath() + ".name";
+        String name = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + category.getPath() + ".ident";
         String description = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + category.getPath() + ".desc";
         PseudoCategory.builder().name(name).description(description).icon(icon).build().save(consumer, category);
     }
 
     private void bakeCategory(ResourceLocation category, ResourceLocation icon) {
-        String name = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + category.getPath() + ".name";
+        String name = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + category.getPath() + ".ident";
         String description = "book." + Fantazia.MODID + "." + TheWorldlinessEntryHelper.THE_WORLDLINESS + "." + category.getPath() + ".desc";
         PseudoCategory.builder().name(name).description(description).icon(icon).build().save(consumer, category);
     }

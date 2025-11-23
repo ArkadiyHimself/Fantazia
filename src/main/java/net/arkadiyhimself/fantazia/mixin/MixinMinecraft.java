@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.mixin;
 
+import net.arkadiyhimself.fantazia.client.ClientEvents;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
@@ -9,7 +10,6 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.h
 import net.arkadiyhimself.fantazia.common.entity.DashStone;
 import net.arkadiyhimself.fantazia.common.entity.ThrownHatchet;
 import net.arkadiyhimself.fantazia.common.entity.magic_projectile.AbstractMagicProjectile;
-import net.arkadiyhimself.fantazia.client.ClientEvents;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;

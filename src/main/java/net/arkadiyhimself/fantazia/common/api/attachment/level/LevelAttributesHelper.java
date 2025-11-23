@@ -57,6 +57,16 @@ public class LevelAttributesHelper {
         return holder != null && entity.hurt(sourceFunction.apply(holder, directAttacker), amount);
     }
 
+    public static void dieFrom(LivingEntity entity, Function<DamageSourcesHolder, DamageSource> sourceFunction) {
+        DamageSourcesHolder holder = getDamageSources(entity.level());
+        if (holder != null) entity.die(sourceFunction.apply(holder));
+    }
+
+    public static <T extends Entity> void dieFrom(LivingEntity entity, T attacker, BiFunction<DamageSourcesHolder, T, DamageSource> sourceFunction) {
+        DamageSourcesHolder holder = getDamageSources(entity.level());
+        if (holder != null) entity.die(sourceFunction.apply(holder, attacker));
+    }
+
     public static boolean healEntity(LivingEntity entity, float amount, Function<HealingSourcesHolder, HealingSource> sourceFunction) {
         HealingSourcesHolder holder = getHealingSources(entity.level());
         return holder != null && AdvancedHealing.tryHeal(entity, sourceFunction.apply(holder), amount);

@@ -1,17 +1,18 @@
 package net.arkadiyhimself.fantazia.networking;
 
-import net.arkadiyhimself.fantazia.common.api.prompt.Prompt;
 import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.screen.AmplificationTab;
 import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
-import net.arkadiyhimself.fantazia.data.talent.Talent;
+import net.arkadiyhimself.fantazia.common.api.prompt.Prompt;
 import net.arkadiyhimself.fantazia.common.entity.DashStone;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.networking.attachment_modify.*;
-import net.arkadiyhimself.fantazia.networking.attachment_syncing.*;
+import net.arkadiyhimself.fantazia.networking.attachment_syncing.SimpleMobEffectSyncingS2C;
 import net.arkadiyhimself.fantazia.networking.commands.BuildAuraTooltipSC2;
 import net.arkadiyhimself.fantazia.networking.commands.BuildRuneTooltipSC2;
 import net.arkadiyhimself.fantazia.networking.commands.BuildSpellTooltipSC2;
 import net.arkadiyhimself.fantazia.networking.stuff.*;
-import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -93,6 +94,10 @@ public interface IPacket extends CustomPacketPayload {
         PacketDistributor.sendToPlayer(serverPlayer, new ManaChangedS2C(value));
     }
 
+    static void obtainedReward(ServerPlayer serverPlayer, ResourceLocation category, ResourceLocation instance) {
+        PacketDistributor.sendToPlayer(serverPlayer, new ObtainedRewardS2C(category, instance));
+    }
+
     static void parryAttack(ServerPlayer serverPlayer, float amount) {
         PacketDistributor.sendToPlayer(serverPlayer, new ParryAttackS2C(amount));
     }
@@ -115,6 +120,10 @@ public interface IPacket extends CustomPacketPayload {
 
     static void resetEuphoria(ServerPlayer serverPlayer) {
         PacketDistributor.sendToPlayer(serverPlayer, new ResetEuphoriaSC2());
+    }
+
+    static void resetWisdomRewards(ServerPlayer serverPlayer) {
+        PacketDistributor.sendToPlayer(serverPlayer, new ResetWisdomRewardsSC2());
     }
 
     static void revokeAllTalents(ServerPlayer serverPlayer) {
@@ -239,6 +248,14 @@ public interface IPacket extends CustomPacketPayload {
 
     static void promptPlayer(ServerPlayer serverPlayer, Prompt prompt) {
         PacketDistributor.sendToPlayer(serverPlayer, new PromptPlayerSC2(prompt));
+    }
+
+    static void setAmplificationTab(AmplificationTab tab) {
+        PacketDistributor.sendToServer(new SetAmplificationTabC2S(tab));
+    }
+
+    static void summonShockwave() {
+        PacketDistributor.sendToServer(new SummonShockwaveC2S());
     }
 
     static void swingHand(ServerPlayer serverPlayer, InteractionHand hand) {

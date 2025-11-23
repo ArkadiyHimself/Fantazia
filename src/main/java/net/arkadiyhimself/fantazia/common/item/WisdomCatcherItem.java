@@ -1,12 +1,11 @@
 package net.arkadiyhimself.fantazia.common.item;
 
+import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.common.api.data_component.WisdomTransferComponent;
-import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -17,6 +16,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public final class WisdomCatcherItem extends Item {
 
     @Override
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
-        return stack.get(FTZDataComponentTypes.WISDOM_TRANSFER) == null ? super.getUseAnimation(stack) : UseAnim.BLOCK;
+        return stack.get(FTZDataComponentTypes.WISDOM_TRANSFER) == null ? UseAnim.NONE : UseAnim.BLOCK;
     }
 
     @Override
@@ -157,4 +158,56 @@ public final class WisdomCatcherItem extends Item {
         }
     }
 
+    // credit to Aizirstal for those helpers
+    public static int getPlayerXP(Player player) {
+        return (int) (getExperienceForLevel(player.experienceLevel) + player.experienceProgress * player.getXpNeededForNextLevel());
+    }
+
+    public static void drainPlayerXP(Player player, int amount) {
+        addPlayerXP(player, -amount);
+    }
+
+    public static void addPlayerXP(Player player, int amount) {
+        PlayerXpEvent.XpChange eventXP = new PlayerXpEvent.XpChange(player, amount);
+        NeoForge.EVENT_BUS.post(eventXP);
+        if (eventXP.isCanceled()) return;
+
+        amount = eventXP.getAmount();
+
+        int oldLevel = player.experienceLevel;
+        int newLevel = getLevelForExperience(getPlayerXP(player) + amount);
+        int experience = getPlayerXP(player) + amount;
+
+        if (oldLevel != newLevel) {
+            PlayerXpEvent.LevelChange eventLvl = new PlayerXpEvent.LevelChange(player, newLevel - oldLevel);
+            NeoForge.EVENT_BUS.post(eventLvl);
+            if (eventLvl.isCanceled()) return;
+            int remainder = experience - getExperienceForLevel(newLevel);
+
+            newLevel = oldLevel + eventLvl.getLevels();
+            amount = getExperienceForLevel(newLevel) - getExperienceForLevel(oldLevel) + remainder;
+        }
+
+        player.totalExperience = experience;
+        player.experienceLevel = getLevelForExperience(experience);
+        int expForLevel = getExperienceForLevel(player.experienceLevel);
+        player.experienceProgress = (float) (experience - expForLevel) / (float) player.getXpNeededForNextLevel();
+    }
+
+    public static int getExperienceForLevel(int level) {
+        if (level <= 0) return 0;
+
+        if (level < 17) return (level * level + 6 * level);
+        else if (level < 32) return (int) (2.5 * level * level - 40.5 * level + 360);
+        else return (int) (4.5 * level * level - 162.5 * level + 2220);
+    }
+
+    public static int getLevelForExperience(int experience) {
+        if (experience <= 0) return 0;
+
+        int i = 0;
+        while (getExperienceForLevel(i) <= experience) i++;
+
+        return i - 1;
+    }
 }

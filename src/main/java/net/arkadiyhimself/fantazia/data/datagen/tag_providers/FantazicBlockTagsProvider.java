@@ -29,6 +29,21 @@ public class FantazicBlockTagsProvider extends BlockTagsProvider {
         tag(FTZBlockTags.FROM_FANTAZIUM).add(FTZBlocks.FANTAZIUM_ORE.value(), FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.value(), FTZBlocks.FANTAZIUM_BLOCK.value(), FTZBlocks.RAW_FANTAZIUM_BLOCK.value());
         tag(FTZBlockTags.ORES_FANTAZIUM).addTag(FTZBlockTags.FANTAZIUM_ORES);
 
+        tag(FTZBlockTags.ENGINEERING_TABLES).add(
+                FTZBlocks.OAK_ENGINEERING_TABLE.value(),
+                FTZBlocks.SPRUCE_ENGINEERING_TABLE.value(),
+                FTZBlocks.BIRCH_ENGINEERING_TABLE.value(),
+                FTZBlocks.JUNGLE_ENGINEERING_TABLE.value(),
+                FTZBlocks.ACACIA_ENGINEERING_TABLE.value(),
+                FTZBlocks.CHERRY_ENGINEERING_TABLE.value(),
+                FTZBlocks.DARK_OAK_ENGINEERING_TABLE.value(),
+                FTZBlocks.MANGROVE_ENGINEERING_TABLE.value(),
+                FTZBlocks.BAMBOO_ENGINEERING_TABLE.value(),
+                FTZBlocks.CRIMSON_ENGINEERING_TABLE.value(),
+                FTZBlocks.WARPED_ENGINEERING_TABLE.value(),
+                FTZBlocks.OBSCURE_ENGINEERING_TABLE.value()
+        );
+
         // neo forge
         tag(Tags.Blocks.FENCE_GATES_WOODEN).add(
                 FTZBlocks.OBSCURE_FENCE_GATE.value()
@@ -43,10 +58,31 @@ public class FantazicBlockTagsProvider extends BlockTagsProvider {
         );
 
         // mine-able folder
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(FTZBlocks.AMPLIFICATION_BENCH.value(), FTZBlocks.FANTAZIUM_ORE.value(), FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.value(), FTZBlocks.FANTAZIUM_BLOCK.value(), FTZBlocks.RAW_FANTAZIUM_BLOCK.value());
-        tag(BlockTags.MINEABLE_WITH_HOE).add(FTZBlocks.OBSCURE_LEAVES.value());
-        tag(BlockTags.NEEDS_IRON_TOOL).add(FTZBlocks.FANTAZIUM_ORE.value(), FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.value(), FTZBlocks.FANTAZIUM_BLOCK.value(), FTZBlocks.RAW_FANTAZIUM_BLOCK.value());
-        tag(BlockTags.NEEDS_DIAMOND_TOOL).add(FTZBlocks.AMPLIFICATION_BENCH.value());
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(
+                FTZBlocks.AMPLIFICATION_BENCH.value(),
+                FTZBlocks.FANTAZIUM_ORE.value(),
+                FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.value(),
+                FTZBlocks.FANTAZIUM_BLOCK.value(),
+                FTZBlocks.RAW_FANTAZIUM_BLOCK.value()
+        );
+        
+        tag(BlockTags.MINEABLE_WITH_AXE)
+                .addTag(FTZBlockTags.ENGINEERING_TABLES);
+        
+        tag(BlockTags.MINEABLE_WITH_HOE).add(
+                FTZBlocks.OBSCURE_LEAVES.value()
+        );
+        
+        tag(BlockTags.NEEDS_IRON_TOOL).add(
+                FTZBlocks.FANTAZIUM_ORE.value(),
+                FTZBlocks.DEEPSLATE_FANTAZIUM_ORE.value(),
+                FTZBlocks.FANTAZIUM_BLOCK.value(),
+                FTZBlocks.RAW_FANTAZIUM_BLOCK.value()
+        );
+        
+        tag(BlockTags.NEEDS_DIAMOND_TOOL).add(
+                FTZBlocks.AMPLIFICATION_BENCH.value()
+        );
 
         // minecraft tags
         tag(BlockTags.CEILING_HANGING_SIGNS).add(FTZBlocks.OBSCURE_HANGING_SIGN.value());

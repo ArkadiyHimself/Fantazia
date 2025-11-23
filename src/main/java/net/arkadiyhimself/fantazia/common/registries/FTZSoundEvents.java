@@ -9,8 +9,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class FTZSoundEvents {
 
-    private FTZSoundEvents() {}
-
     private static final DeferredRegister<SoundEvent> REGISTER = DeferredRegister.create(Registries.SOUND_EVENT, Fantazia.MODID);
 
     private static DeferredHolder<SoundEvent, SoundEvent> fixedRange(String path, float range) {
@@ -34,17 +32,17 @@ public class FTZSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_READY = fixedRange("ui.dashstone_ready", 4f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> RUNE_CARVED = fixedRange("ui.rune_carved", 4f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> AMPLIFICATION = fixedRange("ui.amplification", 4f); // implemented
-    public static final DeferredHolder<SoundEvent, SoundEvent> WISDOM_ABSORB = fixedRange("ui.wisdom_absorb", 4f);
-    public static final DeferredHolder<SoundEvent, SoundEvent> WISDOM_RELEASE = fixedRange("ui.wisdom_release", 4f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> WISDOM_ABSORB = fixedRange("ui.wisdom_absorb", 4f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> WISDOM_RELEASE = fixedRange("ui.wisdom_release", 4f); // implemented
 
-    public static final DeferredHolder<SoundEvent, SoundEvent> DASH1 = fixedRange("dash.dash1",8f);// implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> DASH1 = fixedRange("dash.dash1",8f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH2 = fixedRange("dash.dash2",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH3 = fixedRange("dash.dash3",16f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH1_RECHARGE = fixedRange("dash.dash1_recharge",1f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH2_RECHARGE = fixedRange("dash.dash2_recharge",1f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASH3_RECHARGE = fixedRange("dash.dash3_recharge",1f); // implemented
-    public static final DeferredHolder<SoundEvent, SoundEvent> DOUBLE_JUMP = fixedRange("double_jump.jump",8f);
-    public static final DeferredHolder<SoundEvent, SoundEvent> DOUBLE_JUMP_UNLOCKED = fixedRange("double_jump.unlocked",4f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> DOUBLE_JUMP = fixedRange("double_jump.jump",8f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> DOUBLE_JUMP_UNLOCKED = fixedRange("double_jump.unlocked",4f); // implemented
     
     public static final DeferredHolder<SoundEvent, SoundEvent> FRAGILE_SWORD_BEGIN = fixedRange("fragile_sword.begin",8f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> FRAGILE_SWORD_LOW = fixedRange("fragile_sword.low",8f); // implemented
@@ -88,16 +86,25 @@ public class FTZSoundEvents {
     public static final DeferredHolder<SoundEvent, SoundEvent> SONIC_BOOM_RECHARGE = fixedRange("spell.sonic_boom.recharge",4f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> SONIC_BOOM_CLICKING = fixedRange("spell.sonic_boom.clicking",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> SUSTAIN_CAST = fixedRange("spell.sustain.cast", 16f); // implemented
-    public static final DeferredHolder<SoundEvent, SoundEvent> RING_OF_DOOM_CAST = fixedRange("spell.ring_of_doom.cast", 24f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> RING_OF_DOOM_CAST = fixedRange("spell.ring_of_doom.cast", 24f); // implemented
 
     public static final DeferredHolder<SoundEvent, SoundEvent> ENTITY_FALLEN_BREATH = fixedRange("entity.fallen_breath",12f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> ENTITY_EVADE = fixedRange("entity.evade",8f); // implemented
-    public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_APPEARED = fixedRange("entity.dashstone.appear",32f);
+    public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_APPEARED = fixedRange("entity.dashstone.appear",32f); // implemented
     public static final DeferredHolder<SoundEvent, SoundEvent> DASHSTONE_WIND = fixedRange("entity.dashstone.wind", 4f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> PIMPILLO_FUSE_BURN = fixedRange("entity.pimpillo.fuse_burn", 8f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> PIN_BREAKING = fixedRange("entity.thrown_pin.break", 12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> BLOCK_FLY_BUZZING = fixedRange("entity.block_fly.buzzing", 6f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> BLOCK_FLY_HURT = variableRange("entity.block_fly.hurt"); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> BLOCK_FLY_DEATH = variableRange("entity.block_fly.death"); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> BLOCK_FLY_PUNCH = variableRange("entity.block_fly.punch"); // implemented
 
     public static final DeferredHolder<SoundEvent, SoundEvent> HATCHET_THROW = fixedRange("item.hatchet.throw",12f); // implemented
-    public static final DeferredHolder<SoundEvent, SoundEvent> LEADERS_HORN = fixedRange("item.leaders_horn.sound",256f); // implemented
-    public static final DeferredHolder<SoundEvent, SoundEvent> ANCIENT_SPARK = fixedRange("item.ancient_spark.use",8f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> LEADERS_HORN_BLOW = fixedRange("item.leaders_horn.sound",256f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> ANCIENT_SPARK_COMBUST = fixedRange("item.ancient_spark.use",8f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> PIMPILLO_THROW = fixedRange("item.pimpillo.throw", 12f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> THROWING_PIN_THROW = fixedRange("item.throwing_pin.throw", 8f); // implemented
+    public static final DeferredHolder<SoundEvent, SoundEvent> BLOCK_FLY_WINDUP = variableRange("item.block_fly.wind_up");
 
     public static void register(IEventBus modEventBus) {
         REGISTER.register(modEventBus);

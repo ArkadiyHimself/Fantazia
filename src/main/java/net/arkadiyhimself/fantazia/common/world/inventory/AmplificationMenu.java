@@ -2,16 +2,14 @@ package net.arkadiyhimself.fantazia.common.world.inventory;
 
 import com.mojang.datafixers.util.Pair;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.screen.AmplificationTab;
+import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
-import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
 import net.arkadiyhimself.fantazia.common.item.RuneWielderItem;
-import net.arkadiyhimself.fantazia.networking.IPacket;
+import net.arkadiyhimself.fantazia.common.registries.*;
 import net.arkadiyhimself.fantazia.data.recipe.*;
-import net.arkadiyhimself.fantazia.common.registries.FTZBlocks;
-import net.arkadiyhimself.fantazia.common.registries.FTZItems;
-import net.arkadiyhimself.fantazia.common.registries.FTZMenuTypes;
-import net.arkadiyhimself.fantazia.common.registries.FTZRecipeTypes;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -21,7 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +31,6 @@ public class AmplificationMenu extends AbstractContainerMenu {
     private static final ResourceLocation EMPTY_SLOT_SUBSTANCE_RED = Fantazia.location("item/empty_slot_substance_red");
 
     private final TalentsHolder talents;
-
     private final Player player;
     /**
      * 0-1
@@ -230,53 +227,73 @@ public class AmplificationMenu extends AbstractContainerMenu {
         AmplifyResource wisdom = AmplifyResource.REGULAR;
         AmplifyResource substance = AmplifyResource.REGULAR;
 
-        this.amplifyResultSlot.setRecipeType(FTZRecipeTypes.RUNE_CARVING.value());
-        RuneCarvingInput runeCarvingInput = RuneCarvingInput.input(initial, this.craftingContainer.getItems(), this.initialSlots.getItem(1).getCount(), talents.getWisdom());
-        Optional<RecipeHolder<RuneCarvingRecipe>> optional = serverLevel.getRecipeManager().getRecipeFor(FTZRecipeTypes.RUNE_CARVING.value(), runeCarvingInput, serverLevel, (RecipeHolder<RuneCarvingRecipe>) null);
-        if (optional.isPresent()) {
-            RecipeHolder<RuneCarvingRecipe> recipeholder = optional.get();
-            RuneCarvingRecipe runeCarvingRecipe = recipeholder.value();
-            wisdom = runeCarvingRecipe.wisdom() <= talents.getWisdom() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
-            substance = runeCarvingRecipe.fee() <= this.initialSlots.getItem(1).getCount() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
-            if (wisdom.isEnough() && substance.isEnough() && this.resultContainer.setRecipeUsed(serverLevel, serverPlayer, recipeholder)) {
-                ItemStack itemStack1 = runeCarvingRecipe.assemble(runeCarvingInput, serverLevel.registryAccess());
-                if (itemStack1.isItemEnabled(serverLevel.enabledFeatures())) {
-                    itemstack = itemStack1;
+        if (selected() == AmplificationTab.RUNE_CARVING) {
+            this.amplifyResultSlot.setRecipeType(FTZRecipeTypes.RUNE_CARVING.value());
+            RuneCarvingInput runeCarvingInput = RuneCarvingInput.input(initial, this.craftingContainer.getItems(), this.initialSlots.getItem(1).getCount(), talents.getWisdom());
+            Optional<RecipeHolder<RuneCarvingRecipe>> optional = serverLevel.getRecipeManager().getRecipeFor(FTZRecipeTypes.RUNE_CARVING.value(), runeCarvingInput, serverLevel, (RecipeHolder<RuneCarvingRecipe>) null);
+            if (optional.isPresent()) {
+                RecipeHolder<RuneCarvingRecipe> recipeholder = optional.get();
+                RuneCarvingRecipe runeCarvingRecipe = recipeholder.value();
+                wisdom = runeCarvingRecipe.wisdom() <= talents.getWisdom() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
+                substance = runeCarvingRecipe.fee() <= this.initialSlots.getItem(1).getCount() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
+                if (wisdom.isEnough() && substance.isEnough() && this.resultContainer.setRecipeUsed(serverLevel, serverPlayer, recipeholder)) {
+                    ItemStack itemStack1 = runeCarvingRecipe.assemble(runeCarvingInput, serverLevel.registryAccess());
+                    if (itemStack1.isItemEnabled(serverLevel.enabledFeatures())) {
+                        itemstack = itemStack1;
+                    }
                 }
             }
         }
 
-        Optional<RecipeHolder<AmplificationRecipe>> amplificationRecipeOptional = serverLevel.getRecipeManager().getRecipeFor(FTZRecipeTypes.AMPLIFICATION.value(), amplificationInput, serverLevel, (RecipeHolder<AmplificationRecipe>) null);
-        if (amplificationRecipeOptional.isPresent()) {
-            this.amplifyResultSlot.setRecipeType(FTZRecipeTypes.AMPLIFICATION.value());
-            RecipeHolder<AmplificationRecipe> amplificationRecipeHolder = amplificationRecipeOptional.get();
-            AmplificationRecipe amplificationRecipe = amplificationRecipeHolder.value();
-            wisdom = amplificationRecipe.wisdom() <= talents.getWisdom() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
-            substance = amplificationRecipe.fee() <= this.initialSlots.getItem(1).getCount() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
-            if (wisdom.isEnough() && substance.isEnough() && this.resultContainer.setRecipeUsed(serverLevel, serverPlayer, amplificationRecipeHolder)) {
-                ItemStack itemStack1 = amplificationRecipe.assemble(amplificationInput, serverLevel.registryAccess());
-                if (itemStack1.isItemEnabled(serverLevel.enabledFeatures())) {
-                    itemstack = itemStack1;
+        if (selected() == AmplificationTab.AMPLIFICATION) {
+            Optional<RecipeHolder<AmplificationRecipe>> amplificationRecipeOptional = serverLevel.getRecipeManager().getRecipeFor(FTZRecipeTypes.AMPLIFICATION.value(), amplificationInput, serverLevel, (RecipeHolder<AmplificationRecipe>) null);
+            if (amplificationRecipeOptional.isPresent()) {
+                this.amplifyResultSlot.setRecipeType(FTZRecipeTypes.AMPLIFICATION.value());
+                RecipeHolder<AmplificationRecipe> amplificationRecipeHolder = amplificationRecipeOptional.get();
+                AmplificationRecipe amplificationRecipe = amplificationRecipeHolder.value();
+                wisdom = amplificationRecipe.wisdom() <= talents.getWisdom() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
+                substance = amplificationRecipe.fee() <= this.initialSlots.getItem(1).getCount() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
+                if (wisdom.isEnough() && substance.isEnough() && this.resultContainer.setRecipeUsed(serverLevel, serverPlayer, amplificationRecipeHolder)) {
+                    ItemStack itemStack1 = amplificationRecipe.assemble(amplificationInput, serverLevel.registryAccess());
+                    if (itemStack1.isItemEnabled(serverLevel.enabledFeatures())) {
+                        itemstack = itemStack1;
+                    }
                 }
             }
         }
 
-        Optional<RecipeHolder<EnchantmentReplaceRecipe>> enchantmentReplaceRecipeOptional = serverLevel.getRecipeManager().getRecipeFor(FTZRecipeTypes.ENCHANTMENT_REPLACE.value(), amplificationInput, serverLevel, (RecipeHolder<EnchantmentReplaceRecipe>) null);
-        if (enchantmentReplaceRecipeOptional.isPresent()) {
-            this.amplifyResultSlot.setRecipeType(FTZRecipeTypes.ENCHANTMENT_REPLACE.value());
-            RecipeHolder<EnchantmentReplaceRecipe> enchantmentReplaceRecipeHolder = enchantmentReplaceRecipeOptional.get();
-            EnchantmentReplaceRecipe enchantmentReplace = enchantmentReplaceRecipeHolder.value();
-            wisdom = enchantmentReplace.wisdom() <= talents.getWisdom() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
-            substance = enchantmentReplace.fee() <= this.initialSlots.getItem(1).getCount() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
-            if (wisdom.isEnough() && substance.isEnough() && this.resultContainer.setRecipeUsed(serverLevel, serverPlayer, enchantmentReplaceRecipeHolder)) {
-                ItemStack itemStack1 = enchantmentReplace.assemble(amplificationInput, serverLevel.registryAccess());
-                if (itemStack1.isItemEnabled(serverLevel.enabledFeatures())) {
-                    itemstack = itemStack1;
+        if (selected() == AmplificationTab.ENCHANTMENT_REPLACE) {
+            Optional<RecipeHolder<EnchantmentReplaceRecipe>> enchantmentReplaceRecipeOptional = serverLevel.getRecipeManager().getRecipeFor(FTZRecipeTypes.ENCHANTMENT_REPLACE.value(), amplificationInput, serverLevel, (RecipeHolder<EnchantmentReplaceRecipe>) null);
+            if (enchantmentReplaceRecipeOptional.isPresent()) {
+                this.amplifyResultSlot.setRecipeType(FTZRecipeTypes.ENCHANTMENT_REPLACE.value());
+                RecipeHolder<EnchantmentReplaceRecipe> enchantmentReplaceRecipeHolder = enchantmentReplaceRecipeOptional.get();
+                EnchantmentReplaceRecipe enchantmentReplace = enchantmentReplaceRecipeHolder.value();
+                wisdom = enchantmentReplace.wisdom() <= talents.getWisdom() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
+                substance = enchantmentReplace.fee() <= this.initialSlots.getItem(1).getCount() ? AmplifyResource.ENOUGH : AmplifyResource.NOT_ENOUGH;
+                if (wisdom.isEnough() && substance.isEnough() && this.resultContainer.setRecipeUsed(serverLevel, serverPlayer, enchantmentReplaceRecipeHolder)) {
+                    ItemStack itemStack1 = enchantmentReplace.assemble(amplificationInput, serverLevel.registryAccess());
+                    if (itemStack1.isItemEnabled(serverLevel.enabledFeatures())) {
+                        itemstack = itemStack1;
+                    }
                 }
             }
         }
 
         IPacket.amplificationMenuEnoughResources(serverPlayer, wisdom, substance);
         return itemstack;
+    }
+
+    public void setTab(AmplificationTab tab) {
+        this.player.setData(FTZAttachmentTypes.LAST_SELECTED_AMPLIFICATION_TAB, tab);
+
+        if (player.level().isClientSide()) {
+            IPacket.setAmplificationTab(tab);
+            return;
+        }
+        slotChangedCraftingGrid();
+    }
+
+    public AmplificationTab selected() {
+        return player.getData(FTZAttachmentTypes.LAST_SELECTED_AMPLIFICATION_TAB);
     }
 }

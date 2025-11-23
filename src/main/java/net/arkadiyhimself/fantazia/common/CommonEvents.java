@@ -2,8 +2,9 @@ package net.arkadiyhimself.fantazia.common;
 
 import com.mojang.brigadier.CommandDispatcher;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.common.advanced.cleanse.Cleanse;
@@ -18,7 +19,10 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.hold
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityManager;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.*;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DoubleJumpHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.EuphoriaHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.ManaHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.StaminaHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.HealingSourcesHolder;
@@ -26,15 +30,24 @@ import net.arkadiyhimself.fantazia.common.api.curio.FTZSlots;
 import net.arkadiyhimself.fantazia.common.api.custom_events.VanillaEventsExtension;
 import net.arkadiyhimself.fantazia.common.api.data_component.HiddenPotentialComponent;
 import net.arkadiyhimself.fantazia.common.api.prompt.Prompts;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.enchantment.effects.ConvertLootToExp;
 import net.arkadiyhimself.fantazia.common.enchantment.effects.CriticalStrikeModify;
-import net.arkadiyhimself.fantazia.common.registries.enchantment_effect_component.FTZEnchantmentEffectComponentTypes;
+import net.arkadiyhimself.fantazia.common.entity.ThrownHatchet;
+import net.arkadiyhimself.fantazia.common.entity.goals.PuppeteeredAttackableTargets;
+import net.arkadiyhimself.fantazia.common.entity.goals.StandStillGoal;
+import net.arkadiyhimself.fantazia.common.entity.magic_projectile.AbstractMagicProjectile;
+import net.arkadiyhimself.fantazia.common.item.RuneWielderItem;
+import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
+import net.arkadiyhimself.fantazia.common.registries.*;
+import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
+import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
+import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.data.effect_from_damage.ServerEffectFromDamageManager;
 import net.arkadiyhimself.fantazia.data.loot.ServerLootModifierManager;
 import net.arkadiyhimself.fantazia.data.spawn_effect.ServerSpawnEffectManager;
+import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
+import net.arkadiyhimself.fantazia.data.tags.FTZMobEffectTags;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentHierarchyManager;
@@ -42,21 +55,8 @@ import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentTabManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerWisdomRewardManager;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardCategories;
-import net.arkadiyhimself.fantazia.common.entity.ThrownHatchet;
-import net.arkadiyhimself.fantazia.common.entity.goals.PuppeteeredAttackableTargets;
-import net.arkadiyhimself.fantazia.common.entity.goals.StandStillGoal;
-import net.arkadiyhimself.fantazia.common.entity.magic_projectile.AbstractMagicProjectile;
-import net.arkadiyhimself.fantazia.common.item.RuneWielderItem;
-import net.arkadiyhimself.fantazia.common.item.casters.AuraCasterItem;
-import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.networking.attachment_syncing.IAttachmentSync;
-import net.arkadiyhimself.fantazia.common.registries.*;
-import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
-import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
-import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
-import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
-import net.arkadiyhimself.fantazia.data.tags.FTZMobEffectTags;
 import net.arkadiyhimself.fantazia.util.commands.*;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ActionsHelper;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.ApplyEffect;
@@ -66,11 +66,9 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -80,7 +78,6 @@ import net.minecraft.tags.GameEventTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -105,16 +102,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.alchemy.PotionBrewing;
 import net.minecraft.world.item.alchemy.PotionContents;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
-import net.minecraft.world.item.enchantment.ItemEnchantments;
-import net.minecraft.world.item.enchantment.TargetedConditionalEffect;
-import net.minecraft.world.item.enchantment.effects.EnchantmentValueEffect;
 import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -140,11 +131,12 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import org.apache.commons.compress.utils.Lists;
-import top.theillusivec4.curios.api.event.CurioCanEquipEvent;
 import top.theillusivec4.curios.api.event.CurioCanUnequipEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Fantazia.MODID, bus = EventBusSubscriber.Bus.GAME)
@@ -173,10 +165,11 @@ public class CommonEvents {
             if (attacker.hasEffect(FTZMobEffects.FURY)) {
                 boolean damnedWrath = SpellHelper.spellAvailable(attacker, Spells.DAMNED_WRATH);
                 EffectCleansing.changeDuration(attacker, FTZMobEffects.FURY, damnedWrath ? 100 : -100);
-                EffectCleansing.changeDuration(attacker, FTZMobEffects.FURY, damnedWrath ? 100 : -100);
 
-                SoundEvent soundEvent = damnedWrath ? FTZSoundEvents.FURY_PROLONG.get() : FTZSoundEvents.FURY_DISPEL.get();
-                if (attacker instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, soundEvent);
+                if (attacker instanceof ServerPlayer serverPlayer) {
+                    if (damnedWrath) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.FURY_PROLONG.value());
+                    else if (!attacker.hasEffect(FTZMobEffects.FURY)) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.FURY_DISPEL.value());
+                }
             }
 
             if (attacker instanceof ServerPlayer player) {
@@ -279,7 +272,7 @@ public class CommonEvents {
         LivingEntity target = event.getEntity();
         target.setData(FTZAttachmentTypes.ENTANGLE_PREVIOUS_HEALTH, target.getHealth());
         if (event.getEntity().level().isClientSide()) return;
-        if (source.is(FTZDamageTypes.BLEEDING)) VisualHelper.particleOnEntityServer(target, FTZParticleTypes.BLOOD.random(), ParticleMovement.FALL);
+        if (source.is(FTZDamageTypeTags.BLEEDING)) VisualHelper.particleOnEntityServer(target, FTZParticleTypes.BLOOD.random(), ParticleMovement.FALL);
 
         FantazicCombat.meleeAttack(event);
 
@@ -288,14 +281,13 @@ public class CommonEvents {
         target.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHit(event);
 
         float amount = event.getNewDamage();
-        if (!source.is(FTZDamageTypes.REMOVAL) && !source.is(FTZDamageTypes.BLEEDING) && SpellHelper.castPassiveSpell(target, Spells.REINFORCE).success()) {
+        if (!source.is(FTZDamageTypeTags.IGNORED_BY_REINFORCE_SPELL) && SpellHelper.castPassiveSpell(target, Spells.REINFORCE).success()) {
             amount -= 0.75f + 0.1f * SpellHelper.getSpellAmplifier(target, Spells.REINFORCE);
         }
         float auraMultiplier = AuraHelper.getDamageMultiplier(target, source.typeHolder());
         amount *= auraMultiplier;
         event.setNewDamage(amount);
 
-        if (event.getEntity() instanceof Player player && !source.is(FTZDamageTypes.REMOVAL)) player.getCooldowns().addCooldown(FTZItems.TRANQUIL_HERB.get(), 100);
         LivingEffectHelper.simpleEffectOnHit(event);
     }
 
@@ -304,28 +296,29 @@ public class CommonEvents {
         LivingEntity target = event.getEntity();
         DamageSource source = event.getSource();
         Entity attacker = source.getEntity();
-
-        boolean blockable = source.is(DamageTypes.MOB_ATTACK) || source.is(DamageTypes.PLAYER_ATTACK);
-        boolean removal = source.is(FTZDamageTypes.REMOVAL);
+        float amount = event.getNewDamage();
 
         if (target instanceof ServerPlayer player) {
             player.getData(FTZAttachmentTypes.ABILITY_MANAGER).onHit(event);
-            for (ItemStack itemStack : FantazicUtil.fullInventory(player)) if (itemStack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) itemStack.update(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialComponent.DEFAULT, holder -> holder.onHit(event));
-            if (blockable && PlayerAbilityHelper.canDoMeleeBlock(player)) Prompts.USE_MELEE_BLOCK.maybePromptPlayer(player);
+            if (!source.is(FTZDamageTypeTags.IGNORED_BY_HIDDEN_POTENTIAL) && amount > 0)
+                HiddenPotentialComponent.playerTookDamage(player);
+            if (source.is(FTZDamageTypeTags.BLOCKABLE) && PlayerAbilityHelper.canDoMeleeBlock(player)) Prompts.USE_MELEE_BLOCK.maybePromptPlayer(player);
         }
 
         target.getData(FTZAttachmentTypes.DATA_MANAGER).onHit(event);
         target.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHit(event);
+        target.getData(FTZAttachmentTypes.COMB_HEALTH).onHit(event);
+        target.getData(FTZAttachmentTypes.BIFROST_HEALTH).onHit(event);
 
         float health = target.getHealth();
         if (target.level().isClientSide()) return;
-        if (health < 0.3f * target.getMaxHealth() && !removal) SpellHelper.castPassiveSpell(target, Spells.DAMNED_WRATH);
-        if (!source.is(FTZDamageTypes.REMOVAL)) target.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).set(100);
+        if (health < 0.3f * target.getMaxHealth() && !source.is(FTZDamageTypeTags.IGNORED_BY_DAMNED_WRATH_SPELL)) SpellHelper.castPassiveSpell(target, Spells.DAMNED_WRATH);
+        if (!source.is(FTZDamageTypeTags.IGNORED_BY_TRANQUILIZE_AURA)) target.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).set(100);
 
         DamageSourcesHolder damageSourcesHolder = LevelAttributesHelper.getDamageSources(target.level());
         AuraInstance diffraction = AuraHelper.ownedAuraInstance(target, Auras.DIFFRACTION);
         if (diffraction != null && damageSourcesHolder != null) {
-            if (!removal && attacker instanceof Monster monster) {
+            if (!source.is(FTZDamageTypeTags.IGNORED_BY_DIFFRACTION_AURA) && attacker instanceof Monster monster) {
                 List<? extends Entity> affected = diffraction.entitiesInside();
                 affected.removeIf(entity -> entity != monster);
                 for (Entity entity : affected) {
@@ -345,7 +338,6 @@ public class CommonEvents {
         if (event.getEntity().level().isClientSide()) return;
         LivingEntity target = event.getEntity();
         DamageSource source = event.getSource();
-        Supplier<Float> damage = event::getAmount;
 
         Entity attacker = source.getEntity();
         if (attacker != null && attacker.getData(FTZAttachmentTypes.DASHSTONE_MINION) && target.getData(FTZAttachmentTypes.DASHSTONE_MINION)) {
@@ -355,12 +347,12 @@ public class CommonEvents {
 
         if (source.is(FTZDamageTypeTags.ELECTRIC)) {
             if (!LivingEffectHelper.hasBarrier(target)) ActionsHelper.interrupt(target);
-            if (SpellHelper.spellAvailable(target, Spells.LIGHTNING_STRIKE)) event.setAmount(damage.get() * 0.6f);
+            if (SpellHelper.spellAvailable(target, Spells.LIGHTNING_STRIKE)) event.setAmount(event.getAmount() * 0.6f);
         }
 
-        if (source.is(DamageTypeTags.IS_FALL) && RuneHelper.hasRune(target, Runes.PURE_VESSEL)) event.setAmount(damage.get() - 1.5f);
-        if (source.is(DamageTypes.WITHER) && SpellHelper.spellAvailable(target, Spells.SUSTAIN)) event.setCanceled(true);
-        if (source.is(FTZDamageTypes.REMOVAL)) event.getContainer().setPostAttackInvulnerabilityTicks(target.invulnerableTime);
+        if (source.is(DamageTypeTags.IS_FALL) && RuneHelper.hasRune(target, Runes.PURE_VESSEL)) event.setAmount(event.getAmount() - 1.5f);
+        if (source.is(FTZDamageTypeTags.NEGATED_BY_SUSTAIN_SPELL) && SpellHelper.spellAvailable(target, Spells.SUSTAIN)) event.setCanceled(true);
+        if (source.is(FTZDamageTypeTags.NO_COOLDOWN)) event.getContainer().setPostAttackInvulnerabilityTicks(target.invulnerableTime);
 
         if (AuraHelper.hasImmunityTo(target, source.typeHolder())) event.setCanceled(true);
 
@@ -383,7 +375,8 @@ public class CommonEvents {
         Holder<MobEffect> effect = instance.getEffect();
         LivingEntity entity = event.getEntity();
         if (effect == FTZMobEffects.STUN && event.getEntity() instanceof Player player && (player.isCreative() || player.isSpectator())) event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-        if (!FTZMobEffects.Application.isApplicable(entity.getType(), effect)) event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+        if (!FantazicUtil.isAffected(entity, effect))
+            event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
         if (instance.getEffect() == MobEffects.WITHER && SpellHelper.spellAvailable(entity, Spells.SUSTAIN)) event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
     }
 
@@ -426,6 +419,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void effectAdded(MobEffectEvent.Added event) {
         MobEffectInstance instance = event.getEffectInstance();
+        if (instance == null) return;
         Holder<MobEffect> effect = instance.getEffect();
         int dur = instance.getDuration();
         int ampl = instance.getDuration();
@@ -506,7 +500,6 @@ public class CommonEvents {
 
     @SubscribeEvent
     public static void shieldBlock(LivingShieldBlockEvent event) {
-        Entity blocker = event.getEntity();
         Entity attacker = event.getDamageSource().getEntity();
         if (attacker instanceof ThrownHatchet thrownHatchet && thrownHatchet.phasingTicks() > 0) event.setCanceled(true);
     }
@@ -551,19 +544,8 @@ public class CommonEvents {
     public static void curioUnEquip(CurioCanUnequipEvent event) {
         if (event.getEntity() instanceof Player player) {
             if (!player.isCreative() && event.getSlotContext().identifier().equals("dashstone")) event.setUnequipResult(TriState.FALSE);
-            if (!player.hasInfiniteMaterials() && event.getStack().getItem() instanceof SpellCasterItem spellCasterItem && SpellHelper.onCooldown(player, spellCasterItem.getSpell())) event.setUnequipResult(TriState.FALSE);
+            if (!player.hasInfiniteMaterials() && event.getStack().getItem() instanceof SpellCasterItem spellCasterItem && (SpellHelper.onCooldown(player, spellCasterItem.getSpell()) || !spellCasterItem.getSpell().value().canUnEquip(player))) event.setUnequipResult(TriState.FALSE);
             if (event.getUnequipResult() != null && event.getUnequipResult().isFalse() && player instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DENIED.get());
-
-        }
-    }
-
-    @SubscribeEvent
-    public static void curioEquip(CurioCanEquipEvent event) {
-        ItemStack stack = event.getStack();
-        if (event.getEntity() instanceof Player player) {
-            if (stack.getItem() instanceof AuraCasterItem item) {
-               // if (FantazicUtil.duplicatingCurio(player, item) >= 1) event.setEquipResult(TriState.FALSE);
-            }
         }
     }
 
@@ -578,7 +560,7 @@ public class CommonEvents {
     @SubscribeEvent
     public static void itemToss(ItemTossEvent event) {
         ItemStack stack = event.getEntity().getItem();
-        if (stack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) stack.update(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialComponent.DEFAULT, HiddenPotentialComponent::reset);
+        if (stack.has(FTZDataComponentTypes.HIDDEN_POTENTIAL)) stack.set(FTZDataComponentTypes.HIDDEN_POTENTIAL, HiddenPotentialComponent.DEFAULT);
     }
 
     @SubscribeEvent
@@ -602,7 +584,6 @@ public class CommonEvents {
     @SubscribeEvent
     public static void attackEntity(AttackEntityEvent event) {
         Player attacker = event.getEntity();
-        ItemStack stack = attacker.getMainHandItem();
         Entity target = event.getTarget();
 
         if (attacker instanceof ServerPlayer serverPlayer) {
@@ -695,6 +676,7 @@ public class CommonEvents {
     public static void onAdvancedHeal(VanillaEventsExtension.AdvancedHealEvent event) {
         LivingEntity livingEntity = event.getEntity();
         livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHeal(event);
+        livingEntity.getData(FTZAttachmentTypes.COMB_HEALTH).onHeal(event);
     }
 
     @SubscribeEvent
@@ -737,7 +719,6 @@ public class CommonEvents {
     @SubscribeEvent
     public static void playerChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         Player player = event.getEntity();
-        Level level = event.getEntity().level();
 
         ResourceKey<Level> from = event.getFrom();
         ResourceKey<Level> to = event.getTo();

@@ -12,6 +12,7 @@ public interface FTZBlockTags {
     TagKey<Block> FROM_OBSCURE_TREE = create("from_obscure_tree");
     TagKey<Block> FROM_FANTAZIUM = create("from_fantazium");
     TagKey<Block> ORES_FANTAZIUM = create("ores/fantazium");
+    TagKey<Block> ENGINEERING_TABLES = create("engineering_tables");
 
     private static TagKey<Block> create(String pName) {
         return TagKey.create(Registries.BLOCK, Fantazia.location(pName));

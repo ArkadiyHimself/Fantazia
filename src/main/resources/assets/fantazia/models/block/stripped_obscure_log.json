@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "fantazia:block/stripped_obscure_log_top",
-    "side": "fantazia:block/stripped_obscure_log"
-  }
-}

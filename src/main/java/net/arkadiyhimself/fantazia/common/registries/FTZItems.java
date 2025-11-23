@@ -1,28 +1,32 @@
 package net.arkadiyhimself.fantazia.common.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.RegistryEvents;
 import net.arkadiyhimself.fantazia.common.advanced.aura.Aura;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
-import net.arkadiyhimself.fantazia.common.item.*;
-import net.arkadiyhimself.fantazia.data.talent.Talents;
 import net.arkadiyhimself.fantazia.common.entity.CustomBoat;
-import net.arkadiyhimself.fantazia.common.RegistryEvents;
+import net.arkadiyhimself.fantazia.common.item.*;
 import net.arkadiyhimself.fantazia.common.item.casters.AuraCasterItem;
 import net.arkadiyhimself.fantazia.common.item.casters.DashStoneItem;
 import net.arkadiyhimself.fantazia.common.item.casters.LeadersHornItem;
 import net.arkadiyhimself.fantazia.common.item.casters.SpellCasterItem;
 import net.arkadiyhimself.fantazia.common.item.expendable.*;
+import net.arkadiyhimself.fantazia.common.item.skong.BlockFlyItem;
+import net.arkadiyhimself.fantazia.common.item.skong.PimpilloItem;
+import net.arkadiyhimself.fantazia.common.item.skong.ThrowingPinItem;
 import net.arkadiyhimself.fantazia.common.item.weapons.Melee.FragileBladeItem;
 import net.arkadiyhimself.fantazia.common.item.weapons.Melee.MurasamaItem;
 import net.arkadiyhimself.fantazia.common.item.weapons.Range.HatchetItem;
 import net.arkadiyhimself.fantazia.common.registries.custom.Auras;
 import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
+import net.arkadiyhimself.fantazia.data.talent.Talents;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -32,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class    FTZItems {
+public class FTZItems {
 
     public static final DeferredRegister.Items REGISTER = DeferredRegister.Items.createItems(Fantazia.MODID);
 
@@ -46,15 +50,17 @@ public class    FTZItems {
         return registerItem(name, sup, RegistryEvents.ARTIFACTS);
     }
 
-    private static <T extends Item> DeferredItem<T> weaponItem(final String name, final Supplier<T> sup) {
-        return registerItem(name, sup, RegistryEvents.WEAPONS);
-    }
-
     private static <T extends Item> DeferredItem<T> expendableItem(final String name, final Supplier<T> sup) {
         return registerItem(name, sup, RegistryEvents.EXPENDABLES);
     }
+
     private static <T extends Item> DeferredItem<T> blockItem(final String name, final Supplier<T> sup) {
         return registerItem(name, sup, RegistryEvents.BLOCK_ITEMS);
+    }
+
+    private static DeferredItem<DoubleHighBlockItem> engineeringTable(DeferredBlock<EngineeringTableBlock> block) {
+        Supplier<DoubleHighBlockItem> sup = () -> new DoubleHighBlockItem(block.value(), new Item.Properties());
+        return blockItem(block.getId().getPath(), sup);
     }
 
     private static DeferredItem<SpellCasterItem> spellCaster(String id, Holder<AbstractSpell> spellHolder) {
@@ -65,10 +71,47 @@ public class    FTZItems {
         return magicItem(id, () -> new AuraCasterItem(auraHolder));
     }
 
-    public static final DeferredItem<TheWorldlinessItem> THE_WORLDLINESS;
+    public static final DeferredItem<TheWorldlinessItem> THE_WORLDLINESS; // finished and implemented
     public static final DeferredItem<WisdomCatcherItem> WISDOM_CATCHER; // implemented and extended
     public static final DeferredItem<RuneWielderItem> RUNE_WIELDER; // finished and implemented
-    public static final DeferredItem<EnderPocketItem> ENDER_POCKET;
+    public static final DeferredItem<EnderPocketItem> ENDER_POCKET; // finished and implemented
+    public static final DeferredItem<BlueprintItem> BLUEPRINT;
+
+    // dashstones
+    public static final DeferredItem<DashStoneItem> DASHSTONE; // finished and implemented
+
+    // spellcasters
+    public static final DeferredItem<SpellCasterItem> ENTANGLER; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> ENIGMATIC_CLOCK; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> ATHAME; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> SANDMANS_DUST; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> CARD_DECK; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> ROAMERS_COMPASS; // finished and implemented
+
+    public static final DeferredItem<SpellCasterItem> SOUL_EATER; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> HEART_OF_SCULK; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> NIMBLE_DAGGER; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> CAUGHT_THUNDER; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> PUPPET_DOLL; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> BROKEN_STAFF; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> OMINOUS_BELL; // finished and implemented
+
+    public static final DeferredItem<SpellCasterItem> MYSTIC_MIRROR; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> BLOODLUST_AMULET; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> CONTAINED_SOUND; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> WITHERS_QUINTESSENCE; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> RUSTY_RING; // finished and implemented
+    public static final DeferredItem<SpellCasterItem> ABNORMAL_BEEHIVE; // finished and implemented
+
+    // auracasters
+    public static final DeferredItem<AuraCasterItem> LEADERS_HORN; // finished and implemented
+    public static final DeferredItem<AuraCasterItem> TRANQUIL_HERB; // finished and implemented
+    public static final DeferredItem<AuraCasterItem> SPIRAL_NEMESIS; // finished and implemented
+    public static final DeferredItem<AuraCasterItem> ACID_BOTTLE; // finished and implemented
+    public static final DeferredItem<AuraCasterItem> NETHER_HEART; // finished and implemented
+    public static final DeferredItem<AuraCasterItem> AMPLIFIED_ICE; // finished and implemented
+    public static final DeferredItem<AuraCasterItem> OPTICAL_LENS; // finished and implemented
+    public static final DeferredItem<AuraCasterItem> NECKLACE_OF_CLAIRVOYANCE; // finished and implemented
 
     // melee weapons
     public static final DeferredItem<FragileBladeItem> FRAGILE_BLADE; // finished and implemented
@@ -82,41 +125,6 @@ public class    FTZItems {
     public static final DeferredItem<HatchetItem> DIAMOND_HATCHET; // finished and implemented
     public static final DeferredItem<HatchetItem> NETHERITE_HATCHET; // finished and implemented
 
-    // dashstones
-    public static final DeferredItem<DashStoneItem> DASHSTONE;
-
-    // spellcasters
-    public static final DeferredItem<SpellCasterItem> ENTANGLER; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> ENIGMATIC_CLOCK; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> ATHAME; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> SANDMANS_DUST; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> CARD_DECK; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> ROAMERS_COMPASS;
-
-    public static final DeferredItem<SpellCasterItem> SOUL_EATER; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> HEART_OF_SCULK; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> NIMBLE_DAGGER; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> CAUGHT_THUNDER; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> PUPPET_DOLL; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> BROKEN_STAFF; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> OMINOUS_BELL;
-
-    public static final DeferredItem<SpellCasterItem> MYSTIC_MIRROR; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> BLOODLUST_AMULET; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> CONTAINED_SOUND; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> WITHERS_QUINTESSENCE; // finished and implemented
-    public static final DeferredItem<SpellCasterItem> RUSTY_RING; // finished and implemented
-
-    // auracasters
-    public static final DeferredItem<AuraCasterItem> LEADERS_HORN; // finished and implemented
-    public static final DeferredItem<AuraCasterItem> TRANQUIL_HERB; // finished and implemented
-    public static final DeferredItem<AuraCasterItem> SPIRAL_NEMESIS; // finished and implemented
-    public static final DeferredItem<AuraCasterItem> ACID_BOTTLE; // finished and implemented
-    public static final DeferredItem<AuraCasterItem> NETHER_HEART; // finished and implemented
-    public static final DeferredItem<AuraCasterItem> AMPLIFIED_ICE; // finished and implemented
-    public static final DeferredItem<AuraCasterItem> OPTICAL_LENS; // finished and implemented
-    public static final DeferredItem<AuraCasterItem> NECKLACE_OF_CLAIRVOYANCE; // finished and implemented
-
     // expendables
     public static final DeferredItem<ExpendableItem> OBSCURE_SUBSTANCE; // finished and implemented
     public static final DeferredItem<TalentProvidingItem> UNFINISHED_WINGS; // finished and implemented
@@ -127,7 +135,12 @@ public class    FTZItems {
     public static final DeferredItem<Item> RAW_FANTAZIUM; // finished and implemented
     public static final DeferredItem<Item> FANTAZIUM_INGOT; // finished and implemented
     public static final DeferredItem<FantazicPaintingItem> FANTAZIC_PAINTING; // finished and implemented
-    public static final DeferredItem<Item> AMPLIFIER;
+    public static final DeferredItem<Item> AMPLIFIER; // finished and implemented
+
+    // rechargeable tools
+    public static final DeferredItem<PimpilloItem> PIMPILLO; // finished and implemented
+    public static final DeferredItem<ThrowingPinItem> THROWING_PIN; // finished and implemented
+    public static final DeferredItem<BlockFlyItem> BLOCK_FLY; // finished and implemented
 
     // obscure wood items
     public static final DeferredItem<SignItem> OBSCURE_SIGN; // finished and implemented
@@ -156,16 +169,7 @@ public class    FTZItems {
         WISDOM_CATCHER = magicItem("wisdom_catcher", WisdomCatcherItem::new);
         RUNE_WIELDER = REGISTER.register("rune_wielder", RuneWielderItem::new);
         ENDER_POCKET = magicItem("ender_pocket", EnderPocketItem::new);
-
-        FRAGILE_BLADE = weaponItem("fragile_blade", FragileBladeItem::new);
-        MURASAMA = weaponItem("murasama", MurasamaItem::new);
-
-        WOODEN_HATCHET = weaponItem("wooden_hatchet", () -> new HatchetItem(Tiers.WOOD, -2.6f));
-        STONE_HATCHET = weaponItem("stone_hatchet", () -> new HatchetItem(Tiers.STONE, -2.6f));
-        IRON_HATCHET = weaponItem("iron_hatchet", () -> new HatchetItem(Tiers.IRON, -2.6f));
-        GOLDEN_HATCHET = weaponItem("golden_hatchet", () -> new HatchetItem(Tiers.GOLD, -2.6f));
-        DIAMOND_HATCHET = weaponItem("diamond_hatchet", () -> new HatchetItem(Tiers.DIAMOND, -2.6f));
-        NETHERITE_HATCHET = weaponItem("netherite_hatchet", () -> new HatchetItem(Tiers.NETHERITE, -2.6f));
+        BLUEPRINT = REGISTER.register("blueprint", BlueprintItem::new);
 
         DASHSTONE = REGISTER.register("dashstone", DashStoneItem::new);
 
@@ -189,6 +193,7 @@ public class    FTZItems {
         CONTAINED_SOUND = spellCaster("contained_sound", Spells.SHOCKWAVE);
         WITHERS_QUINTESSENCE = spellCaster("withers_quintessence", Spells.SUSTAIN);
         RUSTY_RING = spellCaster("rusty_ring", Spells.REINFORCE);
+        ABNORMAL_BEEHIVE = spellCaster("abnormal_beehive", Spells.RESTORE);
 
         LEADERS_HORN = magicItem("leaders_horn", LeadersHornItem::new);
         TRANQUIL_HERB = auraCaster("tranquil_herb", Auras.TRANQUIL);
@@ -198,6 +203,16 @@ public class    FTZItems {
         AMPLIFIED_ICE = auraCaster("amplified_ice", Auras.FROSTBITE);
         OPTICAL_LENS = auraCaster("optical_lens", Auras.DIFFRACTION);
         NECKLACE_OF_CLAIRVOYANCE = auraCaster("necklace_of_clairvoyance", Auras.UNCOVER);
+
+        FRAGILE_BLADE = magicItem("fragile_blade", FragileBladeItem::new);
+        MURASAMA = magicItem("murasama", MurasamaItem::new);
+
+        WOODEN_HATCHET = magicItem("wooden_hatchet", () -> new HatchetItem(Tiers.WOOD, -2.6f));
+        STONE_HATCHET = magicItem("stone_hatchet", () -> new HatchetItem(Tiers.STONE, -2.6f));
+        IRON_HATCHET = magicItem("iron_hatchet", () -> new HatchetItem(Tiers.IRON, -2.6f));
+        GOLDEN_HATCHET = magicItem("golden_hatchet", () -> new HatchetItem(Tiers.GOLD, -2.6f));
+        DIAMOND_HATCHET = magicItem("diamond_hatchet", () -> new HatchetItem(Tiers.DIAMOND, -2.6f));
+        NETHERITE_HATCHET = magicItem("netherite_hatchet", () -> new HatchetItem(Tiers.NETHERITE, -2.6f));
 
         OBSCURE_SUBSTANCE = expendableItem("obscure_substance", () -> new ExpendableItem(Rarity.UNCOMMON));
         UNFINISHED_WINGS = expendableItem("unfinished_wings", () -> new TalentProvidingItem(Rarity.UNCOMMON, Talents.DOUBLE_JUMP));
@@ -210,12 +225,14 @@ public class    FTZItems {
         FANTAZIC_PAINTING = expendableItem("fantazic_painting", FantazicPaintingItem::new);
         AMPLIFIER = expendableItem("amplifier", basicAssItem());
 
+        PIMPILLO = expendableItem("pimpillo", PimpilloItem::new);
+        THROWING_PIN = expendableItem("throwing_pin", ThrowingPinItem::new);
+        BLOCK_FLY = expendableItem("block_fly", BlockFlyItem::new);
+
         OBSCURE_SIGN = blockItem("obscure_sign", () -> new SignItem(new Item.Properties().stacksTo(16), FTZBlocks.OBSCURE_SIGN.get(), FTZBlocks.OBSCURE_WALL_SIGN.get()));
         OBSCURE_HANGING_SIGN = blockItem("obscure_hanging_sign", () -> new HangingSignItem(FTZBlocks.OBSCURE_HANGING_SIGN.get(), FTZBlocks.OBSCURE_WALL_HANGING_SIGN.get(), new Item.Properties().stacksTo(16)));
         OBSCURE_BOAT = blockItem("obscure_boat", () -> new CustomBoatItem(false, CustomBoat.Type.OBSCURE, new Item.Properties().stacksTo(1)));
         OBSCURE_CHEST_BOAT = blockItem("obscure_chest_boat", () -> new CustomBoatItem(true, CustomBoat.Type.OBSCURE, new Item.Properties().stacksTo(1)));
     }
-
-
 
 }

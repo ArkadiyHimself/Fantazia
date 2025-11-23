@@ -9,6 +9,11 @@
       "type" : "directory",
       "source" : "rune",
       "prefix" : "rune/"
+    },
+    {
+      "type" : "directory",
+      "source" : "blueprint",
+      "prefix" : "blueprint/"
     }
   ]
 }

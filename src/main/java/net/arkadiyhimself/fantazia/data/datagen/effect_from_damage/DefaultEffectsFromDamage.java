@@ -1,10 +1,10 @@
 package net.arkadiyhimself.fantazia.data.datagen.effect_from_damage;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
+import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
 import net.arkadiyhimself.fantazia.data.effect_from_damage.EffectFromDamage;
 import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
-import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
-import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.damagesource.DamageTypes;

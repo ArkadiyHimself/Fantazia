@@ -10,11 +10,10 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.TalentsHolder;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.integration.jei.Dummy;
-import net.arkadiyhimself.fantazia.common.item.WisdomCatcherItem;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -81,7 +80,7 @@ public record WisdomConvertingCategory(
         int x0 = (96 - width) / 2;
         guiGraphics.drawString(font, component, x0, 38, 0, false);
 
-        if (FantazicMath.within(eX, eX + 52 + 16, mouseX) && FantazicMath.within(24, 34, mouseY))
+        if (FantazicMath.isWithin(eX, eX + 52 + 16, mouseX) && FantazicMath.isWithin(24, 34, mouseY))
             guiGraphics.renderTooltip(font, Component.translatable("fantazia.jei.wisdom_reward.title.converting.rate").withStyle(ChatFormatting.BLUE), (int) mouseX, (int) mouseY);
     }
 

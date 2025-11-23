@@ -96,4 +96,10 @@ public class TalentHelper {
     public static boolean isDisabled(@NotNull Player player, @NotNull TalentImpact impact) {
         return disabledImpacts(player).contains(impact);
     }
+
+    public static boolean hasReward(@NotNull Player player, ResourceLocation category, ResourceLocation instance) {
+        TalentsHolder holder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
+        if (holder == null) return false;
+        return holder.hasReward(category, instance);
+    }
 }

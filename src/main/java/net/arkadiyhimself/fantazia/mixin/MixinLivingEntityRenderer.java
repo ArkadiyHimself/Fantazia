@@ -7,6 +7,7 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.hold
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.DashHolder;
+import net.arkadiyhimself.fantazia.common.entity.BlockFly;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -41,6 +42,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, M extend
     private T fantazia$current = null;
     @Inject(at = @At("HEAD"), method = "getOverlayCoords", cancellable = true)
     private static void preventTurningRed(LivingEntity pLivingEntity, float pU, CallbackInfoReturnable<Integer> cir) {
+        if (pLivingEntity instanceof BlockFly) cir.setReturnValue(655360);
         if (pLivingEntity.deathTime > 0) return;
         if (!LivingEffectHelper.hurtRedColor(pLivingEntity)) cir.setReturnValue(655360);
     }

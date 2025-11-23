@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.client.particless.particles;
 
-import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.client.particless.options.EntityChasingParticleOption;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.registries.FTZMobEffects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;

@@ -39,7 +39,7 @@ public class MixinModelBlockRenderer {
 
         LocalPlayer localPlayer = Minecraft.getInstance().player;
 
-        if (localPlayer == null || fantazia$cachedPos == null || ClientEvents.heldAuraCaster == null || Minecraft.getInstance().screen == null) {
+        if (localPlayer == null || fantazia$cachedPos == null || ClientEvents.heldAuraCaster == null || Minecraft.getInstance().screen != null) {
             defaulted.run();
             return;
         }

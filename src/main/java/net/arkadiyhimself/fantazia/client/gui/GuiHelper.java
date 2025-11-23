@@ -1,11 +1,9 @@
 package net.arkadiyhimself.fantazia.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.arkadiyhimself.fantazia.common.advanced.dynamic_attribute_modifier.DynamicAttributeModifier;
 import net.arkadiyhimself.fantazia.util.simpleobjects.PercentageAttribute;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -23,30 +21,10 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 public class GuiHelper {
+
     public static final DecimalFormat PERCENTAGE_ATTRIBUTE_MODIFIER = Util.make(new DecimalFormat("#"), (p_41704_) -> {
         p_41704_.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
-
-    public static String spellRecharge(int remainingTicks) {
-        float seconds = ((float) remainingTicks) / 20;
-        return String.format("%.1f", seconds);
-    }
-
-    public static void wholeScreen(GuiGraphics guiGraphics, ResourceLocation resourceLocation, float red, float green, float blue, float alpha) {
-        float[] previousSC = RenderSystem.getShaderColor().clone();
-
-        RenderSystem.disableDepthTest();
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-
-        RenderSystem.setShaderColor(red, green, blue, alpha);
-        guiGraphics.blit(resourceLocation,0,0, -90, 0,0, guiGraphics.guiWidth(), guiGraphics.guiHeight(), guiGraphics.guiWidth(), guiGraphics.guiHeight());
-
-        RenderSystem.disableBlend();
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShaderColor(previousSC[0], previousSC[1], previousSC[2], previousSC[3]);
-    }
 
     @SuppressWarnings("all")
     public static Component bakeComponent(String str, @Nullable ChatFormatting[] strFormat, @Nullable ChatFormatting[] varFormat, Object... objs) {

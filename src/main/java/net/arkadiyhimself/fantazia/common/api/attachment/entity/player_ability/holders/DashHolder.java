@@ -1,19 +1,19 @@
 package net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders;
 
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.render.VisualHelper;
+import net.arkadiyhimself.fantazia.common.FantazicHooks;
 import net.arkadiyhimself.fantazia.common.advanced.rune.RuneHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.IDamageEventListener;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHolder;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.render.VisualHelper;
 import net.arkadiyhimself.fantazia.common.entity.DashStone;
-import net.arkadiyhimself.fantazia.common.FantazicHooks;
-import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.common.registries.custom.Runes;
 import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
+import net.arkadiyhimself.fantazia.networking.IPacket;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.HolderLookup;
@@ -159,9 +159,9 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
                 targets.removeIf(entity -> entity == getPlayer());
 
                 AttributeInstance attackDamage = getPlayer().getAttribute(Attributes.ATTACK_DAMAGE);
-                if (attackDamage != null) attackDamage.addTransientModifier(new AttributeModifier(Fantazia.location("dash_debuff"), -0.3, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+                if (attackDamage != null) attackDamage.addTransientModifier(new AttributeModifier(Fantazia.location("dash_piercer_penalty"), -0.3, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
                 for (LivingEntity livingEntity : targets) getPlayer().attack(livingEntity);
-                if (attackDamage != null) attackDamage.removeModifier(Fantazia.location("dash_debuff"));
+                if (attackDamage != null) attackDamage.removeModifier(Fantazia.location("dash_piercer_penalty"));
             }
             if (duration == 0) {
                 FantazicHooks.onDashExpired(getPlayer(),this);

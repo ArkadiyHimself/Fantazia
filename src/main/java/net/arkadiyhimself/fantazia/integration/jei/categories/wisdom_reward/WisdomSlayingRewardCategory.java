@@ -8,10 +8,14 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import net.arkadiyhimself.fantazia.Fantazia;
+import net.arkadiyhimself.fantazia.common.registries.FTZEntityTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZItems;
+import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardCategories;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.SpawnEggItem;
@@ -58,14 +62,24 @@ public record WisdomSlayingRewardCategory(
         }
         ResourceLocation entityId = recipe.getA();
         EntityType<?> entityType = BuiltInRegistries.ENTITY_TYPE.get(entityId);
-        SpawnEggItem eggItem;
-        if (!BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)|| (eggItem = SpawnEggItem.byId(entityType)) == null) return;
+        Item spawner;
+        if (!BuiltInRegistries.ENTITY_TYPE.containsKey(entityId)|| (spawner = getSpawnerItem(entityType)) == null) return;
 
-        builder.addSlot(RecipeIngredientRole.INPUT, 37, 6).addItemStack(new ItemStack(eggItem));
+        builder.addSlot(RecipeIngredientRole.INPUT, 37, 6).addItemStack(new ItemStack(spawner));
+    }
+
+    @Override
+    public ResourceLocation category() {
+        return WisdomRewardCategories.SLAYED;
     }
 
     @Override
     public @Nullable IDrawable getBackground() {
         return background;
+    }
+
+    private static Item getSpawnerItem(EntityType<?> entityType) {
+        if (entityType == FTZEntityTypes.BLOCK_FLY.value()) return FTZItems.BLOCK_FLY.asItem();
+        else return SpawnEggItem.byId(entityType);
     }
 }

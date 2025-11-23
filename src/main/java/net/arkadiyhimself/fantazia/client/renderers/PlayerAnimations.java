@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.client.renderers;
 
+import dev.kosmx.playerAnim.api.IPlayable;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
 import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.ModifierLayer;
@@ -8,17 +9,23 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public class PlayerAnimations {
 
     @SuppressWarnings("ConstantConditions")
     public static KeyframeAnimationPlayer WINDUP_START() {
-        return new KeyframeAnimationPlayer((KeyframeAnimation) PlayerAnimationRegistry.getAnimation(Fantazia.location("windup_start")));
+        Map<ResourceLocation, IPlayable> animations = PlayerAnimationRegistry.getAnimations();
+        return new KeyframeAnimationPlayer((KeyframeAnimation)
+                PlayerAnimationRegistry.getAnimation(Fantazia.location("windup.start")));
     }
 
     @SuppressWarnings("ConstantConditions")
-    public static final KeyframeAnimationPlayer WINDUP_CONTINUE = new KeyframeAnimationPlayer((KeyframeAnimation) PlayerAnimationRegistry.getAnimation(Fantazia.location("windup_continue")));
+    public static final KeyframeAnimationPlayer WINDUP_CONTINUE =
+            new KeyframeAnimationPlayer((KeyframeAnimation) PlayerAnimationRegistry.getAnimation(Fantazia.location("windup.continue")));
 
     @SuppressWarnings("unchecked")
     public static void animatePlayer(AbstractClientPlayer player, @Nullable String name) {
@@ -33,6 +40,7 @@ public class PlayerAnimations {
 
     @SuppressWarnings("unchecked")
     public static void animatePlayer(AbstractClientPlayer player, @Nullable IAnimation animation) {
+        Map<ResourceLocation, IPlayable> animations = PlayerAnimationRegistry.getAnimations();
         ModifierLayer<IAnimation> animationLayer = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData(player).get(Fantazia.location("animation"));
         if (animationLayer != null) animationLayer.setAnimation(animation);
     }

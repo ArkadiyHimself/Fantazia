@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 /**
  * Dynamic Attribute Modifier (DAM) is a special kind of attribute modifiers whose value,
- * as the name suggests, dynamically changes every tick depending on the situation.
+ * as the ident suggests, dynamically changes every tick depending on the situation.
  * The way it works is by calculating the amount by which the attribute will be modified,
  * then trying to remove the already existing modifier applied by this DAM if it is present,
  * and then applying a new modifier with changed value every in-game tick

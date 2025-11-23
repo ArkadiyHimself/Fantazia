@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.data.datagen.effect_spawn_applier;
 
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
-import net.arkadiyhimself.fantazia.data.spawn_effect.EffectSpawnApplier;
 import net.arkadiyhimself.fantazia.data.datagen.SubProvider;
+import net.arkadiyhimself.fantazia.data.spawn_effect.EffectSpawnApplier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;

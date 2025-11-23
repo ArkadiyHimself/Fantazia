@@ -1,22 +1,24 @@
 package net.arkadiyhimself.fantazia.networking.stuff;
 
 import net.arkadiyhimself.fantazia.client.ClientEvents;
+import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
+import net.arkadiyhimself.fantazia.client.renderers.PlayerAnimations;
+import net.arkadiyhimself.fantazia.client.screen.AmplificationTab;
+import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.holders.StuckHatchetHolder;
 import net.arkadiyhimself.fantazia.common.api.prompt.Prompt;
 import net.arkadiyhimself.fantazia.common.api.prompt.PromptToast;
-import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
-import net.arkadiyhimself.fantazia.client.renderers.PlayerAnimations;
-import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
 import net.arkadiyhimself.fantazia.common.entity.DashStone;
-import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.arkadiyhimself.fantazia.common.world.inventory.AmplificationMenu;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
+import net.arkadiyhimself.fantazia.util.wheremagichappens.RandomUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -113,12 +115,21 @@ interface StuffHandlers {
 
     static void playSoundForUI(SoundEvent soundEvent) {
         if (soundEvent == null) return;
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(soundEvent, 1f, 1f));
+        FantazicUtil.playSoundUI(soundEvent);
     }
 
     static void promptPlayer(Prompt prompt) {
         ToastComponent gui = Minecraft.getInstance().getToasts();
         if (gui.getToast(PromptToast.class, prompt) == null) gui.addToast(new PromptToast(prompt));
+    }
+
+    static void setAmplificationTab(IPayloadContext context, AmplificationTab tab) {
+        if (!(context.player() instanceof ServerPlayer serverPlayer) || !(serverPlayer.containerMenu instanceof AmplificationMenu menu)) return;
+        menu.setTab(tab);
+    }
+
+    static void summonShockwave(IPayloadContext context) {
+        if (context.player() instanceof ServerPlayer serverPlayer) FantazicCombat.maybeSummonShockwave(serverPlayer);
     }
 
     static void swingHand(InteractionHand hand) {

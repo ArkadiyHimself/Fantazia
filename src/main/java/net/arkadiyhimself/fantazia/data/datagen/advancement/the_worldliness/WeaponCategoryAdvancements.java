@@ -1,8 +1,8 @@
 package net.arkadiyhimself.fantazia.data.datagen.advancement.the_worldliness;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.data.criterion.PossessItemTrigger;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
+import net.arkadiyhimself.fantazia.data.criterion.PossessItemTrigger;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;

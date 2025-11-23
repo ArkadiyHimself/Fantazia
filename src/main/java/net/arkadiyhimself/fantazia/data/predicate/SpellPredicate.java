@@ -6,7 +6,6 @@ import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
 import net.minecraft.advancements.critereon.TagPredicate;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.apache.commons.compress.utils.Lists;
 
