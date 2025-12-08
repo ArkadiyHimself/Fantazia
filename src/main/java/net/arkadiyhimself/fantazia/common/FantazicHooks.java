@@ -70,12 +70,12 @@ public class FantazicHooks {
     }
 
     public static boolean onBlock(Player player, ItemStack itemStack, float amount, LivingEntity attacker) {
-        BlockingEvent.Block event = new BlockingEvent.Block(player, itemStack, amount, attacker);
+        BlockingEvent.RegularBlocking event = new BlockingEvent.RegularBlocking(player, itemStack, amount, attacker);
         return !NeoForge.EVENT_BUS.post(event).isCanceled();
     }
 
-    public static BlockingEvent.Parry onParry(Player player, ItemStack itemStack, float amountTake, LivingEntity attacker, float amountDeal) {
-        BlockingEvent.Parry event = new BlockingEvent.Parry(player, itemStack, amountTake, attacker, amountDeal);
+    public static BlockingEvent.Parrying onParry(Player player, ItemStack itemStack, float amountTake, LivingEntity attacker, float amountDeal) {
+        BlockingEvent.Parrying event = new BlockingEvent.Parrying(player, itemStack, amountTake, attacker, amountDeal);
         NeoForge.EVENT_BUS.post(event);
         return event;
     }

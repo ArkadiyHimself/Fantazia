@@ -247,9 +247,9 @@ public class DashHolder extends PlayerAbilityHolder implements IDamageEventListe
 
     public SoundEvent getDashSound() {
         return switch (level) {
-            case 1 -> FTZSoundEvents.DASH1.get();
-            case 2 -> FTZSoundEvents.DASH2.get();
-            case 3 -> FTZSoundEvents.DASH3.get();
+            case 1 -> FTZSoundEvents.DASH1_USE.get();
+            case 2 -> FTZSoundEvents.DASH2_USE.get();
+            case 3 -> FTZSoundEvents.DASH3_USE.get();
             default -> null;
         };
     }

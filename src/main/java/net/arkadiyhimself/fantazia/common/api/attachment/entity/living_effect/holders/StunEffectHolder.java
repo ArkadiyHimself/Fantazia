@@ -109,12 +109,12 @@ public class StunEffectHolder extends ComplexLivingEffectHolder implements IDama
 
         float protection = EnchantmentHelper.getDamageProtection(serverLevel, getEntity(), source);
 
-        if (source.is(DamageTypeTags.IS_EXPLOSION) && serverLevel.getGameRules().getBoolean(FTZGameRules.STUN_FROM_EXPLOSION) && amount > 2f) {
+        if (source.is(FTZDamageTypeTags.EXPLOSION_CAUSES_STUN) && serverLevel.getGameRules().getBoolean(FTZGameRules.STUN_FROM_EXPLOSION) && amount > 2f) {
             int dur = (int) Math.max(premature, amount * 5);
 
             if (protection > 0) dur = (int) ((20 - protection) / 20 * dur);
             attackStunned(dur);
-        } else if (source.is(DamageTypeTags.IS_FALL) && serverLevel.getGameRules().getBoolean(FTZGameRules.STUN_FROM_FALLING)) {
+        } else if (source.is(FTZDamageTypeTags.FALLING_CAUSES_STUN) && serverLevel.getGameRules().getBoolean(FTZGameRules.STUN_FROM_FALLING)) {
             if (amount > 5f) {
                 int dur = (int) Math.max(premature, amount * 16);
 

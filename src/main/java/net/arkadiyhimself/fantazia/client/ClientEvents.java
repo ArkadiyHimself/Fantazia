@@ -14,6 +14,7 @@ import net.arkadiyhimself.fantazia.client.render.layers.BarrierLayer;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.TargetedSpell;
 import net.arkadiyhimself.fantazia.common.api.FTZKeyMappings;
+import net.arkadiyhimself.fantazia.common.api.attachment.BasicAttachmentsUtil;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.holders.EvasionHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.CurrentAndInitialValue;
@@ -65,14 +66,19 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerFlyableFallEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.joml.Quaternionf;
@@ -91,12 +97,29 @@ public class ClientEvents {
     public static int requiredCast = 0;
     public static int currentCast = 0;
     public static int castCurioIndex = -1;
+    public static @Nullable BlockEntity crossHairBlockEntity = null;
 
     @SubscribeEvent
     public static void entityTickPre(EntityTickEvent.Pre event) {
         Entity entity = event.getEntity();
         if (!entity.level().isClientSide()) return;
         if (entity == suitableTarget && Screen.hasShiftDown()) VisualHelper.particleOnEntityClient(entity, ParticleTypes.SMOKE, ParticleMovement.REGULAR);
+    }
+
+    @SubscribeEvent
+    public static void livingFall(LivingFallEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!entity.level().isClientSide()) return;
+        if (entity == Minecraft.getInstance().player)
+            BasicAttachmentsUtil.maybeCrushNearbyEnemies(Minecraft.getInstance().player, entity.getDeltaMovement().y);
+    }
+
+    @SubscribeEvent
+    public static void playerFlyableFall(PlayerFlyableFallEvent event) {
+        Player player = event.getEntity();
+        if (!player.level().isClientSide()) return;
+        if (player == Minecraft.getInstance().player)
+            BasicAttachmentsUtil.maybeCrushNearbyEnemies(player, player.getDeltaMovement().y);
     }
 
     @SubscribeEvent
@@ -110,7 +133,6 @@ public class ClientEvents {
         LocalPlayer player = mc.player;
         if (player == null) return;
 
-        GuiGraphics guiGraphics = event.getGuiGraphics();
         PoseStack poseStack = event.getGuiGraphics().pose();
         ResourceLocation overlay = event.getName();
 
@@ -412,9 +434,16 @@ public class ClientEvents {
     @SubscribeEvent
     public static void clientTickPost(ClientTickEvent.Post event) {
         LocalPlayer player = Minecraft.getInstance().player;
+        ClientLevel level = Minecraft.getInstance().level;
         if (player != null) {
             Item item = player.getMainHandItem().getItem();
             if (!(item instanceof SpellCasterItem spellCasterItem) || !(spellCasterItem.getSpell().value() instanceof TargetedSpell<?>)) suitableTarget = null;
+        }
+
+        HitResult hitResult = Minecraft.getInstance().hitResult;
+        if (hitResult instanceof BlockHitResult blockHitResult && level != null) {
+            BlockPos blockPos = blockHitResult.getBlockPos();
+            crossHairBlockEntity = level.getBlockEntity(blockPos);
         }
     }
 
@@ -431,15 +460,15 @@ public class ClientEvents {
         else if (anim > MeleeBlockHolder.BLOCK_ANIM - 3f) delta = (MeleeBlockHolder.BLOCK_ANIM - anim + event.getPartialTick()) / 3;
         else delta = 1f;
 
-        int multip = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? 1 : -1;
+        int offset = Minecraft.getInstance().options.mainHand().get() == HumanoidArm.RIGHT ? 1 : -1;
 
         if (event.getHand() == InteractionHand.MAIN_HAND) {
-            poseStack.translate(0.55f * multip * delta, 0.35f * delta, 0);
-            poseStack.mulPose(Axis.YP.rotationDegrees(90f * multip * delta));
+            poseStack.translate(0.55f * offset * delta, 0.35f * delta, 0);
+            poseStack.mulPose(Axis.YP.rotationDegrees(90f * offset * delta));
             poseStack.mulPose(Axis.XP.rotationDegrees(-45f * delta));
         } else {
-            poseStack.translate(-0.55 * multip * delta, -0.35 * delta, 0);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-90 * multip * delta));
+            poseStack.translate(-0.55 * offset * delta, -0.35 * delta, 0);
+            poseStack.mulPose(Axis.YP.rotationDegrees(-90 * offset * delta));
             poseStack.mulPose(Axis.XP.rotationDegrees(45f * delta));
         }
     }

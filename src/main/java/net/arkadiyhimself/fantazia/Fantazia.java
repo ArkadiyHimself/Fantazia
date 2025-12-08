@@ -29,7 +29,7 @@ public class Fantazia {
 
     public static final String MODID = "fantazia";
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static final boolean DEVELOPER_MODE = true;
+    public static final boolean DEVELOPER_MODE = false;
     private static FantazicItemRenderer CUSTOM_RENDERER = null;
     private static BossHealthOverlayAccessor accessor = null;
 

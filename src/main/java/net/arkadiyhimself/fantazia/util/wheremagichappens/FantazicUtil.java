@@ -13,6 +13,7 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentPredicate;
@@ -25,6 +26,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -45,7 +47,13 @@ import net.minecraft.world.item.component.Fireworks;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.TargetedConditionalEffect;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.predicate.BlockPredicate;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.neoforged.neoforge.event.EventHooks;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.Nullable;
@@ -58,10 +66,8 @@ import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 import top.theillusivec4.curios.common.util.EquipCurioTrigger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class FantazicUtil {
 
@@ -196,7 +202,7 @@ public class FantazicUtil {
 
     public static @Nullable Item getSkull(Entity entity) {
         Optional<ResourceKey<EntityType<?>>> key = BuiltInRegistries.ENTITY_TYPE.getResourceKey(entity.getType());
-        return key.map(entityTypeResourceKey -> BuiltInRegistries.ENTITY_TYPE.getData(FTZDataMapTypes.SKULLS, entityTypeResourceKey)).orElse(null);
+        return key.map(resourceKey -> BuiltInRegistries.ENTITY_TYPE.getData(FTZDataMapTypes.SKULLS, resourceKey)).orElse(null);
     }
 
     public static void entityChasingSound(Entity entity, SoundEvent soundEvent, SoundSource soundSource, float volume, float pitch) {
@@ -228,5 +234,31 @@ public class FantazicUtil {
             if (stack.is(item)) m += stack.getCount();
         }
         return Mth.floor((float) m / required);
+    }
+
+    public static void destroyBlock(BlockPos pos, BlockState state, Player player) {
+        Level level = player.level();
+        BlockState blockstate = state.getBlock().playerWillDestroy(level, pos, state, player);
+        BlockEntity blockentity = level.getBlockEntity(pos);
+        Block block = blockstate.getBlock();
+        if (player.isCreative()) removeBlock(player, pos, blockstate, false);
+        else {
+            ItemStack itemStack = player.getMainHandItem();
+            ItemStack itemStack1 = itemStack.copy();
+            boolean flag1 = blockstate.canHarvestBlock(level, pos, player);
+            itemStack.mineBlock(level, blockstate, pos, player);
+            boolean flag = removeBlock(player, pos, blockstate, flag1);
+            if (flag1 && flag)
+                block.playerDestroy(level, player, pos, blockstate, blockentity, itemStack1);
+            if (itemStack.isEmpty() && !itemStack1.isEmpty())
+                EventHooks.onPlayerDestroyItem(player, itemStack1, InteractionHand.MAIN_HAND);
+        }
+    }
+
+    private static boolean removeBlock(Player player, BlockPos pos, BlockState state, boolean canHarvest) {
+        Level level = player.level();
+        boolean removed = state.onDestroyedByPlayer(level, pos, player, canHarvest, level.getFluidState(pos));
+        if (removed) state.getBlock().destroy(level, pos, state);
+        return removed;
     }
 }

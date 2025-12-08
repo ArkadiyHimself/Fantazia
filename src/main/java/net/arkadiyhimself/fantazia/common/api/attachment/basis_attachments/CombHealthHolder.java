@@ -42,6 +42,19 @@ public class CombHealthHolder implements INBTSerializable<CompoundTag>, IDamageE
         }
     }
 
+    public int ticks() {
+        return ticks;
+    }
+
+    public float toHeal() {
+        return toHeal;
+    }
+
+    public void cleanse() {
+        this.ticks = 0;
+        this.toHeal = 0f;
+    }
+
     @Override
     public void onHit(LivingDamageEvent.Post event) {
         DamageSource source = event.getSource();
@@ -88,13 +101,5 @@ public class CombHealthHolder implements INBTSerializable<CompoundTag>, IDamageE
     public void deserializeTick(CompoundTag tag) {
         this.ticks = tag.getInt("ticks");
         this.toHeal = tag.getFloat("heal");
-    }
-
-    public int ticks() {
-        return ticks;
-    }
-
-    public float toHeal() {
-        return toHeal;
     }
 }

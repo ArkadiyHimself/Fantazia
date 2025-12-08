@@ -12,7 +12,7 @@ import net.arkadiyhimself.fantazia.common.blocks.obscure_sign.ObscureWallHanging
 import net.arkadiyhimself.fantazia.common.blocks.obscure_sign.ObscureWallSignBlock;
 import net.arkadiyhimself.fantazia.common.item.EngineeringTableBlock;
 import net.arkadiyhimself.fantazia.common.item.RegularBlockItem;
-import net.arkadiyhimself.fantazia.data.datagen.worldgen.tree.FTZTreeGrowers;
+import net.arkadiyhimself.fantazia.datagen.worldgen.tree.FTZTreeGrowers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;

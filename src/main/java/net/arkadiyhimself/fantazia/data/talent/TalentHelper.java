@@ -69,7 +69,8 @@ public class TalentHelper {
         TalentsHolder talentsHolder = PlayerAbilityHelper.takeHolder(player, TalentsHolder.class);
         if (talentsHolder == null) return;
         for (Talent talent : ServerTalentManager.getAllTalents().values()) {
-            IHierarchy<Talent> hierarchy = talent.getHierarchy();
+            TalentHierarchy talentHierarchy = talent.getHierarchy();
+            IHierarchy<Talent> hierarchy = talentHierarchy.hierarchy();
             Optional<ResourceLocation> adv = talent.advancement();
             if (adv.isEmpty() || !adv.get().equals(id)) continue;
             if (player instanceof ServerPlayer serverPlayer) revokeAdvancement(serverPlayer, advancement);

@@ -1,12 +1,17 @@
 package net.arkadiyhimself.fantazia.common.advanced.cleanse;
 
+import net.arkadiyhimself.fantazia.FantazicConfig;
 import net.arkadiyhimself.fantazia.common.FantazicHooks;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.EuphoriaHolder;
 import net.arkadiyhimself.fantazia.common.api.custom_events.VanillaEventsExtension;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
@@ -27,6 +32,15 @@ public class EffectCleansing {
         List<MobEffectInstance> effectInstances = livingEntity.getActiveEffects().stream().filter(effectInstance -> effectInstance.getEffect().value().getCategory() == category).toList();
         if (effectInstances.isEmpty()) return;
         effectInstances.forEach(effectInstance -> tryCleanse(livingEntity, cleanse, effectInstance.getEffect()));
+        if (category == MobEffectCategory.BENEFICIAL && livingEntity instanceof Player player) {
+            int strength = cleanse.getStrength();
+            if (strength > FantazicConfig.euphoriaCleanse.get())
+                PlayerAbilityHelper.acceptConsumer(player, EuphoriaHolder.class, EuphoriaHolder::reset);
+            if (strength > FantazicConfig.passiveBarrierCleanse.get())
+                player.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).putOnRecharge();
+            if (strength > FantazicConfig.combHealthCleanse.get())
+                player.getData(FTZAttachmentTypes.COMB_HEALTH).cleanse();
+        }
     }
 
     public static void tryCleanseAll(LivingEntity livingEntity, Cleanse cleanse) {

@@ -1,13 +1,9 @@
 package net.arkadiyhimself.fantazia.client.renderers.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexMultiConsumer;
 import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.client.render.FTZRenderTypes;
-import net.arkadiyhimself.fantazia.client.render.layers.AbsoluteBarrier;
 import net.arkadiyhimself.fantazia.client.renderers.item.FantazicItemRenderer;
 import net.arkadiyhimself.fantazia.common.entity.DashStone;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
@@ -56,8 +52,7 @@ public class DashStoneRenderer extends EntityRenderer<DashStone> {
 
                 PoseStack.Pose pose = pPoseStack.last().copy();
                 VertexConsumer consumer;
-                if (false) consumer = barrierVertex(pBuffer, renderType, pose);
-                else consumer = getFoilBuffer(pBuffer, renderType, true, unpickable);
+                consumer = getFoilBuffer(pBuffer, renderType, true, unpickable);
 
                 renderer.renderModelLists(model1, stack, pPackedLight, pPackedLight, pPoseStack, consumer);
             }
@@ -76,21 +71,5 @@ public class DashStoneRenderer extends EntityRenderer<DashStone> {
         Integer dashLevel = item.get(FTZDataComponentTypes.DASH_LEVEL);
         if (dashLevel == null || dashLevel <= 2) return FantazicItemRenderer.DASHSTONE2;
         else return FantazicItemRenderer.DASHSTONE3;
-    }
-
-    public static VertexConsumer getBarrierVertex(MultiBufferSource bufferSource, RenderType renderType, PoseStack.Pose pose) {
-        return VertexMultiConsumer.create(
-                new SheetedDecalTextureGenerator(bufferSource.getBuffer(FTZRenderTypes.customGlint(AbsoluteBarrier.BARRIER_LAYER)), pose, 0.0078125F), bufferSource.getBuffer(renderType)
-        );
-    }
-
-    public static VertexConsumer getFoilBufferDirect(MultiBufferSource bufferSource, RenderType renderType) {
-        return VertexMultiConsumer.create(bufferSource.getBuffer(FTZRenderTypes.customGlint(AbsoluteBarrier.BARRIER_LAYER)), bufferSource.getBuffer(renderType));
-    }
-
-    public static VertexConsumer barrierVertex(MultiBufferSource source, RenderType type, PoseStack.Pose pose) {
-        VertexConsumer custom = ItemRenderer.getFoilBufferDirect(source, FTZRenderTypes.customGlint(AbsoluteBarrier.BARRIER_LAYER), true, false);
-        VertexConsumer base = source.getBuffer(type);
-        return VertexMultiConsumer.create(new SheetedDecalTextureGenerator(custom, pose, 0.007f), base);
     }
 }

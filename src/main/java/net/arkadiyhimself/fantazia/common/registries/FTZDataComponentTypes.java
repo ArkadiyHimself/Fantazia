@@ -44,6 +44,6 @@ public class FTZDataComponentTypes {
         JEI_AMPLIFIED_ENCHANTMENT = register("jei_amplified_enchantment", Codec.INT, ByteBufCodecs.INT);
         WISDOM_TRANSFER = register("wisdom_transfer", WisdomTransferComponent.CODEC, WisdomTransferComponent.STREAM_CODEC);
         DISINTEGRATE = register("disintegrate", Codec.BOOL, ByteBufCodecs.BOOL);
-        BLUEPRINT = register("blueprint", FantazicRegistries.BLUEPRINTS.holderByNameCodec(), ByteBufCodecs.holderRegistry(FantazicRegistries.Keys.BLUEPRINT));
+        BLUEPRINT = register("blueprints", FantazicRegistries.BLUEPRINTS.holderByNameCodec(), ByteBufCodecs.holderRegistry(FantazicRegistries.Keys.BLUEPRINT));
     }
 }

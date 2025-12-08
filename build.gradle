@@ -35,6 +35,9 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
+    maven {
+        url = "https://github.com/Serilum/.maven/raw/maven/"
+    }
 }
 
 base {
@@ -107,6 +110,9 @@ dependencies {
     // at runtime, use the full JEI jar for NeoForge
     runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    runtimeOnly "com.natamus.collective-ml:collective-neoforge:${minecraft_version}-${collective_version}"
+    compileOnly "com.natamus.collective-ml:collective-neoforge:${minecraft_version}-${collective_version}"
+    compileOnly "com.natamus.collective-ml:collective:${minecraft_version}-${collective_version}"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

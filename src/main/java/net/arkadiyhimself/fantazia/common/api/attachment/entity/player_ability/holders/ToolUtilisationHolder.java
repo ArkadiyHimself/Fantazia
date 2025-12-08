@@ -44,6 +44,17 @@ public class ToolUtilisationHolder extends PlayerAbilityHolder implements ISyncE
 
     public void downgradeCapacity() {
         this.capacityUpgrades--;
+        // reducing the current amounts to the cap
+        Map<Item, Integer> newValues = Maps.newHashMap();
+        for (Map.Entry<Item, Integer> entry : capacities.entrySet()) {
+            RechargeableToolData data = RechargeableToolData.getToolData(entry.getKey());
+            if (data == null) continue;
+            int maxAmount = data.getMaxAmount(this.capacityUpgrades);
+            if (maxAmount < entry.getValue()) newValues.put(entry.getKey(), maxAmount);
+        }
+        for (Map.Entry<Item, Integer> entry : newValues.entrySet()) {
+            this.capacities.replace(entry.getKey(), entry.getValue());
+        }
     }
 
     public int getCapacityUpgrades() {

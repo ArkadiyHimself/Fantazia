@@ -6,7 +6,13 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Consumer;
 
-public record TalentImpact(ResourceLocation id, Consumer<Player> apply, Consumer<Player> remove, Consumer<Player> disable, Consumer<Player> enable) {
+public record TalentImpact(
+        ResourceLocation id,
+        Consumer<Player> apply,
+        Consumer<Player> remove,
+        Consumer<Player> disable,
+        Consumer<Player> enable
+) {
 
     public static final Codec<TalentImpact> CODEC = ResourceLocation.CODEC.xmap(TalentImpacts::getImpact, TalentImpact::id);
 
@@ -62,7 +68,7 @@ public record TalentImpact(ResourceLocation id, Consumer<Player> apply, Consumer
             return this;
         }
 
-        public Builder defaultDisabling() {
+        public Builder standardDisabling() {
             this.disable = remove;
             this.enable = apply;
             return this;

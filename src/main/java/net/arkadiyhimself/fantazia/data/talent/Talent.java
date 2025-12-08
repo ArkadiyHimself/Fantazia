@@ -11,7 +11,7 @@ import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.common.api.AttributeModifierBuilder;
 import net.arkadiyhimself.fantazia.common.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.data.FTZCodecs;
-import net.arkadiyhimself.fantazia.data.datagen.talent_reload.talent.TalentBuilderHolder;
+import net.arkadiyhimself.fantazia.datagen.talent_reload.talent.TalentBuilderHolder;
 import net.arkadiyhimself.fantazia.data.predicate.DamageTypePredicate;
 import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.minecraft.ChatFormatting;
@@ -41,14 +41,26 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public record Talent(ResourceLocation id, ResourceLocation icon, String title, int wisdom, ImmutableList<DamageTypePredicate> damageImmunities, List<Pair<Float, DamageTypePredicate>> damageMultipliers, ImmutableMap<Holder<Attribute>, AttributeModifier> attributeModifiers, ImmutableMap<String, Integer> curioModifiers, ImmutableList<TalentImpact> impacts, Optional<ResourceLocation> advancement, Optional<ResourceLocation> background) implements ITooltipBuilder {
+public record Talent(
+        ResourceLocation id,
+        ResourceLocation icon,
+        String title,
+        int wisdom,
+        ImmutableList<DamageTypePredicate> damageImmunities,
+        List<Pair<Float, DamageTypePredicate>> damageMultipliers,
+        ImmutableMap<Holder<Attribute>, AttributeModifier> attributeModifiers,
+        ImmutableMap<String, Integer> curioModifiers,
+        ImmutableList<TalentImpact> impacts,
+        Optional<ResourceLocation> advancement,
+        Optional<ResourceLocation> background
+) implements ITooltipBuilder {
 
     public void applyModifiers(@NotNull ServerPlayer player) {
         for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : attributeModifiers().entrySet()) {
             AttributeInstance instance = player.getAttribute(entry.getKey());
             AttributeModifier modifier = entry.getValue();
             if (instance == null) continue;
-            if (Fantazia.DEVELOPER_MODE) Fantazia.LOGGER.info("Applying attribute modifier{}, {}", entry.getKey().value().getDescriptionId(), modifier);
+            if (Fantazia.DEVELOPER_MODE) Fantazia.LOGGER.info("Applying attribute modifier: {}, {}", entry.getKey().value().getDescriptionId(), modifier);
             instance.removeModifier(modifier);
             instance.addPermanentModifier(modifier);
         }
@@ -75,7 +87,7 @@ public record Talent(ResourceLocation id, ResourceLocation icon, String title, i
         for (Map.Entry<Holder<Attribute>, AttributeModifier> entry : attributeModifiers().entrySet()) {
             AttributeInstance instance = player.getAttribute(entry.getKey());
             if (instance == null) continue;
-            if (Fantazia.DEVELOPER_MODE) Fantazia.LOGGER.info("Removing attribute modifier{}, {}", entry.getKey().value().getDescriptionId(), instance.getValue());
+            if (Fantazia.DEVELOPER_MODE) Fantazia.LOGGER.info("Removing attribute modifier: {}, {}", entry.getKey().value().getDescriptionId(), instance.getValue());
             instance.removeModifier(entry.getValue());
         }
 
@@ -109,11 +121,11 @@ public record Talent(ResourceLocation id, ResourceLocation icon, String title, i
     }
 
     public Talent getParent() {
-        return getHierarchy().getParent(this);
+        return getHierarchy().hierarchy().getParent(this);
     }
 
     public Talent getChild() {
-        return getHierarchy().getChild(this);
+        return getHierarchy().hierarchy().getChild(this);
     }
 
     public boolean purchasable() {
@@ -131,7 +143,7 @@ public record Talent(ResourceLocation id, ResourceLocation icon, String title, i
         return multip;
     }
 
-    public IHierarchy<Talent> getHierarchy() {
+    public TalentHierarchy getHierarchy() {
         return TalentTreeData.getTalentToHierarchy().get(id());
     }
 

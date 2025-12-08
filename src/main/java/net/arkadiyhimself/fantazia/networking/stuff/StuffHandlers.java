@@ -1,15 +1,22 @@
 package net.arkadiyhimself.fantazia.networking.stuff;
 
+import com.sun.tools.javac.Main;
+import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.client.ClientEvents;
 import net.arkadiyhimself.fantazia.client.render.ParticleMovement;
 import net.arkadiyhimself.fantazia.client.renderers.PlayerAnimations;
 import net.arkadiyhimself.fantazia.client.screen.AmplificationTab;
 import net.arkadiyhimself.fantazia.client.screen.AmplifyResource;
+import net.arkadiyhimself.fantazia.common.api.attachment.BasicAttachmentsUtil;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.holders.StuckHatchetHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
+import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSourcesHolder;
 import net.arkadiyhimself.fantazia.common.api.prompt.Prompt;
 import net.arkadiyhimself.fantazia.common.api.prompt.PromptToast;
 import net.arkadiyhimself.fantazia.common.entity.DashStone;
+import net.arkadiyhimself.fantazia.common.registries.FTZAttachmentTypes;
+import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.common.world.inventory.AmplificationMenu;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
@@ -22,10 +29,12 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -38,12 +47,12 @@ interface StuffHandlers {
         for (ParticleOptions option : options) Minecraft.getInstance().level.addParticle(option, 0,0,0,0,0,0);
     }
 
-    static void addDashStoneProtectors(int id, List<Integer> protIDS) {
+    static void addDashStoneProtectors(int id, List<Integer> protectorIDS) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) return;
         Entity stone = level.getEntity(id);
         if (!(stone instanceof DashStone dashStone)) return;
-        dashStone.addProtectorsClient(protIDS);
+        dashStone.addProtectorsClient(protectorIDS);
     }
 
     static void addParticleOnEntity(int id, ParticleOptions particle, ParticleMovement movement, int amount, float range) {
@@ -111,6 +120,10 @@ interface StuffHandlers {
     static void keyInput(IPayloadContext context, KeyInputC2S.INPUT input, int action) {
         if (!(context.player() instanceof ServerPlayer serverPlayer)) return;
         input.consumer().accept(serverPlayer, action);
+    }
+
+    static void maybeCrushNearbyEnemies(ServerPlayer serverPlayer, double fallingSpeed) {
+        BasicAttachmentsUtil.maybeCrushNearbyEnemies(serverPlayer, fallingSpeed);
     }
 
     static void playSoundForUI(SoundEvent soundEvent) {

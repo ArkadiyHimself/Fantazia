@@ -6,7 +6,9 @@ import com.mojang.math.Axis;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.FantazicConfig;
 import net.arkadiyhimself.fantazia.client.ClientEvents;
+import net.arkadiyhimself.fantazia.client.screen.TalentScreen;
 import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.CombHealthHolder;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.PassiveBarrierHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.CurrentAndInitialValue;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
@@ -58,42 +60,48 @@ public class FTZGuis {
         ManaHolder manaHolder = PlayerAbilityHelper.takeHolder(player, ManaHolder.class);
         if (manaHolder != null) y0mn = FantazicGui.renderMana(manaHolder, guiGraphics, x0mn, y0mn);
 
+        // draw above mana bar
+        x0mn += 3;
+        PassiveBarrierHolder passiveBarrierHolder = player.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK);
+        FantazicGui.renderPassiveBarrierIcon(passiveBarrierHolder, guiGraphics, x0mn, y0mn);
+
         // draw stamina bar
         int x0st = guiGraphics.guiWidth() - 91 + FantazicConfig.staminaBarXoff.get() - 10;
         int y0st = guiGraphics.guiHeight() + FantazicConfig.staminaBarYoff.get() - 10;
         StaminaHolder staminaHolder = PlayerAbilityHelper.takeHolder(player, StaminaHolder.class);
         if (staminaHolder != null) y0st = FantazicGui.renderStamina(staminaHolder, guiGraphics, x0st, y0st);
 
-
-        // draw dash and double jump
+        // draw above stamina bar
         x0st += 3;
         DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
         if (dashHolder != null && dashHolder.isAvailable()) x0st = FantazicGui.renderDashIcon(dashHolder, guiGraphics, x0st, y0st);
         DoubleJumpHolder doubleJumpHolder = PlayerAbilityHelper.takeHolder(player, DoubleJumpHolder.class);
-        if (doubleJumpHolder != null && doubleJumpHolder.isUnlocked()) FantazicGui.renderDoubleJumpIcon(doubleJumpHolder, guiGraphics, x0st, y0st);
-
-        // euphoria
-        int x0eu = 10 + FantazicConfig.euphoriaIconXoff.get();
-        int y0eu = 40 + FantazicConfig.euphoriaIconYoff.get();
+        if (doubleJumpHolder != null && doubleJumpHolder.isUnlocked()) x0st = FantazicGui.renderDoubleJumpIcon(doubleJumpHolder, guiGraphics, x0st, y0st);
         EuphoriaHolder euphoriaHolder = PlayerAbilityHelper.takeHolder(player, EuphoriaHolder.class);
-        if (euphoriaHolder != null) FantazicGui.renderEuphoriaBar(euphoriaHolder, guiGraphics, x0eu, y0eu);
+        if (euphoriaHolder != null) FantazicGui.renderEuphoriaBar(euphoriaHolder, guiGraphics, x0st, y0st);
+
     };
 
     public static final LayeredDraw.Layer OBTAINED_WISDOM = (guiGraphics, deltaTracker) -> {
         Player player = Minecraft.getInstance().player;
+        Font font = Minecraft.getInstance().font;
         if (player == null) return;
         int wisdom = ClientEvents.lastWisdom;
         int ticks = ClientEvents.wisdomTick;
         if (ticks <= 0 || wisdom <= 0) return;
-        Component component = GuiHelper.bakeComponent("fantazia.gui.talent.wisdom_granted", new ChatFormatting[]{ChatFormatting.BLUE}, new ChatFormatting[]{ChatFormatting.DARK_BLUE}, wisdom);
-        int x0 = (guiGraphics.guiWidth()) / 2;
+        Component component = Component.literal("+" + wisdom).withStyle(ChatFormatting.DARK_BLUE);
+        int width = font.width(component) + 2 + 10;
+        int x0 = (guiGraphics.guiWidth()) / 2 - (width / 2);
         int y0 = guiGraphics.guiHeight() - 64;
-        RenderSystem.enableBlend();
+
         float alpha = Math.min(1f, (float) ticks / 20);
-        guiGraphics.setColor(1f,1f,1f,alpha);
-        guiGraphics.drawCenteredString(Minecraft.getInstance().font, component, x0, y0, 0);
-        guiGraphics.setColor(1f,1f,1f,1f);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1f,1f,1f, alpha);
+        RenderSystem.enableBlend();
+        guiGraphics.blit(TalentScreen.WISDOM_ICON,x0 + width - 10, y0 - 1,0,0,10,10,10,10);
+        guiGraphics.drawString(font, component, x0, y0, 0);
         RenderSystem.disableBlend();
+        RenderSystem.setShaderColor(1f,1f,1f,1f);
     };
 
     public static final LayeredDraw.Layer CURIO_SLOTS = (guiGraphics, deltaTracker) -> {

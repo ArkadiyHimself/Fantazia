@@ -75,7 +75,7 @@ public class AmplificationScreen extends AbstractContainerScreen<AmplificationMe
         PoseStack poseStack = guiGraphics.pose();
         hovered = null;
         poseStack.pushPose();
-        poseStack.translate(0,0, 200);
+        poseStack.translate(0,0, 20);
         for (int i = 0; i < AmplificationTab.TABS.size(); i++) {
 
             AmplificationTab tab = AmplificationTab.TABS.get(i);

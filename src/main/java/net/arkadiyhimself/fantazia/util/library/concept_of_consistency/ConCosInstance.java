@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 
 /**
  * The pseudo-random distribution refers to a statistical mechanic of
- * how certain probability-based items and abilities work.
+ * how certain probability-based blueprints and abilities work.
  * Under a conditional distribution, the event's chance increases
  * every time the event does not occur, but is lower in the first place
  * as compensation. This results in the effects occurring with a lower

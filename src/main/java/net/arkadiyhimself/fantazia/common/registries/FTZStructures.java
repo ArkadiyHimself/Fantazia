@@ -1,7 +1,7 @@
 package net.arkadiyhimself.fantazia.common.registries;
 
 import net.arkadiyhimself.fantazia.Fantazia;
-import net.arkadiyhimself.fantazia.data.datagen.worldgen.structures.SimpleNetherStructure;
+import net.arkadiyhimself.fantazia.datagen.worldgen.structures.SimpleNetherStructure;
 import net.arkadiyhimself.fantazia.data.tags.FTZBiomeTags;
 import net.arkadiyhimself.fantazia.data.tags.FTZPools;
 import net.minecraft.core.HolderGetter;

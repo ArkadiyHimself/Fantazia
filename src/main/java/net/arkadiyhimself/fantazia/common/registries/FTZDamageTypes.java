@@ -21,10 +21,13 @@ public interface FTZDamageTypes {
     ResourceKey<DamageType> SHOCKWAVE = register("shockwave"); // implemented
     ResourceKey<DamageType> SIMPLE_CHASING_PROJECTILE = register("simple_chasing_projectile"); // implemented
     ResourceKey<DamageType> BIFROST = register("bifrost"); // implemented
-    ResourceKey<DamageType> PIMPILLO_EXPLOSION = register("pimpillo_explosion");
+    ResourceKey<DamageType> PIMPILLO_EXPLOSION = register("pimpillo_explosion"); // implemented
     ResourceKey<DamageType> THROWN_PIN = register("thrown_pin"); // implemented
     ResourceKey<DamageType> BLOCK_FLY = register("block_fly"); // implemented
-    ResourceKey<DamageType> OMINOUS_BELL = register("ominous_bell");
+    ResourceKey<DamageType> OMINOUS_BELL = register("ominous_bell"); // implemented
+    ResourceKey<DamageType> CRUSH_DOWN = register("crush_down");
+    ResourceKey<DamageType> PASSIVE_BARRIER_EXPLOSION = register("passive_barrier_explosion");
+    ResourceKey<DamageType> PINPOINT = register("pinpoint");
 
     static void bootStrap(BootstrapContext<DamageType> context) {
         context.register(ANCIENT_BURNING, new DamageType("ancient_burning", DamageScaling.NEVER,0.1f, DamageEffects.BURNING));
@@ -42,6 +45,9 @@ public interface FTZDamageTypes {
         context.register(THROWN_PIN, new DamageType("thrown_pin", DamageScaling.NEVER,0.25f));
         context.register(BLOCK_FLY, new DamageType("block_fly", DamageScaling.NEVER,0f));
         context.register(OMINOUS_BELL, new DamageType("ominous_bell", DamageScaling.NEVER,0f));
+        context.register(CRUSH_DOWN, new DamageType("crush_down", DamageScaling.NEVER,0f));
+        context.register(PASSIVE_BARRIER_EXPLOSION, new DamageType("passive_barrier_explosion", DamageScaling.NEVER,0f));
+        context.register(PINPOINT, new DamageType("pinpoint", DamageScaling.NEVER,0f));
     }
 
     private static ResourceKey<DamageType> register(String name) {

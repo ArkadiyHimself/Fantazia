@@ -12,14 +12,16 @@ public class FTZCriterionTriggers {
 
     private static final DeferredRegister<CriterionTrigger<?>> REGISTER = DeferredRegister.create(Registries.TRIGGER_TYPE, Fantazia.MODID);
 
-    public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<ObtainTalentTrigger.TriggerInstance>> OBTAIN_TALENT = REGISTER.register("talent_obtain", () -> ObtainTalentTrigger.INSTANCE);
-    public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<PossessItemTrigger.TriggerInstance>> POSSESS_ITEM = REGISTER.register("possess_item", () -> PossessItemTrigger.INSTANCE);
-    public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<MeleeBlockTrigger.TriggerInstance>> MELEE_BLOCK = REGISTER.register("melee_block", () -> MeleeBlockTrigger.INSTANCE);
-    public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<EuphoriaTrigger.TriggerInstance>> EUPHORIA = REGISTER.register("euphoria", () -> EuphoriaTrigger.INSTANCE);
-    public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<PossessRuneTrigger.TriggerInstance>> POSSESS_RUNE = REGISTER.register("possess_rune", () -> PossessRuneTrigger.INSTANCE);
-    public static final DeferredHolder<CriterionTrigger<?>, CriterionTrigger<UseSpellTrigger.TriggerInstance>> USE_SPELL = REGISTER.register("use_spell", () -> UseSpellTrigger.INSTANCE);
-
     public static void register(IEventBus eventBus) {
         REGISTER.register(eventBus);
+
+        REGISTER.register("talent_obtain", () -> ObtainTalentTrigger.INSTANCE);
+        REGISTER.register("possess_item", () -> PossessItemTrigger.INSTANCE);
+        REGISTER.register("melee_block", () -> MeleeBlockTrigger.INSTANCE);
+        REGISTER.register("euphoria", () -> EuphoriaTrigger.INSTANCE);
+        REGISTER.register("possess_rune", () -> PossessRuneTrigger.INSTANCE);
+        REGISTER.register("use_spell", () -> UseSpellTrigger.INSTANCE);
+        REGISTER.register("read_blueprint", () -> ReadBlueprintTrigger.INSTANCE);
     }
+
 }

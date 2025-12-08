@@ -159,13 +159,13 @@ public class DoubleJumpHolder extends PlayerAbilityHolder {
         if (flying) {
             if (!getPlayer().hasInfiniteMaterials()) recharge = elytraRecharge();
         } else canJump = false;
-        getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.DOUBLE_JUMP.value(), SoundSource.PLAYERS);
+        getPlayer().level().playSound(null, getPlayer().blockPosition(), FTZSoundEvents.DOUBLE_JUMP_USE.value(), SoundSource.PLAYERS);
         if (getPlayer() instanceof ServerPlayer serverPlayer) Prompts.USE_DOUBLE_JUMP.noLongerNeeded(serverPlayer);
     }
 
     public void unlock() {
         unlocked = true;
-        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DOUBLE_JUMP_UNLOCKED.value());
+        if (getPlayer() instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DOUBLE_JUMP_UNLOCK.value());
     }
 
     public void lock() {

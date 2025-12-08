@@ -153,9 +153,9 @@ public class CheckCommand {
         if (holder == null) return 0;
         List<Item> obtained = holder.getObtainedItems();
         if (obtained.isEmpty()) {
-            serverPlayer.sendSystemMessage(Component.literal("No obtained items were found!"));
+            serverPlayer.sendSystemMessage(Component.literal("No obtained blueprints were found!"));
         } else {
-            serverPlayer.sendSystemMessage(Component.literal("All obtained items:"));
+            serverPlayer.sendSystemMessage(Component.literal("All obtained blueprints:"));
             for (Item item : obtained) serverPlayer.sendSystemMessage(Component.literal(item.toString()));
         }
 

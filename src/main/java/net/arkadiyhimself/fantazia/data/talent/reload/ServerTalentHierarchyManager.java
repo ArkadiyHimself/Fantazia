@@ -9,8 +9,7 @@ import com.mojang.serialization.JsonOps;
 import net.arkadiyhimself.fantazia.Fantazia;
 import net.arkadiyhimself.fantazia.common.api.custom_registry.FantazicRegistries;
 import net.arkadiyhimself.fantazia.data.talent.TalentDataException;
-import net.arkadiyhimself.fantazia.data.talent.TalentHierarchyBuilder;
-import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
+import net.arkadiyhimself.fantazia.data.talent.TalentIdHierarchy;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -31,13 +30,13 @@ public class ServerTalentHierarchyManager extends SimpleJsonResourceReloadListen
     private static final Map<ResourceLocation, List<ResourceLocation>> TABS = Maps.newHashMap();
 
     // id of a hierarchy || hierarchy itself, contains ids of talents
-    private static final Map<ResourceLocation, IHierarchy<ResourceLocation>> ALL_HIERARCHIES = Maps.newHashMap();
+    private static final Map<ResourceLocation, TalentIdHierarchy> ALL_HIERARCHIES = Maps.newHashMap();
 
     public ServerTalentHierarchyManager() {
         super(GSON, Registries.elementsDirPath(FantazicRegistries.Keys.TALENT_HIERARCHY));
     }
 
-    public static ImmutableMap<ResourceLocation, IHierarchy<ResourceLocation>> getAllHierarchies() {
+    public static ImmutableMap<ResourceLocation, TalentIdHierarchy> getAllHierarchies() {
         return ImmutableMap.copyOf(ALL_HIERARCHIES);
     }
 
@@ -50,11 +49,11 @@ public class ServerTalentHierarchyManager extends SimpleJsonResourceReloadListen
         TABS.clear();
         ALL_HIERARCHIES.clear();
         for (Map.Entry<ResourceLocation, JsonElement> entry : jsonElementMap.entrySet()) {
-            Optional<TalentHierarchyBuilder> optionalBuilder = TalentHierarchyBuilder.CODEC.parse(JsonOps.INSTANCE, entry.getValue()).resultOrPartial(Fantazia.LOGGER::error);
+            Optional<TalentIdHierarchy.Builder> optionalBuilder = TalentIdHierarchy.Builder.CODEC.parse(JsonOps.INSTANCE, entry.getValue()).resultOrPartial(Fantazia.LOGGER::error);
 
             ResourceLocation hierarchyId = entry.getKey();
             if (optionalBuilder.isPresent()) {
-                TalentHierarchyBuilder builder = optionalBuilder.get();
+                TalentIdHierarchy.Builder builder = optionalBuilder.get();
                 ResourceLocation tabId = builder.getTab();
                 TABS.putIfAbsent(tabId, Lists.newArrayList());
                 TABS.get(tabId).add(hierarchyId);

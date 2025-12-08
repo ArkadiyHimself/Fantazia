@@ -50,6 +50,8 @@ public interface IAttachmentSync extends IPacket {
         player.setData(FTZAttachmentTypes.ALL_IN_PREVIOUS_OUTCOME, compoundTag.getInt("all_in_previous_outcome"));
         player.setData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED, compoundTag.getBoolean("wall_climbing_unlocked"));
         player.setData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB, compoundTag.getBoolean("wall_climbing_cobweb"));
+        player.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).deserializeInitial(compoundTag.getCompound("passive_barrier"));
+        player.setData(FTZAttachmentTypes.HURT_BY_FALLING_PERK, compoundTag.getBoolean("hurt_by_falling"));
     }
 
     default void syncTickPlayerAttachments(int id, CompoundTag compoundTag) {

@@ -188,7 +188,7 @@ public class SpellHelper {
         if (castPassiveSpell(target, Spells.REFLECT).success()) {
             event.setCanceled(true);
             VisualHelper.rayOfParticles(target, warden, ParticleTypes.SONIC_BOOM);
-            target.level().playSound(null, target.blockPosition(), FTZSoundEvents.REFLECT_CAST.get(), SoundSource.NEUTRAL);
+            target.level().playSound(null, target.blockPosition(), FTZSoundEvents.REFLECT_TRIGGER.get(), SoundSource.NEUTRAL);
             warden.hurt(event.getEntity().level().damageSources().sonicBoom(target), event.getAmount());
             return true;
         }

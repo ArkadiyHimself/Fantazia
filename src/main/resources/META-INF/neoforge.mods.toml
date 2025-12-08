@@ -32,3 +32,10 @@ config="fantazia.mixins.json"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
+
+[[dependencies.fantazia]]
+    modId="collective"
+    type="required"
+    versionRange="[7.91,)"
+    ordering="NONE"
+    side="BOTH"

@@ -180,7 +180,7 @@ public class DashStone extends Entity {
 
             protectorsServer.removeIf(protId -> {
                 Entity entity = serverLevel.getEntity(protId);
-                return entity != null && !entity.isAlive();
+                return entity != null && (!entity.isAlive() || entity.isRemoved());
             });
 
             ServerPlayer owner = getOwner();
@@ -188,7 +188,7 @@ public class DashStone extends Entity {
             boolean prevPick = entityData.get(UNPICKABLE);
             entityData.set(UNPICKABLE, !protectorsServer.isEmpty());
             if (prevPick && !entityData.get(UNPICKABLE) && owner != null) {
-                IPacket.playSoundForUI(owner, FTZSoundEvents.DASHSTONE_READY.value());
+                IPacket.playSoundForUI(owner, FTZSoundEvents.DASHSTONE_ENTITY_READY.value());
             }
 
             if (ownerUUID == null && cooldown <= 0) tryAdaptToPlayer(serverLevel);
@@ -297,7 +297,7 @@ public class DashStone extends Entity {
             DashHolder dashHolder = PlayerAbilityHelper.takeHolder(player, DashHolder.class);
             if (dashHolder != null && dashHolder.getLevel() == 1 && dashHolder.getDashstoneEntity(serverLevel) == null) {
                 serverLevel.sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 2, 0.1,0,0.1,0);
-                this.playSound(FTZSoundEvents.DASHSTONE_APPEARED.value());
+                this.playSound(FTZSoundEvents.DASHSTONE_APPEAR.value());
                 dashHolder.setDashstoneEntityServer(this);
                 this.ownerUUID = player.getUUID();
                 this.level = 2;

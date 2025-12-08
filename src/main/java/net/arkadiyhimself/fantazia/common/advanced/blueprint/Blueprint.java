@@ -8,6 +8,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
@@ -16,16 +17,19 @@ public class Blueprint implements ITooltipBuilder {
 
     private final ModelResourceLocation icon;
     private final String ident;
+    private final ResourceLocation blueprintTexture;
     private String descriptionId;
     private final ChatFormatting[] nameFormatting = null;
     private final ChatFormatting[] descFormatting = null;
 
     public Blueprint(
             ModelResourceLocation icon,
-            String ident
+            String ident,
+            ResourceLocation blueprintTexture
     ) {
         this.icon = icon;
         this.ident = ident;
+        this.blueprintTexture = blueprintTexture;
     }
 
     public String getDescriptionId() {
@@ -47,6 +51,10 @@ public class Blueprint implements ITooltipBuilder {
 
     public String getIdent() {
         return ident;
+    }
+
+    public ResourceLocation getBlueprintTexture() {
+        return blueprintTexture;
     }
 
     @Override
@@ -75,6 +83,7 @@ public class Blueprint implements ITooltipBuilder {
 
         private ModelResourceLocation icon = null;
         private String ident = null;
+        private ResourceLocation blueprintTexture = null;
 
         public Builder icon(ModelResourceLocation icon) {
             this.icon = icon;
@@ -86,10 +95,16 @@ public class Blueprint implements ITooltipBuilder {
             return this;
         }
 
+        public Builder blueprintTexture(ResourceLocation blueprintTexture) {
+            this.blueprintTexture = blueprintTexture;
+            return this;
+        }
+
         public Blueprint build() {
             return new Blueprint(
                     icon,
-                    ident
+                    ident,
+                    blueprintTexture
             );
         }
     }

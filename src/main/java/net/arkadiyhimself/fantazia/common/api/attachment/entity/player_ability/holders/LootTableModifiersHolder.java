@@ -41,14 +41,13 @@ public class LootTableModifiersHolder extends PlayerAbilityHolder {
 
     @Override
     public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag tag) {
-        this.lootModifiers.clear();
-
         ListTag lootModifiersTag = tag.getList("lootModifiers", Tag.TAG_COMPOUND);
 
         for (int i = 0; i <= lootModifiersTag.size(); i++) {
             CompoundTag entryTag = lootModifiersTag.getCompound(i);
             ResourceLocation id = ResourceLocation.parse(entryTag.getString("id"));
             LootModifier lootModifier = LootModifier.deserializeNBT(provider, entryTag.getCompound("modifier"));
+            this.lootModifiers.remove(id);
             this.lootModifiers.put(id, lootModifier);
         }
 

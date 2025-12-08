@@ -116,7 +116,7 @@ public class Spells {
                     return SpellCastResult.DEFAULT;
                 }).castTime(5).cleanse());
 
-        TRANSFER = register("transfer", SelfSpell.builder(2.5f,600, FTZSoundEvents.EFFECT_HAEMORRHAGE_FLESH_RIPPING,null)
+        TRANSFER = register("transfer", SelfSpell.builder(2.5f,600, FTZSoundEvents.EFFECT_HAEMORRHAGE_APPLIED,null)
                 .conditions(owner -> !(owner instanceof Player player) || !player.getAbilities().invulnerable)
                 .cleanse(Cleanse.MEDIUM).castTime(6)
                 .onCast((entity, ampl) -> {
@@ -350,7 +350,7 @@ public class Spells {
                 .recharge(livingEntity -> livingEntity.level().isThundering() ? 240 : 480)
                 .tickingConditions(AbstractSpell.TickingConditions.NOT_ON_COOLDOWN)
                 .ownerTick(livingEntity -> {
-                    if (livingEntity.tickCount % 3 == 0) VisualHelper.entityChasingParticle(livingEntity, FTZParticleTypes.ELECTRO.random(), 2, 0.65f);
+                    if (livingEntity.tickCount % 3 == 0) VisualHelper.entityChasingParticle(livingEntity, FTZParticleTypes.ELECTRO.value(), 2, 0.65f);
                     if (livingEntity.tickCount % 16 == 0) livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.LIGHTNING_STRIKE_TICK.get(), SoundSource.PLAYERS, 0.115f,1.05f);
                 })
                 .castTime(6));
@@ -423,18 +423,18 @@ public class Spells {
                 }));
 
         // passive
-        REFLECT = register("reflect", PassiveSpell.builder(1.5f,200, FTZSoundEvents.REFLECT_CAST, null)
+        REFLECT = register("reflect", PassiveSpell.builder(1.5f,200, FTZSoundEvents.REFLECT_TRIGGER, null)
                 .onActivation(owner -> {
                     if (owner instanceof ServerPlayer serverPlayer) IPacket.reflectActivate(serverPlayer);
                     return SpellCastResult.DEFAULT;
                 }));
 
-        DAMNED_WRATH = register("damned_wrath", PassiveSpell.builder(0f,600, FTZSoundEvents.DAMNED_WRATH, null)
+        DAMNED_WRATH = register("damned_wrath", PassiveSpell.builder(0f,600, FTZSoundEvents.DAMNED_WRATH_TRIGGER, null)
                 .onActivation((owner, ampl) -> {
                     EffectCleansing.tryCleanseAll(owner, Cleanse.MEDIUM, MobEffectCategory.HARMFUL);
                     ApplyEffect.makeFurious(owner,200);
                     ApplyEffect.giveAbsoluteBarrier(owner,20 + ampl * 5);
-                    if (owner instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DAMNED_WRATH.value());
+                    if (owner instanceof ServerPlayer serverPlayer) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DAMNED_WRATH_TRIGGER.value());
                     return SpellCastResult.DEFAULT;
                 }).canUnEquip(livingEntity -> !livingEntity.hasEffect(FTZMobEffects.FURY)).cleanse(Cleanse.MEDIUM));
 
@@ -443,7 +443,7 @@ public class Spells {
         REINFORCE = register("reinforce", PassiveSpell.builder(0.35f, 0, null, null)
                 .onActivation(owner -> {
                     VisualHelper.particleOnEntityServer(owner, ParticleTypes.SMOKE, ParticleMovement.REGULAR, 10);
-                    owner.level().playSound(null, owner.blockPosition(), FTZSoundEvents.REINFORCE_BLOCK.value(), SoundSource.AMBIENT);
+                    owner.level().playSound(null, owner.blockPosition(), FTZSoundEvents.REINFORCE_TRIGGER.value(), SoundSource.AMBIENT);
                     return SpellCastResult.DEFAULT;
                 }));
         

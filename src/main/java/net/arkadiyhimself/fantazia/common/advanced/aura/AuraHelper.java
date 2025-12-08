@@ -65,7 +65,7 @@ public class AuraHelper {
         levelAuraInstances.removeIf(auraInstance -> !auraInstance.isInside(entity) || auraInstance.getOwner() == entity);
         Map<Holder<Aura>, AuraInstance> affectingAuras = entity.getData(FTZAttachmentTypes.AFFECTING_AURAS);
 
-        // remove auras that no longer entity leaves
+        // remove auras that no longer work
         for (Holder<Aura> auraHolder : affectingAuras.keySet().stream().toList()) {
             AuraInstance instance = affectingAuras.get(auraHolder);
             if (instance.getOwner().isRemoved()) instance.discard();

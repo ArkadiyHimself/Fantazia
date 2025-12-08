@@ -113,6 +113,13 @@ interface AttachmentModifyHandlers {
         PlayerAbilityHelper.acceptConsumer(Minecraft.getInstance().player, MeleeBlockHolder.class, holder -> holder.parryAttack(amount));
     }
 
+    static void passiveBarrierActivation(int id) {
+         ClientLevel level = Minecraft.getInstance().level;
+         Entity entity;
+         if (level == null || (entity = level.getEntity(id)) == null) return;
+         entity.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).activate();
+    }
+
     static void pogoPlayer() {
          if (Minecraft.getInstance().player != null) PlayerAbilityHelper.pogo(Minecraft.getInstance().player);
     }
@@ -212,7 +219,7 @@ interface AttachmentModifyHandlers {
         if (player == null) return;
         LocationHolder holder = player.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION);
         holder.deserialize(tag);
-        if (!holder.empty() && sound) FantazicUtil.playSoundUI(FTZSoundEvents.WANDERERS_SPIRIT_MARKED.value());
+        if (!holder.empty() && sound) FantazicUtil.playSoundUI(FTZSoundEvents.WANDERERS_SPIRIT_MARK.value());
     }
 
     static void wisdomObtained(int amount) {

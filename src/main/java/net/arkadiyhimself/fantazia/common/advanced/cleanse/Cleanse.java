@@ -39,6 +39,10 @@ public enum Cleanse implements StringRepresentable {
         return description.copy().withStyle(formatting);
     }
 
+    public int getStrength() {
+        return strength;
+    }
+
     @Override
     public @NotNull String getSerializedName() {
         return name;

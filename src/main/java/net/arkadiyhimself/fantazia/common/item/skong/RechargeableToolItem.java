@@ -5,6 +5,7 @@ import net.arkadiyhimself.fantazia.client.gui.GuiHelper;
 import net.arkadiyhimself.fantazia.client.gui.TextComponents;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.PlayerAbilityHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.holders.ToolUtilisationHolder;
+import net.arkadiyhimself.fantazia.common.item.EngineeringTableBlock;
 import net.arkadiyhimself.fantazia.common.item.ITooltipBuilder;
 import net.arkadiyhimself.fantazia.common.registries.FTZAttributes;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
@@ -122,7 +123,7 @@ public abstract class RechargeableToolItem extends Item implements ITooltipBuild
         BlockPos blockPos = context.getClickedPos();
 
         BlockState state = level.getBlockState(blockPos);
-        if (!state.is(FTZBlockTags.ENGINEERING_TABLES)) return InteractionResult.PASS;
+        if (!(state.getBlock() instanceof EngineeringTableBlock)) return InteractionResult.PASS;
 
         ToolUtilisationHolder holder = PlayerAbilityHelper.takeHolder(player, ToolUtilisationHolder.class);
         if (holder == null || !holder.tryRecharge(this)) {

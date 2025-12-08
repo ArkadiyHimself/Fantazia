@@ -25,11 +25,11 @@ public interface HealingTypes {
     static void bootStrap(BootstrapContext<HealingType> context) {
         context.register(DEVOUR, new HealingType("devour"));
         context.register(GENERIC, new HealingType("generic"));
-        context.register(LIFESTEAL, new HealingType("lifesteal",0f, FTZParticleTypes.LIFESTEAL1.getId(), FTZParticleTypes.LIFESTEAL2.getId(), FTZParticleTypes.LIFESTEAL3.getId(), FTZParticleTypes.LIFESTEAL4.getId(), FTZParticleTypes.LIFESTEAL5.getId()));
+        context.register(LIFESTEAL, new HealingType("lifesteal",0f, FTZParticleTypes.LIFESTEAL.getId()));
         context.register(MOB_EFFECT, new HealingType("mobEffect"));
         context.register(MOB_EFFECT_REGEN, new HealingType("mobEffectRegen"));
         context.register(NATURAL_REGEN, new HealingType("naturalRegen",0.005f));
-        context.register(REGEN_AURA, new HealingType("regenAura",0f, FTZParticleTypes.REGEN1.getId(), FTZParticleTypes.REGEN2.getId(), FTZParticleTypes.REGEN3.getId()));
+        context.register(REGEN_AURA, new HealingType("regenAura",0f, FTZParticleTypes.REGEN.getId()));
         context.register(COMB, new HealingType("comb"));
     }
 }

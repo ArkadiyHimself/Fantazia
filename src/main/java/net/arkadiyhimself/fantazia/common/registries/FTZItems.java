@@ -142,7 +142,7 @@ public class FTZItems {
     public static final DeferredItem<ThrowingPinItem> THROWING_PIN; // finished and implemented
     public static final DeferredItem<BlockFlyItem> BLOCK_FLY; // finished and implemented
 
-    // obscure wood items
+    // obscure wood blueprints
     public static final DeferredItem<SignItem> OBSCURE_SIGN; // finished and implemented
     public static final DeferredItem<HangingSignItem> OBSCURE_HANGING_SIGN; // finished and implemented
     public static final DeferredItem<CustomBoatItem> OBSCURE_BOAT; // finished and implemented

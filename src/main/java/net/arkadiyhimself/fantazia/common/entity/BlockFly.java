@@ -282,7 +282,8 @@ public class BlockFly extends FlyingMob implements FlyingAnimal {
         boolean touching = !level().getEntitiesOfClass(LivingEntity.class, getBoundingBox()).stream().filter(livingEntity -> livingEntity != this && livingEntity != killer).toList().isEmpty();
         boolean explode = this.deathTime >= 25 || collision || touching;
         if (explode && !this.isRemoved() && !level().isClientSide()) {
-            this.level().explode(this, this.getX(), this.getY(), this.getZ(), 1f, Level.ExplosionInteraction.MOB);
+            boolean easter = this.hasCustomName() && "rex".equals(this.getName().getString());
+            this.level().explode(this, this.getX(), this.getY(), this.getZ(), easter ? 22.5f : 1f, Level.ExplosionInteraction.MOB);
             this.level().broadcastEntityEvent(this, (byte)60);
             this.remove(RemovalReason.KILLED);
         }
@@ -292,8 +293,7 @@ public class BlockFly extends FlyingMob implements FlyingAnimal {
     public void handleEntityEvent(byte id) {
         if (id == 60 && this.entityData.get(FUNNY_DEATH)) {
             for (int i = 0; i < 45; i++) {
-                ParticleOptions options = FTZParticleTypes.METAL_SCRAP.random();
-                if (options == null) continue;
+                ParticleOptions options = FTZParticleTypes.METAL_SCRAP.value();
                 Vec3 delta = RandomUtil.randomVec3().normalize().scale(0.3);
                 Vec3 pos = position().add(delta);
                 delta = delta.normalize().scale(0.7);
@@ -334,11 +334,9 @@ public class BlockFly extends FlyingMob implements FlyingAnimal {
         int j = RandomUtil.nextInt((int) amount, (int) amount + 3);
         j = Math.min(j, (int) getMaxHealth());
         if (level() instanceof ServerLevel serverLevel && source.is(FTZDamageTypeTags.SPAWNS_SCRAP_PARTICLES_ON_BLOCK_FLY)) for (int i = 0; i < j; i++) {
-            ParticleOptions options = FTZParticleTypes.METAL_SCRAP.random();
-            if (options == null) return;
             Vec3 delta = RandomUtil.randomVec3().normalize().scale(0.3f);
             Vec3 pos = position().add(delta);
-            serverLevel.sendParticles(options, pos.x, pos.y, pos.z, 1, 0.35, 0.35, 0.35, 0);
+            serverLevel.sendParticles(FTZParticleTypes.METAL_SCRAP.value(), pos.x, pos.y, pos.z, 1, 0.35, 0.35, 0.35, 0);
         }
     }
 

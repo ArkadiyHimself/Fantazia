@@ -61,10 +61,10 @@ public class LivingEffectHelper {
         MobEffect mobEffect = instance.getEffect().value();
         int ampl = instance.getAmplifier();
         int duration = instance.getDuration();
-        if (livingEntity instanceof ServerPlayer serverPlayer && instance.getEffect().value() == FTZMobEffects.DOOMED.value()) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.DOOMED.get());
+        if (livingEntity instanceof ServerPlayer serverPlayer && instance.getEffect().value() == FTZMobEffects.DOOMED.value()) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.EFFECT_DOOMED_APPLIED.get());
 
         if (mobEffect == FTZMobEffects.HAEMORRHAGE.value()) {
-            livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_FLESH_RIPPING.get(), SoundSource.NEUTRAL,0.35f,1f);
+            livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_APPLIED.get(), SoundSource.NEUTRAL,0.35f,1f);
             DamageSourcesHolder sources = LevelAttributesHelper.getDamageSources(livingEntity.level());
             if (sources != null) livingEntity.hurt(sources.bleeding(), livingEntity.getHealth() * 0.1f);
             livingEntity.setData(FTZAttachmentTypes.HAEMORRHAGE_TO_HEAL,4f + 2 * instance.getAmplifier());
@@ -85,7 +85,7 @@ public class LivingEffectHelper {
     }
 
     public static void simpleEffectRemoved(LivingEntity entity, MobEffect effect) {
-        if (entity instanceof ServerPlayer serverPlayer && effect == FTZMobEffects.DOOMED.value()) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.UNDOOMED.get());
+        if (entity instanceof ServerPlayer serverPlayer && effect == FTZMobEffects.DOOMED.value()) IPacket.playSoundForUI(serverPlayer, FTZSoundEvents.EFFECT_DOOMED_EXPIRED.get());
 
         if (effect == FTZMobEffects.LAYERED_BARRIER.value()) {
             entity.setData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS, 0);
@@ -131,7 +131,7 @@ public class LivingEffectHelper {
                 livingEntity.setData(FTZAttachmentTypes.BARRIER_HEALTH, newHP);
                 livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_BARRIER_DAMAGE.get(), SoundSource.AMBIENT);
                 int num = (int) Math.min(amount * 3f, 25);
-                VisualHelper.particleOnEntityServer(livingEntity, furious ? FTZParticleTypes.PIECES_FURY.random() : FTZParticleTypes.PIECES.random(), ParticleMovement.FALL, num);
+                VisualHelper.particleOnEntityServer(livingEntity, furious ? FTZParticleTypes.BARRIER_PIECE_FURY.value() : FTZParticleTypes.BARRIER_PIECE.value(), ParticleMovement.FALL, num);
                 return;
             } else {
                 event.setAmount(-newHP);
@@ -139,7 +139,7 @@ public class LivingEffectHelper {
                 livingEntity.level().playSound(null, livingEntity.blockPosition(), FTZSoundEvents.EFFECT_BARRIER_BREAK.get(), SoundSource.AMBIENT);
                 if (event.getEntity().hasEffect(FTZMobEffects.BARRIER)) EffectCleansing.forceCleanse(event.getEntity(), FTZMobEffects.BARRIER);
 
-                VisualHelper.particleOnEntityServer(livingEntity, furious ? FTZParticleTypes.PIECES_FURY.random() : FTZParticleTypes.PIECES.random(), ParticleMovement.FALL, 30);
+                VisualHelper.particleOnEntityServer(livingEntity, furious ? FTZParticleTypes.BARRIER_PIECE_FURY.value() : FTZParticleTypes.BARRIER_PIECE.value(), ParticleMovement.FALL, 30);
             }
         }
 

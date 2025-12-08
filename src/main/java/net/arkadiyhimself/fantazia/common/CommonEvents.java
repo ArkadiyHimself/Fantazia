@@ -12,6 +12,8 @@ import net.arkadiyhimself.fantazia.common.advanced.cleanse.EffectCleansing;
 import net.arkadiyhimself.fantazia.common.advanced.rune.RuneHelper;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellHelper;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.common.api.attachment.BasicAttachmentsUtil;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.LumberjackHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.AttachmentsSyncing;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.LivingDataHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_data.holders.EvasionHolder;
@@ -45,6 +47,7 @@ import net.arkadiyhimself.fantazia.common.registries.custom.Spells;
 import net.arkadiyhimself.fantazia.data.effect_from_damage.ServerEffectFromDamageManager;
 import net.arkadiyhimself.fantazia.data.loot.ServerLootModifierManager;
 import net.arkadiyhimself.fantazia.data.spawn_effect.ServerSpawnEffectManager;
+import net.arkadiyhimself.fantazia.data.tags.FTZBlockTags;
 import net.arkadiyhimself.fantazia.data.tags.FTZDamageTypeTags;
 import net.arkadiyhimself.fantazia.data.tags.FTZItemTags;
 import net.arkadiyhimself.fantazia.data.tags.FTZMobEffectTags;
@@ -65,6 +68,7 @@ import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -72,7 +76,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.GameEventTags;
 import net.minecraft.util.Mth;
@@ -125,6 +128,7 @@ import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.*;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -137,7 +141,6 @@ import top.theillusivec4.curios.api.event.CurioChangeEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Fantazia.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class CommonEvents {
@@ -153,7 +156,7 @@ public class CommonEvents {
         }
 
         Holder<AbstractSpell> entangle = Spells.ENTANGLE;
-        if (SpellHelper.spellAvailable(livingTarget, entangle) && livingTarget.getData(FTZAttachmentTypes.ENTANGLE_PREVIOUS_HEALTH) > livingTarget.getMaxHealth() * 0.1f && FantazicHooks.ForgeExtension.onDeathPrevention(event.getEntity(),entangle)) {
+        if (SpellHelper.spellAvailable(livingTarget, entangle) && livingTarget.getData(FTZAttachmentTypes.ENTANGLE_PREVIOUS_HEALTH) > livingTarget.getMaxHealth() * 0.1f && FantazicHooks.ForgeExtension.onDeathPrevention(event.getEntity(), entangle)) {
             EffectCleansing.tryCleanseAll(livingTarget, Cleanse.POWERFUL, MobEffectCategory.HARMFUL);
             event.setCanceled(true);
             livingTarget.setHealth(livingTarget.getMaxHealth() * 0.1f);
@@ -272,7 +275,7 @@ public class CommonEvents {
         LivingEntity target = event.getEntity();
         target.setData(FTZAttachmentTypes.ENTANGLE_PREVIOUS_HEALTH, target.getHealth());
         if (event.getEntity().level().isClientSide()) return;
-        if (source.is(FTZDamageTypeTags.BLEEDING)) VisualHelper.particleOnEntityServer(target, FTZParticleTypes.BLOOD.random(), ParticleMovement.FALL);
+        if (source.is(FTZDamageTypeTags.BLEEDING)) VisualHelper.particleOnEntityServer(target, FTZParticleTypes.BLOOD.value(), ParticleMovement.FALL);
 
         FantazicCombat.meleeAttack(event);
 
@@ -328,8 +331,10 @@ public class CommonEvents {
             }
         }
 
+        BasicAttachmentsUtil.maybeApplyPinpoint(source, target, amount);
         LivingEffectHelper.simpleEffectOnHit(event);
         ServerEffectFromDamageManager.tryApplyEffects(target, source.typeHolder());
+        BasicAttachmentsUtil.maybeApplyFerocious(source, target);
     }
 
     @SubscribeEvent
@@ -341,6 +346,11 @@ public class CommonEvents {
 
         Entity attacker = source.getEntity();
         if (attacker != null && attacker.getData(FTZAttachmentTypes.DASHSTONE_MINION) && target.getData(FTZAttachmentTypes.DASHSTONE_MINION)) {
+            event.setCanceled(true);
+            return;
+        }
+
+        if (source.is(FTZDamageTypeTags.NO_HURTING_THYSELF) && target == attacker) {
             event.setCanceled(true);
             return;
         }
@@ -359,6 +369,7 @@ public class CommonEvents {
         if (target instanceof Player player) player.getData(FTZAttachmentTypes.ABILITY_MANAGER).onHit(event);
         target.getData(FTZAttachmentTypes.DATA_MANAGER).onHit(event);
         target.getData(FTZAttachmentTypes.EFFECT_MANAGER).onHit(event);
+        target.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).onHit(event);
 
         if (FantazicCombat.attemptEvasion(event)) return;
         if (SpellHelper.wardenSonicBoom(event)) return;
@@ -378,6 +389,12 @@ public class CommonEvents {
         if (!FantazicUtil.isAffected(entity, effect))
             event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
         if (instance.getEffect() == MobEffects.WITHER && SpellHelper.spellAvailable(entity, Spells.SUSTAIN)) event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
+    }
+
+    @SubscribeEvent
+    public static void mobDespawn(MobDespawnEvent event) {
+        Mob mob = event.getEntity();
+        if (mob.getData(FTZAttachmentTypes.DASHSTONE_MINION)) event.setResult(MobDespawnEvent.Result.DENY);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -502,6 +519,23 @@ public class CommonEvents {
     public static void shieldBlock(LivingShieldBlockEvent event) {
         Entity attacker = event.getDamageSource().getEntity();
         if (attacker instanceof ThrownHatchet thrownHatchet && thrownHatchet.phasingTicks() > 0) event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void blockBreakEvent(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
+        BlockPos pos = event.getPos();
+
+        Vec3 delta = player.getLookAngle().normalize();
+        double dX = Math.abs(delta.x);
+        double dZ = Math.abs(delta.z);
+        boolean X = dX > dZ;
+
+        boolean lumberjack = player.getData(FTZAttachmentTypes.LUMBERJACK_PERK).isUnlocked() && LumberjackHolder.onTreeHarvest(player.level(), player, pos);
+
+        if (!lumberjack && player.getData(FTZAttachmentTypes.ENHANCED_MINING_PERK))
+            if (!player.level().getBlockState(pos).is(FTZBlockTags.NOT_TRIGGERING_ENHANCED_MINING_PERK))
+                BasicAttachmentsUtil.maybeDoEnhancedMining(player, pos, X);
     }
 
     @SubscribeEvent
@@ -664,7 +698,7 @@ public class CommonEvents {
         Projectile projectile = event.getProjectile();
         if (result instanceof EntityHitResult entityHitResult) {
             Entity entity = entityHitResult.getEntity();
-            if (projectile instanceof Snowball) entity.setTicksFrozen(Math.min(entity.getTicksRequiredToFreeze(), entity.getTicksFrozen() + 50));
+            if (projectile instanceof Snowball) entity.setTicksFrozen(Math.min(entity.getTicksRequiredToFreeze() + 30, entity.getTicksFrozen() + 50));
             if (projectile instanceof AbstractArrow arrow) {
                 if (entity instanceof LivingEntity livingEntity) FantazicCombat.arrowImpact(arrow, livingEntity);
                 if (entity instanceof AbstractMagicProjectile magicProjectile) magicProjectile.deflect(entity);

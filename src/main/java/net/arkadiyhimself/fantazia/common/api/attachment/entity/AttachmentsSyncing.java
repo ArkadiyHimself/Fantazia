@@ -1,5 +1,6 @@
 package net.arkadiyhimself.fantazia.common.api.attachment.entity;
 
+import net.arkadiyhimself.fantazia.common.api.attachment.BasicAttachmentsUtil;
 import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.TickingIntegerHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.LevelAttributesHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.level.holders.DamageSourcesHolder;
@@ -27,10 +28,10 @@ public class AttachmentsSyncing {
         if (entity instanceof LivingEntity livingEntity) {
             livingEntity.getData(FTZAttachmentTypes.EFFECT_MANAGER).tick();
             livingEntity.getData(FTZAttachmentTypes.DATA_MANAGER).tick();
-
             livingEntity.getData(FTZAttachmentTypes.TRANQUILIZE_DAMAGE_TICKS).tick();
             livingEntity.getData(FTZAttachmentTypes.COMB_HEALTH).tick();
             livingEntity.getData(FTZAttachmentTypes.BIFROST_HEALTH).tick();
+            livingEntity.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).tick();
         }
 
         TickingIntegerHolder ancientFlameTicks = entity.getData(FTZAttachmentTypes.ANCIENT_FLAME_TICKS);
@@ -42,6 +43,7 @@ public class AttachmentsSyncing {
             player.getData(FTZAttachmentTypes.ABILITY_MANAGER).tick();
 
             player.getData(FTZAttachmentTypes.MURASAMA_TAUNT_TICKS).tick();
+            BasicAttachmentsUtil.maybeApplyMinersSight(player);
         }
     }
 }

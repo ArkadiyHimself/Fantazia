@@ -1,7 +1,15 @@
 package net.arkadiyhimself.fantazia.common.item;
 
+import com.mojang.serialization.MapCodec;
+import net.arkadiyhimself.fantazia.common.advanced.blueprint.Blueprint;
+import net.arkadiyhimself.fantazia.common.entity.EngineeringTableBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -11,18 +19,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class EngineeringTableBlock extends Block {
+public class EngineeringTableBlock extends BaseEntityBlock {
+
+    public static final MapCodec<EngineeringTableBlock> CODEC = simpleCodec(instance -> new EngineeringTableBlock());
 
     public static final EnumProperty<DoubleBlockHalf> HALF;
     public static final DirectionProperty FACING;
@@ -50,19 +63,35 @@ public class EngineeringTableBlock extends Block {
     }
 
     @Override
+    protected @NotNull InteractionResult useWithoutItem(
+            @NotNull BlockState state,
+            @NotNull Level level,
+            @NotNull BlockPos pos,
+            @NotNull Player player,
+            @NotNull BlockHitResult hitResult
+    ) {
+        BlockEntity entity = level.getBlockEntity(pos);
+        if (entity instanceof EngineeringTableBlockEntity table && table.isValid()) {
+            boolean flag = table.returnBlueprint(player);
+            if (flag) table.setChanged();
+            return flag ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        }
+        return InteractionResult.PASS;
+    }
+
+    @Override
+    protected void onRemove(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState newState, boolean movedByPiston) {
+        dropContentsOnDestroy(state, newState, level, pos);
+        super.onRemove(state, level, pos, newState, movedByPiston);
+    }
+
+    @Override
     public @NotNull BlockState playerWillDestroy(Level level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Player player) {
         if (!level.isClientSide && (player.isCreative() || !player.hasCorrectToolForDrops(state, level, pos))) {
             preventDropFromBottomPart(level, pos, state, player);
         }
 
         return super.playerWillDestroy(level, pos, state, player);
-    }
-
-    @Override
-    protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        BlockPos blockpos = pos.below();
-        BlockState blockstate = level.getBlockState(blockpos);
-        return state.getValue(HALF) == DoubleBlockHalf.LOWER ? blockstate.isFaceSturdy(level, blockpos, Direction.UP) : blockstate.is(this);
     }
 
     @Override
@@ -77,6 +106,11 @@ public class EngineeringTableBlock extends Block {
                     ? facingState.setValue(HALF, doubleblockhalf)
                     : Blocks.AIR.defaultBlockState();
         }
+    }
+
+    @Override
+    protected @NotNull RenderShape getRenderShape(@NotNull BlockState state) {
+        return RenderShape.MODEL;
     }
 
     @Override
@@ -112,6 +146,16 @@ public class EngineeringTableBlock extends Block {
         builder.add(FACING, HALF);
     }
 
+    @Override
+    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
+    public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        return new EngineeringTableBlockEntity(blockPos, blockState);
+    }
+
     protected static void preventDropFromBottomPart(Level level, BlockPos pos, BlockState state, Player player) {
         DoubleBlockHalf doubleblockhalf = state.getValue(HALF);
         if (doubleblockhalf == DoubleBlockHalf.UPPER) {
@@ -122,6 +166,16 @@ public class EngineeringTableBlock extends Block {
                 level.setBlock(blockpos, blockState1, 35);
                 level.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
             }
+        }
+
+    }
+
+    public static void dropContentsOnDestroy(BlockState state, BlockState newState, Level level, BlockPos pos) {
+        if (state.is(newState.getBlock())) return;
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof EngineeringTableBlockEntity entity) {
+            entity.onDestroy();
+            level.updateNeighbourForOutputSignal(pos, state.getBlock());
         }
 
     }

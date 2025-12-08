@@ -10,11 +10,11 @@ import net.arkadiyhimself.fantazia.common.api.attachment.entity.player_ability.h
 import net.arkadiyhimself.fantazia.common.api.prompt.Prompts;
 import net.arkadiyhimself.fantazia.common.registries.FTZSoundEvents;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
+import net.arkadiyhimself.fantazia.data.talent.TalentHierarchy;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentTabManager;
 import net.arkadiyhimself.fantazia.integration.jei.JEIHelper;
 import net.arkadiyhimself.fantazia.networking.IPacket;
-import net.arkadiyhimself.fantazia.util.library.hierarchy.IHierarchy;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicMath;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicUtil;
 import net.minecraft.ChatFormatting;
@@ -68,7 +68,7 @@ public class TalentScreen extends Screen {
 
         for (Map.Entry<ResourceLocation, TalentTab> entry : ServerTalentTabManager.getTabs().entrySet()) {
             ResourceLocation tabID = entry.getKey();
-            List<IHierarchy<Talent>> iHierarchyList = TalentTreeData.getTabToHierarchies().get(tabID);
+            List<TalentHierarchy> iHierarchyList = TalentTreeData.getTabToHierarchies().get(tabID);
             TalentTab talentTab = entry.getValue().hierarchies(iHierarchyList);
             TABS.add(talentTab);
         }
@@ -194,7 +194,9 @@ public class TalentScreen extends Screen {
         guiGraphics.pose().pushPose();
         int x0 = (int) scrollX;
         int y0 = (int) scrollY;
-        guiGraphics.blit(selectedTab == null ? DEFAULT_BACKGROUND : selectedTab.getBackground(), bgX + x0, bgY + y0, 0,0, 512, 512, 512, 512);
+        int width = selectedTab == null ? 512 : selectedTab.bgWidth();
+        int height = selectedTab == null ? 512 : selectedTab.bgHeight();
+        guiGraphics.blit(selectedTab == null ? DEFAULT_BACKGROUND : selectedTab.getBackground(), bgX + x0, bgY + y0, 0,0, maxX, maxY, width, height);
         guiGraphics.pose().popPose();
         guiGraphics.disableScissor();
     }
@@ -265,7 +267,7 @@ public class TalentScreen extends Screen {
     }
 
     private void scroll(double pX, double pY) {
-        this.scrollX = Mth.clamp(this.scrollX + pX, -bgWidth() + background, minX);
-        this.scrollY = Mth.clamp(this.scrollY + pY, -bgHeight() + background, minY);
+        scrollX = Mth.clamp(scrollX + pX, -bgWidth() + background, minX);
+        scrollY = Mth.clamp(scrollY + pY, -bgHeight() + background, minY);
     }
 }

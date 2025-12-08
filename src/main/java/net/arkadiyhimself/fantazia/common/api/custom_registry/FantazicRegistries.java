@@ -14,7 +14,7 @@ import net.arkadiyhimself.fantazia.data.item.rechargeable_tool.ToolDamageLevelFu
 import net.arkadiyhimself.fantazia.data.loot.LootModifier;
 import net.arkadiyhimself.fantazia.data.spawn_effect.EffectSpawnApplier;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
-import net.arkadiyhimself.fantazia.data.talent.TalentHierarchyBuilder;
+import net.arkadiyhimself.fantazia.data.talent.TalentIdHierarchy;
 import net.arkadiyhimself.fantazia.data.talent.wisdom_reward.WisdomRewardsCombined;
 import net.minecraft.core.DefaultedRegistry;
 import net.minecraft.core.Registry;
@@ -78,7 +78,7 @@ public class FantazicRegistries {
         public static final ResourceKey<Registry<LootModifier.Builder>> LOOT_MODIFIER = Fantazia.resKey("loot_modifier");
         public static final ResourceKey<Registry<EffectSpawnApplier.Builder>> EFFECT_SPAWN_APPLIER = Fantazia.resKey("effect_spawn_applier");
         public static final ResourceKey<Registry<Talent.Builder>> TALENT = Fantazia.resKey("talent_reload/talent");
-        public static final ResourceKey<Registry<TalentHierarchyBuilder>> TALENT_HIERARCHY = Fantazia.resKey("talent_reload/talent_hierarchy");
+        public static final ResourceKey<Registry<TalentIdHierarchy.Builder>> TALENT_HIERARCHY = Fantazia.resKey("talent_reload/talent_hierarchy");
         public static final ResourceKey<Registry<TalentTab.Builder>> TALENT_TAB = Fantazia.resKey("talent_reload/talent_tab");
         public static final ResourceKey<Registry<WisdomRewardsCombined.Builder>> WISDOM_REWARD_CATEGORY = Fantazia.resKey("talent_reload/wisdom_reward");
         public static final ResourceKey<Registry<EffectSpawnApplier.Builder>> EFFECT_FROM_DAMAGE = Fantazia.resKey("effect_from_damage");

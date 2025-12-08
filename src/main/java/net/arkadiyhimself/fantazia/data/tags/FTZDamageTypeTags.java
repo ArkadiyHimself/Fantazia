@@ -25,6 +25,8 @@ public interface FTZDamageTypeTags {
     TagKey<DamageType> SPAWNS_SCRAP_PARTICLES_ON_BLOCK_FLY = create("spawns_scrap_particles_on_block_fly");
     TagKey<DamageType> MELEE_ATTACK_CAUSES_STUN = create("melee_attack_causes_stun");
     TagKey<DamageType> PARRY_ATTACK_CAUSES_STUN = create("parry_attack_causes_stun");
+    TagKey<DamageType> EXPLOSION_CAUSES_STUN = create("explosion_causes_stun");
+    TagKey<DamageType> FALLING_CAUSES_STUN = create("falling_causes_stun");
     TagKey<DamageType> REDUCED_BY_CAT_REFLEXES_TALENT = create("reduced_by_cat_reflexes_talent");
     TagKey<DamageType> NEGATED_BY_THIRD_LEVEL_DASH_TALENT = create("negated_by_third_level_dash_talent");
     TagKey<DamageType> DOUBLE_DAMAGE_INCREASE_FOR_HIDDEN_POTENTIAL = create("double_damage_increase_for_hidden_potential");
@@ -38,6 +40,10 @@ public interface FTZDamageTypeTags {
     TagKey<DamageType> NO_DELAY_BEFORE_DECAYING_STUN_POINTS = create("no_delay_before_decaying_stun_points");
     TagKey<DamageType> NO_EUPHORIA_DECAY = create("no_euphoria_decay");
     TagKey<DamageType> FROM_RECHARGEABLE_TOOL = create("from_rechargeable_tool");
+    TagKey<DamageType> NO_HURTING_THYSELF = create("no_hurting_thyself");
+    TagKey<DamageType> IGNORED_BY_PASSIVE_BARRIER = create("ignored_by_passive_barrier");
+    TagKey<DamageType> USED_BY_FEROCIOUS_PERK = create("used_by_ferocious_perk");
+    TagKey<DamageType> USED_BY_PINPOINT_PERK = create("used_by_pinpoint_perk");
 
     private static TagKey<DamageType> create(String pName) {
         return TagKey.create(Registries.DAMAGE_TYPE, Fantazia.location(pName));

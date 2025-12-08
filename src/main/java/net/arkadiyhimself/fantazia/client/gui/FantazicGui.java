@@ -11,6 +11,7 @@ import net.arkadiyhimself.fantazia.common.advanced.aura.AuraHelper;
 import net.arkadiyhimself.fantazia.common.advanced.aura.AuraInstance;
 import net.arkadiyhimself.fantazia.common.advanced.spell.SpellInstance;
 import net.arkadiyhimself.fantazia.common.advanced.spell.types.AbstractSpell;
+import net.arkadiyhimself.fantazia.common.api.attachment.basis_attachments.PassiveBarrierHolder;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.CurrentAndInitialValue;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.LivingEffectHelper;
 import net.arkadiyhimself.fantazia.common.api.attachment.entity.living_effect.holders.StunEffectHolder;
@@ -90,8 +91,8 @@ public class FantazicGui {
     public static final ResourceLocation MANA_ICON_EMPTY = Fantazia.location("hud/mana/mana_icon_empty");
     public static final ResourceLocation MANA_ICON = Fantazia.location("hud/mana/mana_icon");
     public static final ResourceLocation MANA_ICON_HALF = Fantazia.location("hud/mana/mana_icon_half");
-    // stamina bar stuff
 
+    // stamina bar stuff
     public static final ResourceLocation STAMINA_FRAME_TOP = Fantazia.location("textures/gui/stamina/stamina_frame_top.png");
     public static final ResourceLocation STAMINA_FRAME_BOTTOM = Fantazia.location("textures/gui/stamina/stamina_frame_bottom.png");
     public static final ResourceLocation STAMINA_FRAME_SIDE = Fantazia.location("textures/gui/stamina/stamina_frame_side.png");
@@ -112,10 +113,14 @@ public class FantazicGui {
     private static final ResourceLocation DOUBLE_JUMP = Fantazia.location("hud/ability/double_jump");
     private static final ResourceLocation DOUBLE_JUMP_EMPTY = Fantazia.location("hud/ability/double_jump_empty");
 
+    // passive barrier stuff
+    private static final ResourceLocation PASSIVE_BARRIER_OUTLINE = Fantazia.location("hud/ability/passive_barrier_empty");
+    private static final ResourceLocation PASSIVE_BARRIER_FILLING = Fantazia.location("hud/ability/passive_barrier");
+
     // layered barrier stuff
     private static final ResourceLocation BARRIER_LAYERS = Fantazia.location("hud/barrier_layers");
 
-    // euphoria
+    // euphoria stuff
     private static final ResourceLocation EUPHORIA = Fantazia.location("hud/euphoria/icon");
     private static final ResourceLocation EUPHORIA_EMPTY = Fantazia.location("hud/euphoria/empty");
 
@@ -401,22 +406,36 @@ public class FantazicGui {
         return x0 + 23;
     }
 
-    public static void renderDoubleJumpIcon(@NotNull DoubleJumpHolder doubleJumpHolder, GuiGraphics guiGraphics, int x0, int y0) {
+    public static int renderDoubleJumpIcon(@NotNull DoubleJumpHolder doubleJumpHolder, GuiGraphics guiGraphics, int x0, int y0) {
         int recharge = doubleJumpHolder.getRecharge();
         if (recharge > 0) {
             int filling = (int) ((float) recharge / (float) doubleJumpHolder.elytraRecharge() * 20);
             guiGraphics.blitSprite(DOUBLE_JUMP_EMPTY, x0, y0, 20,20);
             guiGraphics.blitSprite(DOUBLE_JUMP, 20, 20, 0, 0, x0, y0, 20 - filling, 20);
-            return;
+        } else {
+            ResourceLocation icon = doubleJumpHolder.canJump() ? DOUBLE_JUMP : DOUBLE_JUMP_EMPTY;
+            guiGraphics.blitSprite(icon, x0, y0, 20, 20);
         }
-        ResourceLocation icon = doubleJumpHolder.canJump() ? DOUBLE_JUMP : DOUBLE_JUMP_EMPTY;
-        guiGraphics.blitSprite(icon, x0, y0,20,20);
+        return x0 + 23;
+    }
+
+    public static void renderPassiveBarrierIcon(PassiveBarrierHolder holder, GuiGraphics guiGraphics, int x0, int y0) {
+        if (!holder.isUnlocked()) return;
+        int time = holder.getTime();
+        float percent = (float) time / PassiveBarrierHolder.DEFAULT_RECHARGE;
+        int filling = (int) (percent * 20);
+        if (!holder.isEnabled()) RenderSystem.setShaderColor(0.55f,0.55f,0.55f,0.7f);
+
+        RenderSystem.enableBlend();
+        guiGraphics.blitSprite(PASSIVE_BARRIER_FILLING,20,20,20,20,x0 + 20,y0 + 20,-20, filling - 20);
+        guiGraphics.blitSprite(PASSIVE_BARRIER_OUTLINE, x0, y0,20,20);
+        RenderSystem.disableBlend();
+        RenderSystem.setShaderColor(1f,1f,1f,1f);
     }
 
     public static void renderEuphoriaBar(@NotNull EuphoriaHolder euphoriaHolder, GuiGraphics guiGraphics, int x0, int y0) {
         int combo = Math.min(10, euphoriaHolder.kills());
         int ticks = euphoriaHolder.ticks();
-        if (combo <= 1) return;
 
         int halfDur = EuphoriaHolder.TICKS / 2;
         int phase = ticks - halfDur;
@@ -427,6 +446,11 @@ public class FantazicGui {
         RenderSystem.setShaderColor(red * 0.4f + 0.6f,1f,1f, alpha);
 
         guiGraphics.blitSprite(EUPHORIA_EMPTY, x0, y0,20,20);
+        if (combo <= 1) {
+            RenderSystem.disableBlend();
+            RenderSystem.setShaderColor(1f,1f,1f,1f);
+            return;
+        }
         guiGraphics.blitSprite(EUPHORIA, 20, 20, 0, 0, x0, y0, 2 * combo, 20);
 
         RenderSystem.disableBlend();

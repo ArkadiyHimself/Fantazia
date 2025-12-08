@@ -43,9 +43,10 @@ public class GenericParticle extends RisingParticle {
     }
 
     @OnlyIn(Dist.CLIENT)
-        public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
+    public record Provider(SpriteSet spriteSet) implements ParticleProvider<SimpleParticleType> {
+
         public Particle createParticle(@NotNull SimpleParticleType particleType, @NotNull ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
-                return new GenericParticle(level, x, y, z, dx, dy, dz, this.spriteSet);
-            }
+            return new GenericParticle(level, x, y, z, dx, dy, dz, this.spriteSet);
         }
+    }
 }

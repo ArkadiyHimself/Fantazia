@@ -1,13 +1,20 @@
 package net.arkadiyhimself.fantazia.common.item;
 
 import net.arkadiyhimself.fantazia.common.advanced.blueprint.Blueprint;
+import net.arkadiyhimself.fantazia.common.entity.EngineeringTableBlockEntity;
 import net.arkadiyhimself.fantazia.common.registries.FTZDataComponentTypes;
 import net.arkadiyhimself.fantazia.common.registries.FTZItems;
 import net.arkadiyhimself.fantazia.common.registries.custom.Blueprints;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +38,20 @@ public class BlueprintItem extends Item implements ITooltipBuilder {
         List<Component> components = Lists.newArrayList();
         components.addAll(getBlueprint(stack).value().buildTooltip());
         return components;
+    }
+
+    @Override
+    public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
+        Level level = context.getLevel();
+        Player player = context.getPlayer();
+        BlockPos blockPos = context.getClickedPos();
+        ItemStack stack = context.getItemInHand();
+
+        BlockEntity blockEntity = level.getBlockEntity(blockPos);
+        if (!(blockEntity instanceof EngineeringTableBlockEntity tableBlockEntity)) return InteractionResult.PASS;
+        boolean flag = tableBlockEntity.setBlueprint(player, stack.copy());
+        if (flag) stack.shrink(1);
+        return flag ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
     public Holder<Blueprint> getBlueprint(ItemStack stack) {

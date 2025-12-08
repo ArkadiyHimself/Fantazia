@@ -21,19 +21,21 @@ public record PlayerAttachmentInitialSyncSC2(int id, CompoundTag tag) implements
     );
 
     public static PlayerAttachmentInitialSyncSC2 build(ServerPlayer serverPlayer) {
-        CompoundTag compoundTag = new CompoundTag();
-        compoundTag.put("living_effect_manager", serverPlayer.getData(FTZAttachmentTypes.EFFECT_MANAGER).serializeInitial());
-        compoundTag.put("living_data_manager", serverPlayer.getData(FTZAttachmentTypes.DATA_MANAGER).serializeInitial());
-        compoundTag.putInt("layered_barrier_layers", serverPlayer.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS));
-        compoundTag.putFloat("barrier_health", serverPlayer.getData(FTZAttachmentTypes.BARRIER_HEALTH));
-        compoundTag.putString("amplification_tab", serverPlayer.getData(FTZAttachmentTypes.LAST_SELECTED_AMPLIFICATION_TAB).ident());
+        CompoundTag tag = new CompoundTag();
+        tag.put("living_effect_manager", serverPlayer.getData(FTZAttachmentTypes.EFFECT_MANAGER).serializeInitial());
+        tag.put("living_data_manager", serverPlayer.getData(FTZAttachmentTypes.DATA_MANAGER).serializeInitial());
+        tag.putInt("layered_barrier_layers", serverPlayer.getData(FTZAttachmentTypes.LAYERED_BARRIER_LAYERS));
+        tag.putFloat("barrier_health", serverPlayer.getData(FTZAttachmentTypes.BARRIER_HEALTH));
+        tag.putString("amplification_tab", serverPlayer.getData(FTZAttachmentTypes.LAST_SELECTED_AMPLIFICATION_TAB).ident());
 
-        compoundTag.put("ability_manager", serverPlayer.getData(FTZAttachmentTypes.ABILITY_MANAGER).serializeInitial());
-        compoundTag.put("wanderers_spirit_location", serverPlayer.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION).serialize());
-        compoundTag.putInt("all_in_previous_outcome", serverPlayer.getData(FTZAttachmentTypes.ALL_IN_PREVIOUS_OUTCOME));
-        compoundTag.putBoolean("wall_climbing_unlocked", serverPlayer.getData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED));
-        compoundTag.putBoolean("wall_climbing_cobweb", serverPlayer.getData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB));
-        return new PlayerAttachmentInitialSyncSC2(serverPlayer.getId(), compoundTag);
+        tag.put("ability_manager", serverPlayer.getData(FTZAttachmentTypes.ABILITY_MANAGER).serializeInitial());
+        tag.put("wanderers_spirit_location", serverPlayer.getData(FTZAttachmentTypes.WANDERERS_SPIRIT_LOCATION).serialize());
+        tag.putInt("all_in_previous_outcome", serverPlayer.getData(FTZAttachmentTypes.ALL_IN_PREVIOUS_OUTCOME));
+        tag.putBoolean("wall_climbing_unlocked", serverPlayer.getData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED));
+        tag.putBoolean("wall_climbing_cobweb", serverPlayer.getData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB));
+        tag.put("passive_barrier", serverPlayer.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).serializeInitial());
+        tag.putBoolean("hurt_by_falling", serverPlayer.getData(FTZAttachmentTypes.HURT_BY_FALLING_PERK));
+        return new PlayerAttachmentInitialSyncSC2(serverPlayer.getId(), tag);
     }
 
     @Override

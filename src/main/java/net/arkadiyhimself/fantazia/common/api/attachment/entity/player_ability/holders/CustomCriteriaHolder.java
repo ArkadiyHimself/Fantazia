@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomCriteriaHolder extends PlayerAbilityHolder {
 
-    // a list of items that were in player's inventory at some point
+    // a list of blueprints that were in player's inventory at some point
     private final List<Item> obtainedItems = Lists.newArrayList();
 
     // a list of runes that were in player's inventory at some point

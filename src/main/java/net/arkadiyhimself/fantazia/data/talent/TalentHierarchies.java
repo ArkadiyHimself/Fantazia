@@ -18,5 +18,8 @@ public class TalentHierarchies {
     public static final ResourceLocation EVASION_BOOST = Fantazia.location("stat_modifiers/evasion_boost");
     public static final ResourceLocation HEALTH_BOOST = Fantazia.location("stat_modifiers/health_boost");
     public static final ResourceLocation MANA_BOOST = Fantazia.location("stat_modifiers/mana_boost");
-    public static final ResourceLocation CAPACITY_UPGRADE = Fantazia.location("stat_modifiers/capacity_upgrade");
+    public static final ResourceLocation NETHERITE_EQUIPMENT_REWARD = Fantazia.location("stat_modifiers/netherite_equipment_reward");
+
+    public static final ResourceLocation CAPACITY_UPGRADE = Fantazia.location("engineering/tool_capacity_upgrade");
+    public static final ResourceLocation DAMAGE_UPGRADE = Fantazia.location("engineering/tool_damage_upgrade");
 }

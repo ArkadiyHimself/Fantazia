@@ -17,6 +17,9 @@ import net.arkadiyhimself.fantazia.data.tags.FTZMobEffectTags;
 import net.arkadiyhimself.fantazia.util.wheremagichappens.FantazicCombat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -71,7 +74,7 @@ public abstract class MixinLivingEntity extends Entity {
         if (source == null) return;
         if (!source.is(FTZDamageTypeTags.PIERCES_BARRIER)) for (MobEffectInstance mobEffectInstance : fantazia$entity.getActiveEffects()) if (mobEffectInstance.getEffect().is(FTZMobEffectTags.BARRIER)) ci.cancel();
         if (source.is(FTZDamageTypeTags.NO_HURT_SOUND)) ci.cancel();
-        if (source.is(FTZDamageTypeTags.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) fantazia$entity.level().playSound(null, fantazia$entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLOODLOSS.get(), SoundSource.HOSTILE);
+        if (source.is(FTZDamageTypeTags.BLEEDING) && (fantazia$entity.tickCount & 10) == 0) fantazia$entity.level().playSound(null, fantazia$entity.blockPosition(), FTZSoundEvents.EFFECT_HAEMORRHAGE_BLEEDING.get(), SoundSource.HOSTILE);
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;makeSound(Lnet/minecraft/sounds/SoundEvent;)V"), method = "hurt")
@@ -93,6 +96,18 @@ public abstract class MixinLivingEntity extends Entity {
     private void milkBucket(EffectCure cure, CallbackInfoReturnable<Boolean> cir) {
         EffectCleansing.tryCleanseAll(fantazia$entity, Cleanse.BASIC);
         cir.setReturnValue(false);
+    }
+
+    //@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;sendParticles(Lnet/minecraft/core/particles/ParticleOptions;DDDIDDDD)I"), method = "checkFallDamage")
+    private int fallParticles(ServerLevel instance, ParticleOptions j, double v, double type, double posX, int amount, double posZ, double particleCount, double xOffset, double yOffset) {
+        if (getData(FTZAttachmentTypes.HURT_BY_FALLING_PERK)) {
+            for (int i = 0; i < (amount * 2); i++) {
+                BlockParticleOption option;
+            }
+        } else {
+            instance.sendParticles(j, v, type, posX, amount, posZ, particleCount, xOffset, yOffset);
+        }
+        return amount;
     }
 
     @Inject(at = @At("HEAD"), method = "doHurtTarget", cancellable = true)

@@ -18,6 +18,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -124,6 +125,18 @@ public class DamageSourcesHolder extends LevelAttributeHolder {
 
     public DamageSource blockFly(BlockFly blockFly) {
         return this.source(FTZDamageTypes.BLOCK_FLY, blockFly);
+    }
+
+    public DamageSource crushDown(Entity entity) {
+        return this.source(FTZDamageTypes.CRUSH_DOWN, entity);
+    }
+
+    public DamageSource passiveBarrierExplosion(Entity entity) {
+        return this.source(FTZDamageTypes.PASSIVE_BARRIER_EXPLOSION, entity);
+    }
+
+    public DamageSource pinpoint(Entity entity) {
+        return this.source(FTZDamageTypes.PINPOINT, entity);
     }
 
     @Override

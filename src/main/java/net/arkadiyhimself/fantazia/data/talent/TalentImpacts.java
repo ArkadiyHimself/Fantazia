@@ -16,17 +16,32 @@ public class TalentImpacts {
     public static final TalentImpact MELEE_BLOCK_UNLOCK;
     public static final TalentImpact MELEE_BLOCK_BLOODLOSS;
     public static final TalentImpact MELEE_BLOCK_DISARM;
+
     public static final TalentImpact DASH_UPGRADE;
+
     public static final TalentImpact DOUBLE_JUMP_UNLOCK;
     public static final TalentImpact DOUBLE_JUMP_ELYTRA;
+
     public static final TalentImpact EUPHORIA_RELENTLESS;
     public static final TalentImpact EUPHORIA_SAVAGE;
+
     public static final TalentImpact MANA_RECYCLE_UPGRADE;
+
     public static final TalentImpact WALL_CLIMBING_UNLOCKED;
     public static final TalentImpact WALL_CLIMBING_COBWEB;
     public static final TalentImpact WALL_CLIMBING_POISON;
+
     public static final TalentImpact UPGRADE_TOOL_CAPACITY;
     public static final TalentImpact UPGRADE_TOOL_DAMAGE;
+
+    public static final TalentImpact UNLOCK_PASSIVE_BARRIER_PERK;
+    public static final TalentImpact UNLOCK_HURT_BY_FALLING_PERK;
+    public static final TalentImpact UNLOCK_MINERS_SIGHT_PERK;
+    public static final TalentImpact UNLOCK_FERTILIZATION_PERK;
+    public static final TalentImpact UNLOCK_ENHANCED_MINING_PERK;
+    public static final TalentImpact UNLOCK_LUMBERJACK_PERK;
+    public static final TalentImpact UNLOCK_UPPER_HAND_PERK;
+    public static final TalentImpact UNLOCK_PINPOINT_PERK;
 
     public static TalentImpact register(TalentImpact.Builder builder) {
         TalentImpact impact = builder.build();
@@ -42,17 +57,17 @@ public class TalentImpacts {
         MELEE_BLOCK_UNLOCK = register(TalentImpact.builder(Fantazia.location("melee_block.unlock"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setUnlocked(true)))
                 .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setUnlocked(false)))
-                .defaultDisabling());
+                .standardDisabling());
 
         MELEE_BLOCK_BLOODLOSS = register(TalentImpact.builder(Fantazia.location("melee_block.bloodloss"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setBloodloss(true)))
                 .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setBloodloss(false)))
-                .defaultDisabling());
+                .standardDisabling());
 
         MELEE_BLOCK_DISARM = register(TalentImpact.builder(Fantazia.location("melee_block.disarm"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setDisarm(true)))
                 .remove(player -> PlayerAbilityHelper.acceptConsumer(player, MeleeBlockHolder.class, holder -> holder.setDisarm(false)))
-                .defaultDisabling());
+                .standardDisabling());
 
         DASH_UPGRADE = register(TalentImpact.builder(Fantazia.location("dash.upgrade"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, DashHolder.class, DashHolder::upgrade))
@@ -89,17 +104,17 @@ public class TalentImpacts {
         WALL_CLIMBING_UNLOCKED = register(TalentImpact.builder(Fantazia.location("wall_climbing.unlock"))
                 .apply(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED, true))
                 .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_UNLOCKED, false))
-                .defaultDisabling());
+                .standardDisabling());
 
         WALL_CLIMBING_COBWEB = register(TalentImpact.builder(Fantazia.location("wall_climbing.cobweb"))
                 .apply(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB, true))
                 .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_COBWEB, false))
-                .defaultDisabling());
+                .standardDisabling());
 
         WALL_CLIMBING_POISON = register(TalentImpact.builder(Fantazia.location("wall_climbing.poison"))
                 .apply(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_POISON, true))
                 .remove(player -> player.setData(FTZAttachmentTypes.WALL_CLIMBING_POISON, false))
-                .defaultDisabling());
+                .standardDisabling());
 
         UPGRADE_TOOL_CAPACITY = register(TalentImpact.builder(Fantazia.location("upgrade_tool_capacity"))
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, ToolUtilisationHolder.class, ToolUtilisationHolder::upgradeCapacity))
@@ -109,5 +124,45 @@ public class TalentImpacts {
                 .apply(player -> PlayerAbilityHelper.acceptConsumer(player, ToolUtilisationHolder.class, ToolUtilisationHolder::upgradeDamage))
                 .remove(player -> PlayerAbilityHelper.acceptConsumer(player, ToolUtilisationHolder.class, ToolUtilisationHolder::downgradeDamage)));
 
+        UNLOCK_PASSIVE_BARRIER_PERK = register(TalentImpact.builder(Fantazia.location("unlock_passive_barrier_perk"))
+                .apply(player -> player.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).unlock())
+                .remove(player -> player.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).lock())
+                .enable(player -> player.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).enable())
+                .disable(player -> player.getData(FTZAttachmentTypes.PASSIVE_BARRIER_PERK).disable()));
+
+        UNLOCK_HURT_BY_FALLING_PERK = register(TalentImpact.builder(Fantazia.location("unlock_hurt_by_falling_perk"))
+                .apply(player -> player.setData(FTZAttachmentTypes.HURT_BY_FALLING_PERK,true))
+                .remove(player -> player.setData(FTZAttachmentTypes.HURT_BY_FALLING_PERK,false))
+                .standardDisabling());
+
+        UNLOCK_MINERS_SIGHT_PERK = register(TalentImpact.builder(Fantazia.location("unlock_miners_sight_perk"))
+                .apply(player -> player.setData(FTZAttachmentTypes.MINERS_SIGHT_PERK,true))
+                .remove(player -> player.setData(FTZAttachmentTypes.MINERS_SIGHT_PERK,false))
+                .standardDisabling());
+
+        UNLOCK_FERTILIZATION_PERK = register(TalentImpact.builder(Fantazia.location("unlock_fertilization_perk"))
+                .apply(player -> player.setData(FTZAttachmentTypes.FERTILIZATION_PERK,true))
+                .remove(player -> player.setData(FTZAttachmentTypes.FERTILIZATION_PERK,false))
+                .standardDisabling());
+
+        UNLOCK_ENHANCED_MINING_PERK = register(TalentImpact.builder(Fantazia.location("unlock_enhanced_mining_perk"))
+                .apply(player -> player.setData(FTZAttachmentTypes.ENHANCED_MINING_PERK,true))
+                .remove(player -> player.setData(FTZAttachmentTypes.ENHANCED_MINING_PERK,false))
+                .standardDisabling());
+
+        UNLOCK_LUMBERJACK_PERK = register(TalentImpact.builder(Fantazia.location("unlock_lumberjack_perk"))
+                .apply(player -> player.getData(FTZAttachmentTypes.LUMBERJACK_PERK).unlock())
+                .remove(player -> player.getData(FTZAttachmentTypes.LUMBERJACK_PERK).lock())
+                .standardDisabling());
+
+        UNLOCK_UPPER_HAND_PERK = register(TalentImpact.builder(Fantazia.location("unlock_upper_hand_perk"))
+                .apply(player -> player.setData(FTZAttachmentTypes.UPPER_HAND_PERK,true))
+                .remove(player -> player.setData(FTZAttachmentTypes.UPPER_HAND_PERK,false))
+                .standardDisabling());
+
+        UNLOCK_PINPOINT_PERK = register(TalentImpact.builder(Fantazia.location("unlock_pinpoint_perk"))
+                .apply(player -> player.setData(FTZAttachmentTypes.PINPOINT_PERK,true))
+                .remove(player -> player.setData(FTZAttachmentTypes.PINPOINT_PERK,false))
+                .standardDisabling());
     }
 }

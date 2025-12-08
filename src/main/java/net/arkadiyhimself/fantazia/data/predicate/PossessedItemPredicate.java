@@ -18,7 +18,7 @@ import java.util.Optional;
 public record PossessedItemPredicate(List<Item> itemList, Optional<TagKey<Item>> tag, int amount) {
 
     public static final Codec<PossessedItemPredicate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            BuiltInRegistries.ITEM.byNameCodec().listOf().optionalFieldOf("items", Lists.newArrayList()).forGetter(PossessedItemPredicate::itemList),
+            BuiltInRegistries.ITEM.byNameCodec().listOf().optionalFieldOf("blueprints", Lists.newArrayList()).forGetter(PossessedItemPredicate::itemList),
             TagKey.codec(Registries.ITEM).optionalFieldOf("tag").forGetter(PossessedItemPredicate::tag),
             Codec.INT.optionalFieldOf("amount", 0).forGetter(PossessedItemPredicate::amount)
     ).apply(instance, PossessedItemPredicate::new));

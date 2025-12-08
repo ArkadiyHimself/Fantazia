@@ -102,6 +102,10 @@ public interface IPacket extends CustomPacketPayload {
         PacketDistributor.sendToPlayer(serverPlayer, new ParryAttackS2C(amount));
     }
 
+    static void passiveBarrierActivation(ServerPlayer serverPlayer) {
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(serverPlayer, new PassiveBarrierActivationSC2(serverPlayer.getId()));
+    }
+
     static void performDoubleJump(boolean flying) {
         PacketDistributor.sendToServer(new PerformDoubleJumpC2S(flying));
     }
@@ -240,6 +244,10 @@ public interface IPacket extends CustomPacketPayload {
 
     static void keyInput(KeyInputC2S.INPUT input, int action) {
         PacketDistributor.sendToServer(new KeyInputC2S(input, action));
+    }
+
+    static void maybeCrushNearbyEnemies(double fallingSpeed) {
+        PacketDistributor.sendToServer(new MaybeCrushNearbyEnemiesC2S(fallingSpeed));
     }
 
     static void playSoundForUI(ServerPlayer serverPlayer, SoundEvent soundEvent) {

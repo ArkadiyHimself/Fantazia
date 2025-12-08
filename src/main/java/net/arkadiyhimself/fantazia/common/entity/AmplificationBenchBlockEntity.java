@@ -48,9 +48,4 @@ public class AmplificationBenchBlockEntity extends BlockEntity implements Nameab
     public @Nullable Component getCustomName() {
         return this.name;
     }
-
-    @Override
-    public @NotNull BlockEntityType<?> getType() {
-        return FTZBlockEntityTypes.AMPLIFICATION_BENCH.value();
-    }
 }

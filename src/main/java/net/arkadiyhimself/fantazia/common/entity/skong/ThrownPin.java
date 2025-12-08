@@ -20,13 +20,11 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.UUID;
 
 public class ThrownPin extends Projectile {
@@ -77,7 +75,10 @@ public class ThrownPin extends Projectile {
         if (entity.invulnerableTime > 10) return;
         boolean hurt = LevelAttributesHelper.hurtEntity(entity, this, cachedDamage, DamageSourcesHolder::thrownPin);
         Vec3 delta = getDeltaMovement().reverse();
-        if (hurt) entity.knockback(0.4, delta.x, delta.z);
+        if (hurt) {
+            if (getOwner() instanceof LivingEntity living) living.setLastHurtMob(entity);
+            entity.knockback(0.4, delta.x, delta.z);
+        }
         Fantazia.LOGGER.info("Thrown pin damage before: {}", cachedDamage);
         this.cachedDamage *= 0.8f;
         Fantazia.LOGGER.info("Thrown pin damage after: {}", cachedDamage);
@@ -85,7 +86,7 @@ public class ThrownPin extends Projectile {
 
     public void destroy() {
         discard();
-        level().playSound(null, blockPosition(), FTZSoundEvents.PIN_BREAKING.value(), SoundSource.NEUTRAL);
+        level().playSound(null, blockPosition(), FTZSoundEvents.THROWN_PIN_BREAKING.value(), SoundSource.NEUTRAL);
 
         if (level() instanceof ServerLevel serverLevel)
             serverLevel.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK,

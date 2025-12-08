@@ -16,14 +16,18 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
  * The events are fired on the {@link net.neoforged.neoforge.common.NeoForge#EVENT_BUS}.
  */
 public abstract class BlockingEvent extends PlayerEvent {
+
     private ItemStack itemStack;
+
     public BlockingEvent(Player player, ItemStack itemStack) {
         super(player);
         this.itemStack = itemStack;
     }
+
     public ItemStack getItemStack() {
         return this.itemStack;
     }
+
     public void setItemStack(ItemStack itemStack) {
         this.itemStack = itemStack;
     }
@@ -65,20 +69,24 @@ public abstract class BlockingEvent extends PlayerEvent {
      * {@link Result#DEFAULT DEFAULT} will run the mod's regular logic to determine if parry should happen or not <br>
      */
     public static class ParryDecision extends BlockingEvent {
+
         private Result result;
         private final float attackerDamage;
         private final LivingEntity attacker;
-        public float getAttackerDamage() {
-            return attackerDamage;
-        }
-        public LivingEntity getAttacker() {
-            return attacker;
-        }
+
         public ParryDecision(Player player, ItemStack itemStack, float attackerDamage, LivingEntity attacker) {
             super(player, itemStack);
             this.attackerDamage = attackerDamage;
             this.attacker = attacker;
             this.result = Result.DEFAULT;
+        }
+
+        public float getAttackerDamage() {
+            return attackerDamage;
+        }
+
+        public LivingEntity getAttacker() {
+            return attacker;
         }
 
         public Result getResult() {
@@ -92,15 +100,12 @@ public abstract class BlockingEvent extends PlayerEvent {
         public enum Result {
             DO_PARRY,
             DEFAULT,
-            DO_NOT_PARRY;
-
-            Result() {
-            }
+            DO_NOT_PARRY
         }
     }
     
     /**
-     * {@link Block} is fired when player successfully blocks an attack but doesn't parry it <br>
+     * {@link RegularBlocking} is fired when player successfully blocks an attack but doesn't parry it <br>
      * <br>
      * {@link #attackerDamage} contains the amount of damage that was blocked <br>
      * {@link #attacker} contains the entity who dealt the damage <br>
@@ -108,12 +113,12 @@ public abstract class BlockingEvent extends PlayerEvent {
      * This event is {@link ICancellableEvent}.<br>
      * If it is canceled, the player does not block the attack
      */
-    public static class Block extends BlockingEvent implements ICancellableEvent{
+    public static class RegularBlocking extends BlockingEvent implements ICancellableEvent{
 
         private final float attackerDamage;
         private final LivingEntity attacker;
 
-        public Block(Player player, ItemStack itemStack, float attackerDamage, LivingEntity attacker) {
+        public RegularBlocking(Player player, ItemStack itemStack, float attackerDamage, LivingEntity attacker) {
             super(player, itemStack);
             this.attackerDamage = attackerDamage;
             this.attacker = attacker;
@@ -129,7 +134,7 @@ public abstract class BlockingEvent extends PlayerEvent {
 
     }
     /**
-     * {@link Parry} is fired when player successfully parries an attack <br>
+     * {@link Parrying} is fired when player successfully parries an attack <br>
      * <br>
      * {@link #attackerDamage} contains the amount of damage that was blocked <br>
      * {@link #attacker} contains the entity who dealt the damage <br>
@@ -138,13 +143,13 @@ public abstract class BlockingEvent extends PlayerEvent {
      * This event is {@link ICancellableEvent}.<br>
      * If it is canceled, the player does not parry an attack
      */
-    public static class Parry extends BlockingEvent implements ICancellableEvent {
+    public static class Parrying extends BlockingEvent implements ICancellableEvent {
 
         private final float attackerDamage;
         private final LivingEntity attacker;
         private float parryDamage;
 
-        public Parry(Player player, ItemStack itemStack, float attackerDamage, LivingEntity attacker, float parryDamage) {
+        public Parrying(Player player, ItemStack itemStack, float attackerDamage, LivingEntity attacker, float parryDamage) {
             super(player, itemStack);
             this.attackerDamage = attackerDamage;
             this.attacker = attacker;

@@ -76,7 +76,7 @@ public record HiddenPotentialComponent(float damage, int delay) {
         HiddenPotentialComponent copy = new HiddenPotentialComponent(newDMG, newDMG >= MAX ? DELAY_UNLEASH : DELAY_REGULAR);
 
         DAMAGE cur = copy.damageLevel();
-        if (old != DAMAGE.MAXIMUM && cur == DAMAGE.MAXIMUM) victim.playSound(FTZSoundEvents.FRAGILE_SWORD_UNLEASHED.get());
+        if (old != DAMAGE.MAXIMUM && cur == DAMAGE.MAXIMUM) victim.playSound(FTZSoundEvents.FRAGILE_BLADE_UNLEASH.get());
         victim.playSound(getSound(), 0.35f,1f);
 
         return copy;
@@ -94,11 +94,11 @@ public record HiddenPotentialComponent(float damage, int delay) {
 
     public SoundEvent getSound() {
         return switch (damageLevel()) {
-            case STARTING -> FTZSoundEvents.FRAGILE_SWORD_BEGIN.get();
-            case LOW -> FTZSoundEvents.FRAGILE_SWORD_LOW.get();
-            case MEDIUM -> FTZSoundEvents.FRAGILE_SWORD_MEDIUM.get();
-            case HIGH -> FTZSoundEvents.FRAGILE_SWORD_HIGH.get();
-            case MAXIMUM -> FTZSoundEvents.FRAGILE_SWORD_MAXIMUM.get();
+            case STARTING -> FTZSoundEvents.FRAGILE_BLADE_BEGIN.get();
+            case LOW -> FTZSoundEvents.FRAGILE_BLADE_LOW.get();
+            case MEDIUM -> FTZSoundEvents.FRAGILE_BLADE_MEDIUM.get();
+            case HIGH -> FTZSoundEvents.FRAGILE_BLADE_HIGH.get();
+            case MAXIMUM -> FTZSoundEvents.FRAGILE_BLADE_MAXIMUM.get();
         };
     }
 

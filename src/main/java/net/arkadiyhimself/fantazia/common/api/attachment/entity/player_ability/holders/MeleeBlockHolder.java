@@ -249,7 +249,7 @@ public class MeleeBlockHolder extends PlayerAbilityHolder implements IDamageEven
     }
 
     public boolean parryAttack(float amount) {
-        BlockingEvent.Parry parryEvent = FantazicHooks.onParry(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker, amount);
+        BlockingEvent.Parrying parryEvent = FantazicHooks.onParry(getPlayer(), getPlayer().getMainHandItem(), dmgTaken, lastAttacker, amount);
         if (parryEvent.isCanceled()) return false;
 
         dmgParry = parryEvent.getParryDamage();

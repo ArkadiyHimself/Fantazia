@@ -65,7 +65,17 @@ public class FTZAttachmentTypes {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> HAS_FURY = register("arrow.fury_effect", AttachmentType.builder(() -> false).serialize(Codec.BOOL));
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<CombHealthHolder>> COMB_HEALTH = register("spell.restore.health", AttachmentType.serializable(CombHealthHolder::new));
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<BifrostHealthHolder>> BIFROST_HEALTH = register("generic.bifrost_health", AttachmentType.serializable(BifrostHealthHolder::new));
-    public static final DeferredHolder<AttachmentType<?>, AttachmentType<AmplificationTab>> LAST_SELECTED_AMPLIFICATION_TAB = register("generic.last_selected_amplification_tab", AttachmentType.<AmplificationTab>builder(() -> AmplificationTab.RUNE_CARVING).serialize(AmplificationTab.CODEC));
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<AmplificationTab>> LAST_SELECTED_AMPLIFICATION_TAB = register("generic.last_selected_amplification_tab", AttachmentType.builder(() -> AmplificationTab.RUNE_CARVING).serialize(AmplificationTab.CODEC));
+
+    // netherite equipment talent rewards
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<PassiveBarrierHolder>> PASSIVE_BARRIER_PERK = register("talent.passive_barrier", AttachmentType.serializable(PassiveBarrierHolder::new));
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> HURT_BY_FALLING_PERK = register("talent.hurt_by_falling", AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> MINERS_SIGHT_PERK = register("talent.miners_sight", AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> FERTILIZATION_PERK = register("talent.fertilization", AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> ENHANCED_MINING_PERK = register("talent.enhanced_mining", AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<LumberjackHolder>> LUMBERJACK_PERK = register("talent.lumberjack", AttachmentType.builder(() -> new LumberjackHolder()).serialize(LumberjackHolder.CODEC).copyOnDeath());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> UPPER_HAND_PERK = register("talent.upper_hand", AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> PINPOINT_PERK = register("talent.pinpoint", AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath());
 
     // a map of auras that entity is inside, prioritising those that affect the entity
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<HashMap<Holder<Aura>, AuraInstance>>> AFFECTING_AURAS = register("generic.affecting_auras", AttachmentType.builder(() -> Maps.newHashMap()));

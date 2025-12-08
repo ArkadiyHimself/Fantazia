@@ -80,7 +80,7 @@ public class FTZMobEffects {
     private static final BiConsumer<LivingEntity, Integer> electrocutedTick = (livingEntity, integer) -> {
         DamageSourcesHolder damageSourcesHolder = LevelAttributesHelper.getDamageSources(livingEntity.level());
         if (damageSourcesHolder != null && (livingEntity.tickCount % 10) == 0) livingEntity.hurt(damageSourcesHolder.electric(), 0.675f + integer * 0.125f);
-        if ((livingEntity.tickCount % 3) == 0 && !livingEntity.level().isClientSide()) VisualHelper.entityChasingParticle(livingEntity, FTZParticleTypes.ELECTRO.random(), (int) Math.min(integer * 1.5 + 3, 3), 0.65f);
+        if ((livingEntity.tickCount % 3) == 0 && !livingEntity.level().isClientSide()) VisualHelper.entityChasingParticle(livingEntity, FTZParticleTypes.ELECTRO.value(), (int) Math.min(integer * 1.5 + 3, 3), 0.65f);
     };
 
     private static final BiConsumer<LivingEntity, Integer> puppeteeredTick = (livingEntity, integer) -> VisualHelper.particleOnEntityServer(livingEntity, ParticleTypes.SMOKE, ParticleMovement.FALL, 3);
@@ -106,7 +106,7 @@ public class FTZMobEffects {
     public static final DeferredHolder<MobEffect, SimpleMobEffect> CORROSION = REGISTER.register("corrosion", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 16057348,true).addAttributeModifier(Attributes.ARMOR, Fantazia.location("effect.corrosion"), -1, AttributeModifier.Operation.ADD_VALUE).addAttributeModifier(Attributes.ARMOR_TOUGHNESS, Fantazia.location("effect.corrosion"), -1, AttributeModifier.Operation.ADD_VALUE).addAttributeModifier(Attributes.KNOCKBACK_RESISTANCE, Fantazia.location("effect.corrosion"), -1, AttributeModifier.Operation.ADD_VALUE));
     public static final DeferredHolder<MobEffect, SimpleMobEffect> MANA_BOOST = REGISTER.register("mana_boost", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 4693243, true, false).addAttributeModifier(FTZAttributes.MAX_MANA, Fantazia.location("effect.mana_boost"), 4, AttributeModifier.Operation.ADD_VALUE));
     public static final DeferredHolder<MobEffect, SimpleMobEffect> STAMINA_BOOST = REGISTER.register("stamina_boost", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 4693243, true, false).addAttributeModifier(FTZAttributes.MAX_STAMINA, Fantazia.location("effect.stamina_boost"), 4, AttributeModifier.Operation.ADD_VALUE));
-    public static final DeferredHolder<MobEffect, SimpleMobEffect> CURSED_MARK = REGISTER.register("cursed_mark", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL, 0, true, false)); // finished and implemented
+    public static final DeferredHolder<MobEffect, SimpleMobEffect> CURSED_MARK = REGISTER.register("cursed_mark", () -> new SimpleMobEffect(MobEffectCategory.NEUTRAL, 0, true, false)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> RECOVERY = REGISTER.register("recovery", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL,52224, recoveryTick)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> SURGE = REGISTER.register("surge", () -> new SimpleMobEffect(MobEffectCategory.BENEFICIAL,3785983, surgeTick)); // finished and implemented
     public static final DeferredHolder<MobEffect, SimpleMobEffect> ELECTROCUTED = REGISTER.register("electrocuted", () -> new SimpleMobEffect(MobEffectCategory.HARMFUL, 10079487, electrocutedTick)); // finished and implemented

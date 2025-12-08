@@ -8,6 +8,7 @@ import net.arkadiyhimself.fantazia.common.item.WisdomCatcherItem;
 import net.arkadiyhimself.fantazia.data.criterion.ObtainTalentTrigger;
 import net.arkadiyhimself.fantazia.data.talent.Talent;
 import net.arkadiyhimself.fantazia.data.talent.TalentHelper;
+import net.arkadiyhimself.fantazia.data.talent.TalentHierarchy;
 import net.arkadiyhimself.fantazia.data.talent.TalentTreeData;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerTalentManager;
 import net.arkadiyhimself.fantazia.data.talent.reload.ServerWisdomRewardManager;
@@ -326,8 +327,8 @@ public class TalentsHolder extends PlayerAbilityHolder implements IDamageEventLi
     }
 
     public int upgradeLevel(ResourceLocation location) {
-        IHierarchy<Talent> talentIHierarchy = TalentTreeData.getLocationToHierarchy().get(location);
-        if (!(talentIHierarchy instanceof ChainHierarchy<Talent> chainHierarchy) || chainHierarchy instanceof ChaoticHierarchy<Talent>) return 0;
+        TalentHierarchy talentHierarchy = TalentTreeData.getLocationToHierarchy().get(location);
+        if (talentHierarchy == null || !(talentHierarchy.hierarchy() instanceof ChainHierarchy<Talent> chainHierarchy) || chainHierarchy instanceof ChaoticHierarchy<Talent>) return 0;
         int lvl = 0;
         for (Talent talent : chainHierarchy.getElements()) {
             if (!hasTalent(talent)) break;
